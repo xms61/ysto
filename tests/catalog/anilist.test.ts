@@ -36,7 +36,6 @@ test('parses titles, the cover and only the relations to other anime', () => {
     genres: ['Action'],
     synonyms: ['NARUTO'],
     title: { romaji: 'NARUTO', english: 'Naruto', native: 'NARUTO -ナルト-' },
-    coverImage: { large: 'https://img.example.test/bx20.jpg' },
     relations: {
       edges: [
         { relationType: 'SEQUEL', node: { id: 1735, type: 'ANIME' } },
@@ -51,7 +50,6 @@ test('parses titles, the cover and only the relations to other anime', () => {
     genres: ['Action'],
     synonyms: ['NARUTO'],
     title: { romaji: 'NARUTO', english: 'Naruto', native: 'NARUTO -ナルト-' },
-    coverUrl: 'https://img.example.test/bx20.jpg',
     relations: [{ type: 'SEQUEL', animeId: 1735 }],
   });
 });

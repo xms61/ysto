@@ -36,7 +36,7 @@ Every external input is validated once, at the boundary ([CODE_STYLE.md](CODE_ST
 
 ## External services
 - **AnimeThemes and AniList:** only the offline ingest scripts call them ([catalog](design-docs/catalog.md)). They need no keys, and receive only paced catalog queries with a User-Agent that names the repo. They never see player data. The README and the About screen credit both. Their terms:
-  - **AniList** (read 2026-09-25): non-commercial use is free (and free commercial use up to $150 of revenue a month). The API must not serve as a backup or data store, and *"hoarding or mass collection"* of its data is prohibited. So the build asks only for the anime in the library, only the fields the game needs, refreshes once a season, and never republishes the data. Bulk-downloading AniList's cover images is on hold until the owner decides ([catalog](design-docs/catalog.md)).
+  - **AniList** (read 2026-09-25): non-commercial use is free (and free commercial use up to $150 of revenue a month). The API must not serve as a backup or data store, and *"hoarding or mass collection"* of its data is prohibited. So the build asks only for the anime in the library, only the fields the game needs (no covers), refreshes once a season, and never republishes the data. The owner reviewed this on 2026-09-25 and kept it. Covers come from AnimeThemes instead ([catalog](design-docs/catalog.md)).
   - **AnimeThemes**: its API follows the AnimeThemes Terms of Service, which couldn't be read on 2026-09-25 because the site was down. Read it before M8 puts anything online.
 - **The running server calls no third-party service.** Covers and fonts are served from our own origin, so players' browsers talk only to it.
 

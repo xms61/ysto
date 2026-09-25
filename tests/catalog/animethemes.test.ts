@@ -49,6 +49,10 @@ test('parses the fields the catalog uses', () => {
     ],
     series: [{ id: 7, name: 'Naruto' }],
     animesynonyms: [{ text: 'Boruto' }, { text: null }],
+    images: [
+      { facet: 'Small Cover', link: 'https://img.example.test/small.jpg' },
+      { facet: 'Large Cover', link: 'https://img.example.test/large.jpg' },
+    ],
     animethemes: [
       {
         id: 7642,
@@ -75,6 +79,7 @@ test('parses the fields the catalog uses', () => {
     malId: 34566,
     series: [{ id: 7, name: 'Naruto' }],
     synonyms: ['Boruto'],
+    coverUrl: 'https://img.example.test/large.jpg',
     themes: [
       {
         id: 7642,
@@ -89,6 +94,13 @@ test('parses the fields the catalog uses', () => {
       },
     ],
   });
+});
+
+test('falls back to the small cover, and has no cover without images', () => {
+  const base = { id: 1, name: 'Show', slug: 'show' };
+  const small = [{ facet: 'Small Cover', link: 'https://img.example.test/small.jpg' }, { facet: 'Grill' }];
+  assert.equal(parseAnime({ ...base, images: small })?.coverUrl, 'https://img.example.test/small.jpg');
+  assert.equal(parseAnime(base)?.coverUrl, null);
 });
 
 test('drops anime without an id, a name or a slug', () => {
@@ -107,6 +119,7 @@ test('asks for every include the catalog needs, one page at a time', () => {
     'resources',
     'series',
     'animesynonyms',
+    'images',
   ]);
 });
 
