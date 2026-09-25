@@ -14,6 +14,15 @@ npm run dev                           # server on :3000, client on http://localh
 
 Requires Node 24 (`.nvmrc`). For production, `npm run build && npm start` serves the app on port 3000.
 
+## Building the catalog
+The game plays clips from a local library of AnimeThemes audio files, which the repo never contains. To build its catalog, install ffmpeg and set `YSTO_AUDIO_DIR` in `.env` to the library's folder. Then run:
+```bash
+npm run catalog:sync-animethemes   # AnimeThemes metadata (or: -- --from-dump <file>)
+npm run catalog:build              # durations, AniList data, catalog.sqlite and a report
+npm run catalog:check              # the gate: matching, popularity, adult filter, loudness
+```
+Every step caches its work and resumes after an interruption. Details: [scripts/catalog/CATALOG.md](scripts/catalog/CATALOG.md).
+
 ## Commands
 See the Commands table in [AGENTS.md](AGENTS.md).
 

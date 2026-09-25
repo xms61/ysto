@@ -13,5 +13,14 @@
     "erasableSyntaxOnly": true,
     "skipLibCheck": true
   },
-  "include": ["server", "shared", "tests", "e2e", "vite.config.ts", "vitest.config.ts", "playwright.config.ts"]
+  "include": [
+    "server",
+    "shared",
+    "scripts",
+    "tests",
+    "e2e",
+    "vite.config.ts",
+    "vitest.config.ts",
+    "playwright.config.ts"
+  ]
 }

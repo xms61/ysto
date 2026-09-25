@@ -1,0 +1,90 @@
+// The catalog's SQLite schema, the one definition used by the build in scripts/catalog/ and by the
+// server when it loads the catalog. Bump SCHEMA_VERSION with any change; `npm run catalog:build`
+// regenerates docs/generated/catalog-schema.md from this file.
+
+export const SCHEMA_VERSION = 1;
+
+export const SCHEMA_SQL = `CREATE TABLE catalog_meta (
+  key   TEXT PRIMARY KEY,
+  value TEXT NOT NULL
+);
+
+CREATE TABLE franchise (
+  id   INTEGER PRIMARY KEY,                -- the smallest anime id in the franchise
+  name TEXT NOT NULL
+);
+
+CREATE TABLE anime (
+  id             INTEGER PRIMARY KEY,      -- AnimeThemes anime id
+  slug           TEXT NOT NULL UNIQUE,
+  title_display  TEXT NOT NULL,            -- AnimeThemes name, mostly romaji
+  title_romaji   TEXT,
+  title_english  TEXT,
+  title_native   TEXT,                     -- Japanese
+  synonyms_json  TEXT NOT NULL DEFAULT '[]',
+  media_format   TEXT NOT NULL,            -- TV, TV Short, Movie, OVA, ONA, Special
+  year           INTEGER,
+  season         TEXT,                     -- Winter, Spring, Summer, Fall
+  franchise_id   INTEGER NOT NULL REFERENCES franchise(id),
+  anilist_id     INTEGER,
+  mal_id         INTEGER,
+  popularity     INTEGER,                  -- AniList: users with it on their list
+  popularity_pct REAL,                     -- 0 most popular .. 1 least, among playable anime
+  cover_file     TEXT                      -- relative to covers/
+);
+
+CREATE TABLE genre (
+  id   INTEGER PRIMARY KEY,
+  name TEXT NOT NULL UNIQUE
+);
+
+CREATE TABLE anime_genre (
+  anime_id INTEGER NOT NULL REFERENCES anime(id),
+  genre_id INTEGER NOT NULL REFERENCES genre(id),
+  PRIMARY KEY (anime_id, genre_id)
+);
+
+CREATE TABLE artist (
+  id   INTEGER PRIMARY KEY,                -- AnimeThemes artist id
+  name TEXT NOT NULL
+);
+
+CREATE TABLE song (
+  id           INTEGER PRIMARY KEY,        -- AnimeThemes song id
+  title        TEXT,
+  identity_key TEXT NOT NULL               -- normalized title and artists: the same-song rule
+);
+
+CREATE TABLE song_artist (
+  song_id     INTEGER NOT NULL REFERENCES song(id),
+  artist_id   INTEGER NOT NULL REFERENCES artist(id),
+  position    INTEGER NOT NULL,
+  credited_as TEXT,
+  PRIMARY KEY (song_id, artist_id)
+);
+
+CREATE TABLE theme (
+  id         INTEGER PRIMARY KEY,          -- AnimeThemes theme id
+  anime_id   INTEGER NOT NULL REFERENCES anime(id),
+  song_id    INTEGER REFERENCES song(id),
+  kind       TEXT NOT NULL CHECK (kind IN ('OP', 'ED')),
+  sequence   INTEGER NOT NULL,
+  slug       TEXT NOT NULL,                -- OP1, ED2
+  difficulty REAL                          -- 0 easiest .. 1 hardest; null when the theme isn't playable
+);
+
+CREATE TABLE audio_file (
+  rel_path    TEXT PRIMARY KEY,            -- relative to YSTO_AUDIO_DIR, forward slashes
+  theme_id    INTEGER NOT NULL REFERENCES theme(id),
+  duration_ms INTEGER NOT NULL,
+  size_bytes  INTEGER NOT NULL,
+  is_primary  INTEGER NOT NULL DEFAULT 0   -- 1 for the one file a theme plays from
+);
+
+CREATE INDEX anime_franchise ON anime(franchise_id);
+CREATE INDEX anime_year      ON anime(year);
+CREATE INDEX song_identity   ON song(identity_key);
+CREATE INDEX theme_anime     ON theme(anime_id);
+CREATE INDEX theme_song      ON theme(song_id);
+CREATE INDEX audio_theme     ON audio_file(theme_id);
+`;

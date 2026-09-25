@@ -1,6 +1,6 @@
 {
   "name": "ysto",
-  "version": "0.1.4",
+  "version": "0.2.0",
   "private": true,
   "description": "You Skipped The OP?! A multiplayer anime opening and ending quiz for the browser.",
   "license": "Apache-2.0",
@@ -17,10 +17,16 @@
     "format:check": "prettier --check .",
     "typecheck": "tsc -p tsconfig.json && tsc -p tsconfig.node.json",
     "test": "node --test \"tests/**/*.test.ts\"",
-    "test:coverage": "node --test --experimental-test-coverage --test-coverage-include=\"server/**\" --test-coverage-include=\"shared/**\" --test-coverage-exclude=server/main.ts --test-coverage-lines=85 --test-coverage-functions=85 --test-coverage-branches=75 \"tests/**/*.test.ts\"",
+    "test:coverage": "node --test --experimental-test-coverage --test-coverage-include=\"server/**\" --test-coverage-include=\"shared/**\" --test-coverage-include=\"scripts/catalog/**\" --test-coverage-exclude=server/main.ts --test-coverage-exclude=\"scripts/catalog/bin/**\" --test-coverage-lines=85 --test-coverage-functions=85 --test-coverage-branches=75 \"tests/**/*.test.ts\"",
     "test:web": "vitest run",
     "test:e2e": "playwright test",
-    "test:ci": "npm run lint && npm run format:check && npm run typecheck && npm run test:coverage && npm run test:web"
+    "test:ci": "npm run lint && npm run format:check && npm run typecheck && npm run test:coverage && npm run test:web",
+    "catalog:sync-animethemes": "node --env-file-if-exists=.env scripts/catalog/bin/sync-animethemes.ts",
+    "catalog:scan-audio": "node --env-file-if-exists=.env scripts/catalog/bin/scan-audio.ts",
+    "catalog:enrich-anilist": "node --env-file-if-exists=.env scripts/catalog/bin/enrich-anilist.ts",
+    "catalog:covers": "node --env-file-if-exists=.env scripts/catalog/bin/covers.ts",
+    "catalog:build": "node --env-file-if-exists=.env scripts/catalog/bin/build.ts",
+    "catalog:check": "node --env-file-if-exists=.env scripts/catalog/bin/check.ts"
   },
   "dependencies": {
     "express": "^5.2.1"

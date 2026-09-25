@@ -23,7 +23,7 @@ How the app behaves when something fails or slows down. The general rules are in
 - Ready barrier: 8 s. The round then starts for everyone.
 - Answer grace: 300 ms after `endsAt`.
 - Reconnect grace: 60 s. Lobby expiry: 15 minutes with no connected player, 4 hours in any case.
-- Ingest scripts: they honor `Retry-After` on 429, pace their requests and resume from their cache ([catalog](design-docs/catalog.md)).
+- Ingest scripts: one AnimeThemes request a second, and one AniList request every 2.1 s (AniList allowed 30 a minute on 2026-09-25). A 429 waits for `Retry-After`. Server errors and network failures retry up to 5 attempts, backing off 2, 4, 8, 16 s (capped at 60 s). Every step resumes from its cache ([catalog](design-docs/catalog.md)).
 
 ## Performance
 - A 30 s clip takes under 500 ms to cut at the 95th percentile (measured in M3).

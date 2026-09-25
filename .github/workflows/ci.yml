@@ -66,6 +66,9 @@ jobs:
           node-version-file: .nvmrc
           cache: npm
       - run: npm ci
+      # The catalog's audio tests generate and measure tones with ffmpeg and ffprobe.
+      - name: Install ffmpeg
+        run: command -v ffprobe || (sudo apt-get update -q && sudo apt-get install -y -q --no-install-recommends ffmpeg)
       - name: Lint, format, typecheck, tests with coverage, web tests
         run: npm run test:ci
       - name: Build

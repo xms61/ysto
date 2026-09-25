@@ -25,6 +25,7 @@ This file is the map, not the manual. The repository is the system of record: wh
 | [docs/references/](docs/references/) | Using a third-party library: its llms.txt here is newer than your memory of it |
 | [docs/generated/](docs/generated/) | Looking up generated reference such as the database schema (never edit by hand) |
 | [docs/KNOWLEDGE_BASE.md](docs/KNOWLEDGE_BASE.md) | Adding, moving or checking a doc, or running the doc-gardening pass |
+| [scripts/catalog/CATALOG.md](scripts/catalog/CATALOG.md) | Building the catalog, or changing the ingest scripts, the schema or the gate |
 
 ## Commands
 | Task | Command |
@@ -37,6 +38,7 @@ This file is the map, not the manual. The repository is the system of record: wh
 | All tests | `npm test` (server), `npm run test:web` (client) |
 | One test file | `node --test tests/server/app.test.ts` |
 | Browser smoke test | `npm run build && npm run test:e2e` |
+| Catalog | `npm run catalog:build`, then `npm run catalog:check` (all steps: [CATALOG.md](scripts/catalog/CATALOG.md)) |
 | Doc checks | `node scripts/check-docs.mjs` |
 | Doc checker tests | `node --test scripts/check-docs.test.mjs` |
 | Tracked-files check | `node scripts/check-tracked-files.mjs` (`--staged`: staged files only) |

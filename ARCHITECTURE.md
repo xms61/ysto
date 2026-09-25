@@ -12,18 +12,20 @@ You Skipped The OP?! is a browser quiz. Players join a lobby with a code, hear a
 
 ## Code map
 - `server/`: the Node server. `main.ts` starts the process (config, listen, shutdown), `app.ts` builds the Express app, and `config.ts` is the only code that reads environment variables. It never imports `src/`.
+  - `server/catalog/schema.ts`: the catalog's SQLite schema, shared by the build and, from M2, by the server's loader.
 - `src/`: the React client, which Vite bundles into `dist/`. It never imports `server/` or Node built-ins.
 - `shared/`: code that runs on both sides, such as the protocol, settings and scoring. It stays empty until M2, but the layer rules already cover it: it imports neither `server/` nor `src/`, and no Node built-ins.
 - `tests/`: server and shared tests (`node:test`), laid out like the folders they test.
 - `e2e/`: browser smoke tests (Playwright) against the production build.
 - `scripts/`: the repo checks (`check-docs.mjs`, `check-tracked-files.mjs`) and their tests.
+  - `scripts/catalog/`: the offline catalog build, from AnimeThemes, AniList and the audio library to `catalog.sqlite` ([CATALOG.md](scripts/catalog/CATALOG.md)). It may import `server/config.ts` and `server/catalog/`.
 - `docs/`: the knowledge base ([KNOWLEDGE_BASE.md](docs/KNOWLEDGE_BASE.md)).
 
 ## Layers
-`server/` and `src/` may import `shared/`. `shared/` imports neither of them, nor any Node built-in, and `src/` never imports `server/`. `eslint.config.js` enforces this with `no-restricted-imports`, so `npm run lint` fails on a wrong import.
+`server/` and `src/` may import `shared/`. `shared/` imports neither of them, nor any Node built-in, and `src/` never imports `server/`. Only `server/catalog/` and `scripts/catalog/` open SQLite (`node:sqlite`). `eslint.config.js` enforces all of this with `no-restricted-imports`, so `npm run lint` fails on a wrong import.
 
 ## Invariants
-- Only `server/config.ts` reads environment variables. It validates each one at startup, and each one is listed in `.env.example`. ESLint's `no-restricted-properties` rejects `process.env` anywhere else in `server/`, `shared/` and `src/`.
+- Only `server/config.ts` reads environment variables. It validates each one at startup, and each one is listed in `.env.example`. ESLint's `no-restricted-properties` rejects `process.env` anywhere else in `server/`, `shared/`, `src/` and the TypeScript scripts.
 - Node 24 runs the server's TypeScript by stripping the types, with no build step. So relative imports name the real file with its extension, type-only imports use `import type`, and code uses only erasable syntax (no enums, namespaces or parameter properties). `tsc` enforces all three (`allowImportingTsExtensions`, `verbatimModuleSyntax`, `erasableSyntaxOnly`).
 - Nothing in git holds media, data or secrets, or reveals the owner's machine. `scripts/check-tracked-files.mjs` and gitleaks enforce this ([guardrails](.github/RELEASE_PROCESS.md)).
 
