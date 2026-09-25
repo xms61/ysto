@@ -48,6 +48,16 @@ test('serves the client build, and index.html for client-side routes', async () 
   });
 });
 
+test('serves index.html as HTML at the root, from the copy read at startup', async () => {
+  const clientDir = clientDirWith({ 'index.html': '<title>app</title>' });
+  await withServer(clientDir, async (baseUrl) => {
+    writeFileSync(join(clientDir, 'index.html'), '<title>changed on disk</title>');
+    const root = await fetch(`${baseUrl}/`);
+    assert.equal(root.headers.get('content-type'), 'text/html; charset=utf-8');
+    assert.equal(await root.text(), '<title>app</title>');
+  });
+});
+
 test('serves no client routes without a client build', async () => {
   await withServer(clientDirWith({}), async (baseUrl) => {
     const response = await fetch(`${baseUrl}/j/ABC234`);
