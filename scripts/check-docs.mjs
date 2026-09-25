@@ -10,7 +10,18 @@ const ENTRY = 'AGENTS.md';
 const ENTRY_MAX_LINES = 100;
 const STALE_AFTER_DAYS = 90;
 const STATUSES = ['stub', 'draft', 'verified'];
-const SKIPPED_DIRS = new Set(['.git', '.claude', '.venv', 'node_modules', 'dist', 'build', 'coverage', 'data', 'reports', 'docs/scratch']);
+const SKIPPED_DIRS = new Set([
+  '.git',
+  '.claude',
+  '.venv',
+  'node_modules',
+  'dist',
+  'build',
+  'coverage',
+  'data',
+  'reports',
+  'docs/scratch',
+]);
 const META_FILES = new Set(['AGENTS.md', 'CLAUDE.md', 'README.md', 'CHANGELOG.md', 'docs/CHANGELOG-archive.md']);
 const INDEXED_DIRS = ['docs/design-docs', 'docs/product-specs'];
 const PLAN_SECTIONS = {
@@ -82,7 +93,10 @@ function frontmatterProblems(fields, todayIso) {
   if (Number.isNaN(verifiedMs)) return { errors: [...errors, 'last-verified must be a YYYY-MM-DD date'], warnings: [] };
   if (lastVerified > todayIso) errors.push('last-verified is in the future');
   const ageDays = Math.round((Date.parse(todayIso) - verifiedMs) / DAY_MS);
-  const warnings = fields.status === 'verified' && ageDays > STALE_AFTER_DAYS ? [`verified ${ageDays} days ago; re-check it against the code`] : [];
+  const warnings =
+    fields.status === 'verified' && ageDays > STALE_AFTER_DAYS
+      ? [`verified ${ageDays} days ago; re-check it against the code`]
+      : [];
   return { errors, warnings };
 }
 
@@ -106,8 +120,14 @@ function indexProblems(dir, texts, statuses) {
   const indexPath = `${dir}/index.md`;
   if (!texts.has(indexPath)) return [`${indexPath}: missing index`];
   const rowStatus = new Map();
-  for (const line of texts.get(indexPath).split(/\r?\n/).filter((l) => l.startsWith('|'))) {
-    const cells = line.split('|').slice(1, -1).map((cell) => cell.trim());
+  for (const line of texts
+    .get(indexPath)
+    .split(/\r?\n/)
+    .filter((l) => l.startsWith('|'))) {
+    const cells = line
+      .split('|')
+      .slice(1, -1)
+      .map((cell) => cell.trim());
     const link = cells[0]?.match(/\]\(([^)]+)\)/);
     if (link) rowStatus.set(resolveLink(indexPath, link[1]), cells[1]);
   }
@@ -115,7 +135,10 @@ function indexProblems(dir, texts, statuses) {
   for (const path of texts.keys()) {
     if (posix.dirname(path) !== dir || path === indexPath) continue;
     if (!rowStatus.has(path)) problems.push(`${indexPath}: no row for ${path}`);
-    else if (rowStatus.get(path) !== statuses.get(path)) problems.push(`${indexPath}: status for ${path} is "${rowStatus.get(path)}", the doc says "${statuses.get(path)}"`);
+    else if (rowStatus.get(path) !== statuses.get(path))
+      problems.push(
+        `${indexPath}: status for ${path} is "${rowStatus.get(path)}", the doc says "${statuses.get(path)}"`,
+      );
   }
   return problems;
 }
@@ -133,7 +156,8 @@ export function checkDocs(root, today = new Date()) {
   if (!texts.has(ENTRY)) return { errors: [`${ENTRY}: missing`], warnings };
 
   const entryLines = texts.get(ENTRY).trimEnd().split(/\r?\n/).length;
-  if (entryLines > ENTRY_MAX_LINES) errors.push(`${ENTRY}: ${entryLines} lines, the limit is ${ENTRY_MAX_LINES}; move detail into docs/`);
+  if (entryLines > ENTRY_MAX_LINES)
+    errors.push(`${ENTRY}: ${entryLines} lines, the limit is ${ENTRY_MAX_LINES}; move detail into docs/`);
 
   const reachable = reachableFrom(ENTRY, texts);
   const statuses = new Map();
@@ -156,7 +180,8 @@ export function checkDocs(root, today = new Date()) {
     warnings.push(...problems.warnings.map((problem) => `${path}: ${problem}`));
   }
   for (const dir of INDEXED_DIRS) {
-    if (existsSync(join(root, dir)) && statSync(join(root, dir)).isDirectory()) errors.push(...indexProblems(dir, texts, statuses));
+    if (existsSync(join(root, dir)) && statSync(join(root, dir)).isDirectory())
+      errors.push(...indexProblems(dir, texts, statuses));
   }
   return { errors, warnings };
 }

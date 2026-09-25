@@ -5,10 +5,12 @@ A multiplayer anime music quiz in the browser. Players join a lobby with a code 
 ## Setup
 ```bash
 git config core.hooksPath .githooks   # blocks commits with media, data, secrets or local paths
-<npm ci>
-cp .env.example .env
-<npm run dev>
+npm ci
+cp .env.example .env                  # optional: every variable has a default
+npm run dev                           # server on :3000, client on http://localhost:5173
 ```
+
+Requires Node 24 (`.nvmrc`). For production, `npm run build && npm start` serves the app on port 3000.
 
 ## Commands
 See the Commands table in [AGENTS.md](AGENTS.md).

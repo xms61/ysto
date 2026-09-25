@@ -14,10 +14,35 @@ const BINARY_SNIFF_BYTES = 8000;
 const MIN_MACHINE_NAME_LENGTH = 3;
 const SIZE_LIMIT_EXEMPT = new Set(['package-lock.json']);
 const FORBIDDEN_EXTENSIONS = new Set([
-  'ogg', 'opus', 'mp3', 'm4a', 'aac', 'flac', 'wav', 'webm', 'mp4', 'mkv', 'mov', 'avi',
-  'sqlite', 'sqlite3', 'sqlite-wal', 'sqlite-shm', 'db', 'db-wal', 'db-shm',
-  'pem', 'key', 'p12', 'pfx',
-  'zip', '7z', 'rar', 'tar', 'gz', 'tgz',
+  'ogg',
+  'opus',
+  'mp3',
+  'm4a',
+  'aac',
+  'flac',
+  'wav',
+  'webm',
+  'mp4',
+  'mkv',
+  'mov',
+  'avi',
+  'sqlite',
+  'sqlite3',
+  'sqlite-wal',
+  'sqlite-shm',
+  'db',
+  'db-wal',
+  'db-shm',
+  'pem',
+  'key',
+  'p12',
+  'pfx',
+  'zip',
+  '7z',
+  'rar',
+  'tar',
+  'gz',
+  'tgz',
 ]);
 const FORBIDDEN_DIRS = ['data/', 'docs/scratch/', 'reports/', 'coverage/', 'dist/', 'node_modules/'];
 const FORBIDDEN_NAMES = [
@@ -58,7 +83,8 @@ function contentErrors(text, machinePatterns) {
   const errors = [];
   text.split(/\r?\n/).forEach((line, index) => {
     if (HOME_PATH_PATTERNS.some((pattern) => pattern.test(line))) errors.push(`line ${index + 1}: home-folder path`);
-    if (machinePatterns.some((pattern) => pattern.test(line))) errors.push(`line ${index + 1}: this machine's user or host name`);
+    if (machinePatterns.some((pattern) => pattern.test(line)))
+      errors.push(`line ${index + 1}: this machine's user or host name`);
   });
   return errors;
 }
@@ -73,7 +99,8 @@ function fileErrors(file, machinePatterns) {
   if (FORBIDDEN_EXTENSIONS.has(extension)) errors.push(`.${extension} files never go in git`);
   if (dir) errors.push(`${dir} holds local data or build output`);
   if (nameReason) errors.push(nameReason);
-  if (file.size > MAX_BYTES && !SIZE_LIMIT_EXEMPT.has(file.path)) errors.push(`${Math.ceil(file.size / 1024)} KiB is over the 1 MiB limit`);
+  if (file.size > MAX_BYTES && !SIZE_LIMIT_EXEMPT.has(file.path))
+    errors.push(`${Math.ceil(file.size / 1024)} KiB is over the 1 MiB limit`);
   if (file.text !== null) errors.push(...contentErrors(file.text, machinePatterns));
   return errors.map((error) => `${file.path}: ${error}`);
 }
@@ -93,7 +120,11 @@ function listedPaths(staged) {
 
 // Reads the index, not the working tree, so the check sees exactly what gets committed.
 function indexedFile(path) {
-  const size = Number(git(['cat-file', '-s', `:${path}`]).toString('utf8').trim());
+  const size = Number(
+    git(['cat-file', '-s', `:${path}`])
+      .toString('utf8')
+      .trim(),
+  );
   if (size > MAX_READ_BYTES) return { path, size, text: null };
   const bytes = git(['cat-file', 'blob', `:${path}`]);
   const isBinary = bytes.subarray(0, BINARY_SNIFF_BYTES).includes(0);

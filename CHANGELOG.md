@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.1.2] - 2026-09-25
+
+### Added
+- App scaffold:
+  - an Express 5 server (`server/`) with `/healthz`, which serves the built client and falls back to it for client-side routes such as join links
+  - a React 19 client built by Vite 8, with Tailwind CSS 4 (`src/`)
+- Tooling:
+  - TypeScript 6.0, with separate configs for the client and for Node
+  - ESLint 10, with the layer rules and a single reader of env vars, plus Prettier
+  - Node's test runner with coverage thresholds, Vitest with Testing Library, and a Playwright smoke test in Chromium and WebKit
+- CI jobs `app` (`npm run test:ci` and the build) and `e2e` (the smoke test), and Dependabot for npm.
+
+### Changed
+- Prettier formats the doc and tracked-files scripts.
+
 ## [0.1.1] - 2026-09-25
 
 ### Added

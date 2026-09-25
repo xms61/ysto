@@ -7,4 +7,21 @@ updates:
       interval: weekly
     groups:
       actions:
-        patterns: ["*"]
+        patterns: ['*']
+
+  # Minor and patch updates arrive as one grouped PR; each major gets its own.
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      npm:
+        patterns: ['*']
+        update-types: ['minor', 'patch']
+    ignore:
+      # typescript-eslint supports TypeScript below 6.1 (see the tech-debt tracker).
+      - dependency-name: typescript
+        update-types: ['version-update:semver-major', 'version-update:semver-minor']
+      # The Node types follow the Node 24 runtime.
+      - dependency-name: '@types/node'
+        update-types: ['version-update:semver-major']

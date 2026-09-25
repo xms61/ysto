@@ -10,13 +10,13 @@
 
 ## Version bump (every PR)
 - `patch` for fixes and cleanup, `minor` for new capability, `major` for breaking changes.
-- Keep the version in sync everywhere it lives: `<package.json and package-lock.json / pyproject.toml / Cargo.toml>`.
+- Keep the version in sync everywhere it lives: `package.json` and `package-lock.json`. `npm version <patch|minor|major> --no-git-tag-version` updates both.
 - Add a `CHANGELOG.md` entry ([Keep a Changelog](https://keepachangelog.com/en/1.1.0/): Added/Changed/Fixed/Removed). Read only the top entry and insert yours above it. Keep about 5 releases there, and move older entries to the top of `docs/CHANGELOG-archive.md`.
 - Update `README.md` when commands, setup or features change, and every doc that describes the changed code ([knowledge base rules](../docs/KNOWLEDGE_BASE.md)).
 
 ## Pre-commit checklist
-1. `<npm run lint>`: 0 errors, 0 warnings.
-2. `<npm run test:ci>`: all pass.
+1. `npm run lint`: 0 errors, 0 warnings.
+2. `npm run test:ci`: all pass. For client or route changes, `npm run build && npm run test:e2e` too.
 3. `node scripts/check-docs.mjs`: no errors.
 4. `node scripts/check-tracked-files.mjs`: no errors, and `git status` shows nothing staged by mistake.
 5. Version bumped; CHANGELOG, README and affected docs updated; the exec plan's progress and decision log are current, if the work has one.
@@ -31,8 +31,8 @@ gh pr create --base main --head <branch> --title "<type>(<scope>): <summary> (v<
 - If a PR is already open for the branch, push more commits to it.
 - Merge with a merge commit once the pre-commit checklist passes on the branch.
 
-CI ([.github/workflows/ci.yml](workflows/ci.yml)) runs on every pull request and every push to `main`, and can also be started by hand. The `main` ruleset requires its `guard` and `docs` jobs to pass before a PR can merge:
+CI ([.github/workflows/ci.yml](workflows/ci.yml)) runs on every pull request and every push to `main`, and can also be started by hand. The `main` ruleset requires all four jobs to pass before a PR can merge:
 - `guard` runs the tracked-files check with its tests, then gitleaks.
 - `docs` runs the doc checks and their tests.
-
-The app's lint, typecheck, tests with coverage thresholds and build are added with the first app code, and become required checks too.
+- `app` runs `npm run test:ci` and the build.
+- `e2e` runs the browser smoke test against the build, in Chromium and WebKit.

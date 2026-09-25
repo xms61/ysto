@@ -25,22 +25,23 @@ This file is the map, not the manual. The repository is the system of record: wh
 | [docs/references/](docs/references/) | Using a third-party library: its llms.txt here is newer than your memory of it |
 | [docs/generated/](docs/generated/) | Looking up generated reference such as the database schema (never edit by hand) |
 | [docs/KNOWLEDGE_BASE.md](docs/KNOWLEDGE_BASE.md) | Adding, moving or checking a doc, or running the doc-gardening pass |
-| <path/to/AREA.md> | <Touching that area: one row per area doc, next to the code it describes> |
 
 ## Commands
 | Task | Command |
 | :-- | :-- |
-| Install | `<npm ci>` |
-| Dev server | `<npm run dev>` |
-| Lint / format | `<npm run lint>` / `<npm run format>` |
-| Typecheck | `<npm run typecheck>` |
-| All tests | `<npm test>` |
-| One test file | `<node --test path/to/file.test.ts>` |
+| Install | `npm ci` |
+| Dev server | `npm run dev` (server on :3000, client on :5173) |
+| Production build and server | `npm run build && npm start` (:3000) |
+| Lint / format | `npm run lint` / `npm run format` |
+| Typecheck | `npm run typecheck` |
+| All tests | `npm test` (server), `npm run test:web` (client) |
+| One test file | `node --test tests/server/app.test.ts` |
+| Browser smoke test | `npm run build && npm run test:e2e` |
 | Doc checks | `node scripts/check-docs.mjs` |
 | Doc checker tests | `node --test scripts/check-docs.test.mjs` |
 | Tracked-files check | `node scripts/check-tracked-files.mjs` (`--staged`: staged files only) |
 | Tracked-files checker tests | `node --test scripts/check-tracked-files.test.mjs` |
-| Everything CI runs | The doc and tracked-files rows above, gitleaks, plus `<npm run test:ci>` |
+| Everything CI runs | The doc and tracked-files rows above, gitleaks, `npm run test:ci`, the build and the browser smoke test |
 
 ## Always
 - Tests never use the network or real data. Use in-memory or temp-dir stores and the test stubs listed in [docs/TESTING.md](docs/TESTING.md).
@@ -49,6 +50,6 @@ This file is the map, not the manual. The repository is the system of record: wh
 - If the user says a long-running job is running, leave every file that job loads unchanged until they say it has finished.
 - Work that spans sessions or areas gets an exec plan in `docs/exec-plans/active/` ([docs/PLANS.md](docs/PLANS.md)), committed with the code and updated as you go. Scratch notes go in `docs/scratch/`, which git ignores; never commit them.
 - A decision, constraint or known gap that matters beyond this session goes into the doc that owns it, in the same change. When you change behavior, update the docs that describe it, set their `last-verified`, and run the doc checks. Rules: [docs/KNOWLEDGE_BASE.md](docs/KNOWLEDGE_BASE.md).
-- Script flags go after `--`: `<npm run task -- --flag=value>`.
+- Script flags go after `--`: `npm run <task> -- --flag=value`.
 - Never rename the `YSTO_*` env vars, the `ysto_*` browser storage keys or the Docker volume names once released: that breaks `.env` files, resets players' settings, or starts an empty volume.
 - Code style: small functions, clear names instead of comments that say what the code does, no speculative abstractions, no emoji or marketing words in code, logs or docs. Delete dead code instead of keeping it "for later". Details: [docs/CODE_STYLE.md](docs/CODE_STYLE.md).

@@ -5,7 +5,7 @@
 -
 
 ## Checks
-- [ ] Lint, typecheck and tests pass (`<npm run test:ci>`)
+- [ ] Lint, typecheck and tests pass (`npm run test:ci`), and the smoke test for client or route changes (`npm run build && npm run test:e2e`)
 - [ ] Version bumped and `CHANGELOG.md` entry added
 - [ ] Doc checks pass (`node scripts/check-docs.mjs`); docs describing changed code are updated, with a new `last-verified`
 - [ ] Exec plan progress and decision log updated, or the plan moved to `completed/` (if the work has one)
