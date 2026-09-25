@@ -4,6 +4,26 @@
 !.env.example
 *.pem
 *.key
+*.p12
+*.pfx
+id_rsa*
+id_ecdsa*
+id_ed25519*
+
+# Media and metadata dumps (audio, video and catalog data never go in git)
+*.ogg
+*.opus
+*.mp3
+*.m4a
+*.aac
+*.flac
+*.wav
+*.webm
+*.mp4
+*.mkv
+*.mov
+animethemes_dump*.json
+anime_metadata_index*.json
 
 # Dependencies and build output
 node_modules/

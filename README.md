@@ -1,9 +1,10 @@
-# <Project name>
+# You Skipped The OP?!
 
-<What it does, in one or two sentences.>
+A multiplayer anime music quiz in the browser. Players join a lobby with a code and a name, hear a random sample of an anime opening or ending, and pick the right anime from four options.
 
 ## Setup
 ```bash
+git config core.hooksPath .githooks   # blocks commits with media, data, secrets or local paths
 <npm ci>
 cp .env.example .env
 <npm run dev>
