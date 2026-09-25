@@ -22,3 +22,6 @@ See the Commands table in [AGENTS.md](AGENTS.md).
 
 ## Credits
 Song and anime metadata come from [AnimeThemes](https://animethemes.moe) and [AniList](https://anilist.co). The repo contains no audio or artwork.
+
+## License
+Apache License 2.0. See [LICENSE](LICENSE). The license covers this repository's code and docs, not the music or artwork a running game plays or shows.

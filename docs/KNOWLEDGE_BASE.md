@@ -49,11 +49,11 @@ Set `last-verified` to the current date whenever you check a doc against the cod
 It warns, without failing, about `verified` docs last verified more than 90 days ago. Those are the gardening pass's first work.
 
 ## Doc gardening
-A recurring pass, run by an agent weekly and before each release, that keeps the docs true to the code:
+A pass, run by an agent before each release, that keeps the docs true to the code:
 - Run the doc checks and re-verify every doc they warn about.
 - Compare what the docs claim (commands, paths, names, rules, the code map in ARCHITECTURE.md) with the code. Fix the doc when the code is right. When the code looks wrong, add a row to the [tech-debt tracker](exec-plans/tech-debt-tracker.md) instead of changing behavior.
 - Downgrade a doc to `stub` when it can't be fixed now, so nobody relies on it.
 - Move finished exec plans to `completed/`, and delete tech-debt rows that are paid off.
 - Open one fix-up PR per area, titled `docs(<area>): <summary>`, following the [release process](../.github/RELEASE_PROCESS.md).
 
-To run it, give an agent this section as its task. It isn't scheduled yet, so for now it runs before each release.
+To run it, give an agent this section as its task. It runs before a release rather than on a schedule, because the owner chose that. The release process lists it as a step.

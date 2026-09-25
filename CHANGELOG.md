@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.1.4] - 2026-09-25
+
+### Added
+- `LICENSE`: Apache License 2.0, also set in `package.json`, with a License section in the README.
+- A "Before a release" step in the release process: the doc-gardening pass.
+
+### Changed
+- Doc gardening runs before each release, not weekly.
+- The release process and SECURITY.md say that new high or critical CodeQL alerts block merges to `main`.
+- The v1 plan records M0 as done, with the owner's answers on license, merging and gardening.
+
 ## [0.1.3] - 2026-09-25
 
 ### Added
