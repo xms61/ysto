@@ -46,7 +46,7 @@ export interface CatalogInputs {
   animeThemes: AtAnime[];
   aniList: ReadonlyMap<number, AniListMedia>;
   audio: ProbedFile[];
-  coverFiles: ReadonlyMap<number, string>;
+  coverFiles: ReadonlyMap<number, string>; // cover file names by AnimeThemes anime id
 }
 
 export interface FranchiseRow {
@@ -394,7 +394,7 @@ export function assembleCatalog(inputs: CatalogInputs): CatalogData {
       malId: entry.malId,
       popularity: info?.popularity ?? null,
       popularityPct: pctByAnimeId.get(entry.id) ?? null,
-      coverFile: entry.anilistId === null ? null : (inputs.coverFiles.get(entry.anilistId) ?? null),
+      coverFile: inputs.coverFiles.get(entry.id) ?? null,
       genres: [...new Set(info?.genres ?? [])].sort(compareStrings),
     };
   });

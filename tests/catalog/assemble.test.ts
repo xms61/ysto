@@ -216,12 +216,12 @@ test('fills titles and genres from AniList, and falls back to the AnimeThemes na
   const withoutAniList = anime(9, { anilistId: null, themes: [theme(91, 'Local-OP1')] });
   const data = assembleCatalog({
     ...inputs([naruto, withoutAniList], [narutoMedia]),
-    coverFiles: new Map([[20, '20.jpg']]),
+    coverFiles: new Map([[1, '1.jpg']]),
   });
   const [first, second] = data.anime;
   assert.deepEqual(
     [first?.titleEnglish, first?.titleNative, first?.genres, first?.coverFile],
-    ['English 20', 'Native 20', ['Action'], '20.jpg'],
+    ['English 20', 'Native 20', ['Action'], '1.jpg'],
   );
   assert.deepEqual([second?.titleDisplay, second?.titleEnglish, second?.popularity], ['Anime 9', null, null]);
   assert.equal(data.report.animeWithPopularity, 1);

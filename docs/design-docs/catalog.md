@@ -21,7 +21,7 @@ The audio library is a set of `.ogg` files in the AnimeThemes layout: `<year>/<S
 | Store | Contents | Written by | At runtime | In git |
 | :-- | :-- | :-- | :-- | :-- |
 | `catalog.sqlite` | anime, franchises, genres, songs, artists, themes, audio files, difficulty | `npm run catalog:build` | mounted read-only, loaded into memory at startup | never |
-| `covers/` | one cover image per anime, named after its AniList id | `npm run catalog:covers` | read-only, served at `/covers` | never |
+| `covers/` | one AnimeThemes cover image per anime, named after its AnimeThemes id | `npm run catalog:covers` | read-only, served at `/covers` | never |
 | Audio library | the source `.ogg` files; on the VPS, the exported copy | the owner; `catalog:export` (M8) | read-only | never |
 | `data/cache/` | raw AnimeThemes pages, AniList media, ffprobe durations | the ingest steps | not mounted | never |
 
@@ -32,10 +32,10 @@ The audio library is a set of `.ogg` files in the AnimeThemes layout: `<year>/<S
 - A **franchise id** is the smallest anime id in the franchise, so ids are stable across builds of the same data.
 
 **Ingest steps.** Each step is its own command, caches what it fetched or measured under `YSTO_CACHE_DIR`, and resumes after an interruption. The commands and cache layout are in [scripts/catalog/CATALOG.md](../../scripts/catalog/CATALOG.md).
-1. **`catalog:sync-animethemes`** pages through `api.animethemes.moe/anime`, including songs, artists, entries, videos, resources, series and synonyms. That's about 50 pages of 100 anime, one request a second. `--from-dump <file>` imports an existing dump instead, which lacks `series` and synonyms. A `complete.json` marker is written last, so a build never starts from half a sync.
+1. **`catalog:sync-animethemes`** pages through `api.animethemes.moe/anime`, including songs, artists, entries, videos, resources, series, synonyms and images (the cover links). That's about 50 pages of 100 anime, one request a second. `--from-dump <file>` imports an existing dump instead, which lacks `series` and synonyms. A `complete.json` marker is written last, so a build never starts from half a sync.
 2. **`catalog:scan-audio`** reads every file's duration with ffprobe, several at a time. Results are cached by path, size and mtime, so a rescan only probes what changed.
-3. **`catalog:enrich-anilist`** fetches titles (romaji, English, native), synonyms, genres, popularity, `isAdult`, the cover URL and relations with batched GraphQL (`media(id_in: …)`, 50 ids a request). AniList allowed 30 requests a minute on 2026-09-25, so the step paces one request every 2.1 s. It remembers ids AniList doesn't know.
-4. **`catalog:covers`** downloads each cover once. It's a separate step that the build doesn't need; a reveal without a cover shows the titles only. It is on hold. AniList's terms prohibit *"hoarding or mass collection"* of its data, so the owner decides whether the game uses AniList's covers, AnimeThemes' images or none ([SECURITY.md](../SECURITY.md#external-services)).
+3. **`catalog:enrich-anilist`** fetches titles (romaji, English, native), synonyms, genres, popularity, `isAdult` and relations with batched GraphQL (`media(id_in: …)`, 50 ids a request). That's all it fetches, because AniList's terms prohibit hoarding its data ([SECURITY.md](../SECURITY.md#external-services)). AniList allowed 30 requests a minute on 2026-09-25, so the step paces one request every 2.1 s. It remembers ids AniList doesn't know.
+4. **`catalog:covers`** downloads each anime's AnimeThemes cover once: the large one, or the small one when that's all there is. It's a separate step that the build doesn't need; a reveal without a cover shows the titles only. A dump carries no cover links, so covers arrive with the first live sync. AniList's covers aren't used; that was the owner's choice, given AniList's terms.
 5. **`catalog:build`** brings steps 2 and 3 up to date, assembles the rows in one pure function (`scripts/catalog/assemble.ts`, so the same inputs always give the same catalog), writes `catalog.sqlite` beside the old one and renames it into place, regenerates the schema doc, and prints a report for review.
 6. **`catalog:check`** is the gate. It requires:
    - at least 99% of the audio files matched to a theme

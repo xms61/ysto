@@ -1,6 +1,7 @@
-// AniList metadata for the catalog's anime: titles, genres, popularity, the adult flag, the cover URL
-// and relations. Fetched in batches of 50 ids, paced under AniList's rate limit, and cached in one
-// file (<cacheDir>/anilist/media.json), so a rerun fetches only ids it hasn't seen.
+// AniList metadata for the catalog's anime: titles, genres, popularity, the adult flag and relations,
+// and nothing else, because AniList's terms prohibit hoarding its data. Fetched in batches of 50 ids,
+// paced under AniList's rate limit, and cached in one file (<cacheDir>/anilist/media.json), so a
+// rerun fetches only ids it hasn't seen.
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { isPresent, isRecord, numberOrNull, recordsIn, stringOrNull, stringsIn } from './fields.ts';
@@ -16,7 +17,6 @@ export interface AniListMedia {
   genres: string[];
   synonyms: string[];
   title: { romaji: string | null; english: string | null; native: string | null };
-  coverUrl: string | null;
   relations: { type: string; animeId: number }[];
 }
 
@@ -44,7 +44,6 @@ const QUERY = `query ($ids: [Int]) {
     media(id_in: $ids, type: ANIME) {
       id isAdult popularity genres synonyms
       title { romaji english native }
-      coverImage { large }
       relations { edges { relationType node { id type } } }
     }
   }
@@ -86,7 +85,6 @@ export function parseMedia(raw: JsonRecord): AniListMedia | null {
       english: stringOrNull(title.english),
       native: stringOrNull(title.native),
     },
-    coverUrl: isRecord(raw.coverImage) ? stringOrNull(raw.coverImage.large) : null,
     relations: parseRelations(raw.relations),
   };
 }

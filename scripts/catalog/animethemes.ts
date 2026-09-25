@@ -46,6 +46,7 @@ export interface AtAnime {
   malId: number | null;
   series: { id: number; name: string }[];
   synonyms: string[];
+  coverUrl: string | null;
   themes: AtTheme[];
 }
 
@@ -69,7 +70,10 @@ const INCLUDES = [
   'resources',
   'series',
   'animesynonyms',
+  'images',
 ].join(',');
+// Reveals show the large cover; the small one stands in when an anime has no large one.
+const COVER_FACETS = ['Large Cover', 'Small Cover'];
 export const PAGE_SIZE = 100;
 // One request a second stays well under AnimeThemes' limit of 90 a minute.
 const REQUEST_INTERVAL_MS = 1000;
@@ -140,6 +144,14 @@ function externalId(resources: JsonRecord[], site: string): number | null {
   return numberOrNull(resources.find((resource) => resource.site === site)?.external_id);
 }
 
+function coverUrl(images: JsonRecord[]): string | null {
+  for (const facet of COVER_FACETS) {
+    const link = stringOrNull(images.find((image) => image.facet === facet)?.link);
+    if (link !== null) return link;
+  }
+  return null;
+}
+
 export function parseAnime(raw: JsonRecord): AtAnime | null {
   const id = numberOrNull(raw.id);
   const name = stringOrNull(raw.name);
@@ -162,6 +174,7 @@ export function parseAnime(raw: JsonRecord): AtAnime | null {
     malId: externalId(resources, 'MyAnimeList'),
     series,
     synonyms: stringsIn(recordsIn(raw.animesynonyms).map((synonym) => stringOrNull(synonym.text))),
+    coverUrl: coverUrl(recordsIn(raw.images)),
     themes: recordsIn(raw.animethemes).map(parseTheme).filter(isPresent),
   };
 }

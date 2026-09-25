@@ -28,6 +28,7 @@ export function anime(id: number, overrides: Partial<AtAnime> = {}): AtAnime {
     malId: null,
     series: [],
     synonyms: [],
+    coverUrl: null,
     themes: [],
     ...overrides,
   };
@@ -41,7 +42,6 @@ export function media(id: number, overrides: Partial<AniListMedia> = {}): AniLis
     genres: ['Action'],
     synonyms: [],
     title: { romaji: `Romaji ${id}`, english: `English ${id}`, native: `Native ${id}` },
-    coverUrl: null,
     relations: [],
     ...overrides,
   };
