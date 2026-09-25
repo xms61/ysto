@@ -1,5 +1,6 @@
 // The catalog gate: what a build must satisfy before games use it. The thresholds and their reasons are
 // in docs/design-docs/catalog.md.
+import { seededRandom, shuffle } from '../../server/game/random.ts';
 
 export const GATE = {
   minMatchedShare: 0.99,
@@ -75,24 +76,7 @@ export function evaluateGate(input: GateInput): GateResult {
   return { failures, warnings };
 }
 
-// mulberry32: a small, well-mixed PRNG, so the same seed always samples the same files.
-function seededRandom(seed: number): () => number {
-  let state = seed >>> 0;
-  return () => {
-    state = (state + 0x6d2b79f5) >>> 0;
-    let mixed = Math.imul(state ^ (state >>> 15), state | 1);
-    mixed ^= mixed + Math.imul(mixed ^ (mixed >>> 7), mixed | 61);
-    return ((mixed ^ (mixed >>> 14)) >>> 0) / 4294967296;
-  };
-}
-
+// The same seed always samples the same files, so two checks of one catalog measure the same sample.
 export function seededSample<T>(items: readonly T[], count: number, seed: number): T[] {
-  const shuffled = [...items];
-  const random = seededRandom(seed);
-  for (let index = shuffled.length - 1; index > 0; index--) {
-    const other = Math.floor(random() * (index + 1));
-    // Both indexes are within the array: other <= index < length.
-    [shuffled[index], shuffled[other]] = [shuffled[other] as T, shuffled[index] as T];
-  }
-  return shuffled.slice(0, Math.max(0, count));
+  return shuffle(items, seededRandom(seed)).slice(0, Math.max(0, count));
 }

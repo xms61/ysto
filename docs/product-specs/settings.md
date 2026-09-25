@@ -27,7 +27,8 @@ The host shapes the game (pool, length, difficulty, scoring). Each player sets w
 | Title language | Player (device) | English, romaji, Japanese | English, falling back to romaji |
 | Reduced motion | Player (device) | follows the OS setting, can be overridden | OS setting |
 
-- While the host edits the settings, the lobby shows how many songs match. The host can't start a game with fewer matching songs than the songs-per-game setting.
+- While the host edits the settings, the lobby shows how many songs and anime match. An anime plays at most once per game, so the host can't start a game with fewer matching anime than the songs-per-game setting.
+- A custom difficulty starts at popularity ranks 1–1,000, where rank 1 is the most popular playable anime.
 - Player settings are saved on the device (`ysto_*` keys in `localStorage`) and apply straight away.
 - Volume goes through a gain node, so the 15% default also applies on iPhones ([audio clips](../design-docs/audio-clips.md)).
 - The interface is in English. Anime titles follow each player's title-language setting.

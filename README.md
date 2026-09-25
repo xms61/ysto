@@ -2,7 +2,7 @@
 
 A multiplayer anime music quiz in the browser. Players join a lobby with a code and a name, hear a random sample of an anime opening or ending, and pick the right anime from four options.
 
-Status: early development. The server and client scaffold is in place, and the game itself is being built milestone by milestone ([v1 plan](docs/exec-plans/active/2026-09-25-ysto-v1.md)).
+Status: early development. The catalog build and the question engine are done. The clip service, lobbies, the game loop and the client come next, milestone by milestone ([v1 plan](docs/exec-plans/active/2026-09-25-ysto-v1.md)).
 
 ## Setup
 ```bash
