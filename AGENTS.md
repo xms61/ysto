@@ -1,6 +1,6 @@
-# <Project name> — Agent Doc Map
+# You Skipped The OP?! — Agent Doc Map
 
-<One sentence: what this project is and who uses it.>
+A multiplayer anime music quiz in the browser: players join a lobby with a code, hear a random sample of an opening or ending, and pick the anime from four options.
 
 This file is the map, not the manual. The repository is the system of record: what you need to know lives in the docs below, and what is not written in the repo does not exist for the next session. Read only the docs your task needs.
 
@@ -38,14 +38,17 @@ This file is the map, not the manual. The repository is the system of record: wh
 | One test file | `<node --test path/to/file.test.ts>` |
 | Doc checks | `node scripts/check-docs.mjs` |
 | Doc checker tests | `node --test scripts/check-docs.test.mjs` |
-| Everything CI runs | The two doc rows above, plus `<npm run test:ci>` |
+| Tracked-files check | `node scripts/check-tracked-files.mjs` (`--staged`: staged files only) |
+| Tracked-files checker tests | `node --test scripts/check-tracked-files.test.mjs` |
+| Everything CI runs | The doc and tracked-files rows above, gitleaks, plus `<npm run test:ci>` |
 
 ## Always
 - Tests never use the network or real data. Use in-memory or temp-dir stores and the test stubs listed in [docs/TESTING.md](docs/TESTING.md).
-- `<data/ or other path>` holds the user's real data. Open it read-only for analysis, and never run write or cleanup scripts against it unless asked.
+- The folder in `YSTO_AUDIO_DIR` holds the owner's audio library, and `data/` holds the catalog and caches. Open them read-only for analysis, and never run write or cleanup scripts against them unless asked.
+- Committed files never reveal this machine: no home-folder paths, no local user or host names. Refer to locations by env var. Enable the pre-commit hook that checks this once per clone: `git config core.hooksPath .githooks` ([guardrails](.github/RELEASE_PROCESS.md)).
 - If the user says a long-running job is running, leave every file that job loads unchanged until they say it has finished.
 - Work that spans sessions or areas gets an exec plan in `docs/exec-plans/active/` ([docs/PLANS.md](docs/PLANS.md)), committed with the code and updated as you go. Scratch notes go in `docs/scratch/`, which git ignores; never commit them.
 - A decision, constraint or known gap that matters beyond this session goes into the doc that owns it, in the same change. When you change behavior, update the docs that describe it, set their `last-verified`, and run the doc checks. Rules: [docs/KNOWLEDGE_BASE.md](docs/KNOWLEDGE_BASE.md).
 - Script flags go after `--`: `<npm run task -- --flag=value>`.
-- <Names that must never be renamed, and why (storage keys, env vars, volume names, public API paths).>
+- Never rename the `YSTO_*` env vars, the `ysto_*` browser storage keys or the Docker volume names once released: that breaks `.env` files, resets players' settings, or starts an empty volume.
 - Code style: small functions, clear names instead of comments that say what the code does, no speculative abstractions, no emoji or marketing words in code, logs or docs. Delete dead code instead of keeping it "for later". Details: [docs/CODE_STYLE.md](docs/CODE_STYLE.md).
