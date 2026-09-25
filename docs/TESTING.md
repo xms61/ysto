@@ -7,17 +7,19 @@ last-verified: 2026-09-25
 
 | Command | What | Where |
 | :-- | :-- | :-- |
-| `npm test` | Server and shared tests (`node:test`) | `tests/**/*.test.ts` |
-| `npm run test:coverage` | The same tests with coverage thresholds over `server/` and `shared/`: lines and functions ≥ 85 %, branches ≥ 75 %. `server/main.ts` only wires the process together and is left out. | Node's built-in coverage; the flags are in `package.json` |
+| `npm test` | Server, shared and catalog tests (`node:test`) | `tests/**/*.test.ts` |
+| `npm run test:coverage` | The same tests with coverage thresholds over `server/`, `shared/` and `scripts/catalog/`: lines and functions ≥ 85 %, branches ≥ 75 %. `server/main.ts` and `scripts/catalog/bin/` only wire things together and are left out. | Node's built-in coverage; the flags are in `package.json` |
 | `npm run test:web` | Client tests (Vitest, jsdom, Testing Library) | `src/**/*.test.tsx`, `vitest.config.ts` |
 | `npm run test:e2e` | Browser smoke test against the production build, in Chromium and WebKit. Run `npm run build` first. | `e2e/`, `playwright.config.ts` |
 | `npm run test:ci` | Lint, format check, typecheck, coverage and client tests: everything CI runs except the build, the smoke test and the repo checks | `.github/workflows/ci.yml` |
 | `node --test scripts/*.test.mjs` | Tests of the doc and tracked-files checks | `scripts/` |
 
-The smoke test needs its browsers once per machine: `npx playwright install chromium webkit`.
+The smoke test needs its browsers once per machine: `npx playwright install chromium webkit`. The catalog's audio tests need `ffmpeg` and `ffprobe` on PATH (CI installs them).
 
 ## Isolation
 - Tests never touch the network or the real data directory.
+- Code that calls an API takes an `HttpClient`. Tests pass `fakeHttp` from `tests/catalog/fixtures.ts`, which answers from a list and records every request and sleep, so retries and pacing are checked without waiting.
+- The audio tests generate short sine tones with ffmpeg in a temporary folder, never touching the real library.
 - Server tests call `createApp` directly and listen on port 0, so the system picks a free port and a running dev server never clashes with them.
 - Every test builds its own fixtures with a small function (`clientDirWith(files)`), and temporary folders are deleted in `after`. No state carries over from one test to the next.
 - Use in-memory or temp-dir databases, never the app's singleton for writes.

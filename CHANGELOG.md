@@ -7,6 +7,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.2.0] - 2026-09-25
+
+### Added
+- The catalog build (`scripts/catalog/`), one command per step:
+  - `catalog:sync-animethemes`: AnimeThemes metadata from the API, or `--from-dump`
+  - `catalog:scan-audio`: durations with ffprobe
+  - `catalog:enrich-anilist`: titles, genres, popularity, the adult flag and relations, fetched in paced batches
+  - `catalog:covers`: optional, and on hold until the cover source is decided
+  - `catalog:build`: writes `catalog.sqlite` and prints a review report
+  - `catalog:check`: the gate for matching, popularity, the adult filter and loudness
+- Every step caches its work and resumes after an interruption. The assembly is a pure function, so the same inputs give the same catalog.
+- The catalog schema in `server/catalog/schema.ts`, and the generated `docs/generated/catalog-schema.md`.
+- `YSTO_AUDIO_DIR`, `YSTO_CATALOG_DIR`, `YSTO_CACHE_DIR` and `YSTO_FFMPEG_PATH`, read by `loadCatalogConfig` in `server/config.ts`.
+- Tests for every step: a fake HTTP client instead of the network, and ffmpeg-generated tones instead of the library.
+- The area doc `scripts/catalog/CATALOG.md`, and a README section on building the catalog.
+
+### Changed
+- ESLint allows `node:sqlite` only in `server/catalog/` and `scripts/catalog/`, and `process.env` only in `server/config.ts`, now also for the scripts.
+- Coverage includes `scripts/catalog/`, and the CI `app` job installs ffmpeg for the audio tests.
+- The catalog design doc describes the build as implemented, including the gate's thresholds. SECURITY.md records AniList's and AnimeThemes' terms.
+
 ## [0.1.4] - 2026-09-25
 
 ### Added
