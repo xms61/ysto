@@ -36,3 +36,8 @@ CI ([.github/workflows/ci.yml](workflows/ci.yml)) runs on every pull request and
 - `docs` runs the doc checks and their tests.
 - `app` runs `npm run test:ci` and the build.
 - `e2e` runs the browser smoke test against the build, in Chromium and WebKit.
+
+The ruleset also blocks a merge while CodeQL reports a new alert of high or critical severity, or a new error.
+
+## Before a release
+Run the doc-gardening pass ([KNOWLEDGE_BASE.md](../docs/KNOWLEDGE_BASE.md#doc-gardening)) and merge its fix-up PRs before tagging the release.

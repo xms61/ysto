@@ -47,4 +47,4 @@ The audio and the cover art are copyrighted. Lobby creation is open, so anyone w
 ## Dependencies
 - Add a dependency only when the standard library or an existing dependency can't do the job ([CODE_STYLE.md](CODE_STYLE.md)). The server's runtime dependencies stay minimal, and client libraries are devDependencies bundled by Vite.
 - Dependabot opens weekly PRs for npm and GitHub Actions. Actions are pinned by commit SHA, and third-party tools in CI are pinned by version and checksum (gitleaks).
-- GitHub secret scanning, push protection, Dependabot alerts and CodeQL are on for the repo.
+- GitHub secret scanning, push protection, Dependabot alerts and CodeQL are on for the repo. A new CodeQL alert of high or critical severity blocks merging ([release process](../.github/RELEASE_PROCESS.md)).
