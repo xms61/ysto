@@ -68,7 +68,10 @@ test('reports a last-verified date in the future', () => {
 test('warns about a verified doc not re-checked for over 90 days', () => {
   const stale = minimalRepo({ 'docs/STYLE.md': `${frontmatter('verified', '2026-06-01')}# Style\n` });
   const staleDraft = minimalRepo({ 'docs/STYLE.md': `${frontmatter('draft', '2026-06-01')}# Style\n` });
-  assert.deepEqual(checkDocs(stale, TODAY), { errors: [], warnings: ['docs/STYLE.md: verified 116 days ago; re-check it against the code'] });
+  assert.deepEqual(checkDocs(stale, TODAY), {
+    errors: [],
+    warnings: ['docs/STYLE.md: verified 116 days ago; re-check it against the code'],
+  });
   assert.deepEqual(checkDocs(staleDraft, TODAY).warnings, []);
 });
 

@@ -1,0 +1,9 @@
+# Docs keep their hand-written tables and line breaks.
+**/*.md
+package-lock.json
+dist/
+coverage/
+data/
+test-results/
+playwright-report/
+blob-report/

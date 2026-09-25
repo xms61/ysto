@@ -19,11 +19,16 @@ function binaryFile(path, size = 10) {
 }
 
 test('passes code and docs', () => {
-  assert.deepEqual(checkTrackedFiles([textFile('src/app.ts', 'export {};\n'), textFile('README.md', '# Readme\n')]), []);
+  assert.deepEqual(
+    checkTrackedFiles([textFile('src/app.ts', 'export {};\n'), textFile('README.md', '# Readme\n')]),
+    [],
+  );
 });
 
 test('reports media, database, key and archive files', () => {
-  const files = ['a.ogg', 'b.M4A', 'catalog.sqlite', 'catalog.sqlite-wal', 'tls.pem', 'dump.tar.gz'].map((path) => binaryFile(path));
+  const files = ['a.ogg', 'b.M4A', 'catalog.sqlite', 'catalog.sqlite-wal', 'tls.pem', 'dump.tar.gz'].map((path) =>
+    binaryFile(path),
+  );
   assert.deepEqual(checkTrackedFiles(files), [
     'a.ogg: .ogg files never go in git',
     'b.M4A: .m4a files never go in git',
@@ -35,7 +40,11 @@ test('reports media, database, key and archive files', () => {
 });
 
 test('reports files under local data and build folders', () => {
-  const files = [textFile('data/catalog/meta.json', '{}'), textFile('docs/scratch/notes.md', '# Notes'), textFile('dist/app.js', '')];
+  const files = [
+    textFile('data/catalog/meta.json', '{}'),
+    textFile('docs/scratch/notes.md', '# Notes'),
+    textFile('dist/app.js', ''),
+  ];
   assert.deepEqual(checkTrackedFiles(files), [
     'data/catalog/meta.json: data/ holds local data or build output',
     'docs/scratch/notes.md: docs/scratch/ holds local data or build output',
@@ -44,7 +53,9 @@ test('reports files under local data and build folders', () => {
 });
 
 test('reports env files, SSH keys and metadata dumps, and allows .env.example', () => {
-  const files = ['.env', 'config/.env.production', 'id_ed25519', 'animethemes_dump.json', '.env.example'].map((path) => textFile(path, 'x'));
+  const files = ['.env', 'config/.env.production', 'id_ed25519', 'animethemes_dump.json', '.env.example'].map((path) =>
+    textFile(path, 'x'),
+  );
   assert.deepEqual(checkTrackedFiles(files), [
     '.env: env files hold local settings and secrets; only .env.example is committed',
     'config/.env.production: env files hold local settings and secrets; only .env.example is committed',
@@ -61,12 +72,28 @@ test('reports files over 1 MiB, except the lockfile', () => {
 });
 
 test('reports home-folder paths by line', () => {
-  const text = ['ok', WINDOWS_HOME, WINDOWS_HOME_FORWARD, WINDOWS_HOME_JSON, GIT_BASH_HOME, `see ${MAC_HOME}`, `"${LINUX_HOME}"`].join('\n');
-  assert.deepEqual(checkTrackedFiles([textFile('docs/notes.md', text)]), [2, 3, 4, 5, 6, 7].map((line) => `docs/notes.md: line ${line}: home-folder path`));
+  const text = [
+    'ok',
+    WINDOWS_HOME,
+    WINDOWS_HOME_FORWARD,
+    WINDOWS_HOME_JSON,
+    GIT_BASH_HOME,
+    `see ${MAC_HOME}`,
+    `"${LINUX_HOME}"`,
+  ].join('\n');
+  assert.deepEqual(
+    checkTrackedFiles([textFile('docs/notes.md', text)]),
+    [2, 3, 4, 5, 6, 7].map((line) => `docs/notes.md: line ${line}: home-folder path`),
+  );
 });
 
 test('allows URLs and the node and runner service accounts', () => {
-  const text = ['https://example.com/Users/someone/', 'WORKDIR /home/node/app', 'cd /home/runner/work/ysto', 'wss://host/home/x/'].join('\n');
+  const text = [
+    'https://example.com/Users/someone/',
+    'WORKDIR /home/node/app',
+    'cd /home/runner/work/ysto',
+    'wss://host/home/x/',
+  ].join('\n');
   assert.deepEqual(checkTrackedFiles([textFile('Dockerfile', text)]), []);
 });
 

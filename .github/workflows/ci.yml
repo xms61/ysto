@@ -19,7 +19,7 @@ jobs:
           persist-credentials: false
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
-          node-version: 24
+          node-version-file: .nvmrc
       - name: Tracked-files checker tests
         run: node --test scripts/check-tracked-files.test.mjs
       - name: Tracked files (media, data, secrets, home-folder paths)
@@ -39,7 +39,7 @@ jobs:
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: |
           if [ -n "$BASE_SHA" ]; then range="$BASE_SHA..$HEAD_SHA"; else range="--all"; fi
-          "$RUNNER_TEMP/gitleaks" git --redact --verbose --log-opts="$range" .
+          "$RUNNER_TEMP/gitleaks" git --config .gitleaks.toml --redact --verbose --log-opts="$range" .
 
   docs:
     runs-on: ubuntu-latest
@@ -49,11 +49,42 @@ jobs:
           persist-credentials: false
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
-          node-version: 24
+          node-version-file: .nvmrc
       - name: Doc checker tests
         run: node --test scripts/check-docs.test.mjs
       - name: Doc checks
         run: node scripts/check-docs.mjs
 
-  # The app's lint, typecheck, test and build jobs go here with the first app code,
-  # running the same commands as the Commands table in AGENTS.md.
+  app:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - name: Lint, format, typecheck, tests with coverage, web tests
+        run: npm run test:ci
+      - name: Build
+        run: npm run build
+
+  e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - name: Install browsers
+        run: npx playwright install --with-deps chromium webkit
+      - name: Build
+        run: npm run build
+      - name: Browser smoke test (Chromium, WebKit)
+        run: npm run test:e2e
