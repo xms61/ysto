@@ -13,7 +13,7 @@ Players have devtools and can modify the client. The answer to the current round
 2. **Nothing before the reveal identifies the song:**
    - The clip URL is an opaque random token.
    - No filename, theme, anime or song ID appears in any message or URL before the reveal.
-   - The options are four strings in positions 0–3, with no database IDs.
+   - The options are four titles in positions 0–3, in each of the three title languages, with no database IDs.
    - The clip is re-encoded, so its bytes and length don't match the source file.
    - Metadata is stripped, and every clip is exactly the chosen length ([audio clips](audio-clips.md)).
 3. **The options arrive with `round:start`**, not with the prepare message, so nobody can research them while the clip loads.

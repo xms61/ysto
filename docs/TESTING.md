@@ -20,6 +20,8 @@ The smoke test needs its browsers once per machine: `npx playwright install chro
 - Tests never touch the network or the real data directory.
 - Code that calls an API takes an `HttpClient`. Tests pass `fakeHttp` from `tests/catalog/fixtures.ts`, which answers from a list and records every request and sleep, so retries and pacing are checked without waiting.
 - The audio tests generate short sine tones with ffmpeg in a temporary folder, never touching the real library.
+- Code that draws randomly takes a `Random` (`server/game/random.ts`). Tests pass `seededRandom(seed)`, so every run draws the same songs, offsets and options.
+- Game tests build catalogs in code (`tests/game/fixtures.ts`): small ones with `animeEntry`, `themeEntry` and `catalogOf`, and `syntheticCatalog()`, a seeded catalog shaped like the real one for the property tests.
 - Server tests call `createApp` directly and listen on port 0, so the system picks a free port and a running dev server never clashes with them.
 - Every test builds its own fixtures with a small function (`clientDirWith(files)`), and temporary folders are deleted in `after`. No state carries over from one test to the next.
 - Use in-memory or temp-dir databases, never the app's singleton for writes.

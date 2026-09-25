@@ -26,6 +26,7 @@ This file is the map, not the manual. The repository is the system of record: wh
 | [docs/generated/](docs/generated/) | Looking up generated reference such as the database schema (never edit by hand) |
 | [docs/KNOWLEDGE_BASE.md](docs/KNOWLEDGE_BASE.md) | Adding, moving or checking a doc, or running the doc-gardening pass |
 | [scripts/catalog/CATALOG.md](scripts/catalog/CATALOG.md) | Building the catalog, or changing the ingest scripts, the schema or the gate |
+| [server/game/GAME.md](server/game/GAME.md) | Changing how songs are drawn, how options are picked, or what the lobby filters do |
 
 ## Commands
 | Task | Command |

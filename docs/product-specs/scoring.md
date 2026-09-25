@@ -25,12 +25,15 @@ The host sets the scoring in the lobby, and presets bundle common combinations. 
 
 - There are three presets:
   - Classic: Speed with the streak bonus
-  - Buzzer: First correct with the penalty
+  - Buzzer: First correct with the penalty, without the streak bonus
   - Chill: Flat, with no modifiers
 
   The host can change any setting after picking one.
 - Without a penalty, instant blind guessing would win about a quarter of the rounds in First correct. The −500 penalty makes that strategy lose points on average (0.25 × 1,000 − 0.75 × 500 = −125).
-- Each player locks in one answer per round. Ties are ranked by the total response time of correct answers.
+- A wrong answer or no answer ends the streak. No answer never costs points, even with the penalty on. With the penalty, a total can drop below zero.
+- The streak bonus only adds to points a correct answer earned, so in First correct only the winner gets it. Comeback compares the scores from before the round.
+- In First correct, the fastest correct answer wins, and an exact tie goes to the answer that arrived first.
+- Each player locks in one answer per round. Ties in the final ranking go to the player with less total response time on correct answers.
 - Response times are measured by the server ([anti-cheat](../design-docs/anti-cheat.md)).
 
 ## Acceptance criteria

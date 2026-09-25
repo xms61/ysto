@@ -39,7 +39,7 @@ A group of friends plays together on one small VPS. The catalog holds about 14,5
 
 **Planned code map**, with the layer rules already enforced by ESLint ([ARCHITECTURE.md](../../ARCHITECTURE.md)):
 - `server/`: `http/` (headers, CORS, rate limits, routes), `realtime/` (sockets, sessions, dispatch), `game/` (lobby registry, state machine, question builder), `clips/` (ffmpeg runner, token registry, route), `catalog/` (loads SQLite), `config.ts`, `shutdown.ts`
-- `shared/`: protocol types and validators, settings schema and presets, scoring, title-language helpers
+- `shared/`: protocol types and validators, settings and their defaults, scoring and its presets
 - `src/`: `screens/`, `components/`, `audio/`, `realtime/`, `themes/`, `prefs/`
 - `scripts/catalog/`: the ingest and export steps
 
