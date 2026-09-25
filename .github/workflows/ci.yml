@@ -1,0 +1,20 @@
+name: CI
+
+on:
+  workflow_dispatch:
+
+jobs:
+  docs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Doc checker tests
+        run: node --test scripts/check-docs.test.mjs
+      - name: Doc checks
+        run: node scripts/check-docs.mjs
+
+  # The app's lint, typecheck, test and build jobs go here with the first app code,
+  # running the same commands as the Commands table in AGENTS.md.
