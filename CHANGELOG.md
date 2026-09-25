@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.1.3] - 2026-09-25
+
+### Added
+- Design docs: system design, anti-cheat and score integrity, catalog, audio clips and playback, hosting and deploy.
+- Product specs: game flow, questions and options, scoring, lobby, settings.
+- A documentation and credits section in the README.
+
+### Changed
+- SECURITY, RELIABILITY, PRODUCT_SENSE and DESIGN are now drafts, no longer stubs.
+- The v1 plan links to the docs that own each part of the design, and keeps only the milestones, progress and decisions.
+- The README no longer has the template's setup section.
+
 ## [0.1.2] - 2026-09-25
 
 ### Added

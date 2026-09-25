@@ -56,4 +56,4 @@ A recurring pass, run by an agent weekly and before each release, that keeps the
 - Move finished exec plans to `completed/`, and delete tech-debt rows that are paid off.
 - Open one fix-up PR per area, titled `docs(<area>): <summary>`, following the [release process](../.github/RELEASE_PROCESS.md).
 
-To run it, give an agent this section as its task. <How the pass is scheduled, once the repo has a remote.>
+To run it, give an agent this section as its task. It isn't scheduled yet, so for now it runs before each release.
