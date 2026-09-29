@@ -34,7 +34,7 @@ How the app behaves when something fails or slows down. The general rules are in
 - The next clip is cut during the current round, so the gap between rounds is the reveal (about 7 s).
 - Players hear the clip start within about the same moment, using clock offsets from `time:ping`.
 - Load target: 25 concurrent lobbies of 8 players on the VPS, with clip p95 under 1 s and event-loop lag under 50 ms (M9 load script).
-- The client is about 92 KB gzipped after M6 (87 KB of script, 5 KB of styles). Its budget is 125 KB gzipped, fonts aside; `npm run build` prints the sizes.
+- The client is about 94 KB gzipped (88 KB of script, 6 KB of styles), plus the theme's display font, about 20 KB. Its budget is 125 KB gzipped, fonts aside; `npm run build` prints the sizes.
 
 ## Logging
 - The server logs JSON lines (`time`, `level`, `event` and fields) to stdout at `LOG_LEVEL`, and Docker rotates them (3 files of 10 MB). Events: `server.listening`, `server.closing`, `catalog.unavailable`, `audio.unavailable`, `ffmpeg.unavailable`, `http.error`, and with the lobby code `lobby.created`, `lobby.closed`, `game.started`, `game.finished`, `clip.failed` and `round.dropped`. A bad configuration is printed as plain text, since the logger needs the configuration.

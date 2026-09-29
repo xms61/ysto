@@ -6,5 +6,7 @@ export default defineConfig({
   test: {
     environment: 'jsdom',
     include: ['src/**/*.test.{ts,tsx}'],
+    // Vitest leaves CSS out by default; the theme contrast test reads the stylesheet's tokens.
+    css: { include: [/styles\.css/] },
   },
 });

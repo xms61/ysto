@@ -58,10 +58,13 @@ export function Round(props: RoundProps) {
 // starts from a time read before the round's start was known.
 function Countdown({ store, startsAt }: { store: GameStore; startsAt: number }) {
   const now = useTicker(store.serverNow, TICK_MS);
+  const seconds = Math.max(1, Math.ceil((startsAt - now) / 1000));
   return (
     <p aria-live="polite" className="py-10 text-center">
       <span className="block text-muted">Get ready</span>
-      <span className="block text-6xl font-black tabular-nums">{Math.max(1, Math.ceil((startsAt - now) / 1000))}</span>
+      <span key={seconds} className="display motion-tick block text-7xl tabular-nums">
+        {seconds}
+      </span>
     </p>
   );
 }
@@ -118,13 +121,19 @@ function Answering({ store, lobby, round, start, titleLanguage }: AnsweringProps
         ))}
       </ol>
       <p aria-live="polite" className="mt-4 text-muted">
-        {spectating
-          ? "You joined during this round. You'll play from the next one."
-          : answered
-            ? 'Locked in. Waiting for the others.'
-            : timeUp
-              ? "Time's up."
-              : 'Pick the anime, or press 1 to 4.'}
+        {spectating ? (
+          "You joined during this round. You'll play from the next one."
+        ) : answered ? (
+          'Locked in. Waiting for the others.'
+        ) : timeUp ? (
+          "Time's up."
+        ) : (
+          <>
+            Pick the anime.
+            {/* Keys only help where there is a keyboard, which a mouse or trackpad suggests. */}
+            <span className="hidden pointer-fine:inline"> Keys 1 to 4 work too.</span>
+          </>
+        )}
       </p>
       <p className="mt-2 text-sm text-muted">
         {round.answeredIds.length} of {players} answered
@@ -138,7 +147,7 @@ function RoundView({ store, lobby, round, titleLanguage, isHost }: RoundProps & 
   const started = useReached(store.serverNow, start?.startsAt ?? null);
   return (
     <Panel>
-      <h2 className="mb-4 text-lg font-bold">
+      <h2 className="display mb-4 text-xl">
         Round {round.number} of {round.rounds}
       </h2>
       {reveal ? (

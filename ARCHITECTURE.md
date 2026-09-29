@@ -8,7 +8,7 @@ last-verified: 2026-09-29
 The shape of the system: what each part owns and which way dependencies point. Keep it to what changes rarely; details belong in the area docs next to the code.
 
 ## Bird's-eye view
-You Skipped The OP?! is a browser quiz. Players join a lobby with a code, hear a sample of an anime opening or ending, and pick the anime from four options. One Node process serves the built React client and the HTTP API. Players create or join a lobby over HTTP, hold a WebSocket to it, and play games whose clips the server cuts per round and every browser plays through Web Audio. Themes and polish come with milestone M7 of the [v1 plan](docs/exec-plans/active/2026-09-25-ysto-v1.md).
+You Skipped The OP?! is a browser quiz. Players join a lobby with a code, hear a sample of an anime opening or ending, and pick the anime from four options. One Node process serves the built React client and the HTTP API. Players create or join a lobby over HTTP, hold a WebSocket to it, and play games whose clips the server cuts per round and every browser plays through Web Audio. Hosting comes with milestone M8 of the [v1 plan](docs/exec-plans/active/2026-09-25-ysto-v1.md).
 
 ## Code map
 - `server/`: the Node server. `main.ts` starts the process (config, catalog, listen, shutdown), `app.ts` builds the Express app, and `config.ts` is the only code that reads environment variables. `log.ts` writes JSON log lines, `rate-limit.ts` counts events per key, and `client-ip.ts` finds the player's IP behind the proxy. It never imports `src/`.

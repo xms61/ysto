@@ -23,7 +23,7 @@ function Podium({ lobby, results }: { lobby: LobbyState; results: ResultView[] }
           key={result.playerId}
           className={`rounded-xl border bg-raised p-3 ${index === 0 ? 'border-accent pb-6' : 'border-line'}`}
         >
-          <span className="block text-sm text-muted">{place(index + 1)}</span>
+          <span className="display block text-lg text-muted">{place(index + 1)}</span>
           <span className="block truncate font-bold">{nameOf(lobby, result.playerId)}</span>
           <span className="block tabular-nums">{score(result.score)}</span>
         </li>
@@ -76,7 +76,7 @@ export function Results({ store, lobby, isHost }: ResultsProps) {
   return (
     <>
       <Panel>
-        <h2 className="mb-4 text-2xl font-bold">Final results</h2>
+        <h2 className="display mb-4 text-3xl">Final results</h2>
         {rounds === 0 ? (
           <p>No round could be played, because none of the clips loaded. Try another game.</p>
         ) : (

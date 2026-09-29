@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { normalizeCode } from '../shared/protocol.ts';
 import type { AudioEngine } from './audio/engine.ts';
+import { Backdrop } from './components/Backdrop.tsx';
 import { Button } from './components/ui.tsx';
 import { usePrefs } from './prefs/prefs.ts';
 import type { ExitReason, SocketLike } from './realtime/connection.ts';
@@ -36,13 +37,15 @@ function codeFromPath(pathname: string): string | null {
 }
 
 export function App({ audio, storage, createSocket }: AppProps) {
-  const [prefs, updatePrefs] = usePrefs(storage.local);
+  const { prefs, update: updatePrefs, reducedMotion } = usePrefs(storage.local);
   const [session, setSession] = useState(() => readSession(storage.session));
   const [joinCode, setJoinCode] = useState(() => codeFromPath(window.location.pathname));
   const [notice, setNotice] = useState<string | null>(null);
   const [replaced, setReplaced] = useState(false);
 
-  useEffect(() => audio.setVolume(prefs.volume / 100), [audio, prefs.volume]);
+  useEffect(() => {
+    audio.setVolume(prefs.volume / 100);
+  }, [audio, prefs.volume]);
   // The address bar shows the lobby's join link while this tab is in it, so it can be shared from there.
   useEffect(() => {
     const path = session ? `/j/${session.code}` : '/';
@@ -63,34 +66,52 @@ export function App({ audio, storage, createSocket }: AppProps) {
     setNotice(reason === 'left' ? null : EXIT_NOTICES[reason]);
   }
 
-  if (!session) {
-    return <Home joinCode={joinCode} notice={notice} unlockAudio={() => audio.unlock()} onSeated={seated} />;
-  }
-  if (replaced) {
+  function screen() {
+    if (!session) {
+      return (
+        <Home
+          joinCode={joinCode}
+          notice={notice}
+          prefs={prefs}
+          onPrefs={updatePrefs}
+          unlockAudio={() => audio.unlock()}
+          onSeated={seated}
+        />
+      );
+    }
+    if (replaced) {
+      return (
+        <main className="mx-auto flex min-h-dvh max-w-md flex-col justify-center gap-4 px-4">
+          <h1 className="display text-2xl">This lobby is open somewhere else</h1>
+          <p className="text-muted">Your seat moved to another tab or device. You can take it back here.</p>
+          <Button
+            onClick={() => {
+              audio.unlock();
+              setReplaced(false);
+            }}
+          >
+            Play here
+          </Button>
+        </main>
+      );
+    }
     return (
-      <main className="mx-auto flex min-h-dvh max-w-md flex-col justify-center gap-4 px-4">
-        <h1 className="text-2xl font-bold">This lobby is open somewhere else</h1>
-        <p className="text-muted">Your seat moved to another tab or device. You can take it back here.</p>
-        <Button
-          onClick={() => {
-            audio.unlock();
-            setReplaced(false);
-          }}
-        >
-          Play here
-        </Button>
-      </main>
+      <LobbySession
+        key={session.sessionToken}
+        session={session}
+        audio={audio}
+        prefs={prefs}
+        onPrefs={updatePrefs}
+        onExit={exited}
+        createSocket={createSocket}
+      />
     );
   }
+
   return (
-    <LobbySession
-      key={session.sessionToken}
-      session={session}
-      audio={audio}
-      prefs={prefs}
-      onPrefs={updatePrefs}
-      onExit={exited}
-      createSocket={createSocket}
-    />
+    <>
+      <Backdrop theme={prefs.theme} reducedMotion={reducedMotion} />
+      {screen()}
+    </>
   );
 }

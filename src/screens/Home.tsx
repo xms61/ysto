@@ -4,8 +4,10 @@ import { useState } from 'react';
 import type { FormEvent } from 'react';
 import { cleanName, NAME_MAX_LENGTH } from '../../shared/names.ts';
 import { CODE_LENGTH, normalizeCode } from '../../shared/protocol.ts';
+import { PreferencesMenu } from '../components/PrefsPanel.tsx';
 import { Button, INPUT, Panel } from '../components/ui.tsx';
 import { ERROR_MESSAGES } from '../copy.ts';
+import type { Prefs } from '../prefs/prefs.ts';
 import { createLobby, joinLobby } from '../realtime/api.ts';
 import type { Seated } from '../realtime/api.ts';
 import type { Session } from '../realtime/session.ts';
@@ -13,13 +15,15 @@ import type { Session } from '../realtime/session.ts';
 interface HomeProps {
   joinCode: string | null; // from a join link
   notice: string | null; // why the player is back here
+  prefs: Prefs;
+  onPrefs: (change: Partial<Prefs>) => void;
   unlockAudio: () => void;
   onSeated: (session: Session) => void;
 }
 
 const CODE_MESSAGE = `Lobby codes have ${CODE_LENGTH} letters and digits.`;
 
-export function Home({ joinCode, notice, unlockAudio, onSeated }: HomeProps) {
+export function Home({ joinCode, notice, prefs, onPrefs, unlockAudio, onSeated }: HomeProps) {
   const [name, setName] = useState('');
   const [code, setCode] = useState(joinCode ?? '');
   const [linked, setLinked] = useState(joinCode !== null);
@@ -63,9 +67,12 @@ export function Home({ joinCode, notice, unlockAudio, onSeated }: HomeProps) {
   );
 
   return (
-    <main className="mx-auto flex min-h-dvh w-full max-w-md flex-col gap-6 px-4 py-10">
+    <main className="mx-auto flex min-h-dvh w-full max-w-md flex-col gap-6 px-4 py-4">
+      <div className="relative flex">
+        <PreferencesMenu prefs={prefs} onChange={onPrefs} />
+      </div>
       <header className="text-center">
-        <h1 className="text-4xl font-black tracking-tight sm:text-5xl">You Skipped The OP?!</h1>
+        <h1 className="display motion-neon text-5xl sm:text-6xl">You Skipped The OP?!</h1>
         <p className="mt-3 text-muted">Hear a few seconds of an opening or ending, then pick the anime.</p>
       </header>
       {notice && (

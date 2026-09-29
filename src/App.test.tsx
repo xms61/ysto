@@ -141,6 +141,33 @@ test('answers with the number keys, then shows the reveal with words as well as 
   expect(screen.getByText('by Singer (as Heroine)')).toBeTruthy();
 });
 
+test("greets a missed opening with the game's own line, with the penalty when there is one", async () => {
+  const { socket } = renderSeated(lobbyState({ game: PLAYING }));
+  act(() => {
+    socket.receive({ type: 'round:prepare', roundId: 'g.1', clipToken: 'c1', number: 1, rounds: 5 });
+    const startsAt = Date.now() - 100;
+    socket.receive({ type: 'round:start', roundId: 'g.1', startsAt, endsAt: startsAt + 20_000, options: OPTIONS });
+  });
+  await screen.findByText('Rain Song');
+  const picks = [
+    { playerId: 'p1', option: 0, points: -250, noAudio: false },
+    { playerId: 'p2', option: null, points: 0, noAudio: false },
+  ];
+  act(() => socket.receive(revealOf('g.1', { picks })));
+  expect(screen.getByText('You skipped the OP?! −250')).toBeTruthy();
+});
+
+test('applies the theme and motion picked in the preferences at once', () => {
+  renderApp();
+  expect(document.documentElement.dataset.theme).toBe('tokyo-rain');
+  expect(document.documentElement.dataset.motion).toBe('full');
+  fireEvent.click(screen.getByLabelText('Sakura'));
+  fireEvent.change(screen.getByLabelText('Motion'), { target: { value: 'reduced' } });
+  expect(document.documentElement.dataset.theme).toBe('sakura');
+  expect(document.documentElement.dataset.motion).toBe('reduced');
+  expect(JSON.parse(localStorage.getItem('ysto_prefs') ?? '{}')).toMatchObject({ theme: 'sakura', motion: 'reduced' });
+});
+
 test('shows the titles in the language the player picked', async () => {
   localStorage.setItem('ysto_prefs', JSON.stringify({ volume: 15, theme: 'tokyo-rain', titleLanguage: 'japanese' }));
   const { socket } = renderSeated(lobbyState({ game: PLAYING }));

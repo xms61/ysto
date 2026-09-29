@@ -35,7 +35,7 @@ server                                              clients
   - OP or ED and its number
   - the song title and artists, and the year and season
   - the cover
-  - each player's pick and points
+  - each player's pick and points, and for a player who missed the song, with a wrong answer or none, "You skipped the OP?!" (or the ED)
 - A player whose clip fails to load can still answer. The reveal marks them "no audio", with no penalty.
 - The results show the podium, each player's correct answers, average time and best streak. The lobby state keeps them until the next game, so a player who reloads on the results sees them again.
 - The clip plays on through the reveal, and fades out when the next round is prepared, when the host skips, or when the game ends.

@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.8.0] - 2026-09-29
+
+### Added
+- The three themes, each a block of CSS variables ([DESIGN.md](docs/DESIGN.md)):
+  - Tokyo Rain: neon glows, falling rain, and Tilt Neon headings that glow and flicker
+  - Sakura: soft blossom light, falling petals, round corners, and M PLUS Rounded 1c headings
+  - Shonen: halftone dots, speed lines, square corners with an offset shadow, a burst behind each answer, and Anton headings in capitals
+- A theme picker that shows each theme in its own colors and type, and the Preferences menu on the home screen too.
+- A motion setting (as the device is set, reduced or full). Decoration only moves when motion is full, reduced motion also stops transitions, and the options never animate.
+- The reveal's playful line: a wrong or missing answer earns "You skipped the OP?!" (or the ED).
+- A favicon, and the browser's toolbar color follows the theme on phones.
+- Tests: the themes' contrast against WCAG AA from `styles.css`, and axe on every screen in every theme in the browser tests.
+
+### Changed
+- Form fields have their own border color (`edge`), at 3:1 against the page and panels.
+- The hint about keys 1 to 4 shows only where a mouse or trackpad suggests a keyboard.
+- Each browser project in the browser tests sends its own client address, so the per-IP lobby limits count each browser on its own.
+
 ## [0.7.0] - 2026-09-29
 
 ### Added
@@ -82,22 +100,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Clips are MP3 rather than the planned AAC: faster to encode, no container tags, and decodable without proprietary codecs.
 - The e2e tests have their own TypeScript project with DOM types (`tsconfig.e2e.json`), which `npm run typecheck` includes.
 - The hosting doc puts the library export at about half the original size, as measured, instead of 40%.
-
-## [0.3.0] - 2026-09-25
-
-### Added
-- The question engine (`server/game/`, [GAME.md](server/game/GAME.md)), which turns lobby settings into a game:
-  - songs drawn by franchise, then anime, then theme, with no anime twice in a game, and themes the lobby has played skipped while enough others remain
-  - a random sample start that keeps clear of the first 3 s and the last 5 s, or 0 s with the intro setting
-  - three distractors that never share the answer's song, resemble the answer in popularity, era, genre and format, and never form a franchise pattern that points at the answer
-  - option titles in English, romaji and Japanese, with romaji for all four when one title is missing, and years added to titles that match
-- `server/catalog/load.ts` loads `catalog.sqlite` into memory, and refuses a catalog of another schema version.
-- `shared/settings.ts` holds the lobby settings, their limits and defaults. `shared/scoring.ts` holds the Speed, First correct and Flat modes, the streak, comeback and penalty modifiers, the Classic, Buzzer and Chill presets, and the final ranking.
-- Property tests build 10,000 seeded questions per difficulty on a synthetic catalog shaped like the real one. A table of cases covers the scoring.
-
-### Changed
-- Hard now pairs the answer with one other anime of its franchise and adds a pair from one other franchise, instead of filling the options from the answer's franchise first. Easy and Normal take their four options from four franchises. Distractors stay within the lobby's filters while its anime can fill them.
-- `catalog:check` samples files with the game's seeded generator.
 
 ---
 
