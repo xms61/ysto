@@ -1,10 +1,96 @@
-export function App() {
+// The app: the home screen until this tab holds a seat, then that lobby. The seat survives a reload, and a
+// join link (/j/<code>) opens the home screen ready to join.
+import { useEffect, useState } from 'react';
+import { normalizeCode } from '../shared/protocol.ts';
+import type { AudioEngine } from './audio/engine.ts';
+import { Button } from './components/ui.tsx';
+import { usePrefs } from './prefs/prefs.ts';
+import type { ExitReason, SocketLike } from './realtime/connection.ts';
+import { readSession, writeSession } from './realtime/session.ts';
+import type { Session } from './realtime/session.ts';
+import { Home } from './screens/Home.tsx';
+import { LobbySession } from './screens/LobbySession.tsx';
+
+export interface AppStorage {
+  local: Storage | null; // device settings
+  session: Storage | null; // this tab's seat
+}
+
+export interface AppProps {
+  audio: AudioEngine;
+  storage: AppStorage;
+  createSocket?: (url: string) => SocketLike;
+}
+
+const EXIT_NOTICES: Record<Exclude<ExitReason, 'left' | 'replaced'>, string> = {
+  kicked: 'The host removed you from the lobby.',
+  'lobby-closed': 'The lobby closed.',
+  'unknown-session': 'That lobby has closed, or your seat was given up. Create a new lobby or join another.',
+};
+
+const JOIN_PATH = /^\/j\/([^/]+)\/?$/;
+
+function codeFromPath(pathname: string): string | null {
+  const match = JOIN_PATH.exec(pathname);
+  return match?.[1] ? normalizeCode(match[1]) : null;
+}
+
+export function App({ audio, storage, createSocket }: AppProps) {
+  const [prefs, updatePrefs] = usePrefs(storage.local);
+  const [session, setSession] = useState(() => readSession(storage.session));
+  const [joinCode, setJoinCode] = useState(() => codeFromPath(window.location.pathname));
+  const [notice, setNotice] = useState<string | null>(null);
+  const [replaced, setReplaced] = useState(false);
+
+  useEffect(() => audio.setVolume(prefs.volume / 100), [audio, prefs.volume]);
+  // The address bar shows the lobby's join link while this tab is in it, so it can be shared from there.
+  useEffect(() => {
+    const path = session ? `/j/${session.code}` : '/';
+    if (window.location.pathname !== path) window.history.replaceState(null, '', path);
+  }, [session]);
+
+  function seated(next: Session) {
+    writeSession(storage.session, next);
+    setNotice(null);
+    setSession(next);
+  }
+
+  function exited(reason: ExitReason) {
+    if (reason === 'replaced') return setReplaced(true);
+    writeSession(storage.session, null);
+    setSession(null);
+    setJoinCode(null);
+    setNotice(reason === 'left' ? null : EXIT_NOTICES[reason]);
+  }
+
+  if (!session) {
+    return <Home joinCode={joinCode} notice={notice} unlockAudio={() => audio.unlock()} onSeated={seated} />;
+  }
+  if (replaced) {
+    return (
+      <main className="mx-auto flex min-h-dvh max-w-md flex-col justify-center gap-4 px-4">
+        <h1 className="text-2xl font-bold">This lobby is open somewhere else</h1>
+        <p className="text-muted">Your seat moved to another tab or device. You can take it back here.</p>
+        <Button
+          onClick={() => {
+            audio.unlock();
+            setReplaced(false);
+          }}
+        >
+          Play here
+        </Button>
+      </main>
+    );
+  }
   return (
-    <main className="flex min-h-dvh flex-col items-center justify-center gap-4 px-4 text-center">
-      <h1 className="text-4xl font-bold tracking-tight sm:text-6xl">You Skipped The OP?!</h1>
-      <p className="max-w-md text-lg text-slate-300">
-        Hear a few seconds of an opening or ending, then pick the anime.
-      </p>
-    </main>
+    <LobbySession
+      key={session.sessionToken}
+      session={session}
+      audio={audio}
+      prefs={prefs}
+      onPrefs={updatePrefs}
+      onExit={exited}
+      createSocket={createSocket}
+    />
   );
 }

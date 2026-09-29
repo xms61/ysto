@@ -2,6 +2,13 @@
 
 Releases moved out of `CHANGELOG.md` (which keeps about the latest 5). Newest first.
 
+## [0.2.1] - 2026-09-25
+
+### Changed
+- Covers come from AnimeThemes' own images, not AniList. The sync asks for `images`, and `catalog:covers` downloads the large cover (or else the small one), named after the AnimeThemes anime id. With a dump, which has no cover links, the step explains that and stops.
+- The AniList query no longer asks for cover images: only the fields the game uses, in line with AniList's terms.
+- The plan records the owner's decisions on AniList use and covers (Q16).
+
 ## [0.2.0] - 2026-09-25
 
 ### Added

@@ -152,10 +152,12 @@ export interface PlayerView {
 }
 
 // Where the lobby's game stands: `number` is the round in progress, or the rounds played once it's over.
+// Once it's over, `results` holds the final ranking, so a player who reconnects still sees it.
 export interface GameView {
   phase: 'playing' | 'results';
   number: number;
   rounds: number;
+  results: ResultView[] | null;
 }
 
 // Sent to each player whenever the lobby changes. `you` is the receiving player.

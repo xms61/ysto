@@ -40,7 +40,7 @@ This file is the map, not the manual. The repository is the system of record: wh
 | Typecheck | `npm run typecheck` |
 | All tests | `npm test` (server), `npm run test:web` (client) |
 | One test file | `node --test tests/server/app.test.ts` |
-| Browser tests (smoke, clip decode) | `npm run build && npm run test:e2e` (needs ffmpeg) |
+| Browser tests (smoke, clip decode, a whole game) | `npm run build && npm run test:e2e` (needs ffmpeg) |
 | Clip timing | `npm run clips:bench` (reads the real library) |
 | Catalog | `npm run catalog:build`, then `npm run catalog:check` (all steps: [CATALOG.md](scripts/catalog/CATALOG.md)) |
 | Doc checks | `node scripts/check-docs.mjs` |

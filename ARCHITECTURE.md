@@ -8,7 +8,7 @@ last-verified: 2026-09-29
 The shape of the system: what each part owns and which way dependencies point. Keep it to what changes rarely; details belong in the area docs next to the code.
 
 ## Bird's-eye view
-You Skipped The OP?! is a browser quiz. Players join a lobby with a code, hear a sample of an anime opening or ending, and pick the anime from four options. One Node process serves the built React client and the HTTP API. Today the server side exists: players create or join a lobby over HTTP, hold a WebSocket to it, and play games whose clips the server cuts per round. The web client arrives with milestone M6 of the [v1 plan](docs/exec-plans/active/2026-09-25-ysto-v1.md).
+You Skipped The OP?! is a browser quiz. Players join a lobby with a code, hear a sample of an anime opening or ending, and pick the anime from four options. One Node process serves the built React client and the HTTP API. Players create or join a lobby over HTTP, hold a WebSocket to it, and play games whose clips the server cuts per round and every browser plays through Web Audio. Themes and polish come with milestone M7 of the [v1 plan](docs/exec-plans/active/2026-09-25-ysto-v1.md).
 
 ## Code map
 - `server/`: the Node server. `main.ts` starts the process (config, catalog, listen, shutdown), `app.ts` builds the Express app, and `config.ts` is the only code that reads environment variables. `log.ts` writes JSON log lines, `rate-limit.ts` counts events per key, and `client-ip.ts` finds the player's IP behind the proxy. It never imports `src/`.
@@ -16,10 +16,10 @@ You Skipped The OP?! is a browser quiz. Players join a lobby with a code, hear a
   - `server/game/`: lobbies and their registry, the question engine, which turns lobby settings into a game's songs, sample offsets and options, and the game engine (a pure state machine) with the shell that runs it ([GAME.md](server/game/GAME.md)). `server/scheduler.ts` gives the shell its clock and timers.
   - `server/http/`: the security headers and the lobby routes. `server/realtime/`: the lobby sockets and their protocol ([REALTIME.md](server/realtime/REALTIME.md)).
   - `server/clips/`: the clip service. It cuts clips with ffmpeg, keeps them under tokens, and serves them on `GET /api/clips/:token` ([CLIPS.md](server/clips/CLIPS.md)). `server/tokens.ts` defines the random tokens it and the sessions use.
-- `src/`: the React client, which Vite bundles into `dist/`. It never imports `server/` or Node built-ins.
+- `src/`: the React client, which Vite bundles into `dist/`: the screens, the lobby socket and its store, the audio engine and the device settings ([FRONTEND.md](docs/FRONTEND.md)). It never imports `server/` or Node built-ins.
 - `shared/`: code that runs on both sides. `settings.ts` holds the lobby settings, their limits, defaults and validator; `scoring.ts` the scoring modes, modifiers and presets; `protocol.ts` the messages, codes and validators; `names.ts` the player-name rules; and `validate.ts` the checks the validators share. It imports neither `server/` nor `src/`, and no Node built-ins.
 - `tests/`: server and shared tests (`node:test`), laid out like the folders they test.
-- `e2e/`: browser smoke tests (Playwright) against the production build.
+- `e2e/`: browser tests (Playwright) against the production build, served by `e2e/fixture-server.ts` with a generated catalog and tones.
 - `scripts/`: the repo checks (`check-docs.mjs`, `check-tracked-files.mjs`) and their tests.
   - `scripts/catalog/`: the offline catalog build, from AnimeThemes, AniList and the audio library to `catalog.sqlite` ([CATALOG.md](scripts/catalog/CATALOG.md)). It may import `server/config.ts`, `server/catalog/`, the seeded generator in `server/game/random.ts`, and `pool.ts`'s genre threshold.
   - `scripts/clips/bench.ts`: times clip cuts from the real library with the server's cutter.

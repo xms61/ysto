@@ -1,6 +1,7 @@
 import { defineConfig, devices } from '@playwright/test';
 
-// Runs against the production build: `npm run build` first.
+// Runs against the production build: `npm run build` first. The fixture server generates its catalog and
+// tones with ffmpeg, and is ready once /readyz answers 200.
 const PORT = 4173;
 const isCI = Boolean(process.env.CI);
 
@@ -15,9 +16,10 @@ export default defineConfig({
     { name: 'webkit', use: { ...devices['Desktop Safari'] } },
   ],
   webServer: {
-    command: 'node server/main.ts',
-    env: { PORT: String(PORT) },
-    url: `http://localhost:${PORT}/healthz`,
+    command: 'node e2e/fixture-server.ts',
+    env: { PORT: String(PORT), LOG_LEVEL: 'warn' },
+    url: `http://localhost:${PORT}/readyz`,
     reuseExistingServer: !isCI,
+    timeout: 60_000,
   },
 });

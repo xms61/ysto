@@ -328,13 +328,12 @@ function onTimer(draft: Draft, event: TimerEvent): void {
   }
 }
 
-// What a player who (re)connects needs to rejoin the round in progress.
+// What a player who (re)connects needs to rejoin the round in progress. After the game, the lobby state
+// carries the results instead (gameView).
 function catchUp(draft: Draft, playerId: string): void {
-  const { game } = draft;
-  const round = game.round;
-  if (game.finished) return send(draft, { type: 'game:results', standings: results(game) }, [playerId]);
+  const round = draft.game.round;
   if (!round) return;
-  send(draft, prepareMessage(game, round), [playerId]);
+  send(draft, prepareMessage(draft.game, round), [playerId]);
   if (round.phase === 'playing') {
     send(draft, startMessage(round), [playerId]);
     send(draft, answeredMessage(round), [playerId]);
@@ -431,7 +430,12 @@ export function startGame({ id, settings, questions, players, away }: NewGame): 
 }
 
 export function gameView(game: Game): GameView {
-  return { phase: game.finished ? 'results' : 'playing', number: game.played, rounds: rounds(game) };
+  return {
+    phase: game.finished ? 'results' : 'playing',
+    number: game.played,
+    rounds: rounds(game),
+    results: game.finished ? results(game) : null,
+  };
 }
 
 export function scoreOf(game: Game, playerId: string): number {

@@ -29,7 +29,7 @@ The host shapes the game (pool, length, difficulty, scoring). Each player sets w
 
 - While the host edits the settings, the lobby shows how many songs and anime match. An anime plays at most once per game, so the host can't start a game with fewer matching anime than the songs-per-game setting.
 - A custom difficulty starts at popularity ranks 1–1,000 (every rank, when the catalog has fewer anime), where rank 1 is the most popular playable anime.
-- Player settings are saved on the device (`ysto_*` keys in `localStorage`) and apply straight away.
+- Player settings are saved on the device (the `ysto_prefs` key in `localStorage`) and apply straight away. The Preferences button on every lobby screen opens them. A stored value that is missing or out of range falls back to its default, alone.
 - Volume goes through a gain node, so the 15% default also applies on iPhones ([audio clips](../design-docs/audio-clips.md)).
 - The interface is in English. Anime titles follow each player's title-language setting.
 

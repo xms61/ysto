@@ -14,7 +14,8 @@ How the app behaves when something fails or slows down. The general rules are in
 | ffmpeg fails, times out or cuts a clip short | Nothing; the round uses another theme | Up to 3 themes per round, and each failure is logged once. After 3, the round is dropped and the game plays on |
 | Nobody is connected when a round's barrier runs out | The game ends | Clips are cut only for games someone is playing |
 | A player's clip doesn't load in time | They can still answer; the reveal marks them "no audio" | No penalty; the barrier waits at most 8 s |
-| A player's connection drops | Their seat and score stay for 60 s | The client reconnects with its session token. The heartbeat notices a silent connection within 30 s |
+| A player's connection drops | Their seat and score stay for 60 s, and the screen says "Reconnecting" | The client reconnects with its session token after 0.5, 1, 2 and 4 s, then every 5 s, and at once when the tab is back in view or the device back online. The heartbeat notices a silent connection within 30 s |
+| The browser can't play the clip (no Web Audio, or no tap yet after a reload) | A banner says so, with a button that turns the sound on | They can still answer. A clip that failed to load marks them "no audio" in the reveal |
 | The host leaves | Another player becomes host | The player connected longest takes over |
 | The server restarts | Running games end with a notice | The shutdown hook sends `server:closing` first; lobbies live only in memory |
 | The catalog is missing or unreadable | No lobby can open (`not-ready`), and `/readyz` answers 503 | The process stays up and logs `catalog.unavailable`; fix the mount and restart |
@@ -33,7 +34,7 @@ How the app behaves when something fails or slows down. The general rules are in
 - The next clip is cut during the current round, so the gap between rounds is the reveal (about 7 s).
 - Players hear the clip start within about the same moment, using clock offsets from `time:ping`.
 - Load target: 25 concurrent lobbies of 8 players on the VPS, with clip p95 under 1 s and event-loop lag under 50 ms (M9 load script).
-- The client bundle is about 70 KB gzipped today. It gets a budget when the game screens land (M6).
+- The client is about 92 KB gzipped after M6 (87 KB of script, 5 KB of styles). Its budget is 125 KB gzipped, fonts aside; `npm run build` prints the sizes.
 
 ## Logging
 - The server logs JSON lines (`time`, `level`, `event` and fields) to stdout at `LOG_LEVEL`, and Docker rotates them (3 files of 10 MB). Events: `server.listening`, `server.closing`, `catalog.unavailable`, `audio.unavailable`, `ffmpeg.unavailable`, `http.error`, and with the lobby code `lobby.created`, `lobby.closed`, `game.started`, `game.finished`, `clip.failed` and `round.dropped`. A bad configuration is printed as plain text, since the logger needs the configuration.

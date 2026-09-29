@@ -1,6 +1,59 @@
 @import 'tailwindcss';
 
-/* The three themes (Shonen, Sakura, Tokyo Rain) replace these defaults in M7. */
-body {
-  @apply bg-slate-950 text-slate-100 antialiased;
+/*
+ * Theme tokens (docs/DESIGN.md). Tokyo Rain is the default; the other themes set the same variables on
+ * <html data-theme>. Components use only these colors, as utilities such as bg-panel or text-muted.
+ * M7 adds each theme's texture, type and motion, and checks the contrast.
+ */
+@theme {
+  --color-page: #0a1020;
+  --color-panel: #121a31;
+  --color-raised: #1b2544;
+  --color-line: #2b3963;
+  --color-ink: #e8ecfa;
+  --color-muted: #a6b0d0;
+  --color-accent: #3dd6f5;
+  --color-accent-ink: #03141a;
+  --color-good: #56e0a0;
+  --color-bad: #ff8095;
+}
+
+@layer base {
+  :root {
+    color-scheme: dark;
+    accent-color: var(--color-accent);
+  }
+
+  :root[data-theme='sakura'] {
+    color-scheme: light;
+    --color-page: #fff2f6;
+    --color-panel: #ffffff;
+    --color-raised: #ffe3ec;
+    --color-line: #efbcd0;
+    --color-ink: #3b1627;
+    --color-muted: #7a4459;
+    --color-accent: #c2185b;
+    --color-accent-ink: #ffffff;
+    --color-good: #1c7a4c;
+    --color-bad: #b3261e;
+  }
+
+  :root[data-theme='shonen'] {
+    --color-page: #111111;
+    --color-panel: #1c1c1c;
+    --color-raised: #292929;
+    --color-line: #474747;
+    --color-ink: #fff7e0;
+    --color-muted: #d6c49a;
+    --color-accent: #ff8a00;
+    --color-accent-ink: #111111;
+    --color-good: #ffd21f;
+    --color-bad: #ff5d5d;
+  }
+
+  body {
+    background-color: var(--color-page);
+    color: var(--color-ink);
+    -webkit-font-smoothing: antialiased;
+  }
 }

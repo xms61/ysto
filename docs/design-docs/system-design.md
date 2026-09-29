@@ -37,10 +37,10 @@ A group of friends plays together on one small VPS. The catalog holds about 14,5
 
 **No third-party calls at runtime.** Metadata and covers are fetched by the offline ingest scripts, and covers are served from our own origin.
 
-**Planned code map**, with the layer rules already enforced by ESLint ([ARCHITECTURE.md](../../ARCHITECTURE.md)):
-- `server/`: `http/` (security headers, lobby routes), `realtime/` (sockets and the lobby protocol), `game/` (lobbies and their registry, the question builder, and from M5 the state machine), `clips/` (ffmpeg runner, token registry, route), `catalog/` (loads SQLite), `config.ts`, `log.ts`, `main.ts` (startup and shutdown)
+**Code map**, with the layer rules enforced by ESLint ([ARCHITECTURE.md](../../ARCHITECTURE.md)):
+- `server/`: `http/` (security headers, lobby routes), `realtime/` (sockets and the lobby protocol), `game/` (lobbies and their registry, the question builder, the game engine and its shell), `clips/` (ffmpeg runner, token registry, route), `catalog/` (loads SQLite), `config.ts`, `log.ts`, `main.ts` (startup and shutdown)
 - `shared/`: protocol types and validators, settings and their defaults, scoring and its presets
-- `src/`: `screens/`, `components/`, `audio/`, `realtime/`, `themes/`, `prefs/`
+- `src/`: `screens/`, `components/`, `audio/`, `realtime/`, `prefs/`, with the themes as color tokens in `styles.css` ([FRONTEND.md](../FRONTEND.md))
 - `scripts/catalog/`: the ingest and export steps
 
 **Protocol.**
