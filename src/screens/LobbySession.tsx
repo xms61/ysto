@@ -3,7 +3,7 @@
 import { useEffect, useState, useSyncExternalStore } from 'react';
 import type { AudioEngine } from '../audio/engine.ts';
 import { NoticeToast } from '../components/NoticeToast.tsx';
-import { PrefsPanel } from '../components/PrefsPanel.tsx';
+import { PreferencesMenu } from '../components/PrefsPanel.tsx';
 import { SoundBanner } from '../components/SoundBanner.tsx';
 import { ConfirmButton, Panel } from '../components/ui.tsx';
 import type { Prefs } from '../prefs/prefs.ts';
@@ -62,7 +62,7 @@ export function LobbySession({ session, audio, prefs, onPrefs, onExit, createSoc
   return (
     <div className="mx-auto flex min-h-dvh w-full max-w-3xl flex-col gap-4 px-4 py-4">
       <header className="relative flex flex-wrap items-center gap-3">
-        <h1 className="font-bold">
+        <h1 className="display text-lg">
           Lobby <span className="font-mono tracking-widest">{session.code}</span>
         </h1>
         {status === 'reconnecting' && (
@@ -70,14 +70,7 @@ export function LobbySession({ session, audio, prefs, onPrefs, onExit, createSoc
             Reconnecting…
           </span>
         )}
-        <details className="ml-auto">
-          <summary className="cursor-pointer list-none rounded-lg border border-line bg-raised px-3 py-2 [&::-webkit-details-marker]:hidden">
-            Preferences
-          </summary>
-          <div className="absolute top-full right-0 z-30 mt-2 w-72 max-w-full rounded-xl border border-line bg-panel p-4 shadow-lg">
-            <PrefsPanel prefs={prefs} onChange={onPrefs} />
-          </div>
-        </details>
+        <PreferencesMenu prefs={prefs} onChange={onPrefs} />
         <ConfirmButton label="Leave" question="Leave the lobby?" onConfirm={() => store.leave()} />
       </header>
       <SoundBanner audio={audio} />

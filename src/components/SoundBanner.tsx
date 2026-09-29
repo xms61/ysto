@@ -16,7 +16,7 @@ export function SoundBanner({ audio }: { audio: AudioEngine }) {
   }
   return (
     <div role="status" className="flex flex-wrap items-center gap-3 rounded-lg border border-accent bg-raised p-3">
-      <span>Sound is off until you tap here.</span>
+      <span>Sound is off on this device.</span>
       <Button onClick={() => audio.unlock()}>Turn on sound</Button>
     </div>
   );

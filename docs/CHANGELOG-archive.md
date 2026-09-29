@@ -2,6 +2,22 @@
 
 Releases moved out of `CHANGELOG.md` (which keeps about the latest 5). Newest first.
 
+## [0.3.0] - 2026-09-25
+
+### Added
+- The question engine (`server/game/`, [GAME.md](../server/game/GAME.md)), which turns lobby settings into a game:
+  - songs drawn by franchise, then anime, then theme, with no anime twice in a game, and themes the lobby has played skipped while enough others remain
+  - a random sample start that keeps clear of the first 3 s and the last 5 s, or 0 s with the intro setting
+  - three distractors that never share the answer's song, resemble the answer in popularity, era, genre and format, and never form a franchise pattern that points at the answer
+  - option titles in English, romaji and Japanese, with romaji for all four when one title is missing, and years added to titles that match
+- `server/catalog/load.ts` loads `catalog.sqlite` into memory, and refuses a catalog of another schema version.
+- `shared/settings.ts` holds the lobby settings, their limits and defaults. `shared/scoring.ts` holds the Speed, First correct and Flat modes, the streak, comeback and penalty modifiers, the Classic, Buzzer and Chill presets, and the final ranking.
+- Property tests build 10,000 seeded questions per difficulty on a synthetic catalog shaped like the real one. A table of cases covers the scoring.
+
+### Changed
+- Hard now pairs the answer with one other anime of its franchise and adds a pair from one other franchise, instead of filling the options from the answer's franchise first. Easy and Normal take their four options from four franchises. Distractors stay within the lobby's filters while its anime can fill them.
+- `catalog:check` samples files with the game's seeded generator.
+
 ## [0.2.1] - 2026-09-25
 
 ### Changed

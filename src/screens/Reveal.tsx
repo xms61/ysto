@@ -18,16 +18,17 @@ function nameOf(lobby: LobbyState, playerId: string): string {
   return lobby.players.find((player) => player.id === playerId)?.name ?? 'A player who left';
 }
 
+// A missed song, wrong or unanswered, earns the game's own line (docs/PRODUCT_SENSE.md#tone).
 function verdict(reveal: RoundReveal, playerId: string): string | null {
   if (reveal.skipped) return 'The host skipped this round, so nobody scores.';
   const pick = reveal.picks.find((candidate) => candidate.playerId === playerId);
   if (!pick) return null;
-  if (pick.option === null) return 'No answer this time.';
   if (pick.option === reveal.correct) {
     // Only First correct gives a right answer nothing.
     return pick.points > 0 ? `Right: ${points(pick.points)}` : 'Right, but someone was faster.';
   }
-  return pick.points < 0 ? `Wrong: ${points(pick.points)}` : 'Wrong.';
+  const missed = `You skipped the ${reveal.theme.kind}?!`;
+  return pick.points < 0 ? `${missed} ${points(pick.points)}` : missed;
 }
 
 export function Reveal({ round, reveal, lobby, titleLanguage }: RevealProps) {
@@ -40,10 +41,10 @@ export function Reveal({ round, reveal, lobby, titleLanguage }: RevealProps) {
   const summary = verdict(reveal, lobby.you);
 
   return (
-    <section aria-labelledby="reveal-heading" className="flex flex-col gap-5">
+    <section aria-labelledby="reveal-heading" className="motion-rise flex flex-col gap-5">
       <div className="flex gap-4">
         {reveal.cover && <img src={reveal.cover} alt="" className="h-36 w-24 shrink-0 rounded-lg object-cover" />}
-        <div className="flex min-w-0 flex-col gap-1">
+        <div className="reveal-title flex min-w-0 flex-col gap-1">
           <h3 id="reveal-heading" className="text-muted">
             {reveal.skipped ? 'Skipped' : 'The answer'}
           </h3>
@@ -62,7 +63,7 @@ export function Reveal({ round, reveal, lobby, titleLanguage }: RevealProps) {
       </div>
 
       {summary && (
-        <p aria-live="polite" className="text-lg font-semibold">
+        <p aria-live="polite" className="display text-2xl">
           {summary}
         </p>
       )}
@@ -71,10 +72,20 @@ export function Reveal({ round, reveal, lobby, titleLanguage }: RevealProps) {
         {options.map((optionTitle, index) => {
           const right = index === reveal.correct;
           const picked = index === mine;
-          const tone = right ? 'border-good' : picked ? 'border-bad' : 'border-line';
+          const tone = right ? 'motion-pop border-good' : picked ? 'border-bad' : 'border-line';
           return (
             <li key={index} className={`flex items-center gap-2 rounded-xl border-2 p-3 ${tone}`}>
-              {right ? <CheckIcon /> : picked ? <CrossIcon /> : <span className="size-5 shrink-0" />}
+              {right ? (
+                <span className="text-good">
+                  <CheckIcon />
+                </span>
+              ) : picked ? (
+                <span className="text-bad">
+                  <CrossIcon />
+                </span>
+              ) : (
+                <span className="size-5 shrink-0" />
+              )}
               <span lang={langOf(titleLanguage)} className="flex-1">
                 {optionTitle}
               </span>

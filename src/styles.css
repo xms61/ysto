@@ -1,59 +1,290 @@
 @import 'tailwindcss';
+@import '@fontsource/tilt-neon/latin-400.css';
+@import '@fontsource/m-plus-rounded-1c/latin-800.css';
+@import '@fontsource/anton/latin-400.css';
 
 /*
- * Theme tokens (docs/DESIGN.md). Tokyo Rain is the default; the other themes set the same variables on
- * <html data-theme>. Components use only these colors, as utilities such as bg-panel or text-muted.
- * M7 adds each theme's texture, type and motion, and checks the contrast.
+ * Themes (docs/DESIGN.md). Each theme is one block of variables on any element with data-theme, so a
+ * theme can also preview inside another (the theme picker). Components use only these tokens: colors as
+ * utilities such as bg-panel, the display type through .display, and Tailwind's radius scale, which each
+ * theme resizes. Textures and glows are decoration: text always sits on a solid token color.
  */
-@theme {
-  --color-page: #0a1020;
-  --color-panel: #121a31;
-  --color-raised: #1b2544;
-  --color-line: #2b3963;
-  --color-ink: #e8ecfa;
-  --color-muted: #a6b0d0;
-  --color-accent: #3dd6f5;
-  --color-accent-ink: #03141a;
-  --color-good: #56e0a0;
-  --color-bad: #ff8095;
+@theme inline {
+  --color-page: var(--page);
+  --color-panel: var(--panel);
+  --color-raised: var(--raised);
+  --color-line: var(--line);
+  --color-edge: var(--edge);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --color-good: var(--good);
+  --color-bad: var(--bad);
 }
 
 @layer base {
-  :root {
+  /* Tokyo Rain, the default: dark navy, neon signs, rain on glass. */
+  :root:not([data-theme]),
+  [data-theme='tokyo-rain'] {
     color-scheme: dark;
-    accent-color: var(--color-accent);
+    --page: #0a1020;
+    --panel: #121a31;
+    --raised: #1b2544;
+    --line: #2b3963;
+    --edge: #6878ad;
+    --ink: #e8ecfa;
+    --muted: #a6b0d0;
+    --accent: #3dd6f5;
+    --accent-ink: #03141a;
+    --good: #56e0a0;
+    --bad: #ff8095;
+    --display-font: 'Tilt Neon', ui-sans-serif, system-ui, sans-serif;
+    --display-weight: 400;
+    --display-case: none;
+    --display-tracking: 0.01em;
+    --display-glow: 0 0 0.4em rgb(61 214 245 / 0.55), 0 0 1.2em rgb(255 62 165 / 0.25);
+    --panel-shadow: 0 0 0 1px rgb(61 214 245 / 0.06), 0 1.25rem 2.5rem -1.5rem rgb(0 0 0 / 0.8);
+    --page-texture:
+      radial-gradient(50rem 28rem at 90% -8%, rgb(255 62 165 / 0.16), transparent 65%),
+      radial-gradient(46rem 30rem at -12% 108%, rgb(61 214 245 / 0.14), transparent 65%);
+    --radius-lg: 0.5rem;
+    --radius-xl: 0.75rem;
+    --radius-2xl: 1rem;
   }
 
-  :root[data-theme='sakura'] {
+  /* Sakura: pastel pink, falling petals, soft rounded type. */
+  [data-theme='sakura'] {
     color-scheme: light;
-    --color-page: #fff2f6;
-    --color-panel: #ffffff;
-    --color-raised: #ffe3ec;
-    --color-line: #efbcd0;
-    --color-ink: #3b1627;
-    --color-muted: #7a4459;
-    --color-accent: #c2185b;
-    --color-accent-ink: #ffffff;
-    --color-good: #1c7a4c;
-    --color-bad: #b3261e;
+    --page: #fff2f6;
+    --panel: #ffffff;
+    --raised: #ffe3ec;
+    --line: #f1c6d5;
+    --edge: #b86a86;
+    --ink: #3b1627;
+    --muted: #7a4459;
+    --accent: #c2185b;
+    --accent-ink: #ffffff;
+    --good: #1c7a4c;
+    --bad: #b3261e;
+    --display-font: 'M PLUS Rounded 1c', ui-rounded, system-ui, sans-serif;
+    --display-weight: 800;
+    --display-case: none;
+    --display-tracking: 0;
+    --display-glow: none;
+    --panel-shadow: 0 0.75rem 1.75rem -1rem rgb(194 24 91 / 0.3);
+    --page-texture:
+      radial-gradient(38rem 24rem at 100% 0%, rgb(255 183 206 / 0.55), transparent 70%),
+      radial-gradient(34rem 24rem at 0% 100%, rgb(255 208 224 / 0.6), transparent 70%);
+    --radius-lg: 0.875rem;
+    --radius-xl: 1.25rem;
+    --radius-2xl: 1.75rem;
   }
 
-  :root[data-theme='shonen'] {
-    --color-page: #111111;
-    --color-panel: #1c1c1c;
-    --color-raised: #292929;
-    --color-line: #474747;
-    --color-ink: #fff7e0;
-    --color-muted: #d6c49a;
-    --color-accent: #ff8a00;
-    --color-accent-ink: #111111;
-    --color-good: #ffd21f;
-    --color-bad: #ff5d5d;
+  /* Shonen: black, orange and yellow, halftone and speed lines, heavy condensed type. */
+  [data-theme='shonen'] {
+    color-scheme: dark;
+    --page: #111111;
+    --panel: #1c1c1c;
+    --raised: #292929;
+    --line: #474747;
+    --edge: #8c8c8c;
+    --ink: #fff7e0;
+    --muted: #d6c49a;
+    --accent: #ff8a00;
+    --accent-ink: #111111;
+    --good: #ffd21f;
+    --bad: #ff6b6b;
+    --display-font: 'Anton', 'Arial Narrow', Impact, sans-serif;
+    --display-weight: 400;
+    --display-case: uppercase;
+    --display-tracking: 0.03em;
+    --display-glow: none;
+    --panel-shadow: 0.3rem 0.3rem 0 rgb(255 138 0 / 0.35);
+    --page-texture:
+      repeating-conic-gradient(from 0deg at 100% 0%, rgb(255 210 31 / 0.07) 0deg 1.5deg, transparent 1.5deg 6deg),
+      radial-gradient(rgb(255 138 0 / 0.13) 1.4px, transparent 1.6px) 0 0 / 0.75rem 0.75rem;
+    --radius-lg: 2px;
+    --radius-xl: 3px;
+    --radius-2xl: 4px;
+  }
+
+  :root {
+    accent-color: var(--accent);
   }
 
   body {
-    background-color: var(--color-page);
-    color: var(--color-ink);
+    background-color: var(--page);
+    color: var(--ink);
     -webkit-font-smoothing: antialiased;
   }
+
+  /* Japanese titles pick Japanese fonts, so Han characters never show in a Chinese style. */
+  :lang(ja) {
+    font-family:
+      'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Noto Sans JP', 'Noto Sans CJK JP', 'Yu Gothic UI', 'Yu Gothic',
+      Meiryo, system-ui, sans-serif;
+  }
+}
+
+@layer components {
+  .display {
+    font-family: var(--display-font);
+    font-weight: var(--display-weight);
+    text-transform: var(--display-case);
+    letter-spacing: var(--display-tracking);
+    text-shadow: var(--display-glow);
+    font-synthesis: none;
+  }
+
+  .panel-shadow {
+    box-shadow: var(--panel-shadow);
+  }
+
+  /* The shorthand, since a texture layer may carry its own position and size (Shonen's halftone). */
+  .page-texture {
+    background: var(--page-texture) var(--page);
+  }
+
+  /* Shonen's speed lines burst behind the answer's title. */
+  .reveal-title {
+    position: relative;
+    isolation: isolate;
+  }
+
+  [data-theme='shonen'] .reveal-title::before {
+    content: '';
+    position: absolute;
+    inset: -2.5rem -1rem;
+    z-index: -1;
+    background: repeating-conic-gradient(from 0deg, rgb(255 210 31 / 0.16) 0deg 2deg, transparent 2deg 9deg);
+    mask-image: radial-gradient(closest-side, transparent 35%, #000 70%, transparent 100%);
+  }
+
+  .rain-drop {
+    position: absolute;
+    top: 0;
+    width: 1px;
+    background: linear-gradient(to bottom, transparent, rgb(170 225 255 / 0.55));
+    animation: rain-fall linear infinite;
+  }
+
+  .petal {
+    position: absolute;
+    top: 0;
+    border-radius: 80% 0 80% 0;
+    background: linear-gradient(135deg, #ffc4d6, #ff8fb3);
+    opacity: 0.8;
+    animation: petal-fall linear infinite;
+  }
+}
+
+/* Motion is decoration, and only runs where data-motion is 'full' (see useReducedMotion). */
+@keyframes rain-fall {
+  from {
+    transform: translate3d(0, -20vh, 0) rotate(12deg);
+  }
+  to {
+    transform: translate3d(-22vh, 110vh, 0) rotate(12deg);
+  }
+}
+
+@keyframes petal-fall {
+  0% {
+    transform: translate3d(0, -10vh, 0) rotate(0deg);
+  }
+  50% {
+    transform: translate3d(7vw, 50vh, 0) rotate(170deg);
+  }
+  100% {
+    transform: translate3d(-3vw, 110vh, 0) rotate(340deg);
+  }
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.75rem);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes pop {
+  0% {
+    transform: scale(0.96);
+  }
+  60% {
+    transform: scale(1.03);
+  }
+  100% {
+    transform: none;
+  }
+}
+
+@keyframes tick {
+  from {
+    opacity: 0.3;
+    transform: scale(1.4);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes flicker {
+  0%,
+  91%,
+  93%,
+  96%,
+  100% {
+    opacity: 1;
+  }
+  92% {
+    opacity: 0.55;
+  }
+  95% {
+    opacity: 0.7;
+  }
+}
+
+@keyframes burst {
+  from {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+:root[data-motion='full'] .motion-rise {
+  animation: rise-in 350ms ease-out both;
+}
+
+:root[data-motion='full'] .motion-pop {
+  animation: pop 450ms ease-out 150ms both;
+}
+
+:root[data-motion='full'] .motion-tick {
+  animation: tick 300ms ease-out both;
+}
+
+:root[data-motion='full'][data-theme='tokyo-rain'] .motion-neon {
+  animation: flicker 7s linear infinite;
+}
+
+:root[data-motion='full'][data-theme='shonen'] .reveal-title::before {
+  animation: burst 400ms ease-out both;
+}
+
+:root[data-motion='reduced'] *,
+:root[data-motion='reduced'] *::before,
+:root[data-motion='reduced'] *::after {
+  animation: none !important;
+  transition: none !important;
 }

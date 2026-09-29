@@ -9,7 +9,7 @@ const BUTTON_BASE =
   'focus-visible:outline-accent';
 
 const BUTTON_VARIANTS = {
-  primary: `${BUTTON_BASE} bg-accent text-accent-ink hover:brightness-110`,
+  primary: `${BUTTON_BASE} display bg-accent text-accent-ink hover:brightness-110`,
   quiet: `${BUTTON_BASE} border border-line bg-raised text-ink hover:border-accent`,
 } as const;
 
@@ -53,7 +53,7 @@ export function ConfirmButton({
 }
 
 export const INPUT =
-  'w-full rounded-lg border border-line bg-page px-3 py-2.5 text-ink placeholder:text-muted ' +
+  'w-full rounded-lg border border-edge bg-page px-3 py-2.5 text-ink placeholder:text-muted ' +
   'focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-accent';
 
 interface PanelProps {
@@ -64,8 +64,8 @@ interface PanelProps {
 
 export function Panel({ title, children, className = '' }: PanelProps) {
   return (
-    <section className={`rounded-2xl border border-line bg-panel p-4 sm:p-6 ${className}`}>
-      {title && <h2 className="mb-3 text-lg font-bold">{title}</h2>}
+    <section className={`panel-shadow rounded-2xl border border-line bg-panel p-4 sm:p-6 ${className}`}>
+      {title && <h2 className="display mb-3 text-xl">{title}</h2>}
       {children}
     </section>
   );
