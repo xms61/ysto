@@ -39,7 +39,8 @@ test('seats players with hello and sends each of them the lobby state', async ()
     assert.equal(first.code, ann.code);
     assert.equal(first.you, ann.playerId);
     assert.equal(first.hostId, ann.playerId);
-    assert.deepEqual(first.players, [{ id: ann.playerId, name: 'Ann', connected: true, score: 0 }]);
+    assert.deepEqual(first.players, [{ id: ann.playerId, name: 'Ann', connected: true, spectating: false, score: 0 }]);
+    assert.equal(first.game, null);
     assert.ok(first.pool.anime > 0 && first.bounds.genres.length > 0);
     const ben = await joinLobby(server, ann.code, 'Ben');
     await annClient.state((state) => state.players.some((player) => player.id === ben.playerId && !player.connected));
@@ -134,7 +135,7 @@ test('closes the sockets of a lobby that expires', async () => {
   await withServer(async (server) => {
     const ann = await createLobby(server, 'Ann');
     const annClient = await TestClient.seated(server, ann);
-    server.clock.now += MAX_LOBBY_AGE_MS;
+    server.scheduler.time += MAX_LOBBY_AGE_MS;
     server.registry.sweep();
     assert.equal((await annClient.closed).code, CLOSE_CODES.lobbyClosed);
   });

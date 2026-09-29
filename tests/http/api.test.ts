@@ -113,7 +113,8 @@ test('reports ready once the catalog is loaded, and sends security headers on ev
 
 test('answers 503 until the catalog is loaded', async () => {
   const log = createLogger('error', () => {});
-  const app = createApp({ clientDir: join(tmpdir(), 'ysto-no-client'), registry: null, trustedProxyHops: 0, log });
+  const clientDir = join(tmpdir(), 'ysto-no-client');
+  const app = createApp({ clientDir, coversDir: clientDir, registry: null, ready: false, trustedProxyHops: 0, log });
   const notReady = app.listen(0, '127.0.0.1');
   await once(notReady, 'listening');
   // A server listening on a TCP port always reports an AddressInfo, never a pipe name.

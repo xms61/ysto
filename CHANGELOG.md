@@ -7,6 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.6.0] - 2026-09-29
+
+### Added
+- The game loop ([GAME.md](server/game/GAME.md), [game flow](docs/product-specs/game-flow.md)):
+  - a pure game engine, `step(game, event, now)`, and a shell that runs its effects: timers, clip cuts a round ahead, clip tokens, and messages
+  - the round flow: `round:prepare` with the clip token, the ready barrier (8 s), `round:start` with the options (a 3 s countdown before the first round, 1 s before later ones), answers, `round:answered`, `round:reveal`, and `game:results` with the podium, correct answers, average time and best streak
+  - answer times measured by the server, less half the median ping round trip (at most 150 ms). Early, late and repeated answers are dropped. In First correct the round closes 150 ms after the first correct answer.
+  - host `game:start` (also for playing again, avoiding played themes) and `round:skip`. A skipped round scores nothing and breaks no streak.
+  - late joiners watch and hear the rounds, then play from the next one. A reconnecting player gets the round in progress again.
+  - a round whose clip fails on three themes is dropped, and a game ends when nobody is connected at a round's barrier
+- The lobby state shows the game's phase and round, each player's score, and who is spectating.
+- The reveal teaches the song's title and credited artists, which the catalog loader now reads, plus the cover served from `/covers/`.
+- `/readyz` now also checks the audio folder and ffmpeg. `YSTO_AUDIO_DIR`, `YSTO_FFMPEG_PATH`, `YSTO_FFMPEG_CONCURRENCY` and `YSTO_MAX_GAMES` configure games.
+- Tests: fake-clock games with 8 players in each scoring mode against the scoring table, the leak test, and whole games over real sockets.
+
+### Changed
+- Settings can't change while a game runs.
+- Lobby seats no longer hold a score; the game's standings do.
+
 ## [0.5.0] - 2026-09-29
 
 ### Added
@@ -67,27 +86,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Covers come from AnimeThemes' own images, not AniList. The sync asks for `images`, and `catalog:covers` downloads the large cover (or else the small one), named after the AnimeThemes anime id. With a dump, which has no cover links, the step explains that and stops.
 - The AniList query no longer asks for cover images: only the fields the game uses, in line with AniList's terms.
 - The plan records the owner's decisions on AniList use and covers (Q16).
-
-## [0.2.0] - 2026-09-25
-
-### Added
-- The catalog build (`scripts/catalog/`), one command per step:
-  - `catalog:sync-animethemes`: AnimeThemes metadata from the API, or `--from-dump`
-  - `catalog:scan-audio`: durations with ffprobe
-  - `catalog:enrich-anilist`: titles, genres, popularity, the adult flag and relations, fetched in paced batches
-  - `catalog:covers`: optional, and on hold until the cover source is decided
-  - `catalog:build`: writes `catalog.sqlite` and prints a review report
-  - `catalog:check`: the gate for matching, popularity, the adult filter and loudness
-- Every step caches its work and resumes after an interruption. The assembly is a pure function, so the same inputs give the same catalog.
-- The catalog schema in `server/catalog/schema.ts`, and the generated `docs/generated/catalog-schema.md`.
-- `YSTO_AUDIO_DIR`, `YSTO_CATALOG_DIR`, `YSTO_CACHE_DIR` and `YSTO_FFMPEG_PATH`, read by `loadCatalogConfig` in `server/config.ts`.
-- Tests for every step: a fake HTTP client instead of the network, and ffmpeg-generated tones instead of the library.
-- The area doc `scripts/catalog/CATALOG.md`, and a README section on building the catalog.
-
-### Changed
-- ESLint allows `node:sqlite` only in `server/catalog/` and `scripts/catalog/`, and `process.env` only in `server/config.ts`, now also for the scripts.
-- Coverage includes `scripts/catalog/`, and the CI `app` job installs ffmpeg for the audio tests.
-- The catalog design doc describes the build as implemented, including the gate's thresholds. SECURITY.md records AniList's and AnimeThemes' terms.
 
 ---
 

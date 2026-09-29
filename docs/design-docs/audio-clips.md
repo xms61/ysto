@@ -20,14 +20,14 @@ Every play samples a new random part of a song, and the sample length is set per
 - ffmpeg runs through `spawn` with an argument array (no shell), a 10 s timeout and a concurrency limit (`YSTO_FFMPEG_CONCURRENCY`).
 - A clip under 90% of its length counts as a failed cut, because the file is shorter than the catalog says. A cut that starts past the end still returns about a second of audio.
 - If a cut fails, the round uses another theme, from an anime the game doesn't use yet, up to 3 themes. Each failure is logged once.
-- The next round's clip is cut during the current round. The game's state machine (M5) asks for it when a round starts.
+- The next round's clip is cut during the current round: the game engine asks for it when a round's prepare message goes out.
 - A 30 s clip from the library took 282 ms at the median and 306 ms at the 95th percentile on the development machine (`npm run clips:bench`). M8 repeats the measurement on the VPS.
 
 **Serving.**
 - The client never sends a path or ID for audio. The cutter resolves `rel_path` against `YSTO_AUDIO_DIR` and refuses any path that ends up outside it, which guards against a bad catalog row.
 - `GET /api/clips/:token` needs `Authorization: Bearer <sessionToken>` from a player of the lobby that owns the clip.
 - Unknown, expired and other-lobby tokens get the same 404 as a missing or unknown session. The route never answers 401 or 403, so tokens can't be probed. Responses carry `Cache-Control: no-store` and no filename.
-- A token is issued with the prepare message and lives until 10 s after the reveal ends. Expired clips leave memory when the next token is issued.
+- A token is issued as soon as its clip is cut, but no client learns it before the prepare message. It lives until 10 s after the reveal ends, or 10 minutes if the game ends first. Expired clips leave memory when the next token is issued.
 
 **Playing.**
 - Clips play through the Web Audio API: fetch, then `decodeAudioData`, then a `GainNode`.

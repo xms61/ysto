@@ -25,7 +25,18 @@ function writeSampleCatalog(): string {
         themes: [
           theme(11, 'A-OP1'),
           theme(12, 'A-ED1', { kind: 'ED', slug: 'ED1' }),
-          theme(13, 'A-OP2', { sequence: 2, slug: 'OP2' }),
+          theme(13, 'A-OP2', {
+            sequence: 2,
+            slug: 'OP2',
+            song: {
+              id: 13,
+              title: 'Song 13',
+              artists: [
+                { id: 2, name: 'Singer', creditedAs: 'Heroine' },
+                { id: 1, name: 'Artist', creditedAs: null },
+              ],
+            },
+          }),
         ],
       }),
       anime(2, { anilistId: 200, year: 2015, mediaFormat: 'Movie', themes: [theme(21, 'B-OP1')] }),
@@ -91,6 +102,20 @@ test('loads the playable anime and themes, with every theme song of each anime',
     ],
   );
   assert.ok(catalog.themes.every((entry) => entry.difficulty >= 0 && entry.difficulty <= 1 && entry.songKey !== null));
+  assert.deepEqual(
+    catalog.themes.map((entry) => [entry.songTitle, entry.artists]),
+    [
+      ['Song 11', [{ name: 'Artist', as: null }]],
+      [
+        'Song 13',
+        [
+          { name: 'Singer', as: 'Heroine' },
+          { name: 'Artist', as: null },
+        ],
+      ],
+      ['Song 21', [{ name: 'Artist', as: null }]],
+    ],
+  );
   assert.deepEqual(catalog.genres, ['Action', 'Drama', 'Music']);
   assert.deepEqual(catalog.years, { from: 2015, to: 2020 });
 });

@@ -31,6 +31,8 @@ export function themeEntry(id: number, animeId: number, overrides: Partial<Catal
     animeId,
     songId: animeId * 10,
     songKey: `song-${animeId}`,
+    songTitle: `Song ${animeId}`,
+    artists: [{ name: `Artist ${animeId}`, as: null }],
     kind: 'OP',
     sequence: 1,
     slug: 'OP1',

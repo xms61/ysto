@@ -1,5 +1,6 @@
-// An in-process server for the HTTP and socket tests: the real app and realtime layer on a free port, a
-// synthetic catalog, a fake clock for the registry, and clients that wait for the messages they expect.
+// An in-process server for the HTTP and socket tests: the real app, games and realtime layer on a free port,
+// a synthetic catalog, a manual clock for the registry and the games, clips cut by a stand-in instead of
+// ffmpeg, and clients that wait for the messages they expect.
 import { once } from 'node:events';
 import type { AddressInfo } from 'node:net';
 import { tmpdir } from 'node:os';
@@ -7,9 +8,14 @@ import { join } from 'node:path';
 import { WebSocket } from 'ws';
 import type { ClientOptions } from 'ws';
 import { createApp } from '../../server/app.ts';
+import type { CutClip } from '../../server/clips/cut.ts';
+import { ClipTokens } from '../../server/clips/tokens.ts';
+import { Games } from '../../server/game/games.ts';
+import { seededRandom } from '../../server/game/random.ts';
 import { LobbyRegistry } from '../../server/game/registry.ts';
 import { createLogger } from '../../server/log.ts';
 import { Realtime } from '../../server/realtime/hub.ts';
+import type { Scheduler } from '../../server/scheduler.ts';
 import type { LobbyState, ServerMessage } from '../../shared/protocol.ts';
 import { syntheticCatalog } from '../game/fixtures.ts';
 
@@ -18,8 +24,37 @@ const WAIT_MS = 2000;
 
 export interface ServerOptions {
   maxPlayers?: number;
+  cut?: CutClip;
   trustedProxyHops?: number;
   allowedOrigins?: string[];
+}
+
+// Timers run only when a test moves the clock with `advance`.
+export class ManualScheduler implements Scheduler {
+  time = 1_000_000;
+  #timers: { at: number; run: () => void; cancelled: boolean }[] = [];
+
+  now = (): number => this.time;
+
+  at(time: number, run: () => void): () => void {
+    const timer = { at: time, run, cancelled: false };
+    this.#timers.push(timer);
+    return () => {
+      timer.cancelled = true;
+    };
+  }
+
+  advance(ms: number): void {
+    const end = this.time + ms;
+    for (;;) {
+      const due = this.#timers.filter((timer) => !timer.cancelled && timer.at <= end).sort((a, b) => a.at - b.at)[0];
+      if (!due) break;
+      this.#timers.splice(this.#timers.indexOf(due), 1);
+      this.time = Math.max(this.time, due.at);
+      due.run();
+    }
+    this.time = end;
+  }
 }
 
 export interface TestServer {
@@ -27,25 +62,39 @@ export interface TestServer {
   wsUrl: string;
   origin: string;
   registry: LobbyRegistry;
+  games: Games;
   realtime: Realtime;
-  clock: { now: number };
+  scheduler: ManualScheduler;
   post: (path: string, body: unknown, headers?: Record<string, string>) => Promise<Response>;
   close: () => Promise<void>;
 }
 
 export async function startServer({
   maxPlayers = 12,
+  cut = async (clip) => Buffer.from(`clip of ${clip.relPath}`),
   trustedProxyHops = 0,
   allowedOrigins = [],
 }: ServerOptions = {}): Promise<TestServer> {
-  const clock = { now: 1_000_000 };
+  const scheduler = new ManualScheduler();
   const log = createLogger('error', () => {});
-  const registry = new LobbyRegistry({ catalog, maxLobbies: 100, maxPlayers, log, now: () => clock.now });
-  // The folder holds no client build, so only the API and the checks answer.
-  const app = createApp({ clientDir: join(tmpdir(), 'ysto-no-client'), registry, trustedProxyHops, log });
+  const registry = new LobbyRegistry({ catalog, maxLobbies: 100, maxPlayers, log, now: scheduler.now });
+  const tokens = new ClipTokens(scheduler.now);
+  const clips = { cut, tokens };
+  const games = new Games({ registry, catalog, clips, maxGames: 2, scheduler, random: seededRandom(1), log });
+  const lobbyOfSession = (token: string) => registry.seatOf(token)?.code;
+  // The folders hold no client build and no covers, so only the API, the clips and the checks answer.
+  const app = createApp({
+    clientDir: join(tmpdir(), 'ysto-no-client'),
+    coversDir: join(tmpdir(), 'ysto-no-covers'),
+    registry,
+    ready: true,
+    trustedProxyHops,
+    log,
+    clips: { tokens, lobbyOfSession },
+  });
   const server = app.listen(0, '127.0.0.1');
   await once(server, 'listening');
-  const realtime = new Realtime(server, { registry, allowedOrigins, trustedHops: trustedProxyHops, log });
+  const realtime = new Realtime(server, { registry, games, allowedOrigins, trustedHops: trustedProxyHops, log });
   // A server listening on a TCP port always reports an AddressInfo, never a pipe name.
   const { port } = server.address() as AddressInfo;
   const baseUrl = `http://127.0.0.1:${port}`;
@@ -61,7 +110,8 @@ export async function startServer({
     server.close();
     await once(server, 'close');
   };
-  return { baseUrl, wsUrl: `ws://127.0.0.1:${port}/ws`, origin: baseUrl, registry, realtime, clock, post, close };
+  const wsUrl = `ws://127.0.0.1:${port}/ws`;
+  return { baseUrl, wsUrl, origin: baseUrl, registry, games, realtime, scheduler, post, close };
 }
 
 export interface Seat {

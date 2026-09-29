@@ -1,6 +1,7 @@
 // Builds a game's questions: which songs play, where each sample starts, and the four options
 // (docs/product-specs/questions.md). Everything here is decided on the server; a Question holds the answer
 // and must never be sent to a client as it is (docs/design-docs/anti-cheat.md).
+import type { OptionTitles, RevealDetails } from '../../shared/protocol.ts';
 import type { LobbySettings } from '../../shared/settings.ts';
 import type { Catalog, CatalogAnime, CatalogTheme } from '../catalog/load.ts';
 import { pickDistractors } from './distractors.ts';
@@ -8,7 +9,6 @@ import { distinctAnime, eligibleThemes, LEAD_IN_MS, optionUniverse, sampleLength
 import { pick, shuffle } from './random.ts';
 import type { Random } from './random.ts';
 import { optionTitles } from './titles.ts';
-import type { OptionTitles } from './titles.ts';
 
 export interface Question {
   themeId: number;
@@ -16,12 +16,25 @@ export interface Question {
   clip: { relPath: string; startMs: number; lengthMs: number };
   options: { animeIds: number[]; titles: OptionTitles };
   correctIndex: number;
+  reveal: RevealDetails;
 }
 
 function animeOf(catalog: Catalog, id: number): CatalogAnime {
   const anime = catalog.anime.get(id);
   if (!anime) throw new Error(`Theme refers to anime ${id}, which the catalog doesn't have`);
   return anime;
+}
+
+function revealOf(answer: CatalogAnime, theme: CatalogTheme): RevealDetails {
+  const { english, romaji, native, display } = answer.titles;
+  return {
+    anime: { english, romaji: romaji ?? display, japanese: native },
+    theme: { kind: theme.kind, sequence: theme.sequence },
+    song: { title: theme.songTitle, artists: theme.artists },
+    year: answer.year,
+    season: answer.season,
+    cover: answer.coverFile === null ? null : `/covers/${answer.coverFile}`,
+  };
 }
 
 // Draws franchise, then anime, then theme, each uniformly, so a franchise with 48 anime is as likely as one
@@ -74,6 +87,7 @@ function buildQuestion(
     },
     options: { animeIds: options.map((anime) => anime.id), titles: optionTitles(options) },
     correctIndex: options.indexOf(answer),
+    reveal: revealOf(answer, theme),
   };
 }
 

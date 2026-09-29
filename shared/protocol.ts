@@ -1,13 +1,13 @@
-// The lobby protocol (docs/design-docs/system-design.md#decision): the HTTP bodies, the messages each side
-// sends over the socket, the error and close codes, and one validator per message the server receives.
-// Games add their messages in M5.
+// The protocol (docs/design-docs/system-design.md#decision): the HTTP bodies, the messages each side sends
+// over the socket, the error and close codes, and one validator per message the server receives.
 import { validateSettings } from './settings.ts';
-import type { LobbySettings, SettingsBounds } from './settings.ts';
-import { hasKeys, isRecord } from './validate.ts';
+import type { LobbySettings, SettingsBounds, ThemeKind, TitleLanguage } from './settings.ts';
+import { hasKeys, isIntegerIn, isRecord } from './validate.ts';
 
 // A raw name longer than this can't clean down to a valid one worth keeping.
 const RAW_NAME_MAX = 200;
 const ID_SHAPE = /^[A-Za-z0-9_-]{1,64}$/;
+const ROUND_ID_SHAPE = /^[A-Za-z0-9_.-]{1,64}$/;
 
 // Lobby codes: 6 of 31 characters without look-alikes (no 0/O or 1/I/L), about 887 million codes. People
 // type them, so any case is accepted.
@@ -40,7 +40,10 @@ export type ErrorCode =
   | 'invalid-message'
   | 'not-host'
   | 'unknown-player'
-  | 'cannot-kick-self';
+  | 'cannot-kick-self'
+  | 'game-running'
+  | 'pool-too-small'
+  | 'server-busy';
 
 // Why the server closed a socket. The 4000s are this protocol's own.
 export const CLOSE_CODES = {
@@ -69,7 +72,11 @@ export type ClientMessage =
   | { type: 'lobby:leave' }
   | { type: 'lobby:lock'; locked: boolean }
   | { type: 'player:kick'; playerId: string }
-  | { type: 'settings:update'; settings: LobbySettings };
+  | { type: 'settings:update'; settings: LobbySettings }
+  | { type: 'game:start' }
+  | { type: 'round:ready'; roundId: string; loaded: boolean }
+  | { type: 'answer'; roundId: string; option: number }
+  | { type: 'round:skip' };
 
 function parseRecord(text: string): Record<string, unknown> | null {
   try {
@@ -78,6 +85,10 @@ function parseRecord(text: string): Record<string, unknown> | null {
   } catch {
     return null;
   }
+}
+
+function isRoundId(value: unknown): value is string {
+  return typeof value === 'string' && ROUND_ID_SHAPE.test(value);
 }
 
 // Null for anything that isn't exactly one of the messages above.
@@ -91,7 +102,9 @@ export function parseClientMessage(text: string, bounds: SettingsBounds): Client
   if (type === 'time:ping' && hasKeys(value, ['type', 'clientTime']) && Number.isFinite(value.clientTime)) {
     return { type, clientTime: Number(value.clientTime) };
   }
-  if (type === 'lobby:leave' && hasKeys(value, ['type'])) return { type };
+  if ((type === 'lobby:leave' || type === 'game:start' || type === 'round:skip') && hasKeys(value, ['type'])) {
+    return { type };
+  }
   if (type === 'lobby:lock' && hasKeys(value, ['type', 'locked']) && typeof value.locked === 'boolean') {
     return { type, locked: value.locked };
   }
@@ -102,14 +115,47 @@ export function parseClientMessage(text: string, bounds: SettingsBounds): Client
     const settings = validateSettings(value.settings, bounds);
     return settings ? { type, settings } : null;
   }
+  if (type === 'round:ready' && hasKeys(value, ['type', 'roundId', 'loaded']) && isRoundId(value.roundId)) {
+    return typeof value.loaded === 'boolean' ? { type, roundId: value.roundId, loaded: value.loaded } : null;
+  }
+  if (type === 'answer' && hasKeys(value, ['type', 'roundId', 'option']) && isRoundId(value.roundId)) {
+    return isIntegerIn(value.option, 0, 3) ? { type, roundId: value.roundId, option: value.option } : null;
+  }
   return null;
+}
+
+// The four options' titles in each title language, in option order. Each client shows one language.
+export type OptionTitles = Record<TitleLanguage, string[]>;
+
+// An artist as the song credits them: `as` is the name they sang under, such as a character.
+export interface SongCredit {
+  name: string;
+  as: string | null;
+}
+
+// What the reveal teaches about the answer (docs/product-specs/game-flow.md).
+export interface RevealDetails {
+  anime: { english: string | null; romaji: string; japanese: string | null };
+  theme: { kind: ThemeKind; sequence: number };
+  song: { title: string | null; artists: SongCredit[] };
+  year: number | null;
+  season: string | null;
+  cover: string | null; // a path on this server
 }
 
 export interface PlayerView {
   id: string;
   name: string;
   connected: boolean;
+  spectating: boolean; // joined during a game: plays from the next round
   score: number;
+}
+
+// Where the lobby's game stands: `number` is the round in progress, or the rounds played once it's over.
+export interface GameView {
+  phase: 'playing' | 'results';
+  number: number;
+  rounds: number;
 }
 
 // Sent to each player whenever the lobby changes. `you` is the receiving player.
@@ -123,10 +169,46 @@ export interface LobbyState {
   settings: LobbySettings;
   pool: { themes: number; anime: number };
   bounds: SettingsBounds;
+  game: GameView | null;
 }
+
+export interface Pick {
+  playerId: string;
+  option: number | null; // null when the player didn't answer
+  points: number;
+  noAudio: boolean;
+}
+
+export interface StandingView {
+  playerId: string;
+  score: number;
+  streak: number;
+}
+
+export interface ResultView {
+  playerId: string;
+  score: number;
+  correct: number;
+  averageMs: number | null; // average response time of correct answers
+  bestStreak: number;
+}
+
+export type RoundReveal = {
+  type: 'round:reveal';
+  roundId: string;
+  skipped: boolean;
+  correct: number;
+  picks: Pick[];
+  standings: StandingView[];
+} & RevealDetails;
 
 export type ServerMessage =
   | LobbyState
+  | { type: 'round:prepare'; roundId: string; clipToken: string; number: number; rounds: number }
+  | { type: 'round:start'; roundId: string; startsAt: number; endsAt: number; options: OptionTitles }
+  | { type: 'round:answered'; roundId: string; playerIds: string[] }
+  | RoundReveal
+  | { type: 'game:results'; standings: ResultView[] }
   | { type: 'time:pong'; clientTime: number; serverTime: number }
   | { type: 'error'; code: ErrorCode }
   | { type: 'server:closing' };

@@ -17,7 +17,7 @@ Friends get into a game within seconds and without accounts: a code or a link, a
   - The host can kick players and lock the lobby.
   - The host can skip a round whose clip sounds broken. A skipped round scores nothing.
   - The host changes the [settings](settings.md) between games.
-- **Late joins:** a player who joins during a game spectates until the next round starts, then plays from 0 points.
+- **Late joins:** a player who joins during a game watches and hears the round in progress, then plays from the next round, starting at 0 points.
 - **Reconnects:** a player who drops keeps their seat and score for 60 s. A player who leaves on purpose gives up the seat at once. A second tab with the same seat takes it over from the first.
 - **Expiry:** a lobby closes after 15 minutes with no connected player, and after 4 hours in any case.
 - **Lobby creation** is open to anyone who has the URL. Limits keep it from being abused ([SECURITY.md](../SECURITY.md)).
