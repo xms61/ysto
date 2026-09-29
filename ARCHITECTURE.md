@@ -8,19 +8,20 @@ last-verified: 2026-09-29
 The shape of the system: what each part owns and which way dependencies point. Keep it to what changes rarely; details belong in the area docs next to the code.
 
 ## Bird's-eye view
-You Skipped The OP?! is a browser quiz. Players join a lobby with a code, hear a sample of an anime opening or ending, and pick the anime from four options. One Node process serves the built React client and the HTTP API. Today the catalog build, the question engine and the clip service exist, and the server answers the health check and serves the client. The game protocol and the game loop arrive with milestones M4 and M5 of the [v1 plan](docs/exec-plans/active/2026-09-25-ysto-v1.md).
+You Skipped The OP?! is a browser quiz. Players join a lobby with a code, hear a sample of an anime opening or ending, and pick the anime from four options. One Node process serves the built React client and the HTTP API. Today the catalog build, the question engine, the clip service and lobbies exist: players create or join a lobby over HTTP, then hold a WebSocket to it. The game loop arrives with milestone M5 of the [v1 plan](docs/exec-plans/active/2026-09-25-ysto-v1.md).
 
 ## Code map
-- `server/`: the Node server. `main.ts` starts the process (config, listen, shutdown), `app.ts` builds the Express app, and `config.ts` is the only code that reads environment variables. It never imports `src/`.
+- `server/`: the Node server. `main.ts` starts the process (config, catalog, listen, shutdown), `app.ts` builds the Express app, and `config.ts` is the only code that reads environment variables. `log.ts` writes JSON log lines, `rate-limit.ts` counts events per key, and `client-ip.ts` finds the player's IP behind the proxy. It never imports `src/`.
   - `server/catalog/`: `schema.ts` is the catalog's SQLite schema, shared by the build and the server. `load.ts` reads the catalog into memory at startup.
-  - `server/game/`: the question engine, which turns lobby settings into a game's songs, sample offsets and options ([GAME.md](server/game/GAME.md)). The game state machine joins it in M5.
+  - `server/game/`: lobbies and their registry, and the question engine, which turns lobby settings into a game's songs, sample offsets and options ([GAME.md](server/game/GAME.md)). The game state machine joins them in M5.
+  - `server/http/`: the security headers and the lobby routes. `server/realtime/`: the lobby sockets and their protocol ([REALTIME.md](server/realtime/REALTIME.md)).
   - `server/clips/`: the clip service. It cuts clips with ffmpeg, keeps them under tokens, and serves them on `GET /api/clips/:token` ([CLIPS.md](server/clips/CLIPS.md)). `server/tokens.ts` defines the random tokens it and the sessions use.
 - `src/`: the React client, which Vite bundles into `dist/`. It never imports `server/` or Node built-ins.
-- `shared/`: code that runs on both sides. `settings.ts` holds the lobby settings, their limits and defaults, and `scoring.ts` the scoring modes, modifiers and presets. The protocol joins them in M4. It imports neither `server/` nor `src/`, and no Node built-ins.
+- `shared/`: code that runs on both sides. `settings.ts` holds the lobby settings, their limits, defaults and validator; `scoring.ts` the scoring modes, modifiers and presets; `protocol.ts` the messages, codes and validators; `names.ts` the player-name rules; and `validate.ts` the checks the validators share. It imports neither `server/` nor `src/`, and no Node built-ins.
 - `tests/`: server and shared tests (`node:test`), laid out like the folders they test.
 - `e2e/`: browser smoke tests (Playwright) against the production build.
 - `scripts/`: the repo checks (`check-docs.mjs`, `check-tracked-files.mjs`) and their tests.
-  - `scripts/catalog/`: the offline catalog build, from AnimeThemes, AniList and the audio library to `catalog.sqlite` ([CATALOG.md](scripts/catalog/CATALOG.md)). It may import `server/config.ts`, `server/catalog/`, and the seeded generator in `server/game/random.ts`.
+  - `scripts/catalog/`: the offline catalog build, from AnimeThemes, AniList and the audio library to `catalog.sqlite` ([CATALOG.md](scripts/catalog/CATALOG.md)). It may import `server/config.ts`, `server/catalog/`, the seeded generator in `server/game/random.ts`, and `pool.ts`'s genre threshold.
   - `scripts/clips/bench.ts`: times clip cuts from the real library with the server's cutter.
 - `docs/`: the knowledge base ([KNOWLEDGE_BASE.md](docs/KNOWLEDGE_BASE.md)).
 

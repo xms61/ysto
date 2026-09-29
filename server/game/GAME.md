@@ -3,16 +3,21 @@ status: verified
 last-verified: 2026-09-29
 ---
 
-# Question engine
+# Game: lobbies and questions
 
-Entry: `server/game/questions.ts`. `buildGame(catalog, settings, random, playedThemeIds)` turns a lobby's settings into a game's questions: the song, the sample start and the four options. `replacementQuestion` draws another one when a round's clip can't be cut ([CLIPS.md](../clips/CLIPS.md)). The rules: [questions](../../docs/product-specs/questions.md).
-- `pool.ts`: which themes the settings allow (`eligibleThemes`), which anime may be options (`optionUniverse`), and the pool size the lobby shows (`poolSize`).
+Entry: `server/game/questions.ts`. `buildGame(catalog, settings, random, playedThemeIds)` turns a lobby's settings into a game's questions: the song, the sample start and the four options. `replacementQuestion` draws another one when a round's clip can't be cut ([CLIPS.md](../clips/CLIPS.md)). The rules: [questions](../../docs/product-specs/questions.md) and [lobby](../../docs/product-specs/lobby.md).
+- `lobby.ts`: a lobby's seats, host, lock and settings, as pure functions (`addPlayer`, `connectPlayer`, `removePlayer`, `kickPlayer`), plus the grace and expiry rules.
+- `registry.ts`: `LobbyRegistry` holds this process's lobbies and sessions. It makes codes, ids and tokens, enforces the caps, sweeps expired seats and lobbies, and reports every change to the realtime layer ([REALTIME.md](../realtime/REALTIME.md)).
+- `pool.ts`: which themes the settings allow (`eligibleThemes`), which anime may be options (`optionUniverse`), the pool size the lobby shows (`poolSize`), and what the settings may choose from (`settingsBounds`).
 - `distractors.ts`: the three wrong options. Its `LEVELS` table holds each difficulty's match rule and relaxation steps.
 - `titles.ts`: the option titles in all three languages, and `canShareOptions`, which decides when two anime can appear in one question.
 - `random.ts`: the `Random` interface, with `secureRandom` for live games and `seededRandom` for tests, plus `pick` and `shuffle`.
 - `../catalog/load.ts`: reads `catalog.sqlite` into memory at startup, and refuses a catalog of another schema version.
 
 ## Rules
+- Lobby changes go through the functions in `lobby.ts`, and only `LobbyRegistry` stores their results. The registry is the only holder of session tokens, and it forgets a token when its seat goes.
+- The host is the first seat. When the host's seat goes (leave, or 60 s gone), the player connected longest takes over. A lobby left without a connected player gets the next one who connects.
+- Settings arrive already validated against `settingsBounds` (`shared/settings.ts`). Genres with fewer than `MIN_GENRE_THEMES` playable themes aren't offered, and the catalog gate warns about them.
 - Everything random takes a `Random` argument. Live games pass `secureRandom`. Tests and the catalog check pass `seededRandom(seed)`, so a run repeats.
 - A `Question` holds the answer (`animeId`, `correctIndex`, `clip.relPath`). A round sends clients only the option titles, never the question itself ([anti-cheat](../../docs/design-docs/anti-cheat.md)).
 - The options' franchises never point at the answer: four franchises, or on Hard two pairs. Any change to the distractor rules keeps this, and the property tests check it.
@@ -30,5 +35,6 @@ Entry: `server/game/questions.ts`. `buildGame(catalog, settings, random, playedT
 `tests/game/*.test.ts`:
 - `questions.test.ts` builds 10,000 seeded questions per difficulty from `syntheticCatalog()` and checks each against the spec's acceptance criteria. `syntheticCatalog()` lives in `tests/game/fixtures.ts` and is shaped like the real catalog: franchises of every size, remakes that share a title, songs shared within and across franchises, and missing titles.
 - `pool.test.ts`, `titles.test.ts` and `random.test.ts` cover the filters, the title rules and the generators on small hand-made catalogs.
+- `lobby.test.ts` covers the seat, host and expiry rules. `registry.test.ts` runs the registry on a fake clock, including its caps, events and sweep.
 - `tests/catalog/load.test.ts` writes a catalog to a temporary folder with the build's own writer, then loads it.
 - `tests/shared/scoring.test.ts` holds the scoring table of cases.

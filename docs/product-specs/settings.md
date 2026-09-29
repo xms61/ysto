@@ -1,6 +1,6 @@
 ---
 status: draft
-last-verified: 2026-09-25
+last-verified: 2026-09-29
 ---
 
 # Settings
@@ -14,7 +14,7 @@ The host shapes the game (pool, length, difficulty, scoring). Each player sets w
 | Sample length | Lobby (host) | 10–30 s, in 5 s steps | 20 s |
 | Songs per game | Lobby | 5–50 | 15 |
 | Years | Lobby | 1963–2026 (taken from the catalog) | all |
-| Genres | Lobby | AniList genres, match any; empty means all | all |
+| Genres | Lobby | AniList genres with at least 50 playable themes, match any; empty means all | all |
 | OP / ED | Lobby | OP, ED or both | both |
 | Formats | Lobby | TV, TV Short, Movie, OVA, ONA, Special | all |
 | Difficulty | Lobby | Easy, Normal, Hard, or a custom popularity rank range ([questions](questions.md)) | Normal |
@@ -28,7 +28,7 @@ The host shapes the game (pool, length, difficulty, scoring). Each player sets w
 | Reduced motion | Player (device) | follows the OS setting, can be overridden | OS setting |
 
 - While the host edits the settings, the lobby shows how many songs and anime match. An anime plays at most once per game, so the host can't start a game with fewer matching anime than the songs-per-game setting.
-- A custom difficulty starts at popularity ranks 1–1,000, where rank 1 is the most popular playable anime.
+- A custom difficulty starts at popularity ranks 1–1,000 (every rank, when the catalog has fewer anime), where rank 1 is the most popular playable anime.
 - Player settings are saved on the device (`ysto_*` keys in `localStorage`) and apply straight away.
 - Volume goes through a gain node, so the 15% default also applies on iPhones ([audio clips](../design-docs/audio-clips.md)).
 - The interface is in English. Anime titles follow each player's title-language setting.

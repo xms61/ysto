@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.5.0] - 2026-09-29
+
+### Added
+- Lobbies ([REALTIME.md](server/realtime/REALTIME.md), [GAME.md](server/game/GAME.md)):
+  - `POST /api/lobbies` creates a lobby and `POST /api/lobbies/:code/players` joins one. Each returns a session token.
+  - A WebSocket at `/ws` binds to a seat with `hello` and sends every player the lobby state after each change: players, host, lock, settings, pool size, and what the settings may choose from.
+  - Players can leave. The host can kick, lock and change the settings. When the host leaves, or stays away past the 60 s grace, the player connected longest takes over.
+  - A player who drops keeps the seat for 60 s. A lobby closes after 15 idle minutes, or after 4 hours.
+- Limits per IP: lobby creations, joins, unknown codes, open lobbies and sockets. Per socket: message rate, frame size, and strikes for invalid messages.
+- Security headers (CSP, nosniff, no referrer, a Permissions-Policy, noindex) on every response. Errors never show a stack trace.
+- `shared/protocol.ts` with the messages, error and close codes, and one validator per message. Also `shared/names.ts` with the name rules, and a settings validator against the catalog's bounds.
+- `/readyz`, JSON log lines at `LOG_LEVEL`, and a shutdown that tells players before closing their sockets.
+- `LOG_LEVEL`, `YSTO_TRUST_PROXY`, `YSTO_ALLOWED_ORIGINS`, `YSTO_MAX_LOBBIES` and `YSTO_MAX_PLAYERS`.
+- The clip route is now mounted with the lobby sessions.
+
+### Changed
+- The server starts without a catalog and reports itself not ready, instead of serving lobbies it can't fill.
+- The custom popularity range starts at every rank when the catalog has fewer than 1,000 anime.
+- Settings offer only genres with at least 50 playable themes, the threshold the catalog gate warns at.
+
 ## [0.4.0] - 2026-09-29
 
 ### Added
@@ -68,17 +88,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - ESLint allows `node:sqlite` only in `server/catalog/` and `scripts/catalog/`, and `process.env` only in `server/config.ts`, now also for the scripts.
 - Coverage includes `scripts/catalog/`, and the CI `app` job installs ffmpeg for the audio tests.
 - The catalog design doc describes the build as implemented, including the gate's thresholds. SECURITY.md records AniList's and AnimeThemes' terms.
-
-## [0.1.4] - 2026-09-25
-
-### Added
-- `LICENSE`: Apache License 2.0, also set in `package.json`, with a License section in the README.
-- A "Before a release" step in the release process: the doc-gardening pass.
-
-### Changed
-- Doc gardening runs before each release, not weekly.
-- The release process and SECURITY.md say that new high or critical CodeQL alerts block merges to `main`.
-- The v1 plan records M0 as done, with the owner's answers on license, merging and gardening.
 
 ---
 

@@ -1,8 +1,12 @@
 // Which themes a lobby's settings allow, and which anime may appear as options. Rules:
 // docs/product-specs/questions.md and settings.md.
 import { MEDIA_FORMATS } from '../../shared/settings.ts';
-import type { LobbySettings } from '../../shared/settings.ts';
+import type { LobbySettings, SettingsBounds } from '../../shared/settings.ts';
 import type { Catalog, CatalogAnime, CatalogTheme } from '../catalog/load.ts';
+
+// A genre with fewer playable themes than this would make thin games, so the settings leave it out and
+// the catalog gate warns about it.
+export const MIN_GENRE_THEMES = 50;
 
 // A random sample keeps 3 s clear at the start and 5 s at the end of the song.
 export const LEAD_IN_MS = 3000;
@@ -71,6 +75,21 @@ export function optionUniverse(catalog: Catalog, settings: LobbySettings): Catal
 
 export function distinctAnime(themes: CatalogTheme[]): number {
   return new Set(themes.map((theme) => theme.animeId)).size;
+}
+
+// What the settings may choose from, which the lobby sends to the settings form.
+export function settingsBounds(catalog: Catalog): SettingsBounds {
+  const themesPerGenre = new Map<string, number>();
+  for (const theme of catalog.themes) {
+    for (const genre of catalog.anime.get(theme.animeId)?.genres ?? []) {
+      themesPerGenre.set(genre, (themesPerGenre.get(genre) ?? 0) + 1);
+    }
+  }
+  return {
+    years: { ...catalog.years },
+    genres: catalog.genres.filter((genre) => (themesPerGenre.get(genre) ?? 0) >= MIN_GENRE_THEMES),
+    maxRank: catalog.playableAnime.length,
+  };
 }
 
 // What the lobby shows while the host edits settings. A game uses each anime at most once, so `anime` is

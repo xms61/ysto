@@ -1,7 +1,8 @@
 // Scoring: the modes, modifiers and presets of docs/product-specs/scoring.md. Shared so the client can
 // explain the rules, but only the server scores. Pure: the same answers always give the same points.
 
-export type ScoringMode = 'speed' | 'firstCorrect' | 'flat';
+export const SCORING_MODES = ['speed', 'firstCorrect', 'flat'] as const;
+export type ScoringMode = (typeof SCORING_MODES)[number];
 
 export interface ScoringRules {
   mode: ScoringMode;

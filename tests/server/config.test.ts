@@ -22,6 +22,53 @@ test('rejects a PORT that is not a port number', () => {
   }
 });
 
+test('defaults the server settings', () => {
+  assert.deepEqual(loadConfig({}, CWD), {
+    port: 3000,
+    logLevel: 'info',
+    catalogDir: resolve(CWD, 'data/catalog'),
+    trustedProxyHops: 0,
+    allowedOrigins: [],
+    maxLobbies: 100,
+    maxPlayers: 12,
+  });
+});
+
+test('reads the server settings', () => {
+  const config = loadConfig(
+    {
+      LOG_LEVEL: 'warn',
+      YSTO_CATALOG_DIR: 'catalog',
+      YSTO_TRUST_PROXY: '1',
+      YSTO_ALLOWED_ORIGINS: 'https://example.org, http://localhost:5173',
+      YSTO_MAX_LOBBIES: '20',
+      YSTO_MAX_PLAYERS: '8',
+    },
+    CWD,
+  );
+  assert.deepEqual(config, {
+    port: 3000,
+    logLevel: 'warn',
+    catalogDir: resolve(CWD, 'catalog'),
+    trustedProxyHops: 1,
+    allowedOrigins: ['https://example.org', 'http://localhost:5173'],
+    maxLobbies: 20,
+    maxPlayers: 8,
+  });
+});
+
+test('names the variable when a server setting is invalid', () => {
+  const CASES: [Record<string, string>, RegExp][] = [
+    [{ LOG_LEVEL: 'verbose' }, /^LOG_LEVEL must be one of debug, info, warn, error, got "verbose"$/],
+    [{ YSTO_TRUST_PROXY: '-1' }, /^YSTO_TRUST_PROXY must be an integer from 0 to 10/],
+    [{ YSTO_MAX_LOBBIES: '0' }, /^YSTO_MAX_LOBBIES must be an integer from 1/],
+    [{ YSTO_MAX_PLAYERS: 'many' }, /^YSTO_MAX_PLAYERS must be an integer from 1 to 50/],
+    [{ YSTO_ALLOWED_ORIGINS: 'https://example.org/path' }, /^YSTO_ALLOWED_ORIGINS holds "https:\/\/example.org\/path"/],
+    [{ YSTO_ALLOWED_ORIGINS: 'example.org' }, /^YSTO_ALLOWED_ORIGINS holds "example.org"/],
+  ];
+  for (const [env, message] of CASES) assert.throws(() => loadConfig(env, CWD), { message });
+});
+
 test('defaults the catalog paths to data/ under the working directory', () => {
   assert.deepEqual(loadCatalogConfig({}, CWD), {
     audioDir: null,

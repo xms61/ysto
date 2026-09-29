@@ -13,16 +13,17 @@ How the app behaves when something fails or slows down. The general rules are in
 | Bad configuration at startup | The server doesn't start | `server/config.ts` exits with code 1 and names the bad variable |
 | ffmpeg fails, times out or cuts a clip short | Nothing; the round uses another theme | Up to 3 themes per round, and each failure is logged once |
 | A player's clip doesn't load in time | They can still answer; the reveal marks them "no audio" | No penalty; the barrier waits at most 8 s |
-| A player's connection drops | Their seat and score stay for 60 s | The client reconnects with its session token |
+| A player's connection drops | Their seat and score stay for 60 s | The client reconnects with its session token. The heartbeat notices a silent connection within 30 s |
 | The host leaves | Another player becomes host | The player connected longest takes over |
 | The server restarts | Running games end with a notice | The shutdown hook sends `server:closing` first; lobbies live only in memory |
-| The catalog or audio folder is missing | `/readyz` fails, and the container is marked unhealthy | Fix the mount; `/healthz` still reports that the process is up |
+| The catalog is missing or unreadable | No lobby can open (`not-ready`), and `/readyz` answers 503 | The process stays up and logs `catalog.unavailable`; fix the mount and restart. From M5, `/readyz` also checks the audio folder and ffmpeg |
 
 ## Timeouts and retries
 - ffmpeg: 10 s per clip, and up to 3 themes per round.
 - Ready barrier: 8 s. The round then starts for everyone.
 - Answer grace: 300 ms after `endsAt`.
-- Reconnect grace: 60 s. Lobby expiry: 15 minutes with no connected player, 4 hours in any case.
+- Reconnect grace: 60 s. Lobby expiry: 15 minutes with no connected player, 4 hours in any case. The registry sweeps every 5 s, so both end up to 5 s late.
+- Sockets: `hello` within 10 s of connecting, and a heartbeat ping every 15 s. A socket that misses a ping is closed, which starts its seat's grace.
 - Ingest scripts: one AnimeThemes request a second, and one AniList request every 2.1 s (AniList allowed 30 a minute on 2026-09-25). A 429 waits for `Retry-After`. Server errors and network failures retry up to 5 attempts, backing off 2, 4, 8, 16 s (capped at 60 s). Every step resumes from its cache ([catalog](design-docs/catalog.md)).
 
 ## Performance
@@ -33,6 +34,6 @@ How the app behaves when something fails or slows down. The general rules are in
 - The client bundle is about 70 KB gzipped today. It gets a budget when the game screens land (M6).
 
 ## Logging
-- The server logs to stdout, which Docker rotates (3 files of 10 MB). Today it logs its startup line and configuration errors. JSON lines with `LOG_LEVEL` arrive with the lobby code in M4.
+- The server logs JSON lines (`time`, `level`, `event` and fields) to stdout at `LOG_LEVEL`, and Docker rotates them (3 files of 10 MB). Events so far: `server.listening`, `server.closing`, `lobby.created` and `lobby.closed` with the lobby code, `catalog.unavailable` and `http.error`. A bad configuration is printed as plain text, since the logger needs the configuration.
 - It logs one line per lobby lifecycle event (created, game started, closed) and per error, with context. It never logs per-message traffic.
 - It never logs session tokens, clip tokens, player names, request bodies or query strings.

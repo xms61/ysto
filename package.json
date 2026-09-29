@@ -1,6 +1,6 @@
 {
   "name": "ysto",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "private": true,
   "description": "You Skipped The OP?! A multiplayer anime opening and ending quiz for the browser.",
   "license": "Apache-2.0",
@@ -30,7 +30,8 @@
     "clips:bench": "node --env-file-if-exists=.env scripts/clips/bench.ts"
   },
   "dependencies": {
-    "express": "^5.2.1"
+    "express": "^5.2.1",
+    "ws": "^8.22.0"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
@@ -42,6 +43,7 @@
     "@types/node": "^24.13.6",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
+    "@types/ws": "^8.18.2",
     "@vitejs/plugin-react": "^6.1.1",
     "concurrently": "^10.0.5",
     "eslint": "^10.11.0",

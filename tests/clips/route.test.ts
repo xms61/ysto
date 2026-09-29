@@ -6,6 +6,7 @@ import { join } from 'node:path';
 import { test } from 'node:test';
 import { createApp } from '../../server/app.ts';
 import { ClipTokens } from '../../server/clips/tokens.ts';
+import { createLogger } from '../../server/log.ts';
 import { newToken } from '../../server/tokens.ts';
 
 const AUDIO = Buffer.from('clip bytes');
@@ -29,7 +30,14 @@ async function withClipServer(run: (server: ClipServer) => Promise<void>) {
   const token = tokens.issue('lobby-a', AUDIO, 1000);
   // The folder holds no client build, so only the API routes answer.
   const clientDir = join(tmpdir(), 'ysto-no-client');
-  const app = createApp({ clientDir, clips: { tokens, lobbyOfSession: (session) => sessions.get(session) } });
+  const clips = { tokens, lobbyOfSession: (session: string) => sessions.get(session) };
+  const app = createApp({
+    clientDir,
+    registry: null,
+    trustedProxyHops: 0,
+    log: createLogger('error', () => {}),
+    clips,
+  });
   const server = app.listen(0, '127.0.0.1');
   await once(server, 'listening');
   // A server listening on a TCP port always reports an AddressInfo, never a pipe name.
