@@ -1,6 +1,6 @@
 ---
 status: draft
-last-verified: 2026-09-25
+last-verified: 2026-09-29
 ---
 
 # Design
@@ -13,11 +13,13 @@ There are three themes, and each player picks one on their device ([settings](pr
 - **Sakura:** pastel pink, falling petals and soft rounded type.
 - **Tokyo Rain:** the default. Dark navy with neon signs, rain on glass and glow.
 
-Fonts are self-hosted and cover Japanese, because titles can show in Japanese. The tokens and components are built in M7. Until then the app uses Tailwind's slate palette on a dark background.
+The color tokens live in `src/styles.css`: `page`, `panel`, `raised`, `line`, `ink`, `muted`, `accent`, `accent-ink`, `good` and `bad`, used as Tailwind utilities such as `bg-panel`. Components use only these, so a theme is one block of variables on `<html data-theme>`. M6 gave each theme its palette. M7 adds the textures, type and motion, and self-hosted fonts that cover Japanese, because titles can show in Japanese. Until then the app uses the system fonts.
 
 ## Layout and motion
 - Mobile first: every screen works one-handed on a phone from 360 px wide, and scales up to desktop.
 - The four options are large tap targets, and keys 1–4 select them on a keyboard.
+- The device settings (volume, theme, title language) sit behind the Preferences button on every lobby screen, so the volume is one tap away during a round.
+- The lobby's start button stays in view at the bottom of the screen, with the number of songs and anime that match, however long the settings form gets.
 - Motion (petals, rain, speed lines, reveal transitions) is decoration. It never carries information, and it stops under `prefers-reduced-motion` or the player's reduced-motion setting.
 
 ## UI copy

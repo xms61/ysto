@@ -24,7 +24,7 @@ Every external input is validated once, at the boundary ([CODE_STYLE.md](CODE_ST
   - Global caps: `YSTO_MAX_LOBBIES`, `YSTO_MAX_GAMES`, `YSTO_MAX_PLAYERS` and the ffmpeg concurrency. Clips are cut only for running games with connected players.
 
 ## Sessions
-- There are no accounts. Creating or joining a lobby returns a 256-bit random session token. The client keeps it in `sessionStorage` (one seat per tab) and sends it as the first WebSocket message, never in a URL. Clip requests send it in the `Authorization` header. `server/tokens.ts` defines the shape of session and clip tokens once.
+- There are no accounts. Creating or joining a lobby returns a 256-bit random session token. The client keeps it in `sessionStorage` under `ysto_session` (one seat per tab) and sends it as the first WebSocket message, never in a URL. Clip requests send it in the `Authorization` header. `server/tokens.ts` defines the shape of session and clip tokens once.
 - There are no cookies, so there is nothing for CSRF to exploit. Responses that carry a session token are never cached (`Cache-Control: no-store`).
 - After `hello`, the player's identity is bound to the socket. The server never trusts a player ID in a message body, and it checks host rights on every host action.
 - A kicked player's token can't rejoin that lobby.

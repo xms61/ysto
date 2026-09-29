@@ -2,7 +2,7 @@
 
 A multiplayer anime music quiz in the browser. Players join a lobby with a code and a name, hear a random sample of an anime opening or ending, and pick the right anime from four options.
 
-Status: early development. The server side is in place: the catalog build, lobbies, the clip service and the game loop. The web client comes next, milestone by milestone ([v1 plan](docs/exec-plans/active/2026-09-25-ysto-v1.md)).
+Status: early development. Games play end to end in the browser: create a lobby, share the link or QR code, and play with friends on any device. The themes get their full look next, then hosting ([v1 plan](docs/exec-plans/active/2026-09-25-ysto-v1.md)).
 
 ## Setup
 ```bash
@@ -12,7 +12,7 @@ cp .env.example .env                  # optional: every variable has a default
 npm run dev                           # server on :3000, client on http://localhost:5173
 ```
 
-Requires Node 24 (`.nvmrc`). For production, `npm run build && npm start` serves the app on port 3000.
+Requires Node 24 (`.nvmrc`). For production, `npm run build && npm start` serves the app on port 3000. Phones on the same network can join through the computer's address, such as `http://192.168.1.20:3000`.
 
 ## Building the catalog
 The game plays clips from a local library of AnimeThemes audio files, which the repo never contains. To build its catalog, install ffmpeg and set `YSTO_AUDIO_DIR` in `.env` to the library's folder. Then run:

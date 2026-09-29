@@ -9,7 +9,7 @@ last-verified: 2026-09-29
 Friends get into a game within seconds and without accounts: a code or a link, a name, and they're in.
 
 ## Behavior
-- **Codes** are accepted in any case. They have 6 characters from a 31-character alphabet with no look-alikes (no 0/O or 1/I/L), giving about 887 million codes. The lobby screen shows the code, a join link (`/j/<code>`) and a QR code.
+- **Codes** are accepted in any case. They have 6 characters from a 31-character alphabet with no look-alikes (no 0/O or 1/I/L), giving about 887 million codes. The lobby screen shows the code, a join link (`/j/<code>`) and a QR code, and the address bar shows the join link while a player is in the lobby. A join link opens the home screen ready to join, asking only for a name.
 - **Names** are 1–20 characters after Unicode NFKC normalization and trimming. Control and format characters (zero-width, bidi overrides) are removed. Names are unique per lobby, ignoring case. A taken name asks for another.
 - **Size:** up to 12 players.
 - **Host:**
@@ -18,7 +18,7 @@ Friends get into a game within seconds and without accounts: a code or a link, a
   - The host can skip a round whose clip sounds broken. A skipped round scores nothing.
   - The host changes the [settings](settings.md) between games.
 - **Late joins:** a player who joins during a game watches and hears the round in progress, then plays from the next round, starting at 0 points.
-- **Reconnects:** a player who drops keeps their seat and score for 60 s. A player who leaves on purpose gives up the seat at once. A second tab with the same seat takes it over from the first.
+- **Reconnects:** a player who drops keeps their seat and score for 60 s, and the client reconnects on its own. A player who leaves on purpose gives up the seat at once. A second tab with the same seat takes it over from the first, which offers to take it back.
 - **Expiry:** a lobby closes after 15 minutes with no connected player, and after 4 hours in any case.
 - **Lobby creation** is open to anyone who has the URL. Limits keep it from being abused ([SECURITY.md](../SECURITY.md)).
 

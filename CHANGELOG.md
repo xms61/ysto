@@ -7,6 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.7.0] - 2026-09-29
+
+### Added
+- The web client ([FRONTEND.md](docs/FRONTEND.md)), mobile first:
+  - home: create a lobby, or join with a code or a join link and a name
+  - lobby: the code, the join link and its QR code, the players with host, away and kick, the lock, the host's settings form (the scoring presets, modes and modifiers, songs, length, difficulty, years, genres, formats, sample start) or a summary for everyone else, and the number of matching songs and anime next to the start button
+  - round: a countdown, then the four options exactly when the clip starts, keys 1 to 4, a timer and progress bar, who has answered, and a skip for the host
+  - reveal: the anime in every language, OP or ED and its number, the song and its credited artists, when it aired, the cover, everyone's pick and points with icons and words, and the scores
+  - results: the podium and each player's right answers, average time and best streak, with play again for the host
+- The audio engine (`src/audio/engine.ts`): Web Audio with a gain node at 15% by default, unlocked by the Create or Join tap or a sound button, and started at the round's start on the server's clock, partway in when late. On iPhones it asks for media playback, so the silent switch doesn't mute it.
+- The lobby socket client: hello with the seat from `sessionStorage`, clock sync with `time:ping`, reconnects with backoff, and an exit screen for kicks, closed lobbies and seats taken over by another tab.
+- Device preferences in `localStorage` (`ysto_prefs`): volume, theme (Tokyo Rain, Sakura, Shonen as color palettes) and title language.
+- A Vite dev proxy for `/api`, `/covers` and `/ws`, so `npm run dev` plays games.
+- Tests: the client's reducer, clock, socket, store and audio engine against fakes, flows through `App`, and a browser test in which two players play a whole game against a generated catalog and tones.
+
+### Changed
+- The lobby state's `game` holds the final results once a game ends, so a player who reconnects sees them.
+- The browser tests run against `e2e/fixture-server.ts`, which serves a generated catalog and tones instead of none.
+
 ## [0.6.0] - 2026-09-29
 
 ### Added
@@ -79,13 +98,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Hard now pairs the answer with one other anime of its franchise and adds a pair from one other franchise, instead of filling the options from the answer's franchise first. Easy and Normal take their four options from four franchises. Distractors stay within the lobby's filters while its anime can fill them.
 - `catalog:check` samples files with the game's seeded generator.
-
-## [0.2.1] - 2026-09-25
-
-### Changed
-- Covers come from AnimeThemes' own images, not AniList. The sync asks for `images`, and `catalog:covers` downloads the large cover (or else the small one), named after the AnimeThemes anime id. With a dump, which has no cover links, the step explains that and stops.
-- The AniList query no longer asks for cover images: only the fields the game uses, in line with AniList's terms.
-- The plan records the owner's decisions on AniList use and covers (Q16).
 
 ---
 

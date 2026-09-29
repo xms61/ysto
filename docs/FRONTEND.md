@@ -1,28 +1,40 @@
 ---
-status: draft
-last-verified: 2026-09-25
+status: verified
+last-verified: 2026-09-29
 ---
 
 # Frontend
 
-How the UI code is built. How it should look is in [DESIGN.md](DESIGN.md).
+How the UI code is built. How it should look is in [DESIGN.md](DESIGN.md), and what players can do is in the [product specs](product-specs/index.md).
 
 ## Stack
 - React 19 and TypeScript 6.0, bundled by Vite 8 (`vite.config.ts`).
 - Tailwind CSS 4 through `@tailwindcss/vite`. It is configured in CSS (`src/styles.css`), with no config file.
+- `uqr` draws the join link's QR code. It is the only runtime library besides React.
 - The client libraries are devDependencies: Vite bundles them into `dist/`, and the production image installs only what the server needs at runtime.
 
 ## Structure
-- `index.html` loads `src/main.tsx`, which mounts `App` into `#root`.
-- `src/App.tsx` is the only screen so far: the title.
-- `src/styles.css` holds Tailwind and the base colors, which the three themes replace in M7.
-- Tests sit next to the code they cover (`src/App.test.tsx`).
+`index.html` loads `src/main.tsx`, which mounts `App` with the browser's audio engine and storage.
+- `App.tsx`: the home screen until the tab holds a seat, then `LobbySession`. It keeps the seat, the device settings, and the address bar (`/j/<code>` while in a lobby).
+- `screens/`: `Home` (create or join), `LobbySession` (one store and socket per seat; picks the screen), `Lobby` (invite, players, settings, start), `Round` (countdown, options, timer), `Reveal` and `Results`.
+- `components/`: the settings form and its summary, the player list, the QR code, the device settings panel, the sound banner, the notice toast, and the shared buttons and panels in `ui.tsx`.
+- `realtime/`: the lobby routes (`api.ts`), the socket with hello, pings and reconnects (`connection.ts`), the server clock (`clock.ts`), the pure reducer of server messages (`game-state.ts`), and `store.ts`, which ties them to the audio engine and gives the screens one snapshot.
+- `audio/engine.ts`: fetches, decodes and plays each clip through Web Audio ([audio clips](design-docs/audio-clips.md)).
+- `prefs/prefs.ts`: volume, theme and title language, in `localStorage`. `realtime/session.ts` keeps the seat in `sessionStorage`. Both go through `storage.ts`, which survives blocked storage.
+- `copy.ts` words every error code. `format.ts` formats places, points, times, titles and credits.
+- `testing/fakes.ts`: a fake socket, a fake `AudioContext`, and builders for server messages. Only tests import it.
 
 ## Rules
 - `src/` never imports `server/` or Node built-ins, and never reads `process.env`. Shared code goes through `shared/`. ESLint enforces all three ([ARCHITECTURE.md](../ARCHITECTURE.md)).
 - Relative imports name the real file, extension included (`./App.tsx`), as on the server.
-- Hooks follow the recommended rules of `eslint-plugin-react-hooks`.
+- Hooks follow the recommended rules of `eslint-plugin-react-hooks`, including the compiler rules: no `setState` straight inside an effect, and no impure calls such as `Date.now()` during render. Time reaches components through `useTicker` and `useReached` (`hooks.ts`).
+- Server messages change state only through `receive` in `game-state.ts`. Side effects of a message (loading a clip, playing, stopping, `round:ready`) live in `GameStore`, and screens call the store's actions.
+- Every time from the server is a server time. Convert it with the store's clock (`serverNow`, and `toLocal` for the audio engine), never with `Date.now()` alone.
+- The options show at `startsAt` and not before (`useReached`), even though `round:start` brings them about a second early.
+- Nothing sends settings the server would refuse: the store checks them with `validateSettings` first, because every refusal counts against the socket.
+- Storage keys (`ysto_prefs`, `ysto_session`) are permanent once released.
+- The CSP allows no inline `<style>` and no `style` attributes in HTML. React's `style` prop sets styles through the CSSOM, which the CSP allows; keep it to values that change at runtime, such as the progress bar's width.
 
 ## Checks
-- `npm run test:web` runs the component tests with Testing Library ([TESTING.md](TESTING.md)).
-- `npm run build && npm run test:e2e` loads the built app at `/` and at a join link, in Chromium and WebKit.
+- `npm run test:web` runs the client tests: the reducer, the clock, the socket, the store and the audio engine against fakes, and whole flows through `App` with Testing Library ([TESTING.md](TESTING.md)).
+- `npm run build && npm run test:e2e` loads the built app, decodes a clip in each browser, and plays a whole game with two players against the fixture server.

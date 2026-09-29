@@ -18,7 +18,15 @@ const SERVER_NOT_SRC = { regex: '(^|/)src/', message: 'server/ never imports src
 const NO_SQLITE = { name: 'node:sqlite', message: 'Only server/catalog/ and scripts/catalog/ open SQLite.' };
 
 export default defineConfig([
-  globalIgnores(['dist/', 'coverage/', 'data/', 'test-results/', 'playwright-report/', 'blob-report/']),
+  globalIgnores([
+    'dist/',
+    'coverage/',
+    'data/',
+    'docs/scratch/',
+    'test-results/',
+    'playwright-report/',
+    'blob-report/',
+  ]),
   js.configs.recommended,
   tseslint.configs.recommended,
   {

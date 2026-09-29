@@ -46,7 +46,7 @@ test('plays a whole game over the sockets, from the host start to the results', 
     assert.deepEqual(await nextOf(benClient, 'error'), { type: 'error', code: 'not-host' });
     annClient.send({ type: 'game:start' });
     const playing = await benClient.state((state) => state.game?.phase === 'playing');
-    assert.deepEqual(playing.game, { phase: 'playing', number: 0, rounds: 5 });
+    assert.deepEqual(playing.game, { phase: 'playing', number: 0, rounds: 5, results: null });
     for (let round = 1; round <= 5; round++) {
       const prepare = await nextOf(annClient, 'round:prepare');
       assert.equal((await nextOf(benClient, 'round:prepare')).clipToken, prepare.clipToken);
@@ -86,6 +86,7 @@ test('plays a whole game over the sockets, from the host start to the results', 
       over.players.map((player) => player.score).sort(),
       results.standings.map((standing) => standing.score).sort(),
     );
+    assert.deepEqual(over.game?.results, results.standings, 'the lobby state carries the results for reconnects');
   });
 });
 
@@ -159,7 +160,7 @@ test('ends a game whose clips all fail with empty results', async () => {
       const results = await nextOf(client, 'game:results');
       assert.deepEqual(results.standings, []);
       const over = await client.state((state) => state.game?.phase === 'results');
-      assert.deepEqual(over.game, { phase: 'results', number: 0, rounds: 0 });
+      assert.deepEqual(over.game, { phase: 'results', number: 0, rounds: 0, results: [] });
     },
     { cut },
   );

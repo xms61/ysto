@@ -393,11 +393,14 @@ test('ranks the results and reports correct answers, average time and best strea
     [],
     [],
   ];
+  assert.equal(gameView(sim.game).results, null, 'no results while the game runs');
   for (const answers of rounds) playRound(sim, answers);
-  assert.deepEqual(sim.last('game:results').standings, [
+  const standings = sim.last('game:results').standings;
+  assert.deepEqual(standings, [
     { playerId: 'p1', score: 950 + 850 + 100, correct: 2, averageMs: 2000, bestStreak: 2 },
     { playerId: 'p2', score: 975, correct: 1, averageMs: 500, bestStreak: 1 },
   ]);
+  assert.deepEqual(gameView(sim.game).results, standings, 'the game view keeps the results for reconnects');
 });
 
 test('leaks nothing about the answer before its reveal', () => {

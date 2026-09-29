@@ -35,7 +35,7 @@ CI ([.github/workflows/ci.yml](workflows/ci.yml)) runs on every pull request and
 - `guard` runs the tracked-files check with its tests, then gitleaks.
 - `docs` runs the doc checks and their tests.
 - `app` runs `npm run test:ci` and the build.
-- `e2e` runs the browser smoke test against the build, in Chromium and WebKit.
+- `e2e` runs the browser tests against the build (the smoke test, the clip decode test and a whole game), in Chromium, Firefox and WebKit.
 
 The ruleset also blocks a merge while CodeQL reports a new alert of high or critical severity, or a new error.
 
