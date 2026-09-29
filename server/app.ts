@@ -1,12 +1,17 @@
-// The HTTP app: the health check and, when a client build exists, the built client. Client-side
-// routes such as /j/<code> fall back to index.html so a join link opens the app.
+// The HTTP app: the health check, the clip route once lobbies exist (M4 passes their sessions), and, when
+// a client build exists, the built client. Client-side routes such as /j/<code> fall back to index.html
+// so a join link opens the app.
 import express from 'express';
 import type { Express } from 'express';
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { clipRouter } from './clips/route.ts';
+import type { LobbyOfSession } from './clips/route.ts';
+import type { ClipTokens } from './clips/tokens.ts';
 
 export interface AppOptions {
   clientDir: string;
+  clips?: { tokens: ClipTokens; lobbyOfSession: LobbyOfSession };
 }
 
 // index.html is read once, so page requests are answered from memory: a flood of them can't turn
@@ -19,12 +24,13 @@ function serveClient(app: Express, clientDir: string) {
   });
 }
 
-export function createApp({ clientDir }: AppOptions): Express {
+export function createApp({ clientDir, clips }: AppOptions): Express {
   const app = express();
   app.disable('x-powered-by');
   app.get('/healthz', (_req, res) => {
     res.json({ status: 'ok' });
   });
+  if (clips) app.use(clipRouter(clips.tokens, clips.lobbyOfSession));
   if (existsSync(join(clientDir, 'index.html'))) serveClient(app, clientDir);
   return app;
 }

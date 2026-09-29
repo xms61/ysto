@@ -26,6 +26,7 @@ This file is the map, not the manual. The repository is the system of record: wh
 | [docs/generated/](docs/generated/) | Looking up generated reference such as the database schema (never edit by hand) |
 | [docs/KNOWLEDGE_BASE.md](docs/KNOWLEDGE_BASE.md) | Adding, moving or checking a doc, or running the doc-gardening pass |
 | [scripts/catalog/CATALOG.md](scripts/catalog/CATALOG.md) | Building the catalog, or changing the ingest scripts, the schema or the gate |
+| [server/clips/CLIPS.md](server/clips/CLIPS.md) | Changing how clips are cut, served or timed |
 | [server/game/GAME.md](server/game/GAME.md) | Changing how songs are drawn, how options are picked, or what the lobby filters do |
 
 ## Commands
@@ -38,7 +39,8 @@ This file is the map, not the manual. The repository is the system of record: wh
 | Typecheck | `npm run typecheck` |
 | All tests | `npm test` (server), `npm run test:web` (client) |
 | One test file | `node --test tests/server/app.test.ts` |
-| Browser smoke test | `npm run build && npm run test:e2e` |
+| Browser tests (smoke, clip decode) | `npm run build && npm run test:e2e` (needs ffmpeg) |
+| Clip timing | `npm run clips:bench` (reads the real library) |
 | Catalog | `npm run catalog:build`, then `npm run catalog:check` (all steps: [CATALOG.md](scripts/catalog/CATALOG.md)) |
 | Doc checks | `node scripts/check-docs.mjs` |
 | Doc checker tests | `node --test scripts/check-docs.test.mjs` |

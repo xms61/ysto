@@ -1,6 +1,6 @@
 ---
 status: draft
-last-verified: 2026-09-25
+last-verified: 2026-09-29
 ---
 
 # Security
@@ -16,7 +16,7 @@ The answer to a round is protected by the [anti-cheat design](design-docs/anti-c
 Every external input is validated once, at the boundary ([CODE_STYLE.md](CODE_STYLE.md#errors-and-boundaries)):
 - There is one hand-written validator per message and request body, in `shared/protocol.ts`, from M4 on. Settings are checked against the catalog's bounds (year range, genre list).
 - Player names are normalized and cleaned as the [lobby spec](product-specs/lobby.md) describes. React escapes all text, and the app never uses `dangerouslySetInnerHTML`.
-- The client never sends a file path or catalog ID for audio ([audio clips](design-docs/audio-clips.md)).
+- The client never sends a file path or catalog ID for audio ([audio clips](design-docs/audio-clips.md)). ffmpeg gets an argument array, never a shell, and only files inside `YSTO_AUDIO_DIR`.
 - Limits: anyone who has the URL can create lobbies, so these limits carry the abuse protection.
   - WebSocket frames over 4 KiB are refused (`maxPayload`), and JSON bodies over 4 KiB get a 413.
   - Per IP: 5 lobby creations per minute and at most 3 open lobbies, 30 joins per minute, and 10 unknown codes per minute. Players in one home share an IP, so the connection cap per IP (30) stays above the lobby size.
@@ -24,7 +24,7 @@ Every external input is validated once, at the boundary ([CODE_STYLE.md](CODE_ST
   - Global caps: `YSTO_MAX_LOBBIES`, `YSTO_MAX_GAMES`, `YSTO_MAX_PLAYERS` and the ffmpeg concurrency. Clips are cut only for running games with connected players.
 
 ## Sessions
-- There are no accounts. Creating or joining a lobby returns a 256-bit random session token. The client keeps it in `sessionStorage` (one seat per tab) and sends it as the first WebSocket message, never in a URL.
+- There are no accounts. Creating or joining a lobby returns a 256-bit random session token. The client keeps it in `sessionStorage` (one seat per tab) and sends it as the first WebSocket message, never in a URL. Clip requests send it in the `Authorization` header. `server/tokens.ts` defines the shape of session and clip tokens once.
 - There are no cookies, so there is nothing for CSRF to exploit.
 - After `hello`, the player's identity is bound to the socket. The server never trusts a player ID in a message body, and it checks host rights on every host action.
 - A kicked player's token can't rejoin that lobby.
