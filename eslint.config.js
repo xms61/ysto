@@ -23,6 +23,10 @@ export default defineConfig([
   tseslint.configs.recommended,
   {
     languageOptions: { globals: globals.node },
+    rules: {
+      // Express needs four parameters to tell an error handler, and a rest spread may drop a field.
+      '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_', ignoreRestSiblings: true }],
+    },
   },
   {
     files: ['src/**/*.{ts,tsx}'],

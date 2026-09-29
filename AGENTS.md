@@ -27,7 +27,8 @@ This file is the map, not the manual. The repository is the system of record: wh
 | [docs/KNOWLEDGE_BASE.md](docs/KNOWLEDGE_BASE.md) | Adding, moving or checking a doc, or running the doc-gardening pass |
 | [scripts/catalog/CATALOG.md](scripts/catalog/CATALOG.md) | Building the catalog, or changing the ingest scripts, the schema or the gate |
 | [server/clips/CLIPS.md](server/clips/CLIPS.md) | Changing how clips are cut, served or timed |
-| [server/game/GAME.md](server/game/GAME.md) | Changing how songs are drawn, how options are picked, or what the lobby filters do |
+| [server/game/GAME.md](server/game/GAME.md) | Changing lobbies and their host rules, how songs are drawn, how options are picked, or what the lobby filters do |
+| [server/realtime/REALTIME.md](server/realtime/REALTIME.md) | Changing the lobby routes, the socket protocol, or the limits that guard them |
 
 ## Commands
 | Task | Command |

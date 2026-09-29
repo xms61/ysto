@@ -6,6 +6,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { after, test } from 'node:test';
 import { createApp } from '../../server/app.ts';
+import { createLogger } from '../../server/log.ts';
 
 const dirs: string[] = [];
 after(() => dirs.forEach((dir) => rmSync(dir, { recursive: true, force: true })));
@@ -18,7 +19,8 @@ function clientDirWith(files: Record<string, string>): string {
 }
 
 async function withServer(clientDir: string, run: (baseUrl: string) => Promise<void>) {
-  const server = createApp({ clientDir }).listen(0, '127.0.0.1');
+  const log = createLogger('error', () => {});
+  const server = createApp({ clientDir, registry: null, trustedProxyHops: 0, log }).listen(0, '127.0.0.1');
   await once(server, 'listening');
   // A server listening on a TCP port always reports an AddressInfo, never a pipe name.
   const { port } = server.address() as AddressInfo;

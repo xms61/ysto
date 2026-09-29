@@ -20,19 +20,20 @@ Every external input is validated once, at the boundary ([CODE_STYLE.md](CODE_ST
 - Limits: anyone who has the URL can create lobbies, so these limits carry the abuse protection.
   - WebSocket frames over 4 KiB are refused (`maxPayload`), and JSON bodies over 4 KiB get a 413.
   - Per IP: 5 lobby creations per minute and at most 3 open lobbies, 30 joins per minute, and 10 unknown codes per minute. Players in one home share an IP, so the connection cap per IP (30) stays above the lobby size.
-  - Per socket: 20 messages per second. Repeated invalid messages close the socket with code 1008.
+  - Per socket: 20 messages per second, and `hello` within 10 s. Invalid or excess messages each get an error, and the fifth closes the socket with code 1008.
   - Global caps: `YSTO_MAX_LOBBIES`, `YSTO_MAX_GAMES`, `YSTO_MAX_PLAYERS` and the ffmpeg concurrency. Clips are cut only for running games with connected players.
 
 ## Sessions
 - There are no accounts. Creating or joining a lobby returns a 256-bit random session token. The client keeps it in `sessionStorage` (one seat per tab) and sends it as the first WebSocket message, never in a URL. Clip requests send it in the `Authorization` header. `server/tokens.ts` defines the shape of session and clip tokens once.
-- There are no cookies, so there is nothing for CSRF to exploit.
+- There are no cookies, so there is nothing for CSRF to exploit. Responses that carry a session token are never cached (`Cache-Control: no-store`).
 - After `hello`, the player's identity is bound to the socket. The server never trusts a player ID in a message body, and it checks host rights on every host action.
 - A kicked player's token can't rejoin that lobby.
 
 ## Transport
 - HTTPS and `wss://` go through Caddy with HSTS. `YSTO_TRUST_PROXY` holds the proxy's hop count, so rate limits see player IPs.
 - Every response gets a CSP of `default-src 'self'; img-src 'self' data:; media-src 'self' blob:; connect-src 'self'; font-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'`. It also gets `X-Content-Type-Options: nosniff`, `Referrer-Policy: no-referrer`, a `Permissions-Policy` and `X-Robots-Tag: noindex`. The server already turns `X-Powered-By` off.
-- WebSocket upgrades must come from the page's own origin or from `YSTO_ALLOWED_ORIGINS`.
+- WebSocket upgrades must come from the page's own origin (the Origin's host is the request's Host) or from `YSTO_ALLOWED_ORIGINS`. An upgrade without an Origin is refused.
+- Errors never show a stack trace: unexpected ones get a bare 500, and unknown paths a JSON 404, both with the headers above.
 
 ## External services
 - **AnimeThemes and AniList:** only the offline ingest scripts call them ([catalog](design-docs/catalog.md)). They need no keys, and receive only paced catalog queries with a User-Agent that names the repo. They never see player data. The README and the About screen credit both. Their terms:

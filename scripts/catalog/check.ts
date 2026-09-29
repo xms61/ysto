@@ -1,11 +1,12 @@
 // The catalog gate: what a build must satisfy before games use it. The thresholds and their reasons are
 // in docs/design-docs/catalog.md.
+import { MIN_GENRE_THEMES } from '../../server/game/pool.ts';
 import { seededRandom, shuffle } from '../../server/game/random.ts';
 
 export const GATE = {
   minMatchedShare: 0.99,
   minPopularityShare: 0.95,
-  minGenreThemes: 50,
+  minGenreThemes: MIN_GENRE_THEMES,
   targetLufs: -16,
   lufsTolerance: 2,
   minLoudnessShare: 0.95,

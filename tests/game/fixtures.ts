@@ -2,6 +2,7 @@
 // real catalog (franchises of every size, remakes sharing a title, songs shared within and across
 // franchises, missing English titles, themes too short to play).
 import type { Catalog, CatalogAnime, CatalogTheme } from '../../server/catalog/load.ts';
+import { settingsBounds } from '../../server/game/pool.ts';
 import { pick, seededRandom } from '../../server/game/random.ts';
 import { defaultSettings } from '../../shared/settings.ts';
 import type { LobbySettings } from '../../shared/settings.ts';
@@ -57,7 +58,7 @@ export function catalogOf(anime: CatalogAnime[], themes: CatalogTheme[]): Catalo
 }
 
 export function settingsFor(catalog: Catalog, overrides: Partial<LobbySettings> = {}): LobbySettings {
-  return { ...defaultSettings(catalog.years), ...overrides };
+  return { ...defaultSettings(settingsBounds(catalog)), ...overrides };
 }
 
 const GENRES = ['Action', 'Comedy', 'Drama', 'Fantasy', 'Mecha', 'Romance', 'Sci-Fi', 'Sports'];

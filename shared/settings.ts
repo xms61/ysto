@@ -1,7 +1,8 @@
-// Lobby settings: their types, limits and defaults (docs/product-specs/settings.md). The one definition the
-// server validates against and the client builds its forms from.
-import { SCORING_PRESETS } from './scoring.ts';
+// Lobby settings: their types, limits, defaults and validator (docs/product-specs/settings.md). The one
+// definition the server validates against and the client builds its forms from.
+import { SCORING_MODES, SCORING_PRESETS } from './scoring.ts';
 import type { ScoringRules } from './scoring.ts';
+import { hasKeys, isIntegerIn, isOneOf, isRecord, isSubsetOf } from './validate.ts';
 
 export const TITLE_LANGUAGES = ['english', 'romaji', 'japanese'] as const;
 export type TitleLanguage = (typeof TITLE_LANGUAGES)[number];
@@ -15,7 +16,8 @@ export type MediaFormat = (typeof MEDIA_FORMATS)[number];
 export const DIFFICULTIES = ['easy', 'normal', 'hard', 'custom'] as const;
 export type Difficulty = (typeof DIFFICULTIES)[number];
 
-export type SampleStart = 'random' | 'intro';
+export const SAMPLE_STARTS = ['random', 'intro'] as const;
+export type SampleStart = (typeof SAMPLE_STARTS)[number];
 
 export interface Range {
   from: number;
@@ -35,22 +37,111 @@ export interface LobbySettings {
   scoring: ScoringRules;
 }
 
+// What the catalog allows: its years, the genres the settings offer, and the largest popularity rank
+// (the number of playable anime).
+export interface SettingsBounds {
+  years: Range;
+  genres: string[];
+  maxRank: number;
+}
+
 export const LIMITS = {
   sampleLengthSec: { min: 10, max: 30, step: 5 },
   songsPerGame: { min: 5, max: 50 },
 } as const;
 
-export function defaultSettings(catalogYears: Range): LobbySettings {
+const DEFAULT_RANK_TO = 1000;
+
+export function defaultSettings(bounds: SettingsBounds): LobbySettings {
   return {
     sampleLengthSec: 20,
     songsPerGame: 15,
-    years: { ...catalogYears },
+    years: { ...bounds.years },
     genres: [],
     kinds: [...THEME_KINDS],
     formats: [...MEDIA_FORMATS],
     difficulty: 'normal',
-    popularityRanks: { from: 1, to: 1000 },
+    popularityRanks: { from: 1, to: Math.min(DEFAULT_RANK_TO, bounds.maxRank) },
     sampleStart: 'random',
     scoring: { ...SCORING_PRESETS.classic },
+  };
+}
+
+const SETTINGS_KEYS = [
+  'sampleLengthSec',
+  'songsPerGame',
+  'years',
+  'genres',
+  'kinds',
+  'formats',
+  'difficulty',
+  'popularityRanks',
+  'sampleStart',
+  'scoring',
+] as const;
+const RANGE_KEYS = ['from', 'to'] as const;
+const SCORING_KEYS = ['mode', 'streakBonus', 'comeback', 'wrongAnswerPenalty'] as const;
+
+function isRangeWithin(value: unknown, min: number, max: number): value is Range {
+  return (
+    isRecord(value) &&
+    hasKeys(value, RANGE_KEYS) &&
+    isIntegerIn(value.from, min, max) &&
+    isIntegerIn(value.to, value.from, max)
+  );
+}
+
+function isSampleLength(value: unknown): value is number {
+  const { min, max, step } = LIMITS.sampleLengthSec;
+  return isIntegerIn(value, min, max) && value % step === 0;
+}
+
+function isNonEmptySubsetOf<T extends string>(value: unknown, allowed: readonly T[]): value is T[] {
+  return isSubsetOf(value, allowed) && value.length > 0;
+}
+
+function isScoring(value: unknown): value is ScoringRules {
+  return (
+    isRecord(value) &&
+    hasKeys(value, SCORING_KEYS) &&
+    isOneOf(value.mode, SCORING_MODES) &&
+    typeof value.streakBonus === 'boolean' &&
+    typeof value.comeback === 'boolean' &&
+    typeof value.wrongAnswerPenalty === 'boolean'
+  );
+}
+
+// Null for anything a lobby can't use: a missing or extra field, a value off its range, or a genre the
+// catalog doesn't offer. The result is a fresh copy, never the input object.
+export function validateSettings(value: unknown, bounds: SettingsBounds): LobbySettings | null {
+  if (!isRecord(value) || !hasKeys(value, SETTINGS_KEYS)) return null;
+  const { sampleLengthSec, songsPerGame, years, genres, kinds, formats, difficulty, popularityRanks } = value;
+  const { sampleStart, scoring } = value;
+  const { songsPerGame: songs } = LIMITS;
+  if (
+    !isSampleLength(sampleLengthSec) ||
+    !isIntegerIn(songsPerGame, songs.min, songs.max) ||
+    !isRangeWithin(years, bounds.years.from, bounds.years.to) ||
+    !isSubsetOf(genres, bounds.genres) ||
+    !isNonEmptySubsetOf(kinds, THEME_KINDS) ||
+    !isNonEmptySubsetOf(formats, MEDIA_FORMATS) ||
+    !isOneOf(difficulty, DIFFICULTIES) ||
+    !isRangeWithin(popularityRanks, 1, bounds.maxRank) ||
+    !isOneOf(sampleStart, SAMPLE_STARTS) ||
+    !isScoring(scoring)
+  ) {
+    return null;
+  }
+  return {
+    sampleLengthSec,
+    songsPerGame,
+    years: { from: years.from, to: years.to },
+    genres: [...genres],
+    kinds: [...kinds],
+    formats: [...formats],
+    difficulty,
+    popularityRanks: { from: popularityRanks.from, to: popularityRanks.to },
+    sampleStart,
+    scoring: { ...scoring },
   };
 }

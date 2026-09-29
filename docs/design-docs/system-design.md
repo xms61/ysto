@@ -1,6 +1,6 @@
 ---
 status: draft
-last-verified: 2026-09-25
+last-verified: 2026-09-29
 ---
 
 # System design
@@ -38,14 +38,15 @@ A group of friends plays together on one small VPS. The catalog holds about 14,5
 **No third-party calls at runtime.** Metadata and covers are fetched by the offline ingest scripts, and covers are served from our own origin.
 
 **Planned code map**, with the layer rules already enforced by ESLint ([ARCHITECTURE.md](../../ARCHITECTURE.md)):
-- `server/`: `http/` (headers, CORS, rate limits, routes), `realtime/` (sockets, sessions, dispatch), `game/` (lobby registry, state machine, question builder), `clips/` (ffmpeg runner, token registry, route), `catalog/` (loads SQLite), `config.ts`, `shutdown.ts`
+- `server/`: `http/` (security headers, lobby routes), `realtime/` (sockets and the lobby protocol), `game/` (lobbies and their registry, the question builder, and from M5 the state machine), `clips/` (ffmpeg runner, token registry, route), `catalog/` (loads SQLite), `config.ts`, `log.ts`, `main.ts` (startup and shutdown)
 - `shared/`: protocol types and validators, settings and their defaults, scoring and its presets
 - `src/`: `screens/`, `components/`, `audio/`, `realtime/`, `themes/`, `prefs/`
 - `scripts/catalog/`: the ingest and export steps
 
 **Protocol.**
-- Client → server: `hello { sessionToken }`, `round:ready`, `answer`, `time:ping`. Host only: `settings:update`, `game:start`, `game:again`, `round:skip`, `player:kick`, `lobby:lock`.
+- Client → server: `hello { sessionToken }`, `lobby:leave`, `round:ready`, `answer`, `time:ping`. Host only: `settings:update`, `game:start`, `game:again`, `round:skip`, `player:kick`, `lobby:lock`.
 - Server → client: `lobby:state`, `round:prepare`, `round:start`, `round:answered` (who has answered, not what), `round:reveal`, `game:results`, `time:pong`, `error`, `server:closing`.
+- The lobby messages, their fields, the close codes and the limits are in [REALTIME.md](../../server/realtime/REALTIME.md); the game messages join them in M5. Refusals carry an error code, and the client words the message.
 
 | HTTP route | Purpose |
 | :-- | :-- |
@@ -53,19 +54,19 @@ A group of friends plays together on one small VPS. The catalog holds about 14,5
 | `POST /api/lobbies/:code/players` | Join: `{ name }` → `{ playerId, sessionToken }` |
 | `GET /api/clips/:token` | The round's clip; needs `Authorization: Bearer <sessionToken>` from a player in that lobby ([audio clips](audio-clips.md)) |
 | `GET /covers/:file` | Cover art, referenced only in reveals |
-| `GET /healthz`, `GET /readyz` | Liveness; readiness means the catalog is loaded, the audio folder is readable and ffmpeg is found |
+| `GET /healthz`, `GET /readyz` | Liveness; readiness means the catalog is loaded (from M5 also that the audio folder is readable and ffmpeg is found) |
 
 **Planned configuration.** `server/config.ts` reads every variable, and `.env.example` lists each one as it lands. None is a secret, and once released none may be renamed.
 
 | Variable | Default | Purpose |
 | :-- | :-- | :-- |
 | `PORT` | 3000 | HTTP and WebSocket port |
-| `LOG_LEVEL` | info | |
+| `LOG_LEVEL` | info | debug, info, warn or error |
 | `YSTO_AUDIO_DIR` | required | Root folder of the audio library |
 | `YSTO_CATALOG_DIR` | `./data/catalog` | `catalog.sqlite` and `covers/` |
 | `YSTO_CACHE_DIR` | `./data/cache` | Raw API responses for the ingest scripts |
 | `YSTO_TRUST_PROXY` | 0 | Reverse proxy hop count, so rate limits see player IPs |
-| `YSTO_ALLOWED_ORIGINS` | none | Origins allowed besides the page's own |
+| `YSTO_ALLOWED_ORIGINS` | none | Origins whose pages may open the socket, besides the page's own |
 | `YSTO_MAX_LOBBIES` | 100 | |
 | `YSTO_MAX_GAMES` | 30 | Games running at once, sized to ffmpeg capacity |
 | `YSTO_MAX_PLAYERS` | 12 | Per lobby |
