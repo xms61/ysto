@@ -33,7 +33,9 @@ async function withClipServer(run: (server: ClipServer) => Promise<void>) {
   const clips = { tokens, lobbyOfSession: (session: string) => sessions.get(session) };
   const app = createApp({
     clientDir,
+    coversDir: clientDir,
     registry: null,
+    ready: false,
     trustedProxyHops: 0,
     log: createLogger('error', () => {}),
     clips,

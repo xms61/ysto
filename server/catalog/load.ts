@@ -3,6 +3,7 @@
 // anime also keeps the song ids and keys of all its themes, for the same-song rule.
 import { DatabaseSync } from 'node:sqlite';
 import type { SQLOutputValue } from 'node:sqlite';
+import type { SongCredit } from '../../shared/protocol.ts';
 import type { Range, ThemeKind } from '../../shared/settings.ts';
 import { SCHEMA_VERSION } from './schema.ts';
 
@@ -26,6 +27,8 @@ export interface CatalogTheme {
   animeId: number;
   songId: number | null;
   songKey: string | null;
+  songTitle: string | null;
+  artists: SongCredit[]; // in credit order
   kind: ThemeKind;
   sequence: number;
   slug: string;
@@ -44,8 +47,8 @@ export interface Catalog {
 
 type Row = Record<string, SQLOutputValue>;
 
-const PLAYABLE_THEMES = `SELECT t.id, t.anime_id, t.song_id, s.identity_key, t.kind, t.sequence, t.slug, t.difficulty,
-    f.rel_path, f.duration_ms
+const PLAYABLE_THEMES = `SELECT t.id, t.anime_id, t.song_id, s.identity_key, s.title AS song_title, t.kind, t.sequence,
+    t.slug, t.difficulty, f.rel_path, f.duration_ms
   FROM theme t
   JOIN audio_file f ON f.theme_id = t.id AND f.is_primary = 1
   LEFT JOIN song s ON s.id = t.song_id
@@ -53,6 +56,8 @@ const PLAYABLE_THEMES = `SELECT t.id, t.anime_id, t.song_id, s.identity_key, t.k
 const ALL_THEME_SONGS = `SELECT t.anime_id, t.song_id, s.identity_key FROM theme t LEFT JOIN song s ON s.id = t.song_id`;
 const PLAYABLE_ANIME = `SELECT * FROM anime a
   WHERE EXISTS (SELECT 1 FROM theme t WHERE t.anime_id = a.id AND t.difficulty IS NOT NULL) ORDER BY a.id`;
+const SONG_ARTISTS = `SELECT sa.song_id, a.name, sa.credited_as FROM song_artist sa
+  JOIN artist a ON a.id = sa.artist_id ORDER BY sa.song_id, sa.position`;
 const ANIME_GENRES = `SELECT ag.anime_id, g.name FROM anime_genre ag JOIN genre g ON g.id = ag.genre_id`;
 
 function text(value: SQLOutputValue | undefined): string | null {
@@ -90,13 +95,26 @@ function checkSchema(db: DatabaseSync): void {
   }
 }
 
-function toTheme(row: Row): CatalogTheme {
+function artistsBySong(rows: Row[]): Map<number, SongCredit[]> {
+  const artists = new Map<number, SongCredit[]>();
+  for (const row of rows) {
+    const songId = required(numeric(row.song_id), 'a credited song');
+    const artist = { name: required(text(row.name), 'an artist name'), as: text(row.credited_as) };
+    artists.set(songId, [...(artists.get(songId) ?? []), artist]);
+  }
+  return artists;
+}
+
+function toTheme(row: Row, artists: Map<number, SongCredit[]>): CatalogTheme {
   const kind = row.kind === 'ED' ? 'ED' : 'OP';
+  const songId = numeric(row.song_id);
   return {
     id: required(numeric(row.id), 'a theme id'),
     animeId: required(numeric(row.anime_id), 'a theme anime'),
-    songId: numeric(row.song_id),
+    songId,
     songKey: text(row.identity_key),
+    songTitle: text(row.song_title),
+    artists: songId === null ? [] : (artists.get(songId) ?? []),
     kind,
     sequence: required(numeric(row.sequence), 'a theme sequence'),
     slug: required(text(row.slug), 'a theme slug'),
@@ -110,7 +128,11 @@ export function loadCatalog(file: string): Catalog {
   const db = new DatabaseSync(file, { readOnly: true });
   try {
     checkSchema(db);
-    const themes = db.prepare(PLAYABLE_THEMES).all().map(toTheme);
+    const artists = artistsBySong(db.prepare(SONG_ARTISTS).all());
+    const themes = db
+      .prepare(PLAYABLE_THEMES)
+      .all()
+      .map((row) => toTheme(row, artists));
     const songRows = db.prepare(ALL_THEME_SONGS).all();
     const songIds = groupSets(songRows, 'anime_id', (row) => numeric(row.song_id));
     const songKeys = groupSets(songRows, 'anime_id', (row) => text(row.identity_key));

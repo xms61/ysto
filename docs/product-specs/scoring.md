@@ -1,6 +1,6 @@
 ---
 status: draft
-last-verified: 2026-09-25
+last-verified: 2026-09-29
 ---
 
 # Scoring
@@ -14,7 +14,7 @@ The host sets the scoring in the lobby, and presets bundle common combinations. 
 | Mode | A correct answer scores | The round ends |
 | :-- | :-- | :-- |
 | Speed (default) | `round(1000 × (1 − 0.5 × t / T))`: 500–1,000 points, where `t` is the response time and `T` the answer window | at the deadline, or when everyone has answered |
-| First correct | 1,000 for the first correct answer, 0 for later ones | at the first correct answer, or at the deadline |
+| First correct | 1,000 for the first correct answer, 0 for later ones | 150 ms after the first correct answer, or at the deadline |
 | Flat | 1,000 | as in Speed |
 
 | Modifier | Effect | Default |

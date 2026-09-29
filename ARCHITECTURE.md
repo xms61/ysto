@@ -8,12 +8,12 @@ last-verified: 2026-09-29
 The shape of the system: what each part owns and which way dependencies point. Keep it to what changes rarely; details belong in the area docs next to the code.
 
 ## Bird's-eye view
-You Skipped The OP?! is a browser quiz. Players join a lobby with a code, hear a sample of an anime opening or ending, and pick the anime from four options. One Node process serves the built React client and the HTTP API. Today the catalog build, the question engine, the clip service and lobbies exist: players create or join a lobby over HTTP, then hold a WebSocket to it. The game loop arrives with milestone M5 of the [v1 plan](docs/exec-plans/active/2026-09-25-ysto-v1.md).
+You Skipped The OP?! is a browser quiz. Players join a lobby with a code, hear a sample of an anime opening or ending, and pick the anime from four options. One Node process serves the built React client and the HTTP API. Today the server side exists: players create or join a lobby over HTTP, hold a WebSocket to it, and play games whose clips the server cuts per round. The web client arrives with milestone M6 of the [v1 plan](docs/exec-plans/active/2026-09-25-ysto-v1.md).
 
 ## Code map
 - `server/`: the Node server. `main.ts` starts the process (config, catalog, listen, shutdown), `app.ts` builds the Express app, and `config.ts` is the only code that reads environment variables. `log.ts` writes JSON log lines, `rate-limit.ts` counts events per key, and `client-ip.ts` finds the player's IP behind the proxy. It never imports `src/`.
   - `server/catalog/`: `schema.ts` is the catalog's SQLite schema, shared by the build and the server. `load.ts` reads the catalog into memory at startup.
-  - `server/game/`: lobbies and their registry, and the question engine, which turns lobby settings into a game's songs, sample offsets and options ([GAME.md](server/game/GAME.md)). The game state machine joins them in M5.
+  - `server/game/`: lobbies and their registry, the question engine, which turns lobby settings into a game's songs, sample offsets and options, and the game engine (a pure state machine) with the shell that runs it ([GAME.md](server/game/GAME.md)). `server/scheduler.ts` gives the shell its clock and timers.
   - `server/http/`: the security headers and the lobby routes. `server/realtime/`: the lobby sockets and their protocol ([REALTIME.md](server/realtime/REALTIME.md)).
   - `server/clips/`: the clip service. It cuts clips with ffmpeg, keeps them under tokens, and serves them on `GET /api/clips/:token` ([CLIPS.md](server/clips/CLIPS.md)). `server/tokens.ts` defines the random tokens it and the sessions use.
 - `src/`: the React client, which Vite bundles into `dist/`. It never imports `server/` or Node built-ins.
@@ -31,6 +31,7 @@ You Skipped The OP?! is a browser quiz. Players join a lobby with a code, hear a
 ## Invariants
 - Only `server/config.ts` reads environment variables. It validates each one at startup, and each one is listed in `.env.example`. ESLint's `no-restricted-properties` rejects `process.env` anywhere else in `server/`, `shared/`, `src/` and the TypeScript scripts.
 - Node 24 runs the server's TypeScript by stripping the types, with no build step. So relative imports name the real file with its extension, type-only imports use `import type`, and code uses only erasable syntax (no enums, namespaces or parameter properties). `tsc` enforces all three (`allowImportingTsExtensions`, `verbatimModuleSyntax`, `erasableSyntaxOnly`).
+- Game rules live in the pure engine (`server/game/engine.ts`): it never reads a clock, socket or file, so tests play whole games on a fake clock. The shell (`games.ts`) is the only place that runs its effects.
 - Everything random in a game goes through the `Random` interface in `server/game/random.ts`: the operating system's secure generator in live games, a seeded one in tests.
 - A `Question` holds the answer, so it never goes to a client as it is ([anti-cheat](docs/design-docs/anti-cheat.md)).
 - ffmpeg runs only through `server/clips/ffmpeg.ts` (and the catalog scripts), with an argument array and never a shell.

@@ -10,7 +10,6 @@ export const MAX_LOBBY_AGE_MS = 4 * 60 * 60_000;
 export interface Player {
   id: string;
   name: string;
-  score: number;
   connectedSince: number | null; // null while not connected
   disconnectedAt: number | null; // null while connected; a new seat counts from its creation
 }
@@ -63,7 +62,7 @@ export function addPlayer(
   if (lobby.locked) return { error: 'lobby-locked' };
   if (lobby.players.length >= maxPlayers) return { error: 'lobby-full' };
   if (lobby.players.some((player) => nameKey(player.name) === nameKey(seat.name))) return { error: 'name-taken' };
-  const player: Player = { ...seat, score: 0, connectedSince: null, disconnectedAt: now };
+  const player: Player = { ...seat, connectedSince: null, disconnectedAt: now };
   return { lobby: { ...lobby, players: [...lobby.players, player], hostId: lobby.hostId ?? seat.id } };
 }
 
@@ -72,7 +71,7 @@ export function connectPlayer(lobby: Lobby, id: string, now: number): Lobby {
   return withIdleSince({ ...connected, hostId: connected.hostId ?? id }, now);
 }
 
-// A dropped player keeps their seat, score and host rights for the reconnect grace.
+// A dropped player keeps their seat and host rights for the reconnect grace; the game keeps their score.
 export function disconnectPlayer(lobby: Lobby, id: string, now: number): Lobby {
   const dropped = updatePlayer(lobby, id, (player) => ({ ...player, connectedSince: null, disconnectedAt: now }));
   return withIdleSince(dropped, now);

@@ -1,11 +1,10 @@
 // The four option titles in each title language (docs/product-specs/questions.md). A language is used only
 // when all four options have a title in it, otherwise romaji, so a fallback never singles an option out.
 // Equal titles get their years added. The server sends all three lists; each client shows one.
+import type { OptionTitles } from '../../shared/protocol.ts';
 import { TITLE_LANGUAGES } from '../../shared/settings.ts';
 import type { TitleLanguage } from '../../shared/settings.ts';
 import type { CatalogAnime } from '../catalog/load.ts';
-
-export type OptionTitles = Record<TitleLanguage, string[]>;
 
 export function normalizeTitle(title: string): string {
   return title.normalize('NFKC').toLowerCase().replace(/\s+/g, ' ').trim();

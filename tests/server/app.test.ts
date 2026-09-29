@@ -20,7 +20,14 @@ function clientDirWith(files: Record<string, string>): string {
 
 async function withServer(clientDir: string, run: (baseUrl: string) => Promise<void>) {
   const log = createLogger('error', () => {});
-  const server = createApp({ clientDir, registry: null, trustedProxyHops: 0, log }).listen(0, '127.0.0.1');
+  const server = createApp({
+    clientDir,
+    coversDir: clientDir,
+    registry: null,
+    ready: false,
+    trustedProxyHops: 0,
+    log,
+  }).listen(0, '127.0.0.1');
   await once(server, 'listening');
   // A server listening on a TCP port always reports an AddressInfo, never a pipe name.
   const { port } = server.address() as AddressInfo;

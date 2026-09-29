@@ -1,6 +1,6 @@
 ---
 status: draft
-last-verified: 2026-09-25
+last-verified: 2026-09-29
 ---
 
 # Game flow
@@ -17,14 +17,18 @@ server                                              clients
  | pick theme, sample offset, 4 options (kept here)  |
  | cut the clip with ffmpeg, issue a clip token      |
  |-- round:prepare { roundId, clipToken } ---------->| fetch and decode the clip
- |<- round:ready { roundId } ------------------------| barrier: everyone ready, or 8 s
+ |<- round:ready { roundId, loaded } ----------------| barrier: everyone ready, or 8 s
  |-- round:start { startsAt, endsAt, options[4] } -->| play at startsAt, show the options
  |<- answer { roundId, option: 0-3 } ----------------| the first answer locks
  | close at endsAt, when everyone has answered, or   |
  |   at the first correct answer in First correct    |
  |-- round:reveal { correct, anime, song, scores } ->| about 7 s; the next clip is already cut
 ```
-- `startsAt` is about 1 s after the barrier, so every client has the message before the clip starts.
+- `startsAt` is 1 s after the barrier, so every client has the message before the clip starts. The first round waits 3 s instead: the game's countdown.
+- Only connected players hold up the barrier, or end a round early by all answering. If nobody is connected when a barrier runs out, the game ends.
+- A round whose clip fails on three themes is dropped, and the game plays on with one round fewer.
+- A player who reconnects during a round gets the round again, and the reveal if it is showing. A player who joins during a game sees and hears the rounds, then plays from the next one.
+- "Play again" is the host starting the next game from the results.
 - The sample plays for the whole answer window, which equals the sample length.
 - The reveal shows:
   - the right option, and the anime in English, romaji and Japanese
@@ -37,7 +41,7 @@ server                                              clients
 
 ## Acceptance criteria
 - All players see the options at `startsAt`, and none before.
-- A round ends at `endsAt`, as soon as everyone has answered, or at the first correct answer in First correct ([scoring](scoring.md)).
+- A round ends at `endsAt`, as soon as everyone has answered, or 150 ms after the first correct answer in First correct ([scoring](scoring.md)).
 - The next round starts right after the reveal, without waiting for a clip to be cut.
 - "Play again" keeps the players and settings, and avoids the themes already played.
 - A game of 15 songs with 20 s samples takes about 7 to 8 minutes.

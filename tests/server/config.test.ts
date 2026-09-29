@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { availableParallelism } from 'node:os';
 import { join, resolve } from 'node:path';
 import { test } from 'node:test';
 import { loadCatalogConfig, loadConfig } from '../../server/config.ts';
@@ -27,10 +28,14 @@ test('defaults the server settings', () => {
     port: 3000,
     logLevel: 'info',
     catalogDir: resolve(CWD, 'data/catalog'),
+    audioDir: null,
+    ffmpegPath: 'ffmpeg',
+    ffmpegConcurrency: Math.max(1, availableParallelism() - 1),
     trustedProxyHops: 0,
     allowedOrigins: [],
     maxLobbies: 100,
     maxPlayers: 12,
+    maxGames: 30,
   });
 });
 
@@ -43,6 +48,10 @@ test('reads the server settings', () => {
       YSTO_ALLOWED_ORIGINS: 'https://example.org, http://localhost:5173',
       YSTO_MAX_LOBBIES: '20',
       YSTO_MAX_PLAYERS: '8',
+      YSTO_AUDIO_DIR: 'library',
+      YSTO_FFMPEG_PATH: 'tools/ffmpeg',
+      YSTO_FFMPEG_CONCURRENCY: '2',
+      YSTO_MAX_GAMES: '4',
     },
     CWD,
   );
@@ -50,10 +59,14 @@ test('reads the server settings', () => {
     port: 3000,
     logLevel: 'warn',
     catalogDir: resolve(CWD, 'catalog'),
+    audioDir: resolve(CWD, 'library'),
+    ffmpegPath: 'tools/ffmpeg',
+    ffmpegConcurrency: 2,
     trustedProxyHops: 1,
     allowedOrigins: ['https://example.org', 'http://localhost:5173'],
     maxLobbies: 20,
     maxPlayers: 8,
+    maxGames: 4,
   });
 });
 
@@ -63,6 +76,8 @@ test('names the variable when a server setting is invalid', () => {
     [{ YSTO_TRUST_PROXY: '-1' }, /^YSTO_TRUST_PROXY must be an integer from 0 to 10/],
     [{ YSTO_MAX_LOBBIES: '0' }, /^YSTO_MAX_LOBBIES must be an integer from 1/],
     [{ YSTO_MAX_PLAYERS: 'many' }, /^YSTO_MAX_PLAYERS must be an integer from 1 to 50/],
+    [{ YSTO_FFMPEG_CONCURRENCY: '0' }, /^YSTO_FFMPEG_CONCURRENCY must be an integer from 1 to 64/],
+    [{ YSTO_MAX_GAMES: '1.5' }, /^YSTO_MAX_GAMES must be an integer from 1 to 1000/],
     [{ YSTO_ALLOWED_ORIGINS: 'https://example.org/path' }, /^YSTO_ALLOWED_ORIGINS holds "https:\/\/example.org\/path"/],
     [{ YSTO_ALLOWED_ORIGINS: 'example.org' }, /^YSTO_ALLOWED_ORIGINS holds "example.org"/],
   ];

@@ -33,7 +33,7 @@ A group of friends plays together on one small VPS. The catalog holds about 14,5
 
 **Runtime state** (lobbies, sessions, rounds, clip tokens) lives in memory. Nothing about players is written to disk. The [catalog](catalog.md) is built offline, mounted read-only and loaded into memory at startup, so song selection is plain filtering.
 
-**The game engine** in `server/game/` is a pure state machine: `step(state, event, now, random) → { state, effects }`. The effects are "send to player", "broadcast", "set timer" and "prepare clip", and a thin shell runs them against real sockets and timers.
+**The game engine** in `server/game/engine.ts` is a pure state machine: `step(game, event, now) → { game, effects }`. The effects are "send", "set timer", "cut clip", "expire clip" and "finished". The shell in `games.ts` runs them against a scheduler, ffmpeg, the clip tokens and the sockets. The questions and their random draws are made before the game starts, so the engine needs no random source.
 
 **No third-party calls at runtime.** Metadata and covers are fetched by the offline ingest scripts, and covers are served from our own origin.
 
@@ -44,7 +44,7 @@ A group of friends plays together on one small VPS. The catalog holds about 14,5
 - `scripts/catalog/`: the ingest and export steps
 
 **Protocol.**
-- Client → server: `hello { sessionToken }`, `lobby:leave`, `round:ready`, `answer`, `time:ping`. Host only: `settings:update`, `game:start`, `game:again`, `round:skip`, `player:kick`, `lobby:lock`.
+- Client → server: `hello { sessionToken }`, `lobby:leave`, `round:ready`, `answer`, `time:ping`. Host only: `settings:update`, `game:start` (also for playing again), `round:skip`, `player:kick`, `lobby:lock`.
 - Server → client: `lobby:state`, `round:prepare`, `round:start`, `round:answered` (who has answered, not what), `round:reveal`, `game:results`, `time:pong`, `error`, `server:closing`.
 - The lobby messages, their fields, the close codes and the limits are in [REALTIME.md](../../server/realtime/REALTIME.md); the game messages join them in M5. Refusals carry an error code, and the client words the message.
 
@@ -54,9 +54,9 @@ A group of friends plays together on one small VPS. The catalog holds about 14,5
 | `POST /api/lobbies/:code/players` | Join: `{ name }` → `{ playerId, sessionToken }` |
 | `GET /api/clips/:token` | The round's clip; needs `Authorization: Bearer <sessionToken>` from a player in that lobby ([audio clips](audio-clips.md)) |
 | `GET /covers/:file` | Cover art, referenced only in reveals |
-| `GET /healthz`, `GET /readyz` | Liveness; readiness means the catalog is loaded (from M5 also that the audio folder is readable and ffmpeg is found) |
+| `GET /healthz`, `GET /readyz` | Liveness; readiness means the catalog is loaded, the audio folder is there and ffmpeg runs |
 
-**Planned configuration.** `server/config.ts` reads every variable, and `.env.example` lists each one as it lands. None is a secret, and once released none may be renamed.
+**Configuration.** `server/config.ts` reads every variable, and `.env.example` lists each one as it lands. None is a secret, and once released none may be renamed.
 
 | Variable | Default | Purpose |
 | :-- | :-- | :-- |

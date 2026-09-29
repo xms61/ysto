@@ -20,9 +20,13 @@ Entry: `server/realtime/hub.ts`. `Realtime` serves the lobby sockets at `/ws` on
 | `lobby:leave` | player | releases the seat now; the socket closes with 1000 |
 | `lobby:lock { locked }` | host | locks or unlocks joining |
 | `player:kick { playerId }` | host | removes the player; their socket closes with 4001 |
-| `settings:update { settings }` | host | new settings, checked against the catalog's bounds |
+| `settings:update { settings }` | host | new settings, checked against the catalog's bounds; refused while a game runs |
+| `game:start` | host | starts a game, or the next one from the results |
+| `round:ready { roundId, loaded }` | player | the round's clip is fetched and decoded, or failed to (`loaded: false`) |
+| `answer { roundId, option }` | player | locks in option 0–3 |
+| `round:skip` | host | ends the round without points |
 
-The server sends `lobby:state` after every change, `error { code }` for a refused message, and `server:closing` before a shutdown. Close codes: 1000 left, 1001 server closing, 1008 invalid messages, 1009 frame too large, 4001 kicked, 4002 lobby closed, 4003 unknown session, 4004 replaced by a newer socket.
+During a game the server sends `round:prepare`, `round:start`, `round:answered`, `round:reveal` and `game:results` ([game flow](../../docs/product-specs/game-flow.md)). It sends `lobby:state` after every lobby change and whenever a game starts, prepares a round or ends, `error { code }` for a refused message, and `server:closing` before a shutdown. Close codes: 1000 left, 1001 server closing, 1008 invalid messages, 1009 frame too large, 4001 kicked, 4002 lobby closed, 4003 unknown session, 4004 replaced by a newer socket.
 
 ## Rules
 - The session token travels only in the first message or the clip route's `Authorization` header, never in a URL, and never in a log.
@@ -32,6 +36,7 @@ The server sends `lobby:state` after every change, `error { code }` for a refuse
   - sockets: 30 per IP; per socket, 20 messages a second, 4 KiB frames, and `hello` within 10 s
 - Invalid or excess messages each get an error. The fifth closes the socket with 1008. Host-rights errors don't count.
 - A newer socket for the same seat replaces the older one, as when a tab reloads.
+- Each socket keeps its last 5 ping round trips. The heartbeat, `hello` and every `round:prepare` send a ping, and an answer carries the median, from which the engine takes off at most 150 ms.
 - Every refusal from the API has a JSON body `{ error }` with a code from `ErrorCode`. The client words the message.
 - Without a catalog, `/readyz` answers 503, the lobby routes answer `not-ready`, and no socket is served.
 
@@ -43,4 +48,5 @@ The server sends `lobby:state` after every change, `error { code }` for a refuse
 
 ## Tests
 - `tests/realtime/hub.test.ts` drives several `ws` clients against an in-process server (`tests/server/harness.ts`). It covers join, leave, reconnect, replacement, host handover, kick, settings, expiry, shutdown, origins, the per-IP cap, frame size, invalid messages and the message rate.
+- `tests/realtime/game.test.ts` plays whole games over the sockets, including the clip route, spectators, skips and the start refusals.
 - `tests/http/api.test.ts` covers creating and joining, every refusal, code guessing, the open-lobby cap, not-ready and the headers.

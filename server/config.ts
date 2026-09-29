@@ -1,5 +1,6 @@
 // The only module that reads environment variables. Every variable is validated once, at startup,
 // and listed in .env.example.
+import { availableParallelism } from 'node:os';
 import { basename, dirname, join, resolve } from 'node:path';
 import { LOG_LEVELS } from './log.ts';
 import type { LogLevel } from './log.ts';
@@ -9,10 +10,14 @@ export interface Config {
   port: number;
   logLevel: LogLevel;
   catalogDir: string;
+  audioDir: string | null; // games can't start without it
+  ffmpegPath: string;
+  ffmpegConcurrency: number;
   trustedProxyHops: number;
   allowedOrigins: string[];
   maxLobbies: number;
   maxPlayers: number;
+  maxGames: number;
 }
 
 // Where the catalog scripts read and write. Relative paths resolve against the working directory,
@@ -72,6 +77,10 @@ function catalogDir(env: Env, cwd: string): string {
   return optionalPath(env, 'YSTO_CATALOG_DIR', cwd) ?? resolve(cwd, 'data/catalog');
 }
 
+function ffmpegPath(env: Env): string {
+  return setValue(env, 'YSTO_FFMPEG_PATH') ?? 'ffmpeg';
+}
+
 // ffprobe ships next to ffmpeg, so YSTO_FFMPEG_PATH locates both.
 function ffprobeNextTo(ffmpegPath: string): string {
   const name = basename(ffmpegPath);
@@ -84,20 +93,25 @@ export function loadConfig(env: Env = process.env, cwd: string = process.cwd()):
     port: integerIn(env, 'PORT', 1, 65535, 3000),
     logLevel: logLevel(env),
     catalogDir: catalogDir(env, cwd),
+    audioDir: optionalPath(env, 'YSTO_AUDIO_DIR', cwd),
+    ffmpegPath: ffmpegPath(env),
+    // One core stays free for the event loop.
+    ffmpegConcurrency: integerIn(env, 'YSTO_FFMPEG_CONCURRENCY', 1, 64, Math.max(1, availableParallelism() - 1)),
     trustedProxyHops: integerIn(env, 'YSTO_TRUST_PROXY', 0, 10, 0),
     allowedOrigins: allowedOrigins(env),
     maxLobbies: integerIn(env, 'YSTO_MAX_LOBBIES', 1, 10_000, 100),
     maxPlayers: integerIn(env, 'YSTO_MAX_PLAYERS', 1, 50, 12),
+    maxGames: integerIn(env, 'YSTO_MAX_GAMES', 1, 1000, 30),
   };
 }
 
 export function loadCatalogConfig(env: Env = process.env, cwd: string = process.cwd()): CatalogConfig {
-  const ffmpegPath = setValue(env, 'YSTO_FFMPEG_PATH') ?? 'ffmpeg';
+  const ffmpeg = ffmpegPath(env);
   return {
     audioDir: optionalPath(env, 'YSTO_AUDIO_DIR', cwd),
     catalogDir: catalogDir(env, cwd),
     cacheDir: optionalPath(env, 'YSTO_CACHE_DIR', cwd) ?? resolve(cwd, 'data/cache'),
-    ffmpegPath,
-    ffprobePath: ffprobeNextTo(ffmpegPath),
+    ffmpegPath: ffmpeg,
+    ffprobePath: ffprobeNextTo(ffmpeg),
   };
 }

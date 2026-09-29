@@ -1,6 +1,6 @@
 ---
 status: draft
-last-verified: 2026-09-25
+last-verified: 2026-09-29
 ---
 
 # Anti-cheat and score integrity
@@ -18,9 +18,9 @@ Players have devtools and can modify the client. The answer to the current round
    - Metadata is stripped, and every clip is exactly the chosen length ([audio clips](audio-clips.md)).
 3. **The options arrive with `round:start`**, not with the prepare message, so nobody can research them while the clip loads.
 4. **One answer per player per round.** It's accepted between `startsAt` and `endsAt`, plus 300 ms of grace. Early, late and repeated answers are dropped.
-5. **The server measures response time:** from `startsAt` to the answer's arrival, minus half the player's median round-trip time, capped at 150 ms. Clients never report times. In First correct, this adjusted time decides who was first, and arrival order breaks exact ties.
+5. **The server measures response time:** from `startsAt` to the answer's arrival, minus half the player's median round-trip time, capped at 150 ms. The round trip is the median of the socket's last 5 WebSocket pings, which browsers answer themselves. Clients never report times. In First correct, this adjusted time decides who was first, and arrival order breaks exact ties. So that a slower connection can still win, the round closes 150 ms after the first correct answer, not at it.
 6. **The reveal is sent only after the round has closed for everyone.**
-7. **A leak test** records every message sent before a reveal. It fails if any message contains the answer's titles, song, artists or IDs.
+7. **A leak test** records every message sent before a reveal. It fails if any message contains the answer's titles, song, artists or IDs. The options are the one allowed place for the answer's title, as one of four. It lives in `tests/game/engine.test.ts`.
 
 Wrong answers in the First correct mode cost points by default, so blind instant guessing loses points on average ([scoring](../product-specs/scoring.md)).
 

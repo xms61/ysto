@@ -62,7 +62,7 @@ export class LobbyRegistry {
   readonly #creatorIps = new Map<string, string>();
   readonly #seats = new Map<string, Seat>(); // by session token
   readonly #tokens = new Map<string, string>(); // session token by player id
-  #listener: (event: RegistryEvent) => void = () => {};
+  readonly #listeners: ((event: RegistryEvent) => void)[] = [];
 
   constructor({ catalog, maxLobbies, maxPlayers, log, now = Date.now }: RegistryOptions) {
     this.#catalog = catalog;
@@ -74,7 +74,7 @@ export class LobbyRegistry {
   }
 
   subscribe(listener: (event: RegistryEvent) => void): void {
-    this.#listener = listener;
+    this.#listeners.push(listener);
   }
 
   create(name: string, ip: string): (Joined & { code: string }) | { error: 'server-full' | 'too-many-lobbies' } {
@@ -173,16 +173,20 @@ export class LobbyRegistry {
     return null;
   }
 
+  #emit(event: RegistryEvent): void {
+    for (const listener of this.#listeners) listener(event);
+  }
+
   #store(lobby: Lobby): void {
     this.#lobbies.set(lobby.code, lobby);
-    this.#listener({ type: 'changed', lobby });
+    this.#emit({ type: 'changed', lobby });
   }
 
   #removeSeat(lobby: Lobby, seat: Seat, reason: SeatRemoval): void {
     const token = this.#tokens.get(seat.playerId);
     if (token !== undefined) this.#seats.delete(token);
     this.#tokens.delete(seat.playerId);
-    this.#listener({ type: 'seat-removed', seat, reason });
+    this.#emit({ type: 'seat-removed', seat, reason });
     this.#store(lobby);
   }
 
@@ -195,7 +199,7 @@ export class LobbyRegistry {
     this.#lobbies.delete(lobby.code);
     this.#creatorIps.delete(lobby.code);
     this.#log.info('lobby.closed', { code: lobby.code });
-    this.#listener({ type: 'closed', code: lobby.code });
+    this.#emit({ type: 'closed', code: lobby.code });
   }
 
   #newCode(): string {

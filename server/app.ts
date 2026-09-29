@@ -1,5 +1,5 @@
 // The HTTP app: security headers on everything, the health and readiness checks, the lobby API, the clip
-// route, and, when a client build exists, the built client. Client-side routes such as /j/<code> fall
+// route, cover art, and, when a client build exists, the built client. Client-side routes such as /j/<code> fall
 // back to index.html so a join link opens the app.
 import express from 'express';
 import type { Express, NextFunction, Request, Response } from 'express';
@@ -15,8 +15,11 @@ import type { Logger } from './log.ts';
 
 export interface AppOptions {
   clientDir: string;
-  // Null while the catalog isn't loaded: /readyz fails and the lobby routes answer 503.
+  coversDir: string;
+  // Null while the catalog isn't loaded: the lobby routes answer 503.
   registry: LobbyRegistry | null;
+  // The catalog is loaded, the audio folder is there and ffmpeg runs, so games can be played.
+  ready: boolean;
   trustedProxyHops: number;
   log: Logger;
   clips?: { tokens: ClipTokens; lobbyOfSession: LobbyOfSession };
@@ -32,7 +35,15 @@ function serveClient(app: Express, clientDir: string) {
   });
 }
 
-export function createApp({ clientDir, registry, trustedProxyHops, log, clips }: AppOptions): Express {
+export function createApp({
+  clientDir,
+  coversDir,
+  registry,
+  ready,
+  trustedProxyHops,
+  log,
+  clips,
+}: AppOptions): Express {
   const app = express();
   app.disable('x-powered-by');
   app.use(securityHeaders);
@@ -40,10 +51,12 @@ export function createApp({ clientDir, registry, trustedProxyHops, log, clips }:
     res.json({ status: 'ok' });
   });
   app.get('/readyz', (_req, res) => {
-    res.status(registry ? 200 : 503).json({ status: registry ? 'ready' : 'not-ready' });
+    res.status(ready ? 200 : 503).json({ status: ready ? 'ready' : 'not-ready' });
   });
   app.use(apiRouter({ registry, trustedHops: trustedProxyHops }));
   if (clips) app.use(clipRouter(clips.tokens, clips.lobbyOfSession));
+  // Reveals show covers; a missing one falls through to the 404 below.
+  app.use('/covers', express.static(coversDir, { index: false, dotfiles: 'deny' }));
   if (existsSync(join(clientDir, 'index.html'))) serveClient(app, clientDir);
   // Express's own 404 page would replace the security headers with its own.
   app.use((_req, res) => {
