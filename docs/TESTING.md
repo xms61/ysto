@@ -1,6 +1,6 @@
 ---
 status: draft
-last-verified: 2026-09-25
+last-verified: 2026-09-29
 ---
 
 # Testing
@@ -10,16 +10,16 @@ last-verified: 2026-09-25
 | `npm test` | Server, shared and catalog tests (`node:test`) | `tests/**/*.test.ts` |
 | `npm run test:coverage` | The same tests with coverage thresholds over `server/`, `shared/` and `scripts/catalog/`: lines and functions ≥ 85 %, branches ≥ 75 %. `server/main.ts` and `scripts/catalog/bin/` only wire things together and are left out. | Node's built-in coverage; the flags are in `package.json` |
 | `npm run test:web` | Client tests (Vitest, jsdom, Testing Library) | `src/**/*.test.tsx`, `vitest.config.ts` |
-| `npm run test:e2e` | Browser smoke test against the production build, in Chromium and WebKit. Run `npm run build` first. | `e2e/`, `playwright.config.ts` |
+| `npm run test:e2e` | Browser tests against the production build, in Chromium, Firefox and WebKit: the smoke test, and the clip decode test that cuts a tone with ffmpeg. Run `npm run build` first. | `e2e/`, `playwright.config.ts` |
 | `npm run test:ci` | Lint, format check, typecheck, coverage and client tests: everything CI runs except the build, the smoke test and the repo checks | `.github/workflows/ci.yml` |
 | `node --test scripts/*.test.mjs` | Tests of the doc and tracked-files checks | `scripts/` |
 
-The smoke test needs its browsers once per machine: `npx playwright install chromium webkit`. The catalog's audio tests need `ffmpeg` and `ffprobe` on PATH (CI installs them).
+The browser tests need their browsers once per machine: `npx playwright install chromium firefox webkit`. The catalog's audio tests, the clip tests and the decode test need `ffmpeg` and `ffprobe` on PATH (CI installs them). The e2e folder has its own TypeScript project (`tsconfig.e2e.json`), because code inside `page.evaluate` runs in the browser and needs the DOM types that server code must not see.
 
 ## Isolation
 - Tests never touch the network or the real data directory.
 - Code that calls an API takes an `HttpClient`. Tests pass `fakeHttp` from `tests/catalog/fixtures.ts`, which answers from a list and records every request and sleep, so retries and pacing are checked without waiting.
-- The audio tests generate short sine tones with ffmpeg in a temporary folder, never touching the real library.
+- The audio and clip tests generate short sine tones with ffmpeg in a temporary folder, never touching the real library.
 - Code that draws randomly takes a `Random` (`server/game/random.ts`). Tests pass `seededRandom(seed)`, so every run draws the same songs, offsets and options.
 - Game tests build catalogs in code (`tests/game/fixtures.ts`): small ones with `animeEntry`, `themeEntry` and `catalogOf`, and `syntheticCatalog()`, a seeded catalog shaped like the real one for the property tests.
 - Server tests call `createApp` directly and listen on port 0, so the system picks a free port and a running dev server never clashes with them.

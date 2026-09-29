@@ -1,11 +1,11 @@
 ---
 status: verified
-last-verified: 2026-09-25
+last-verified: 2026-09-29
 ---
 
 # Question engine
 
-Entry: `server/game/questions.ts`. `buildGame(catalog, settings, random, playedThemeIds)` turns a lobby's settings into a game's questions: the song, the sample start and the four options. The rules: [questions](../../docs/product-specs/questions.md).
+Entry: `server/game/questions.ts`. `buildGame(catalog, settings, random, playedThemeIds)` turns a lobby's settings into a game's questions: the song, the sample start and the four options. `replacementQuestion` draws another one when a round's clip can't be cut ([CLIPS.md](../clips/CLIPS.md)). The rules: [questions](../../docs/product-specs/questions.md).
 - `pool.ts`: which themes the settings allow (`eligibleThemes`), which anime may be options (`optionUniverse`), and the pool size the lobby shows (`poolSize`).
 - `distractors.ts`: the three wrong options. Its `LEVELS` table holds each difficulty's match rule and relaxation steps.
 - `titles.ts`: the option titles in all three languages, and `canShareOptions`, which decides when two anime can appear in one question.

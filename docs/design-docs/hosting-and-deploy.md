@@ -1,6 +1,6 @@
 ---
 status: draft
-last-verified: 2026-09-25
+last-verified: 2026-09-29
 ---
 
 # Hosting and deploy
@@ -37,8 +37,8 @@ services:
 - An `ingest` compose profile runs `npm run catalog:build` in the same image, with the catalog folder writable and network access for the APIs.
 
 **VPS.**
-- **Size:** 2–4 vCPUs, 4 GB of RAM, and disk for the library, or an attached volume. M3 measures the CPU cost of a clip, which confirms the size.
-- **Library upload:** `npm run catalog:export` re-encodes the library at 128 kbps, which shrinks it to about 40% of its size. `rsync` sends the export folder to the VPS, and later runs send only changes. Clips are re-encoded to 128 kbps AAC anyway, so a 128 kbps Opus source costs little quality.
+- **Size:** 2–4 vCPUs, 4 GB of RAM, and disk for the library, or an attached volume. A 30 s clip took about 0.3 s of one core on the development machine (M3). M8 runs `npm run clips:bench` on the VPS to confirm the size.
+- **Library upload:** `npm run catalog:export` re-encodes the library at 128 kbps, which shrinks it to about half its size. `rsync` sends the export folder to the VPS, and later runs send only changes. Clips are re-encoded to 128 kbps MP3 anyway, so a 128 kbps Opus source costs little quality.
 - **Caddy** is the only service on the public ports (80 and 443). It gets certificates from Let's Encrypt, sets HSTS and proxies WebSockets.
 - **Firewall:** only 22, 80 and 443 are open. Docker publishes ports past ufw rules, so the app binds to 127.0.0.1 and only Caddy reaches it.
 - **SSH** accepts keys only, root login is off, and security updates install unattended.
@@ -57,7 +57,7 @@ services:
 ## Alternatives considered
 - **A home machine behind a tunnel:** rejected by the owner in favor of a VPS.
 - **Deploying from Actions over SSH, or a self-hosted runner:** rejected. A public repo's CI must not hold credentials for the server, and pull requests from forks must never reach it.
-- **Uploading the original library:** rejected. It's about 2.5 times the size, for quality the 128 kbps clips don't use.
+- **Uploading the original library:** rejected. It's about twice the size, for quality the 128 kbps clips don't use.
 
 ## Consequences
 - The image is public and safe to be: it holds no audio, catalog or covers.

@@ -1,6 +1,6 @@
 ---
 status: draft
-last-verified: 2026-09-25
+last-verified: 2026-09-29
 ---
 
 # Reliability
@@ -11,7 +11,7 @@ How the app behaves when something fails or slows down. The general rules are in
 | Failure | What players see | Recovery |
 | :-- | :-- | :-- |
 | Bad configuration at startup | The server doesn't start | `server/config.ts` exits with code 1 and names the bad variable |
-| ffmpeg fails or times out on a clip | Nothing; the round uses another theme | Up to 3 themes per round, and the error is logged once |
+| ffmpeg fails, times out or cuts a clip short | Nothing; the round uses another theme | Up to 3 themes per round, and each failure is logged once |
 | A player's clip doesn't load in time | They can still answer; the reveal marks them "no audio" | No penalty; the barrier waits at most 8 s |
 | A player's connection drops | Their seat and score stay for 60 s | The client reconnects with its session token |
 | The host leaves | Another player becomes host | The player connected longest takes over |
@@ -26,7 +26,7 @@ How the app behaves when something fails or slows down. The general rules are in
 - Ingest scripts: one AnimeThemes request a second, and one AniList request every 2.1 s (AniList allowed 30 a minute on 2026-09-25). A 429 waits for `Retry-After`. Server errors and network failures retry up to 5 attempts, backing off 2, 4, 8, 16 s (capped at 60 s). Every step resumes from its cache ([catalog](design-docs/catalog.md)).
 
 ## Performance
-- A 30 s clip takes under 500 ms to cut at the 95th percentile (measured in M3).
+- A 30 s clip takes under 500 ms to cut at the 95th percentile. M3 measured 306 ms on the development machine with `npm run clips:bench`, and M8 repeats it on the VPS.
 - The next clip is cut during the current round, so the gap between rounds is the reveal (about 7 s).
 - Players hear the clip start within about the same moment, using clock offsets from `time:ping`.
 - Load target: 25 concurrent lobbies of 8 players on the VPS, with clip p95 under 1 s and event-loop lag under 50 ms (M9 load script).

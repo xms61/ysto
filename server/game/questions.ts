@@ -96,3 +96,18 @@ export function buildGame(
     buildQuestion(catalog, theme, settings, universe, random),
   );
 }
+
+// A round whose clip can't be cut plays another theme, drawn the same way, from an anime that none of the
+// given questions (the game's, and those already tried for the round) uses.
+export function replacementQuestion(
+  catalog: Catalog,
+  settings: LobbySettings,
+  random: Random,
+  avoid: readonly Question[],
+): Question {
+  const usedAnime = new Set(avoid.map((question) => question.animeId));
+  const eligible = eligibleThemes(catalog, settings).filter((theme) => !usedAnime.has(theme.animeId));
+  const [theme] = drawThemes(catalog, eligible, 1, random);
+  if (!theme) throw new Error('No other anime matches the settings');
+  return buildQuestion(catalog, theme, settings, optionUniverse(catalog, settings), random);
+}

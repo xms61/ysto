@@ -1,6 +1,6 @@
 {
   "name": "ysto",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "private": true,
   "description": "You Skipped The OP?! A multiplayer anime opening and ending quiz for the browser.",
   "license": "Apache-2.0",
@@ -15,7 +15,7 @@
     "lint": "eslint . --max-warnings=0",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "typecheck": "tsc -p tsconfig.json && tsc -p tsconfig.node.json",
+    "typecheck": "tsc -p tsconfig.json && tsc -p tsconfig.node.json && tsc -p tsconfig.e2e.json",
     "test": "node --test \"tests/**/*.test.ts\"",
     "test:coverage": "node --test --experimental-test-coverage --test-coverage-include=\"server/**\" --test-coverage-include=\"shared/**\" --test-coverage-include=\"scripts/catalog/**\" --test-coverage-exclude=server/main.ts --test-coverage-exclude=\"scripts/catalog/bin/**\" --test-coverage-lines=85 --test-coverage-functions=85 --test-coverage-branches=75 \"tests/**/*.test.ts\"",
     "test:web": "vitest run",
@@ -26,7 +26,8 @@
     "catalog:enrich-anilist": "node --env-file-if-exists=.env scripts/catalog/bin/enrich-anilist.ts",
     "catalog:covers": "node --env-file-if-exists=.env scripts/catalog/bin/covers.ts",
     "catalog:build": "node --env-file-if-exists=.env scripts/catalog/bin/build.ts",
-    "catalog:check": "node --env-file-if-exists=.env scripts/catalog/bin/check.ts"
+    "catalog:check": "node --env-file-if-exists=.env scripts/catalog/bin/check.ts",
+    "clips:bench": "node --env-file-if-exists=.env scripts/clips/bench.ts"
   },
   "dependencies": {
     "express": "^5.2.1"

@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import type { Catalog, CatalogAnime } from '../../server/catalog/load.ts';
 import { eligibleThemes, LEAD_IN_MS, optionUniverse, TAIL_MS } from '../../server/game/pool.ts';
-import { buildGame } from '../../server/game/questions.ts';
+import { buildGame, replacementQuestion } from '../../server/game/questions.ts';
 import type { Question } from '../../server/game/questions.ts';
 import { seededRandom } from '../../server/game/random.ts';
 import { canShareOptions, normalizeTitle } from '../../server/game/titles.ts';
@@ -174,6 +174,21 @@ test('refuses a game with more songs than matching anime', () => {
   assert.throws(
     () => buildGame(tiny, settingsFor(tiny, { songsPerGame: 7 }), seededRandom(1)),
     /Only 6 anime match the settings; the game needs 7/,
+  );
+});
+
+test('replaces a question with one from an anime the game does not use yet', () => {
+  const tiny = tinyCatalog();
+  const settings = settingsFor(tiny, { songsPerGame: 5 });
+  const random = seededRandom(2);
+  const game = buildGame(tiny, settings, random);
+  const replacement = replacementQuestion(tiny, settings, random, game);
+  const [unused] = [1, 2, 3, 4, 5, 6].filter((id) => !game.some((question) => question.animeId === id));
+  assert.equal(replacement.animeId, unused);
+  assert.equal(new Set(replacement.options.animeIds).size, 4);
+  assert.throws(
+    () => replacementQuestion(tiny, settings, random, [...game, replacement]),
+    /No other anime matches the settings/,
   );
 });
 
