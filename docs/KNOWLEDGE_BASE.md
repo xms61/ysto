@@ -1,6 +1,6 @@
 ---
 status: draft
-last-verified: 2026-09-25
+last-verified: 2026-09-29
 ---
 
 # Knowledge base
@@ -12,6 +12,7 @@ How the docs in this repo are laid out, checked and kept true. The principles be
 | :-- | :-- | :-- |
 | [AGENTS.md](../AGENTS.md) | The map: which doc to read for which task, the commands, the always-rules. Under 100 lines. | Hand |
 | [ARCHITECTURE.md](../ARCHITECTURE.md) | Code map, layers and invariants | Hand |
+| [PRODUCT.md](../PRODUCT.md) | The product record: users, purpose, positioning, constraints, principles. The Impeccable design skill reads it, and its settings in `.impeccable/` stay out of git | Hand |
 | `docs/*.md` | One doc per cross-cutting topic: style, testing, frontend, design, reliability, security, quality, plans, product sense | Hand |
 | [docs/design-docs/](design-docs/index.md) | Technical decisions, catalogued in the folder's index | Hand |
 | [docs/product-specs/](product-specs/index.md) | Player-facing behavior, catalogued in the folder's index | Hand |
