@@ -209,6 +209,13 @@ function audioFileRows(audio: ProbedFile[], index: Map<string, VideoMatch>, incl
   return rows.sort((a, b) => compareStrings(a.relPath, b.relPath));
 }
 
+// An anime AnimeThemes files under several series is a crossover (Isekai Quartet, Kaginado), and joining
+// through all of them would merge unrelated franchises, so it joins through none and keeps its AniList
+// relations.
+function joiningSeries(anime: AtAnime): AtAnime['series'] {
+  return anime.series.length === 1 ? anime.series : [];
+}
+
 // Union-find whose nodes are anime, AniList entries and AnimeThemes series. AniList entries outside
 // the catalog are nodes too, so two seasons that both relate to a special without audio still end up
 // in one franchise (BRIDGING_RELATIONS). The franchise id is the smallest anime id in each group.
@@ -234,7 +241,7 @@ function franchiseOfEach(
     const node = `anime:${anime.id}`;
     find(node);
     if (anime.anilistId !== null) union(node, `anilist:${anime.anilistId}`);
-    for (const series of anime.series) union(node, `series:${series.id}`);
+    for (const series of joiningSeries(anime)) union(node, `series:${series.id}`);
     for (const relation of media(anime)?.relations ?? []) {
       if (joins(relation)) union(node, `anilist:${relation.animeId}`);
     }
@@ -305,7 +312,7 @@ function franchiseRows(
   }
   return [...members.entries()]
     .map(([id, group]) => {
-      const series = group.flatMap((anime) => anime.series)[0];
+      const series = group.flatMap(joiningSeries)[0];
       const mostPopular = [...group].sort(
         (a, b) => (media(b)?.popularity ?? -1) - (media(a)?.popularity ?? -1) || a.id - b.id,
       )[0];

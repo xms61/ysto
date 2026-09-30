@@ -1,6 +1,6 @@
 ---
 status: draft
-last-verified: 2026-09-25
+last-verified: 2026-09-30
 ---
 
 # Catalog
@@ -48,11 +48,13 @@ The audio library is a set of `.ogg` files in the AnimeThemes layout: `<year>/<S
 7. **`catalog:export`** (M8) writes the primary file of every playable theme for the VPS, re-encoded to 128 kbps Opus under the same relative paths, together with `catalog.sqlite` and `covers/`.
 
 **Franchises** are connected groups of anime, and two anime join when:
-- they share an AnimeThemes series, or
+- they share an AnimeThemes series, unless one of them is filed under several series, or
 - AniList relates them to each other as prequel, sequel, parent, side story, spin-off, alternative, summary or compilation, or
 - both relate to the same AniList entry outside the catalog, such as a special between two seasons that has no audio. Only prequel, sequel, parent, summary and compilation count here.
 
 Side stories and spin-offs don't bridge through outside entries, because crossover specials hang off them: *Lupin the 3rd vs. Detective Conan* would otherwise merge Lupin, Conan and Cat's Eye. "Character" and "other" relations never count, because they chain unrelated shows together.
+
+An anime AnimeThemes files under several series is a crossover (Isekai Quartet, Kaginado, Carnival Phantasm), and it joins through none of them, only through its AniList relations. Through all of them, Isekai Quartet would merge Konosuba, Re:Zero, Overlord, Tanya and Cautious Hero into one franchise.
 
 On the 2026-09-25 build, the bridging rule rejoined splits such as Dragon Maid / Dragon Maid S and Haikyu!! / To the Top, and the crossover rule kept Conan, Lupin and Cat's Eye apart. Hard mode builds its options from franchises, so the build report lists the 20 largest groups for review.
 
@@ -70,6 +72,7 @@ A third of AnimeThemes' songs have no artist credits. For those, the key is the 
 
 ## Consequences
 - **Refresh:** when the library changes (a new season, say), rerun `catalog:sync-animethemes` (or import a newer dump) and `catalog:build` on the machine that holds the full library. Then run `catalog:check`, and export and upload the result (M8).
-- The first build, on 2026-09-25, imported Anagroove's dump, because the AnimeThemes API answered HTTP 522 all day. Its franchises therefore come from AniList relations alone. A later live sync adds AnimeThemes series.
+- The first build, on 2026-09-25, imported Anagroove's dump, because the AnimeThemes API answered HTTP 522 all day, so its franchises came from AniList relations alone.
+- The live sync of 2026-09-30 added AnimeThemes series, synonyms and cover links. Series rejoined splits the relations missed (Pokémon, BanG Dream!, Yu-Gi-Oh!, Macross, Votoms and the Precure films), and the crossover rule above kept the seven anime filed under several series from merging franchises.
 - Franchise mistakes show up directly in Hard mode, so the report's franchise list gets a look after any build that adds many anime.
 - The catalog is never committed. Tests build their own catalogs in code ([TESTING.md](../TESTING.md)).
