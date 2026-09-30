@@ -9,3 +9,11 @@
 !shared/
 !src/
 !public/
+# The clip benchmark, which runs in the image on the VPS (docs/DEPLOY.md).
+!scripts/clips/bench.ts
+!scripts/catalog/cli.ts
+# Tests and docs stay out of the image.
+**/*.test.ts
+**/*.test.tsx
+**/testing/
+**/*.md

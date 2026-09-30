@@ -31,13 +31,17 @@ gh pr create --base main --head <branch> --title "<type>(<scope>): <summary> (v<
 - If a PR is already open for the branch, push more commits to it.
 - Merge with a merge commit once the pre-commit checklist passes on the branch.
 
-CI ([.github/workflows/ci.yml](workflows/ci.yml)) runs on every pull request and every push to `main`, and can also be started by hand. The `main` ruleset requires all four jobs to pass before a PR can merge:
+CI ([.github/workflows/ci.yml](workflows/ci.yml)) runs on every pull request and every push to `main`, and can also be started by hand. The `main` ruleset requires all five jobs to pass before a PR can merge:
 - `guard` runs the tracked-files check with its tests, then gitleaks.
 - `docs` runs the doc checks and their tests.
 - `app` runs `npm run test:ci` and the build.
 - `e2e` runs the browser tests against the build (the smoke test, the clip decode test and a whole game), in Chromium, Firefox and WebKit.
+- `docker` builds the image, runs it hardened on the fixture catalog until `/readyz` answers, cuts clips in it, checks that it holds no audio, database or `.env` file, and scans it with Trivy.
 
 The ruleset also blocks a merge while CodeQL reports a new alert of high or critical severity, or a new error.
 
 ## Before a release
 Run the doc-gardening pass ([KNOWLEDGE_BASE.md](../docs/KNOWLEDGE_BASE.md#doc-gardening)) and merge its fix-up PRs before tagging the release.
+
+## Publishing a release
+Merged versions ship when the owner starts the release workflow ([.github/workflows/release.yml](workflows/release.yml)) from main: `gh workflow run release.yml -f version=<version>`. It reruns CI, publishes the image to GHCR, tags `v<version>` and creates the GitHub release from the CHANGELOG entry. The VPS then pulls it ([DEPLOY.md](../docs/DEPLOY.md#release-and-update)). Not every merged version needs a release.

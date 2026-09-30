@@ -5,6 +5,8 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+  # The release workflow reruns every job before it publishes.
+  workflow_call:
 
 permissions:
   contents: read
@@ -94,3 +96,48 @@ jobs:
         run: npm run build
       - name: Browser tests (Chromium, Firefox, WebKit)
         run: npm run test:e2e
+
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .nvmrc
+      # The fixture's tones are made with ffmpeg.
+      - name: Install ffmpeg
+        run: command -v ffmpeg || (sudo apt-get update -q && sudo apt-get install -y -q --no-install-recommends ffmpeg)
+      - name: Build the image
+        run: docker build -t ysto:ci .
+      - name: Start it on the fixture catalog, hardened as on the VPS
+        run: |
+          node e2e/fixture-data.ts "$RUNNER_TEMP/fixture"
+          echo "HARDENING=--read-only --tmpfs /tmp --cap-drop ALL --security-opt no-new-privileges:true" >> "$GITHUB_ENV"
+          echo "FIXTURE=-v $RUNNER_TEMP/fixture/audio:/data/audio:ro -v $RUNNER_TEMP/fixture/catalog:/data/catalog:ro" >> "$GITHUB_ENV"
+      - name: Ready on /readyz
+        run: |
+          docker run -d --name ysto -p 127.0.0.1:3000:3000 $HARDENING $FIXTURE ysto:ci
+          for attempt in $(seq 1 30); do
+            if curl -sf http://127.0.0.1:3000/readyz; then exit 0; fi
+            sleep 1
+          done
+          docker logs ysto
+          exit 1
+      - name: Clips cut in the image
+        run: docker run --rm $HARDENING $FIXTURE ysto:ci node scripts/clips/bench.ts --count 3 --length 10
+      - name: No audio, database or .env file in the image
+        run: |
+          found=$(docker run --rm --entrypoint find ysto:ci / -xdev -type f \( -iname '*.ogg' -o -iname '*.opus'             -o -iname '*.mp3' -o -iname '*.m4a' -o -iname '*.aac' -o -iname '*.flac' -o -iname '*.wav'             -o -iname '*.sqlite*' -o -iname '*.db' -o -name '.env*' \))
+          if [ -n "$found" ]; then echo "$found"; exit 1; fi
+      - name: Install Trivy
+        env:
+          TRIVY_VERSION: 0.74.0
+          TRIVY_SHA256: 2ae6fe3ee734b7fdf11335663e18c75ea12dccc76062f09f164a3b0f8be4371a
+        run: |
+          curl -sSfL -o "$RUNNER_TEMP/trivy.tar.gz" "https://github.com/aquasecurity/trivy/releases/download/v${TRIVY_VERSION}/trivy_${TRIVY_VERSION}_Linux-64bit.tar.gz"
+          echo "${TRIVY_SHA256}  $RUNNER_TEMP/trivy.tar.gz" | sha256sum --check --strict
+          tar -xzf "$RUNNER_TEMP/trivy.tar.gz" -C "$RUNNER_TEMP" trivy
+      - name: Fixable high and critical vulnerabilities (Trivy)
+        run: '"$RUNNER_TEMP/trivy" image --exit-code 1 --severity HIGH,CRITICAL --ignore-unfixed --no-progress ysto:ci'

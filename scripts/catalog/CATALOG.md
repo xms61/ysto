@@ -1,6 +1,6 @@
 ---
 status: verified
-last-verified: 2026-09-25
+last-verified: 2026-09-30
 ---
 
 # Catalog scripts
@@ -10,6 +10,7 @@ Entry: `scripts/catalog/bin/*.ts`, one command per ingest step. Why the catalog 
 - `anilist.ts`: batched GraphQL enrichment. `isAdultMedia` is the one adult rule.
 - `audio.ts`: lists the library, reads durations with ffprobe (cached), and measures loudness with ffmpeg.
 - `covers.ts`: downloads AnimeThemes covers as `<animeId>.<ext>`.
+- `export.ts`: re-encodes the files the catalog plays into the copy of the library the VPS serves ([DEPLOY.md](../../docs/DEPLOY.md)).
 - `assemble.ts`: pure. Turns the caches into catalog rows and the build report.
 - `store.ts`: writes `catalog.sqlite` from `server/catalog/schema.ts`, and reads the facts the gate checks.
 - `check.ts`: the gate's rules. `schema-doc.ts`: renders `docs/generated/catalog-schema.md`.
@@ -26,6 +27,7 @@ They need `YSTO_AUDIO_DIR` in `.env`, and ffmpeg and ffprobe (on PATH, or `YSTO_
 | `npm run catalog:covers` | Downloads missing AnimeThemes covers (optional; needs a live sync, since a dump has no cover links) |
 | `npm run catalog:build` | Scan, enrich, assemble, write `catalog.sqlite`, regenerate the schema doc, print the report |
 | `npm run catalog:check` | The gate; `-- --loudness-sample 0` skips the loudness part |
+| `npm run catalog:export` | Re-encodes every playable file to 128 kbps Opus in `YSTO_EXPORT_DIR` (default `data/export/`), for the VPS. Reruns encode only new or changed files and remove copies no longer played |
 
 ## Caches
 Under `YSTO_CACHE_DIR` (default `data/cache/`). Delete a folder to rebuild it:
@@ -34,7 +36,7 @@ Under `YSTO_CACHE_DIR` (default `data/cache/`). Delete a folder to rebuild it:
 - `audio/probes.json`: durations by relative path, with each file's size and mtime
 
 ## Rules
-- Nothing here writes to the folder in `YSTO_AUDIO_DIR`. The library is read-only.
+- Nothing here writes to the folder in `YSTO_AUDIO_DIR`. The library is read-only. The export removes files, so it refuses an export folder inside the library or one that contains it.
 - Only this folder and `server/catalog/` open SQLite. ESLint enforces this.
 - Settings come from `loadCatalogConfig` in `server/config.ts`, never from `process.env` directly (ESLint enforces this too).
 - Error messages name variables, not paths, so pasted output never shows a local folder.

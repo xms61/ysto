@@ -8,7 +8,7 @@ last-verified: 2026-09-30
 The shape of the system: what each part owns and which way dependencies point. Keep it to what changes rarely; details belong in the area docs next to the code.
 
 ## Bird's-eye view
-You Skipped The OP?! is a browser quiz. Players join a lobby with a code, hear a sample of an anime opening or ending, and pick the anime from four options. One Node process serves the built React client and the HTTP API. Players create or join a lobby over HTTP, hold a WebSocket to it, and play games whose clips the server cuts per round and every browser plays through Web Audio. Hosting comes with milestone M8 of the [v1 plan](docs/exec-plans/active/2026-09-25-ysto-v1.md).
+You Skipped The OP?! is a browser quiz. Players join a lobby with a code, hear a sample of an anime opening or ending, and pick the anime from four options. One Node process serves the built React client and the HTTP API. Players create or join a lobby over HTTP, hold a WebSocket to it, and play games whose clips the server cuts per round and every browser plays through Web Audio. In production it runs as one container behind Caddy on a VPS ([DEPLOY.md](docs/DEPLOY.md)).
 
 ## Code map
 - `server/`: the Node server. `main.ts` starts the process (config, catalog, listen, shutdown), `app.ts` builds the Express app, and `config.ts` is the only code that reads environment variables. `log.ts` writes JSON log lines, `rate-limit.ts` counts events per key, and `client-ip.ts` finds the player's IP behind the proxy. It never imports `src/`.
@@ -19,10 +19,11 @@ You Skipped The OP?! is a browser quiz. Players join a lobby with a code, hear a
 - `src/`: the React client, which Vite bundles into `dist/`: the screens, the lobby socket and its store, the audio engine and the device settings ([FRONTEND.md](docs/FRONTEND.md)). It never imports `server/` or Node built-ins.
 - `shared/`: code that runs on both sides. `settings.ts` holds the lobby settings, their limits, defaults and validator; `scoring.ts` the scoring modes, modifiers and presets; `protocol.ts` the messages, codes and validators; `names.ts` the player-name rules; and `validate.ts` the checks the validators share. It imports neither `server/` nor `src/`, and no Node built-ins.
 - `tests/`: server and shared tests (`node:test`), laid out like the folders they test.
-- `e2e/`: browser tests (Playwright) against the production build, served by `e2e/fixture-server.ts` with a generated catalog and tones.
+- `e2e/`: browser tests (Playwright) against the production build, served by `e2e/fixture-server.ts` on the catalog and tones that `e2e/fixture-data.ts` generates. CI's image check runs the image on the same data.
+- `Dockerfile`, `.dockerignore` and `deploy/`: the image, and the VPS's compose file and Caddy config ([hosting and deploy](docs/design-docs/hosting-and-deploy.md), [DEPLOY.md](docs/DEPLOY.md)).
 - `scripts/`: the repo checks (`check-docs.mjs`, `check-tracked-files.mjs`) and their tests, and `check-plate-contrast.mjs`, which checks the page's text over each theme's backdrop plate ([DESIGN.md](docs/DESIGN.md)).
   - `scripts/catalog/`: the offline catalog build, from AnimeThemes, AniList and the audio library to `catalog.sqlite` ([CATALOG.md](scripts/catalog/CATALOG.md)). It may import `server/config.ts`, `server/catalog/`, the seeded generator in `server/game/random.ts`, and `pool.ts`'s genre threshold.
-  - `scripts/clips/bench.ts`: times clip cuts from the real library with the server's cutter.
+  - `scripts/clips/bench.ts`: times clip cuts from the real library with the server's cutter. The image ships it, so it also runs on the VPS.
 - `docs/`: the knowledge base ([KNOWLEDGE_BASE.md](docs/KNOWLEDGE_BASE.md)).
 
 ## Layers

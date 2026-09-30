@@ -2,7 +2,7 @@
 
 A multiplayer anime music quiz in the browser. Players join a lobby with a code and a name, hear a random sample of an anime opening or ending, and pick the right anime from four options.
 
-Status: early development. Games play end to end in the browser, in seven anime themes, each printing the options on its own card stock: create a lobby, share the link or QR code, and play with friends on any device. Hosting on a VPS comes next ([v1 plan](docs/exec-plans/active/2026-09-25-ysto-v1.md)).
+Status: early development. Games play end to end in the browser, in seven anime themes, each printing the options on its own card stock: create a lobby, share the link or QR code, and play with friends on any device. The Docker image and the VPS setup are ready, and the first deploy is next ([v1 plan](docs/exec-plans/active/2026-09-25-ysto-v1.md)).
 
 ## Setup
 ```bash
@@ -22,6 +22,9 @@ npm run catalog:build              # durations, AniList data, catalog.sqlite and
 npm run catalog:check              # the gate: matching, popularity, adult filter, loudness
 ```
 Every step caches its work and resumes after an interruption. Details: [scripts/catalog/CATALOG.md](scripts/catalog/CATALOG.md).
+
+## Hosting
+Releases publish a Docker image to `ghcr.io/xms61/ysto` for amd64 and arm64. On a VPS it runs behind Caddy, which serves HTTPS on your domain, with the audio library exported by `npm run catalog:export` and the catalog mounted read-only. The setup, the upload and the update routine: [docs/DEPLOY.md](docs/DEPLOY.md).
 
 ## Commands
 See the Commands table in [AGENTS.md](AGENTS.md).

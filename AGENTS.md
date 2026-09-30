@@ -29,6 +29,7 @@ This file is the map, not the manual. The repository is the system of record: wh
 | [scripts/catalog/CATALOG.md](scripts/catalog/CATALOG.md) | Building the catalog, or changing the ingest scripts, the schema or the gate |
 | [server/clips/CLIPS.md](server/clips/CLIPS.md) | Changing how clips are cut, served or timed |
 | [server/game/GAME.md](server/game/GAME.md) | Changing lobbies and their host rules, how songs are drawn, how options are picked, or what the lobby filters do |
+| [docs/DEPLOY.md](docs/DEPLOY.md) | Setting up the VPS, releasing, or changing the image, `deploy/` or the release workflow |
 | [server/realtime/REALTIME.md](server/realtime/REALTIME.md) | Changing the lobby routes, the socket protocol, or the limits that guard them |
 
 ## Commands
@@ -44,12 +45,13 @@ This file is the map, not the manual. The repository is the system of record: wh
 | Browser tests (smoke, clip decode, a whole game) | `npm run build && npm run test:e2e` (needs ffmpeg) |
 | Clip timing | `npm run clips:bench` (reads the real library) |
 | Catalog | `npm run catalog:build`, then `npm run catalog:check` (all steps: [CATALOG.md](scripts/catalog/CATALOG.md)) |
+| Image | `docker build -t ysto .`; releases and the VPS: [DEPLOY.md](docs/DEPLOY.md) |
 | Backdrop plate contrast | `node scripts/check-plate-contrast.mjs` (needs ffmpeg) |
 | Doc checks | `node scripts/check-docs.mjs` |
 | Doc checker tests | `node --test scripts/check-docs.test.mjs` |
 | Tracked-files check | `node scripts/check-tracked-files.mjs` (`--staged`: staged files only) |
 | Tracked-files checker tests | `node --test scripts/check-tracked-files.test.mjs` |
-| Everything CI runs | The doc and tracked-files rows above, gitleaks, `npm run test:ci`, the build and the browser smoke test |
+| Everything CI runs | The doc and tracked-files rows above, gitleaks, `npm run test:ci`, the build, the browser tests, and the image check with Trivy |
 
 ## Always
 - Tests never use the network or real data. Use in-memory or temp-dir stores and the test stubs listed in [docs/TESTING.md](docs/TESTING.md).

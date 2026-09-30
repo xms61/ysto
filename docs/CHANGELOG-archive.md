@@ -2,6 +2,43 @@
 
 Releases moved out of `CHANGELOG.md` (which keeps about the latest 5). Newest first.
 
+## [0.8.0] - 2026-09-29
+
+### Added
+- The three themes, each a block of CSS variables ([DESIGN.md](DESIGN.md)):
+  - Tokyo Rain: neon glows, falling rain, and Tilt Neon headings that glow and flicker
+  - Sakura: soft blossom light, falling petals, round corners, and M PLUS Rounded 1c headings
+  - Shonen: halftone dots, speed lines, square corners with an offset shadow, a burst behind each answer, and Anton headings in capitals
+- A theme picker that shows each theme in its own colors and type, and the Preferences menu on the home screen too.
+- A motion setting (as the device is set, reduced or full). Decoration only moves when motion is full, reduced motion also stops transitions, and the options never animate.
+- The reveal's playful line: a wrong or missing answer earns "You skipped the OP?!" (or the ED).
+- A favicon, and the browser's toolbar color follows the theme on phones.
+- Tests: the themes' contrast against WCAG AA from `styles.css`, and axe on every screen in every theme in the browser tests.
+
+### Changed
+- Form fields have their own border color (`edge`), at 3:1 against the page and panels.
+- The hint about keys 1 to 4 shows only where a mouse or trackpad suggests a keyboard.
+- Each browser project in the browser tests sends its own client address, so the per-IP lobby limits count each browser on its own.
+
+## [0.7.0] - 2026-09-29
+
+### Added
+- The web client ([FRONTEND.md](FRONTEND.md)), mobile first:
+  - home: create a lobby, or join with a code or a join link and a name
+  - lobby: the code, the join link and its QR code, the players with host, away and kick, the lock, the host's settings form (the scoring presets, modes and modifiers, songs, length, difficulty, years, genres, formats, sample start) or a summary for everyone else, and the number of matching songs and anime next to the start button
+  - round: a countdown, then the four options exactly when the clip starts, keys 1 to 4, a timer and progress bar, who has answered, and a skip for the host
+  - reveal: the anime in every language, OP or ED and its number, the song and its credited artists, when it aired, the cover, everyone's pick and points with icons and words, and the scores
+  - results: the podium and each player's right answers, average time and best streak, with play again for the host
+- The audio engine (`src/audio/engine.ts`): Web Audio with a gain node at 15% by default, unlocked by the Create or Join tap or a sound button, and started at the round's start on the server's clock, partway in when late. On iPhones it asks for media playback, so the silent switch doesn't mute it.
+- The lobby socket client: hello with the seat from `sessionStorage`, clock sync with `time:ping`, reconnects with backoff, and an exit screen for kicks, closed lobbies and seats taken over by another tab.
+- Device preferences in `localStorage` (`ysto_prefs`): volume, theme (Tokyo Rain, Sakura, Shonen as color palettes) and title language.
+- A Vite dev proxy for `/api`, `/covers` and `/ws`, so `npm run dev` plays games.
+- Tests: the client's reducer, clock, socket, store and audio engine against fakes, flows through `App`, and a browser test in which two players play a whole game against a generated catalog and tones.
+
+### Changed
+- The lobby state's `game` holds the final results once a game ends, so a player who reconnects sees them.
+- The browser tests run against `e2e/fixture-server.ts`, which serves a generated catalog and tones instead of none.
+
 ## [0.6.0] - 2026-09-29
 
 ### Added
