@@ -7,6 +7,9 @@ last-verified: 2026-09-30
 
 How the game gets onto its VPS and stays current. Why it is built this way: [hosting and deploy](design-docs/hosting-and-deploy.md). Commands marked *owner machine* run in the repo on the development machine; the others run on the VPS over SSH. Real hostnames, addresses and folders go in `.env` files, never in this doc.
 
+## Status
+Nothing is deployed yet. The image, the compose stack and the release workflow are built and tested (M8 in the [v1 plan](exec-plans/active/2026-09-25-ysto-v1.md)), and the VPS waits until a Hetzner CX23 or CAX11 is available. When it is, work through [Next steps](#next-steps) in order.
+
 ## What runs where
 - **The VPS** runs `deploy/compose.yml`: Caddy on ports 80 and 443 with the Let's Encrypt certificate for `YSTO_DOMAIN`, and the game's image from GHCR, which publishes no port. The exported library and the catalog are mounted read-only.
 - **GitHub** builds and publishes the image when the owner starts the release workflow. It holds no credentials for the VPS.
@@ -16,7 +19,15 @@ How the game gets onto its VPS and stays current. Why it is built this way: [hos
 ### 1. The server
 - Hetzner Cloud: Ubuntu 24.04, type CX23 (2 x86 vCPUs, 4 GB) or CAX11 (2 Arm vCPUs, 4 GB). The image runs on both. Add your SSH public key when you create it, and give it an IPv4 and an IPv6 address.
 - Attach a Hetzner Cloud Firewall that allows inbound TCP 22, 80 and 443, and UDP 443 (HTTP/3), and nothing else.
-- At your DNS provider, point an `A` record for the domain at the server's IPv4 address and an `AAAA` record at its IPv6 address. Caddy can only get the certificate once they resolve.
+- Set up the domain as in [The domain](#the-domain). Caddy can only get the certificate once it resolves.
+
+### The domain
+The game is served on a domain over HTTPS, never on the bare IP. Hetzner hosts the server; the domain comes from a registrar (Porkbun, Cloudflare Registrar, INWX, Namecheap, or Hetzner's own), with WHOIS privacy on. A subdomain of a domain you already own works too.
+- At the registrar's DNS, add an `A` record for the name (such as `quiz`, or `@` for the bare domain) with the server's IPv4 address, and an `AAAA` record with its IPv6 address, both from the Hetzner Cloud Console. A TTL of 300 s is fine while setting up.
+- Keeping DNS at the registrar is simplest. To use Hetzner's free DNS instead, create the zone in the Hetzner Console, add the same records, and set the domain's nameservers at the registrar to Hetzner's.
+- On Cloudflare, the records must be **DNS only** (grey cloud). Its proxy would add a hop in front of Caddy: the game would see Cloudflare's addresses instead of the players', which breaks the per-IP limits, and Caddy's certificate challenge can fail.
+- Check with `nslookup <domain>` that it returns the server's address before the first start.
+- The records point at the server's Primary IPs. Resizing the server keeps them; before deleting a server, turn off the IPs' auto-delete so a new server can take them over, or update the records.
 
 ### 2. Harden it
 Log in as root once, then:
@@ -82,6 +93,17 @@ These are M8's "Done when" checks:
   ```bash
   nmap -Pn -p- <domain>
   ```
+
+## Next steps
+The open items of M8, in order. Each one is a box in the v1 plan's Progress; tick it there when done.
+1. Choose the domain ([The domain](#the-domain)).
+2. Add `docker` to the required checks of the `main` ruleset (repo settings), next to the four existing jobs.
+3. Release 0.11.0 or later: `gh workflow run release.yml -f version=<version>`, then set the GHCR package to public (step 5).
+4. Once a CX23 or CAX11 is available, work through the one-time setup, steps 1 to 6.
+5. Run the [checks after setup](#checks-after-setup): a whole game over HTTPS, the clip bench on the VPS, and the port scan.
+6. Verify [RELIABILITY.md](RELIABILITY.md) and [SECURITY.md](SECURITY.md) against the running VPS, set them to `verified`, and set this doc to `verified` too. Then tick M8 in the plan.
+
+Optional before the first deploy: the AnimeThemes API answers again, so the catalog refresh in the [tech-debt tracker](exec-plans/tech-debt-tracker.md) can run, which adds covers to the reveal. Rebuild the catalog before step 4 so the first upload includes it.
 
 ## Routines
 ### Release and update

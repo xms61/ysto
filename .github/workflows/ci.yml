@@ -129,7 +129,10 @@ jobs:
         run: docker run --rm $HARDENING $FIXTURE ysto:ci node scripts/clips/bench.ts --count 3 --length 10
       - name: No audio, database or .env file in the image
         run: |
-          found=$(docker run --rm --entrypoint find ysto:ci / -xdev -type f \( -iname '*.ogg' -o -iname '*.opus'             -o -iname '*.mp3' -o -iname '*.m4a' -o -iname '*.aac' -o -iname '*.flac' -o -iname '*.wav'             -o -iname '*.sqlite*' -o -iname '*.db' -o -name '.env*' \))
+          # Root, so find can read every folder; the server itself runs as node.
+          patterns=(-iname '*.ogg' -o -iname '*.opus' -o -iname '*.mp3' -o -iname '*.m4a' -o -iname '*.aac'
+            -o -iname '*.flac' -o -iname '*.wav' -o -iname '*.sqlite*' -o -iname '*.db' -o -name '.env*')
+          found=$(docker run --rm --user root --entrypoint find ysto:ci / -xdev -type f \( "${patterns[@]}" \))
           if [ -n "$found" ]; then echo "$found"; exit 1; fi
       - name: Install Trivy
         env:
