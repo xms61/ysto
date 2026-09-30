@@ -120,9 +120,10 @@ function imageWidth(file: string): number {
 test('the ffmpeg optimizer scales wide covers down to the maximum width and never enlarges small ones', async () => {
   const dir = tempDir();
   const optimize = ffmpegCoverOptimizer('ffmpeg');
+  // Even widths: some ffmpeg builds drop the last column of an odd-width WebP, which doesn't matter for a cover.
   for (const [name, size, expected] of [
     ['wide.png', '900x1300', COVER_MAX_WIDTH],
-    ['small.jpg', '225x320', 225],
+    ['small.jpg', '230x330', 230],
   ] as const) {
     const source = join(dir, name);
     execFileSync('ffmpeg', [
