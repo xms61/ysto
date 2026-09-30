@@ -1,6 +1,6 @@
 ---
 status: draft
-last-verified: 2026-09-29
+last-verified: 2026-09-30
 ---
 
 # Audio clips and playback
@@ -15,7 +15,7 @@ Every play samples a new random part of a song, and the sample length is set per
   - MP3 decodes in every browser, including builds without proprietary codecs.
   - AAC took more than twice as long to encode. A 20 s clip of a test tone took 275 ms in AAC and 115 ms in MP3.
   - AAC's MP4 container carries fields that ffprobe reports as tags.
-- The decode test (`e2e/clip-decode.spec.ts`) decodes the cutter's output through Web Audio. It runs in Chromium, Firefox and WebKit in CI, and it passed in Chrome and Edge. Since M6, the browser game test also plays every round's clip in each browser. A game on a real iPhone is checked by hand.
+- The decode test (`e2e/clip-decode.spec.ts`) decodes the cutter's output through Web Audio. It runs in Chromium, Firefox and WebKit in CI, and it passed in Chrome and Edge. Since M6, the browser game test also plays every round's clip in each browser. On 2026-09-30 a whole game on a real iPhone played every clip, at 15% by default and with the silent switch on.
 - LAME runs at quality 5, its standard level. That is about a fifth faster than ffmpeg's default, and it keeps the noise shaping that level 7 drops.
 - ffmpeg runs through `spawn` with an argument array (no shell), a 10 s timeout and a concurrency limit (`YSTO_FFMPEG_CONCURRENCY`).
 - A clip under 90% of its length counts as a failed cut, because the file is shorter than the catalog says. A cut that starts past the end still returns about a second of audio.
