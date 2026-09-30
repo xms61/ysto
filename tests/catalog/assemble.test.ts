@@ -154,6 +154,25 @@ test('does not join franchises through a crossover special outside the catalog',
   );
 });
 
+test('does not join franchises through a crossover filed under several series', () => {
+  const konosuba = anime(14, { series: [{ id: 80, name: 'Konosuba' }], themes: [theme(141, 'Konosuba-OP1')] });
+  const overlord = anime(15, { series: [{ id: 81, name: 'Overlord' }], themes: [theme(151, 'Overlord-OP1')] });
+  const quartet = anime(16, {
+    series: [
+      { id: 80, name: 'Konosuba' },
+      { id: 81, name: 'Overlord' },
+      { id: 82, name: 'Isekai Quartet' },
+    ],
+    themes: [theme(161, 'IsekaiQuartet-OP1')],
+  });
+  const data = assembleCatalog(inputs([konosuba, overlord, quartet], []));
+  assert.deepEqual(
+    data.anime.map((row) => row.franchiseId),
+    [14, 15, 16],
+  );
+  assert.equal(data.franchises.find((row) => row.id === 16)?.name, 'Anime 16');
+});
+
 test('does not join franchises through CHARACTER relations', () => {
   const crossover = media(20, { relations: [{ type: 'CHARACTER', animeId: 1735 }] });
   const data = assembleCatalog(inputs([naruto, shippuden], [crossover, shippudenMedia]));

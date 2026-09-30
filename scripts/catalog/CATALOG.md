@@ -45,7 +45,7 @@ Under `YSTO_CACHE_DIR` (default `data/cache/`). Delete a folder to rebuild it:
 
 ## Gotchas
 - A dump has no series or synonyms, so franchises then come from AniList relations alone.
-- The franchise rules are `FRANCHISE_RELATIONS` and `BRIDGING_RELATIONS` in `assemble.ts`. After changing them, rebuild and read the report's 20 largest groups: too wide a rule merges franchises through crossovers, and too narrow a rule splits sequels apart.
+- The franchise rules are `FRANCHISE_RELATIONS`, `BRIDGING_RELATIONS` and `joiningSeries` (a crossover filed under several series joins through none) in `assemble.ts`. After changing them, rebuild and read the report's 20 largest groups: too wide a rule merges franchises through crossovers, and too narrow a rule splits sequels apart.
 - AniList's terms prohibit hoarding its data. Keep requests to the anime in the library and the fields the game uses, and never fetch covers or other extras from it ([SECURITY.md](../../docs/SECURITY.md#external-services)). Covers come from AnimeThemes, and only after a live sync, since a dump has no cover links.
 - AniList allowed 30 requests a minute on 2026-09-25, and the enrich step paces for that. A 429 waits for `Retry-After`. Any other failure retries five times with growing backoff.
 - The caches hold file paths relative to the library. `data/` is git-ignored, and the tracked-files check refuses it.

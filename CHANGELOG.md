@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.11.1] - 2026-09-30
+
+### Fixed
+- A crossover that AnimeThemes files under several series (Isekai Quartet, Kaginado) no longer merges those franchises into one, which Hard mode would have treated as a single franchise.
+
+### Changed
+- The catalog is built from a live AnimeThemes sync instead of the September dump: franchises now use AnimeThemes series, titles gain their synonyms, and reveals show cover art.
+
 ## [0.11.0] - 2026-09-30
 
 ### Added
@@ -75,12 +83,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Japanese titles use the device's Japanese fonts instead of a display face's fallback.
 - The new faces replace Tilt Neon, M PLUS Rounded 1c and Anton.
 - The contrast test covers the card stock: text on cards, dimmed cards, chosen cards and card backs, and the index marks.
-
-## [0.8.1] - 2026-09-30
-
-### Added
-- `PRODUCT.md`, the product record: who plays, what success means, what sets the game apart from other anime music quizzes, its constraints, what evidence exists (and what must never be invented), its principles and its accessibility commitments. The Impeccable design skill reads it, and AGENTS.md links it.
-
-### Changed
-- `docs/PRODUCT_SENSE.md` points to `PRODUCT.md` for who plays, instead of describing the players twice.
-- The Impeccable skill's local settings folder, `.impeccable/`, is ignored by git and by the doc checks.
