@@ -26,6 +26,7 @@ export interface CatalogConfig {
   audioDir: string | null;
   catalogDir: string;
   cacheDir: string;
+  exportDir: string; // the re-encoded copy of the library that goes to the VPS
   ffmpegPath: string;
   ffprobePath: string;
 }
@@ -111,6 +112,7 @@ export function loadCatalogConfig(env: Env = process.env, cwd: string = process.
     audioDir: optionalPath(env, 'YSTO_AUDIO_DIR', cwd),
     catalogDir: catalogDir(env, cwd),
     cacheDir: optionalPath(env, 'YSTO_CACHE_DIR', cwd) ?? resolve(cwd, 'data/cache'),
+    exportDir: optionalPath(env, 'YSTO_EXPORT_DIR', cwd) ?? resolve(cwd, 'data/export'),
     ffmpegPath: ffmpeg,
     ffprobePath: ffprobeNextTo(ffmpeg),
   };

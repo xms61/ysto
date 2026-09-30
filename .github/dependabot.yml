@@ -25,3 +25,13 @@ updates:
       # The Node types follow the Node 24 runtime.
       - dependency-name: '@types/node'
         update-types: ['version-update:semver-major']
+
+  # The base image digest in the Dockerfile and the Caddy digest in the VPS's compose file.
+  - package-ecosystem: docker
+    directory: /
+    schedule:
+      interval: weekly
+  - package-ecosystem: docker-compose
+    directory: /deploy
+    schedule:
+      interval: weekly

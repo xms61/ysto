@@ -1,6 +1,6 @@
 ---
 status: draft
-last-verified: 2026-09-29
+last-verified: 2026-09-30
 ---
 
 # Security
@@ -30,7 +30,8 @@ Every external input is validated once, at the boundary ([CODE_STYLE.md](CODE_ST
 - A kicked player's token can't rejoin that lobby.
 
 ## Transport
-- HTTPS and `wss://` go through Caddy with HSTS. `YSTO_TRUST_PROXY` holds the proxy's hop count, so rate limits see player IPs.
+- HTTPS and `wss://` go through Caddy with HSTS, on a domain, never the bare IP. Caddy is the only service with a public port; the game's container publishes none and runs read-only, without capabilities, as a non-root user ([hosting and deploy](design-docs/hosting-and-deploy.md)). The compose file sets `YSTO_TRUST_PROXY=1` for Caddy's hop, so rate limits see player IPs.
+- The VPS accepts SSH keys only, with root login off, and a cloud firewall and ufw allow only 22, 80 and 443 ([DEPLOY.md](DEPLOY.md)).
 - Every response gets a CSP of `default-src 'self'; img-src 'self' data:; media-src 'self' blob:; connect-src 'self'; font-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'`. It also gets `X-Content-Type-Options: nosniff`, `Referrer-Policy: no-referrer`, a `Permissions-Policy` and `X-Robots-Tag: noindex`. The server already turns `X-Powered-By` off.
 - WebSocket upgrades must come from the page's own origin (the Origin's host is the request's Host) or from `YSTO_ALLOWED_ORIGINS`. An upgrade without an Origin is refused.
 - Errors never show a stack trace: unexpected ones get a bare 500, and unknown paths a JSON 404, both with the headers above.
@@ -38,7 +39,7 @@ Every external input is validated once, at the boundary ([CODE_STYLE.md](CODE_ST
 ## External services
 - **AnimeThemes and AniList:** only the offline ingest scripts call them ([catalog](design-docs/catalog.md)). They need no keys, and receive only paced catalog queries with a User-Agent that names the repo. They never see player data. The README and the About screen credit both. Their terms:
   - **AniList** (read 2026-09-25): non-commercial use is free (and free commercial use up to $150 of revenue a month). The API must not serve as a backup or data store, and *"hoarding or mass collection"* of its data is prohibited. So the build asks only for the anime in the library, only the fields the game needs (no covers), refreshes once a season, and never republishes the data. The owner reviewed this on 2026-09-25 and kept it. Covers come from AnimeThemes instead ([catalog](design-docs/catalog.md)).
-  - **AnimeThemes**: its API follows the AnimeThemes Terms of Service, which couldn't be read on 2026-09-25 because the site was down. Read it before M8 puts anything online.
+  - **AnimeThemes** (Terms of Service last updated 2021-03-18, read 2026-09-30): the site may not be used for commercial or revenue-generating ventures, or to compete with it. The game is free, has no ads or payments, credits AnimeThemes, and doesn't offer its videos or catalog. It uses the metadata offline and doesn't compete with the site.
 - **The running server calls no third-party service.** Covers and fonts are served from our own origin, so players' browsers talk only to it.
 
 ## User data
@@ -49,5 +50,6 @@ The audio and the cover art are copyrighted. Lobby creation is open, so anyone w
 
 ## Dependencies
 - Add a dependency only when the standard library or an existing dependency can't do the job ([CODE_STYLE.md](CODE_STYLE.md)). The server's runtime dependencies stay minimal, and client libraries are devDependencies bundled by Vite.
-- Dependabot opens weekly PRs for npm and GitHub Actions. Actions are pinned by commit SHA, and third-party tools in CI are pinned by version and checksum (gitleaks).
+- Dependabot opens weekly PRs for npm, GitHub Actions and the Docker images. Actions are pinned by commit SHA, base images by digest, and third-party tools in CI by version and checksum (gitleaks, Trivy).
+- CI's `docker` job fails on a fixable high or critical vulnerability in the image (Trivy). The image carries no package manager: npm, corepack and yarn are removed from the runtime stage.
 - GitHub secret scanning, push protection, Dependabot alerts and CodeQL are on for the repo. A new CodeQL alert of high or critical severity blocks merging ([release process](../.github/RELEASE_PROCESS.md)).
