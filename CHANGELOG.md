@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.12.0] - 2026-09-30
+
+### Changed
+- Covers are stored as WebP, at most 600 px wide and never enlarged. `npm run catalog:covers` converts the covers already on disk once, then downloads new ones in the same format; `npm run catalog:build` afterwards records the new file names. A sample shrank to about 29 % of its size, most covers at full resolution.
+- Browsers keep covers for a day, so a cover that comes back in a game isn't fetched again.
+
 ## [0.11.1] - 2026-09-30
 
 ### Fixed
@@ -58,28 +64,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The face-down cards before the clip never drew, in any theme.
 - Players on the same score share a place at the reveal and in the results.
 - Mecha's round heading no longer pushes "Skip round" onto a line of its own on a phone.
-
-## [0.9.0] - 2026-09-30
-
-### Added
-- Seven anime themes, each printing the round's four options on its own card stock ([DESIGN.md](docs/DESIGN.md)):
-  - Tokyo Rain: station name boards in the rain, lit amber when picked
-  - Sakura: hanafuda with a double vermilion rim and a blossom, on a seigaiha page
-  - Shonen: inked manga panels with screentone and one red spot color
-  - Mecha (new): chamfered armor plates with a bevel, rivets, hazard strips and lock brackets
-  - Magical Girl (new): gem cards rimmed in gold foil, with a faceted gem for the index
-  - Isekai (new): JRPG menu windows with numbered slots and a blinking cursor
-  - Retro VHS (new): tape labels with sunset stripes and on-screen-display type
-- Each theme has its own display face and card title face, all OFL fonts from Fontsource in Latin subsets: Zen Kaku Gothic New, Zen Antique, Bangers, Saira Stencil One, Mochiy Pop One, Press Start 2P with Pixelify Sans, and VT323.
-- The options lie face down until the clip starts, then show at once. At the reveal the right card turns over to its printed back.
-- A listening panel above the cards shows whether this player's clip is loading, playing or failed to load, so "I can't hear it" never looks like "I don't know it".
-- Buttons, fields, dropdowns, checkboxes and radios take each theme's stock.
-
-### Changed
-- The reveal puts this player's verdict and standing first, under the round's heading.
-- The standings at the reveal and the final results are billed like a festival lineup, the leader's full name largest. The final results replace the podium and the table.
-- A picked card gets a "Your pick" stamp on its edge, which never changes its size, and the other cards dim as a whole.
-- On wider screens the cards are twice as tall and the equalizer spans the column.
-- Japanese titles use the device's Japanese fonts instead of a display face's fallback.
-- The new faces replace Tilt Neon, M PLUS Rounded 1c and Anton.
-- The contrast test covers the card stock: text on cards, dimmed cards, chosen cards and card backs, and the index marks.

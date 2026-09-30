@@ -55,8 +55,9 @@ export function createApp({
   });
   app.use(apiRouter({ registry, trustedHops: trustedProxyHops }));
   if (clips) app.use(clipRouter(clips.tokens, clips.lobbyOfSession));
-  // Reveals show covers; a missing one falls through to the 404 below.
-  app.use('/covers', express.static(coversDir, { index: false, dotfiles: 'deny' }));
+  // Reveals show covers; a missing one falls through to the 404 below. Browsers keep them for a day, so a
+  // cover that comes back later in a game isn't fetched again.
+  app.use('/covers', express.static(coversDir, { index: false, dotfiles: 'deny', maxAge: '1d' }));
   if (existsSync(join(clientDir, 'index.html'))) serveClient(app, clientDir);
   // Express's own 404 page would replace the security headers with its own.
   app.use((_req, res) => {

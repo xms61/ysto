@@ -80,3 +80,12 @@ test('does not announce the framework', async () => {
     assert.equal(response.headers.get('x-powered-by'), null);
   });
 });
+
+test('serves covers with a one-day cache lifetime', async () => {
+  const dir = clientDirWith({ '7.webp': 'cover' });
+  await withServer(dir, async (baseUrl) => {
+    const response = await fetch(`${baseUrl}/covers/7.webp`);
+    assert.equal(response.status, 200);
+    assert.equal(response.headers.get('cache-control'), 'public, max-age=86400');
+  });
+});
