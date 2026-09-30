@@ -10,6 +10,7 @@ import { OptionCard } from '../components/OptionCard.tsx';
 import type { CardState } from '../components/OptionCard.tsx';
 import { CheckIcon, CrossIcon } from '../components/ui.tsx';
 import { aired, animeTitle, credits, langOf, otherTitles, place, points, score, sharedPlaces } from '../format.ts';
+import type { Title } from '../format.ts';
 import { motionAllowed } from '../hooks.ts';
 import type { ClientRound } from '../realtime/game-state.ts';
 
@@ -71,6 +72,14 @@ function standingLine(reveal: RoundReveal, playerId: string): string | null {
   const total = `${score(mine.score)} points`;
   const standing = order.length > 1 ? `${place(placesOf(order)[rank] ?? rank + 1)} of ${order.length}` : null;
   return [standing, total].filter(Boolean).join(' · ');
+}
+
+// How long the answer's title reads, so a long one steps down in size instead of filling the band. A
+// Japanese character is about two Latin letters wide.
+function titleLength(title: Title): 'long' | 'mid' | undefined {
+  const width = title.lang === 'ja' ? title.text.length * 2 : title.text.length;
+  if (width > 40) return 'long';
+  return width > 22 ? 'mid' : undefined;
 }
 
 function cardStateOf(index: number, reveal: RoundReveal, mine: number | null): CardState {
@@ -183,7 +192,6 @@ function VerdictLine({ verdict, standing, streak }: { verdict: Verdict; standing
 
 export function Reveal({ round, reveal, lobby, titleLanguage }: RevealProps) {
   const title = animeTitle(reveal.anime, titleLanguage);
-  const song = [`${reveal.theme.kind} ${reveal.theme.sequence}`, reveal.song.title].filter(Boolean).join(': ');
   const when = aired(reveal.season, reveal.year);
   const options = round.start?.options[titleLanguage] ?? [];
   const mine = reveal.picks.find((pick) => pick.playerId === lobby.you)?.option ?? round.choice;
@@ -239,20 +247,26 @@ export function Reveal({ round, reveal, lobby, titleLanguage }: RevealProps) {
       <h3 id="reveal-heading" className="sr-only">
         The answer
       </h3>
-      <div className="flex gap-4 border-t border-line pt-4">
-        {reveal.cover && <img src={reveal.cover} alt="" className="h-36 w-24 shrink-0 rounded-lg object-cover" />}
-        <div className="flex min-w-0 flex-col gap-1">
-          <p lang={title.lang} className="display text-2xl">
+      <div className="reveal-band">
+        {reveal.cover && <img src={reveal.cover} alt="" className="reveal-wash" />}
+        {reveal.cover && <img src={reveal.cover} alt="" className="reveal-cover" />}
+        <div className="reveal-titles">
+          <p lang={title.lang} className="display reveal-title" data-length={titleLength(title)}>
             {title.text}
           </p>
           {otherTitles(reveal.anime, title).map((other) => (
-            <p key={other.text} lang={other.lang} className="text-muted">
+            <p key={other.text} lang={other.lang} className="text-muted [overflow-wrap:anywhere]">
               {other.text}
             </p>
           ))}
-          <p className="mt-1">{song}</p>
-          {reveal.song.artists.length > 0 && <p className="text-muted">by {credits(reveal.song.artists)}</p>}
-          {when && <p className="text-muted">{when}</p>}
+          <p className="reveal-song">
+            <span className="reveal-kind">
+              {reveal.theme.kind} {reveal.theme.sequence}
+            </span>
+            {reveal.song.title && <span className="font-semibold">{reveal.song.title}</span>}
+            {reveal.song.artists.length > 0 && <span className="text-muted">by {credits(reveal.song.artists)}</span>}
+            {when && <span className="text-muted">{when}</span>}
+          </p>
         </div>
       </div>
       <Lineup reveal={reveal} lobby={lobby} />

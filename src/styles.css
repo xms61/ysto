@@ -898,6 +898,99 @@
     }
   }
 
+  /* The answer under the cards: its cover sharp on a blurred wash of itself, the title large beside it. */
+  .reveal-band {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: end;
+    gap: 1.25rem;
+    padding: 1.25rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-xl);
+    background: var(--raised);
+  }
+
+  /* Faint, so the text on the band stays readable over a bright cover. */
+  .reveal-wash {
+    position: absolute;
+    inset: -3rem;
+    z-index: -1;
+    width: calc(100% + 6rem);
+    max-width: none;
+    height: calc(100% + 6rem);
+    object-fit: cover;
+    filter: blur(32px) saturate(1.5);
+    opacity: 0.3;
+  }
+
+  .reveal-cover {
+    width: 6.5rem;
+    aspect-ratio: 2 / 3;
+    object-fit: cover;
+    border-radius: var(--radius-lg);
+    box-shadow: 0 0.75rem 1.5rem -0.5rem rgb(0 0 0 / 0.6);
+  }
+
+  .reveal-titles {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .reveal-title {
+    font-size: clamp(1.75rem, 7vw, 2.75rem);
+    line-height: 1.02;
+    text-wrap: balance;
+    overflow-wrap: anywhere;
+  }
+
+  /* A long title steps down, so it stays a headline of two or three lines instead of a wall. */
+  .reveal-title[data-length='mid'] {
+    font-size: clamp(1.375rem, 5vw, 2rem);
+    line-height: 1.08;
+  }
+
+  .reveal-title[data-length='long'] {
+    font-size: clamp(1.125rem, 4vw, 1.5rem);
+    line-height: 1.15;
+  }
+
+  .reveal-song {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.25rem 0.625rem;
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--line);
+  }
+
+  .reveal-kind {
+    padding: 0.125rem 0.5rem;
+    border-radius: var(--radius-lg);
+    background: var(--accent);
+    color: var(--accent-ink);
+    font-size: 0.8125rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+
+  @media (min-width: 40rem) {
+    .reveal-band {
+      gap: 1.75rem;
+      padding: 1.75rem;
+    }
+
+    .reveal-cover {
+      width: 8rem;
+    }
+  }
+
   /* Mecha cuts corners off its cards and panels; each element sets its own cut. */
   :root[data-theme='mecha'] .panel {
     --cut: 0.875rem;
@@ -1454,7 +1547,8 @@
     background-repeat: no-repeat;
   }
 
-  /* ---- The listening panel: bars at rest while the clip loads, lit when ready, moving while it plays. ---- */
+  /* ---- The listening panel: headphones in a ring, dim while the clip loads, lit when ready, sending out rings
+     while it plays. ---- */
   .listening {
     flex: 1;
     display: flex;
@@ -1463,99 +1557,76 @@
     gap: 0.5rem;
   }
 
-  .eq {
+  /* Not positioned, so the ring field inside it lays out over the whole round panel. */
+  .sonar {
     flex: 1;
     display: flex;
-    align-items: stretch;
-    gap: 0.25rem;
-    min-height: 3.5rem;
-    max-height: 11rem;
+    align-items: center;
+    justify-content: center;
+    min-height: 7rem;
+    color: var(--line);
+    transition:
+      color 300ms,
+      opacity 300ms;
   }
 
-  /* A bar stretches to the panel's height, so its fill's percentage height has something to resolve against.
-     The bars span the column: fourteen on a phone, twenty-four on a wider screen. */
-  .eq-bar {
-    flex: 1;
-    display: flex;
-    align-items: flex-end;
+  .listening[data-status='ready'] .sonar {
+    color: var(--accent);
   }
 
-  .eq-bar:nth-child(n + 15) {
-    display: none;
+  .listening[data-status='failed'] .sonar {
+    opacity: 0.4;
   }
 
-  @media (min-width: 40rem) {
-    .eq {
-      min-height: 5rem;
-      gap: 0.375rem;
-    }
-
-    .eq-bar:nth-child(n + 15) {
-      display: flex;
-    }
+  .sonar-core {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    place-items: center;
+    width: 4rem;
+    height: 4rem;
+    border: 2px solid currentColor;
+    border-radius: 50%;
+    background: var(--panel);
   }
 
-  .eq-fill {
-    width: 100%;
-    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
-    background: var(--line);
-    transform: scaleY(0.3);
-    transform-origin: bottom;
-    transition: transform 300ms cubic-bezier(0.16, 1, 0.3, 1);
+  .sonar-core svg {
+    width: 1.75rem;
+    height: 1.75rem;
   }
 
-  .listening[data-status='ready'] .eq-fill {
-    background: var(--accent);
-    transform: scaleY(0.45);
+  /* Behind the panel's content and above its background, clipped to the panel's corners. */
+  .round-panel {
+    position: relative;
+    isolation: isolate;
   }
 
-  .listening[data-status='ready'][data-playing] .eq-fill {
-    transform: none;
+  .sonar-field {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+    border-radius: var(--radius-2xl);
+    pointer-events: none;
   }
 
-  .listening[data-status='failed'] .eq-fill {
-    transform: scaleY(0.12);
+  .sonar-ring {
+    position: absolute;
+    top: var(--ring-y, 50%);
+    left: var(--ring-x, 50%);
+    width: 4rem;
+    height: 4rem;
+    border: 2px solid currentColor;
+    border-radius: 50%;
+    opacity: 0;
+    transform: translate(-50%, -50%);
   }
 
-  :root[data-theme='tokyo-rain'] .eq-fill,
-  :root:not([data-theme]) .eq-fill,
-  :root[data-theme='mecha'] .eq-fill {
-    border-radius: 0;
-    mask: repeating-linear-gradient(to top, #000 0 5px, transparent 5px 7px);
-  }
-
-  :root[data-theme='mecha'] .listening[data-status='ready'] .eq-fill {
-    background: var(--good);
-  }
-
-  :root[data-theme='isekai'] .eq-fill {
-    border-radius: 0;
-    mask: repeating-linear-gradient(to top, #000 0 6px, transparent 6px 8px);
-  }
-
-  :root[data-theme='shonen'] .eq-fill {
-    border-radius: 0;
-  }
-
-  :root[data-theme='shonen'] .listening[data-status='ready'] .eq-fill {
-    background: var(--ink);
-  }
-
-  /* Rounded only a little: the bars scale on one axis, which would squash a full round into an oval. */
-  :root[data-theme='magical-girl'] .eq-fill {
-    border-radius: 0.375rem 0.375rem 0 0;
-  }
-
-  :root[data-theme='magical-girl'] .listening[data-status='ready'] .eq-bar:nth-child(even) .eq-fill {
-    background: var(--foil);
-  }
-
-  :root[data-theme='retro-vhs'] .listening[data-status='ready'] .eq-bar:nth-child(3n + 2) .eq-fill {
-    background: var(--stripe-2);
-  }
-
-  :root[data-theme='retro-vhs'] .listening[data-status='ready'] .eq-bar:nth-child(3n) .eq-fill {
-    background: var(--stripe-3);
+  /* A ready clip holds one faint ring, the rest of the wave still to come. */
+  .listening[data-status='ready'] .sonar-ring:first-child {
+    width: 6rem;
+    height: 6rem;
+    opacity: 0.35;
   }
 
   /* ---- Backdrop decorations, drawn only while motion is full (Backdrop.tsx). ---- */
@@ -2113,9 +2184,24 @@
   }
 }
 
-@keyframes eq-level {
+/* A ring leaves the headphones and fades as it spreads to the panel's farthest corner; the headphones beat
+   three times to each ring. Width and height grow rather than a scale, so the 2px rim stays 2px all the way out. */
+@keyframes sonar-out {
   from {
-    transform: scaleY(0.3);
+    width: 4rem;
+    height: 4rem;
+    opacity: 0.7;
+  }
+  to {
+    width: var(--ring-reach, 40rem);
+    height: var(--ring-reach, 40rem);
+    opacity: 0;
+  }
+}
+
+@keyframes sonar-beat {
+  from {
+    transform: scale(1.08);
   }
   to {
     transform: none;
@@ -2179,8 +2265,20 @@
   animation: card-turn 700ms cubic-bezier(0.2, 0.7, 0.2, 1) 200ms both;
 }
 
-:root[data-motion='full'] .listening[data-status='ready'][data-playing] .eq-fill {
-  animation: eq-level 850ms ease-in-out infinite alternate;
+:root[data-motion='full'] .listening[data-status='ready'][data-playing] .sonar-ring {
+  animation: sonar-out 4.2s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+}
+
+:root[data-motion='full'] .listening[data-status='ready'][data-playing] .sonar-ring:nth-child(2) {
+  animation-delay: -1.4s;
+}
+
+:root[data-motion='full'] .listening[data-status='ready'][data-playing] .sonar-ring:nth-child(3) {
+  animation-delay: -2.8s;
+}
+
+:root[data-motion='full'] .listening[data-status='ready'][data-playing] .sonar-core {
+  animation: sonar-beat 1.4s cubic-bezier(0.16, 1, 0.3, 1) infinite;
 }
 
 :root[data-motion='full'] .motion-rise {
@@ -2197,6 +2295,28 @@
 
 :root[data-motion='full'][data-theme='retro-vhs'] .motion-neon {
   animation: flicker 6s linear infinite;
+}
+
+@keyframes band-wipe {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0);
+  }
+}
+
+@keyframes cover-focus {
+  from {
+    transform: scale(1.12);
+    filter: blur(8px);
+    opacity: 0;
+  }
+  to {
+    transform: none;
+    filter: none;
+    opacity: 1;
+  }
 }
 
 @keyframes deal-in {
@@ -2591,6 +2711,15 @@
 
 :root[data-motion='full'] .streak-chip[data-hot] {
   animation: heat-pulse 360ms ease-in-out 600ms 2;
+}
+
+/* The answer wipes in after the right card has turned over, and its cover comes into focus. */
+:root[data-motion='full'] .reveal-band {
+  animation: band-wipe 900ms cubic-bezier(0.16, 1, 0.3, 1) 450ms both;
+}
+
+:root[data-motion='full'] .reveal-cover {
+  animation: cover-focus 1100ms cubic-bezier(0.16, 1, 0.3, 1) 650ms both;
 }
 
 /* The right card's hit, after it has turned over. */

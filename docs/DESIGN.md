@@ -365,7 +365,7 @@ The seven themes, in picker order, with their ids in `src/prefs/prefs.ts`: Tokyo
 Each theme is one block of variables on any element with `data-theme`, in two families: the chrome around the cards and the card stock itself.
 
 ### Primary
-- **Accent** (`accent`, with `accent-ink` on it): the primary button, the timer's fill, the lit equalizer, focus outlines, the selected theme in the picker, the caret and text selection. Tokyo Rain's is signal amber, Sakura's vermilion, Shonen's spot red, Mecha's hazard yellow, Magical Girl's pink, Isekai's menu yellow, Retro VHS's sunset orange.
+- **Accent** (`accent`, with `accent-ink` on it): the primary button, the timer's fill, the lit sonar in the listening panel, focus outlines, the selected theme in the picker, the caret and text selection. Tokyo Rain's is signal amber, Sakura's vermilion, Shonen's spot red, Mecha's hazard yellow, Magical Girl's pink, Isekai's menu yellow, Retro VHS's sunset orange.
 
 ### Secondary
 - **Card stock** (`card`, `card-ink`): the face of an open card.
@@ -382,7 +382,7 @@ Each theme is one block of variables on any element with `data-theme`, in two fa
 ### Neutral
 - **Page** (`page`): behind everything, under the theme's texture. Also the fill of fields.
 - **Panel** and **raised** (`panel`, `raised`): the panels that hold each screen, and quiet buttons, chips and tracks on them.
-- **Line** (`line`): dividers and quiet borders, and the equalizer's bars while the clip loads.
+- **Line** (`line`): dividers and quiet borders, and the listening panel's sonar while the clip loads.
 - **Edge** (`edge`): the rim of fields and choices, at 3:1 on the page and the panel.
 - **Ink** and **muted** (`ink`, `muted`): body text and secondary text.
 - Sakura's `wave` is the seigaiha pattern, one shade off its page.
@@ -459,7 +459,7 @@ Depth is printed, not lifted. Stocks show their edges with inset rims, bands and
 
 ## Shapes
 
-Each theme resizes three radii: `lg` for buttons, fields, index marks, the stamp and the equalizer's bar tops; `xl` for card faces; `2xl` for panels. The corners follow the stock: Shonen and Mecha are square or nearly, Sakura and Retro VHS are cut close, Magical Girl is soft and its buttons are pills.
+Each theme resizes three radii: `lg` for buttons, fields, index marks and the stamp; `xl` for card faces; `2xl` for panels. The corners follow the stock: Shonen and Mecha are square or nearly, Sakura and Retro VHS are cut close, Magical Girl is soft and its buttons are pills.
 
 Signature silhouettes:
 - **Mecha's chamfer:** panels and card faces lose their four corners to a clip path (0.875rem on panels, 0.625rem on cards).
@@ -515,15 +515,15 @@ After the right card turns over, its stock prints a hit round it (`.card-impact`
 
 ### Themes beyond the card
 
-| Theme | Display face | Title face | Backdrop | Equalizer | Buttons and fields |
-| :-- | :-- | :-- | :-- | :-- | :-- |
-| Tokyo Rain | Zen Kaku Gothic New, bold | The same | Night navy with blurred station lights; slanted rain with motion on, heavier while the clip plays, and lightning at the reveal | Square, segmented like an LED meter, lit amber | Panels carry a green line along the top; quiet buttons a green band along the foot that lights amber under the pointer; 1px field rim |
-| Sakura | Zen Antique | The same | A seigaiha wave pattern on blush; falling petals with motion on, more while the clip plays, and a soft flash at the reveal | Slightly rounded tops, lit vermilion | Panels and quiet buttons carry a double vermilion rim; the primary button a white hairline inside; 1px rose field rim |
-| Shonen | Bangers, in capitals | The same | Newsprint halftone and faint speed lines from the top corner; holds still like a printed page in the lobby, turns slow ink speed lines while the clip plays, and hits an impact frame of speed lines at the reveal | Square solid bars, lit in ink | Panels and every button take a 3px ink frame; a quiet button inverts to solid ink under the pointer; 2px field rim |
-| Mecha | Saira Stencil One, in capitals | System sans, bold capitals | A hangar grid; a green scanner line sweeps down with motion on, status beacons blink while the clip plays, and hazard strips flash along the edges at the reveal | Square and segmented, lit green | Panels are chamfered with a hazard strip across the top; quiet buttons are unframed plates with a hazard strip on the left; square fields with a 1px rim |
-| Magical Girl | Mochiy Pop One | The same | A violet night with white and gold star dots; stars twinkle with motion on, more while the clip plays, and a foil ring opens at the reveal | Softly rounded tops, pink and gold foil bars alternating | Pill buttons with a gold foil rim; panels ringed in foil; sparkle radio dots; 1px field rim |
-| Isekai | Press Start 2P | Pixelify Sans | A near-black dither; pixel stars blink with motion on, more while the clip plays, and the screen flashes at the reveal | Square, segmented in blocks, lit yellow | Buttons and panels take a 3px white rim, buttons a dark outer ring as well; quiet buttons are menu blue; 3px field rim; square radios with a cursor mark |
-| Retro VHS | VT323, in capitals | The same | Scanlines; a tracking band rolls down with motion on, a second, faster one while the clip plays, and a burst of static at the reveal; the home title flickers | Orange, pink and violet bars in turn | Panels carry the sunset stripe across the top, quiet buttons along the foot; 1px field rim |
+| Theme | Display face | Title face | Backdrop | Buttons and fields |
+| :-- | :-- | :-- | :-- | :-- |
+| Tokyo Rain | Zen Kaku Gothic New, bold | The same | Night navy with blurred station lights; slanted rain with motion on, heavier while the clip plays, and lightning at the reveal | Panels carry a green line along the top; quiet buttons a green band along the foot that lights amber under the pointer; 1px field rim |
+| Sakura | Zen Antique | The same | A seigaiha wave pattern on blush; falling petals with motion on, more while the clip plays, and a soft flash at the reveal | Panels and quiet buttons carry a double vermilion rim; the primary button a white hairline inside; 1px rose field rim |
+| Shonen | Bangers, in capitals | The same | Newsprint halftone and faint speed lines from the top corner; holds still like a printed page in the lobby, turns slow ink speed lines while the clip plays, and hits an impact frame of speed lines at the reveal | Panels and every button take a 3px ink frame; a quiet button inverts to solid ink under the pointer; 2px field rim |
+| Mecha | Saira Stencil One, in capitals | System sans, bold capitals | A hangar grid; a green scanner line sweeps down with motion on, status beacons blink while the clip plays, and hazard strips flash along the edges at the reveal | Panels are chamfered with a hazard strip across the top; quiet buttons are unframed plates with a hazard strip on the left; square fields with a 1px rim |
+| Magical Girl | Mochiy Pop One | The same | A violet night with white and gold star dots; stars twinkle with motion on, more while the clip plays, and a foil ring opens at the reveal | Pill buttons with a gold foil rim; panels ringed in foil; sparkle radio dots; 1px field rim |
+| Isekai | Press Start 2P | Pixelify Sans | A near-black dither; pixel stars blink with motion on, more while the clip plays, and the screen flashes at the reveal | Buttons and panels take a 3px white rim, buttons a dark outer ring as well; quiet buttons are menu blue; 3px field rim; square radios with a cursor mark |
+| Retro VHS | VT323, in capitals | The same | Scanlines; a tracking band rolls down with motion on, a second, faster one while the clip plays, and a burst of static at the reveal; the home title flickers | Panels carry the sunset stripe across the top, quiet buttons along the foot; 1px field rim |
 
 ### The backdrop plates
 Each theme sets a painted scene behind its page: `--plate` names the image in `src/assets/plates/` and `--plate-opacity` how strongly it shows over the page color. The opacity is the highest that keeps the page pairs passing over every pixel (Contrast the tests enforce), so Sakura's pale garden shows least and Isekai's dark hills most. With motion on the plate drifts slowly (Motion).
@@ -562,16 +562,16 @@ A stamp: a 2.25rem badge in `good` or `bad` at the `lg` radius with its check or
 
 ### The listening panel
 `Listening.tsx` fills the slot above the cards with the one thing the game is about, the music, and tells "I can't hear it" apart from "I don't know it".
-- A row of equalizer bars from a fixed skyline, the same on every device: 14 on a phone, 24 from 640 px, 3.5rem to 11rem tall.
-- **Loading:** the bars rest low in the line color. **Ready:** lit in the theme's color at a little under half height. **Playing:** full height, and moving with motion on. **Failed:** flat.
-- Words below in small muted type say the same thing, as a status: "Loading the clip…", "The clip is ready.", "Listen.", or that the clip didn't load and the player can still answer with no penalty. The bars are decoration; the words carry the state.
+- A sonar: drawn over-ear headphones in a 4rem ring (2px rim, panel fill), centered in the space above the cards (at least 7rem tall, so the resting ring fits), with three rings of the same size behind it.
+- **Loading:** in the line color, rings hidden. **Ready:** in the accent, one faint ring resting at 1.5 times the ring's size. **Playing:** with motion on, the rings leave the headphones one after another and fade as they spread across the whole round panel, behind its content and clipped to its corners, until they reach its farthest corner, one every 1.4s, their rim staying 2px, and the headphones beat with each. **Failed:** faded to 40%.
+- Words below in small muted type say the same thing, as a status: "Loading the clip…", "The clip is ready.", or that the clip didn't load and the player can still answer with no penalty. While the clip plays the rings say it, so "Listen." is read to screen readers only. The sonar is decoration; the words carry the state.
 - Below it, the timer strip: a 0.5rem raised track whose accent fill shrinks linearly, and the seconds left.
 
 ### The reveal
 The reveal runs in a fixed order:
 1. **The verdict first,** under the round's heading: a check or cross and the words, in the display face at 1.875rem. A right answer shows its points; a wrong or missing one earns "You skipped the OP?!" (or the ED). A skipped round says nobody scores. Below it, this player's place, total and streak in small muted type.
 2. **Then the cards,** in their order: the right one turned over to its back, this player's wrong pick missed, the rest muted.
-3. **Then the answer:** after a line, the cover (6rem by 9rem at the `lg` radius), the title in the display face at 1.5rem, the other titles muted, the song, the artists and the season.
+3. **Then the answer,** on a raised band (`.reveal-band`) at the `xl` radius with a 1px rim: the cover sharp (6.5rem wide, 8rem from 40rem, 2:3, `lg` radius, soft drop shadow) over a wash of itself, blurred 32px at 30% opacity so the text on it stays readable. Beside it the title in the display face (1.75rem to 2.75rem with the viewport; a title over 22 letters wide steps down to 1.375rem to 2rem, and one over 40 to 1.125rem to 1.5rem, a Japanese character counting as two), the other titles muted, then after a line the theme's kind and number on an accent chip, the song title, the artists and the season. With motion on, the band wipes in from the left 450ms after the reveal and the cover comes into focus from a blur.
 4. **Then the billed lineup:** the standings as a compact bill, the leader's name and score in the display face at 1.5rem, second and third larger than the rest, each with a check and "right", a cross and "wrong", or "no answer", and the points won or lost.
 5. A line saying what comes next.
 
@@ -599,7 +599,7 @@ Motion is decoration. It never carries information, and it runs only when the pa
 | The verdict and the answer rising in | 350ms, `cubic-bezier(0.16, 1, 0.3, 1)` |
 | The countdown's tick | 300ms, the same curve |
 | An open card lifting under the pointer | 150ms transition, the same curve |
-| The equalizer while playing | 850ms, alternating, each bar offset |
+| The sonar while playing | a ring every 1.4s, each spreading over 4.2s on `cubic-bezier(0.16, 1, 0.3, 1)`; the headphones beat every 1.4s |
 | Isekai's cursor | a 1s blink |
 | Retro VHS's home title | a 6s flicker |
 | Backdrops | rain 0.6 to 1.3s, petals 9 to 16s, twinkles 2.4 to 4.8s, pixel stars 0.9 to 2.2s, beacons 1.6 to 3.2s, Mecha's sweep 7s, the tracking band 9s (3.5s for the surge's), Shonen's speed lines a turn in 90s |
@@ -642,6 +642,6 @@ Without motion the right card is shown already turned, the options simply show, 
 ## Accessibility
 - Every theme meets WCAG AA contrast: 4.5:1 for text, 3:1 for icons, field borders, card frames and focus outlines. `src/themes.test.ts` checks the pairs listed under Colors, and axe checks every screen in every theme (`e2e/a11y.spec.ts`).
 - Right and wrong answers are shown with an icon and text, never by color alone.
-- The game works with the keyboard alone, and screen readers get labeled controls. Decoration (the index marks, the backs, the equalizer, the bursts, the backdrop) is hidden from them. The countdown says "Get ready" once rather than every second, and a new screen (the lobby, a game, the results) takes the focus to its first heading.
+- The game works with the keyboard alone, and screen readers get labeled controls. Decoration (the index marks, the backs, the sonar, the bursts, the backdrop) is hidden from them. The countdown says "Get ready" once rather than every second, and a new screen (the lobby, a game, the results) takes the focus to its first heading.
 - Audio is the quiz itself, so it has no text alternative. The reveal gives the answer in text.
 - Volume is adjustable at any time, starting at 15%.
