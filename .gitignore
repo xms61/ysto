@@ -59,3 +59,6 @@ reports/
 !.vscode/extensions.json
 .DS_Store
 Thumbs.db
+
+# Local tool settings (the Impeccable design skill; PRODUCT.md itself is committed)
+.impeccable/

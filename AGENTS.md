@@ -11,6 +11,7 @@ This file is the map, not the manual. The repository is the system of record: wh
 | [docs/design-docs/core-beliefs.md](docs/design-docs/core-beliefs.md) | Your first task in this repo, or when two docs seem to disagree |
 | [docs/design-docs/index.md](docs/design-docs/index.md) | Making a technical decision, or asking why something is built the way it is |
 | [docs/product-specs/index.md](docs/product-specs/index.md) | Building or changing something a player sees |
+| [PRODUCT.md](PRODUCT.md) | Deciding who the game is for, what sets it apart, or what it must never claim (also the product record the Impeccable design skill reads) |
 | [docs/PRODUCT_SENSE.md](docs/PRODUCT_SENSE.md) | Deciding product behavior that no spec covers |
 | [docs/PLANS.md](docs/PLANS.md) | Starting work that spans several sessions or areas |
 | [docs/exec-plans/active/](docs/exec-plans/active/) | Resuming work, or before starting something that may already be planned |

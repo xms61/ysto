@@ -1,6 +1,6 @@
 ---
 status: draft
-last-verified: 2026-09-25
+last-verified: 2026-09-29
 ---
 
 # Product sense
@@ -8,7 +8,7 @@ last-verified: 2026-09-25
 What makes this quiz good, for decisions no spec covers. The [product specs](product-specs/index.md) say what to build; this says what to favor when they are silent.
 
 ## Players
-Groups of friends who watch anime. They play together in one room or over a voice call, on phones as often as on laptops. A game lasts about 5 to 15 minutes, and they play several in a row in the same lobby. Some play solo to practice.
+Who plays, what success means and what sets the game apart are in the product record, [PRODUCT.md](../PRODUCT.md): groups of friends on game nights, in one room or over a voice call, and players practicing alone.
 
 ## A good round
 - Recognizing the song wins, not reading the options. The options look equally plausible (same popularity band, same kind of title, same language), and nothing about the one right answer stands out, not even a pattern among the options, such as two seasons of one show.

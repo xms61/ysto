@@ -13,6 +13,7 @@ const STATUSES = ['stub', 'draft', 'verified'];
 const SKIPPED_DIRS = new Set([
   '.git',
   '.claude',
+  '.impeccable',
   '.venv',
   'node_modules',
   'dist',
