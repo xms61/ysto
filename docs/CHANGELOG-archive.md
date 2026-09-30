@@ -2,6 +2,33 @@
 
 Releases moved out of `CHANGELOG.md` (which keeps about the latest 5). Newest first.
 
+## [0.8.1] - 2026-09-30
+
+### Added
+- `PRODUCT.md`, the product record: who plays, what success means, what sets the game apart from other anime music quizzes, its constraints, what evidence exists (and what must never be invented), its principles and its accessibility commitments. The Impeccable design skill reads it, and AGENTS.md links it.
+
+### Changed
+- `docs/PRODUCT_SENSE.md` points to `PRODUCT.md` for who plays, instead of describing the players twice.
+- The Impeccable skill's local settings folder, `.impeccable/`, is ignored by git and by the doc checks.
+
+## [0.8.0] - 2026-09-29
+
+### Added
+- The three themes, each a block of CSS variables ([DESIGN.md](DESIGN.md)):
+  - Tokyo Rain: neon glows, falling rain, and Tilt Neon headings that glow and flicker
+  - Sakura: soft blossom light, falling petals, round corners, and M PLUS Rounded 1c headings
+  - Shonen: halftone dots, speed lines, square corners with an offset shadow, a burst behind each answer, and Anton headings in capitals
+- A theme picker that shows each theme in its own colors and type, and the Preferences menu on the home screen too.
+- A motion setting (as the device is set, reduced or full). Decoration only moves when motion is full, reduced motion also stops transitions, and the options never animate.
+- The reveal's playful line: a wrong or missing answer earns "You skipped the OP?!" (or the ED).
+- A favicon, and the browser's toolbar color follows the theme on phones.
+- Tests: the themes' contrast against WCAG AA from `styles.css`, and axe on every screen in every theme in the browser tests.
+
+### Changed
+- Form fields have their own border color (`edge`), at 3:1 against the page and panels.
+- The hint about keys 1 to 4 shows only where a mouse or trackpad suggests a keyboard.
+- Each browser project in the browser tests sends its own client address, so the per-IP lobby limits count each browser on its own.
+
 ## [0.7.0] - 2026-09-29
 
 ### Added

@@ -1,0 +1,54 @@
+# The VPS's services (docs/DEPLOY.md). Caddy is the only one on the public ports: it serves HTTPS for
+# YSTO_DOMAIN and proxies to the game, which publishes no port. This folder is copied to the VPS, with a .env
+# made from .env.example beside it.
+name: ysto
+
+services:
+  ysto:
+    image: ghcr.io/xms61/ysto:${YSTO_VERSION:-latest}
+    restart: unless-stopped
+    env_file: .env
+    # Set here, so a .env copied from a development machine can't point the container elsewhere.
+    environment:
+      YSTO_AUDIO_DIR: /data/audio
+      YSTO_CATALOG_DIR: /data/catalog
+      YSTO_TRUST_PROXY: 1
+    volumes:
+      - ${YSTO_AUDIO_HOST_DIR:?set YSTO_AUDIO_HOST_DIR in .env}:/data/audio:ro
+      - ${YSTO_CATALOG_HOST_DIR:?set YSTO_CATALOG_HOST_DIR in .env}:/data/catalog:ro
+    read_only: true
+    tmpfs: [/tmp]
+    cap_drop: [ALL]
+    security_opt: ['no-new-privileges:true']
+    mem_limit: 1g
+    pids_limit: 256
+    logging:
+      driver: json-file
+      options: { max-size: 10m, max-file: '3' }
+
+  caddy:
+    # Dependabot keeps the digest current.
+    image: caddy:2.11.4-alpine@sha256:6aeddd44c3078b0f9a35206472a11420648a79c184603ef95957d0a20044cb2b
+    restart: unless-stopped
+    depends_on: [ysto]
+    ports: ['80:80', '443:443', '443:443/udp']
+    environment:
+      YSTO_DOMAIN: ${YSTO_DOMAIN:?set YSTO_DOMAIN in .env}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    read_only: true
+    tmpfs: [/tmp]
+    cap_drop: [ALL]
+    cap_add: [NET_BIND_SERVICE]
+    security_opt: ['no-new-privileges:true']
+    mem_limit: 256m
+    logging:
+      driver: json-file
+      options: { max-size: 10m, max-file: '3' }
+
+# Caddy's certificates and keys. Never rename these once released: a new name starts empty.
+volumes:
+  caddy_data:
+  caddy_config:

@@ -1,0 +1,11 @@
+# HTTPS for the game (docs/DEPLOY.md). Caddy gets and renews the Let's Encrypt certificate for YSTO_DOMAIN,
+# redirects HTTP to HTTPS, and proxies WebSockets without further settings. The game sets its own security
+# headers; Caddy adds HSTS.
+{$YSTO_DOMAIN} {
+	encode zstd gzip
+	header {
+		Strict-Transport-Security "max-age=31536000"
+		-Server
+	}
+	reverse_proxy ysto:3000
+}

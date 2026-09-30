@@ -89,16 +89,19 @@ test('defaults the catalog paths to data/ under the working directory', () => {
     audioDir: null,
     catalogDir: resolve(CWD, 'data/catalog'),
     cacheDir: resolve(CWD, 'data/cache'),
+    exportDir: resolve(CWD, 'data/export'),
     ffmpegPath: 'ffmpeg',
     ffprobePath: 'ffprobe',
   });
 });
 
 test('resolves catalog paths from the environment, treating blank values as unset', () => {
-  const config = loadCatalogConfig({ YSTO_AUDIO_DIR: 'library', YSTO_CATALOG_DIR: ' ', YSTO_CACHE_DIR: 'cache' }, CWD);
+  const env = { YSTO_AUDIO_DIR: 'library', YSTO_CATALOG_DIR: ' ', YSTO_CACHE_DIR: 'cache', YSTO_EXPORT_DIR: 'out' };
+  const config = loadCatalogConfig(env, CWD);
   assert.equal(config.audioDir, resolve(CWD, 'library'));
   assert.equal(config.catalogDir, resolve(CWD, 'data/catalog'));
   assert.equal(config.cacheDir, resolve(CWD, 'cache'));
+  assert.equal(config.exportDir, resolve(CWD, 'out'));
 });
 
 test('finds ffprobe next to the configured ffmpeg', () => {

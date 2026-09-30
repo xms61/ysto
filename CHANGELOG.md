@@ -7,13 +7,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [0.10.1] - 2026-09-30
+## [0.11.1] - 2026-09-30
 
 ### Fixed
 - A crossover that AnimeThemes files under several series (Isekai Quartet, Kaginado) no longer merges those franchises into one, which Hard mode would have treated as a single franchise.
 
 ### Changed
 - The catalog is built from a live AnimeThemes sync instead of the September dump: franchises now use AnimeThemes series, titles gain their synonyms, and reveals show cover art.
+
+## [0.11.0] - 2026-09-30
+
+### Added
+- A Docker image: Node 24 on Alpine with ffmpeg, run as a non-root user with a health check, and without npm, corepack or yarn.
+- `deploy/`: the VPS's compose file, with Caddy serving HTTPS on the domain in `YSTO_DOMAIN` and the game hardened behind it (read-only, no capabilities, no published port), a Caddyfile, and a `.env.example`.
+- `npm run catalog:export`: re-encodes every file the catalog plays to 128 kbps Opus in `YSTO_EXPORT_DIR` for the VPS. Reruns encode only new or changed files and remove copies no longer played.
+- The release workflow, started by hand from main: reruns CI, publishes the image for amd64 and arm64 to GHCR with an SBOM and provenance, tags the version and creates the GitHub release.
+- A `docker` CI job: builds the image, runs it on the fixture catalog until it is ready, cuts clips in it, checks that it holds no audio or database file, and scans it with Trivy.
+- `docs/DEPLOY.md`, the runbook for the Hetzner VPS, the library upload, releases and rollbacks.
+- `robots.txt`, which disallows everything.
+
+### Changed
+- The browser tests' fixture catalog is written by `e2e/fixture-data.ts`, which the image check uses too.
+- Dependabot also keeps the base image and Caddy digests current.
+
+## [0.10.1] - 2026-09-30
+
+### Changed
+- M6 is done: a whole game on a real iPhone played every clip, at the 15% default volume and with the silent switch on. The v1 plan and the audio clips doc record the check.
 
 ## [0.10.0] - 2026-09-30
 
@@ -63,30 +83,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Japanese titles use the device's Japanese fonts instead of a display face's fallback.
 - The new faces replace Tilt Neon, M PLUS Rounded 1c and Anton.
 - The contrast test covers the card stock: text on cards, dimmed cards, chosen cards and card backs, and the index marks.
-
-## [0.8.1] - 2026-09-30
-
-### Added
-- `PRODUCT.md`, the product record: who plays, what success means, what sets the game apart from other anime music quizzes, its constraints, what evidence exists (and what must never be invented), its principles and its accessibility commitments. The Impeccable design skill reads it, and AGENTS.md links it.
-
-### Changed
-- `docs/PRODUCT_SENSE.md` points to `PRODUCT.md` for who plays, instead of describing the players twice.
-- The Impeccable skill's local settings folder, `.impeccable/`, is ignored by git and by the doc checks.
-
-## [0.8.0] - 2026-09-29
-
-### Added
-- The three themes, each a block of CSS variables ([DESIGN.md](docs/DESIGN.md)):
-  - Tokyo Rain: neon glows, falling rain, and Tilt Neon headings that glow and flicker
-  - Sakura: soft blossom light, falling petals, round corners, and M PLUS Rounded 1c headings
-  - Shonen: halftone dots, speed lines, square corners with an offset shadow, a burst behind each answer, and Anton headings in capitals
-- A theme picker that shows each theme in its own colors and type, and the Preferences menu on the home screen too.
-- A motion setting (as the device is set, reduced or full). Decoration only moves when motion is full, reduced motion also stops transitions, and the options never animate.
-- The reveal's playful line: a wrong or missing answer earns "You skipped the OP?!" (or the ED).
-- A favicon, and the browser's toolbar color follows the theme on phones.
-- Tests: the themes' contrast against WCAG AA from `styles.css`, and axe on every screen in every theme in the browser tests.
-
-### Changed
-- Form fields have their own border color (`edge`), at 3:1 against the page and panels.
-- The hint about keys 1 to 4 shows only where a mouse or trackpad suggests a keyboard.
-- Each browser project in the browser tests sends its own client address, so the per-IP lobby limits count each browser on its own.
