@@ -8,6 +8,7 @@ import { QrCode } from '../components/QrCode.tsx';
 import { SettingsForm } from '../components/SettingsForm.tsx';
 import { SettingsSummary } from '../components/SettingsSummary.tsx';
 import { Button, INPUT, Panel } from '../components/ui.tsx';
+import { usePagePhase } from '../hooks.ts';
 import type { GameStore } from '../realtime/store.ts';
 
 interface LobbyProps {
@@ -45,7 +46,7 @@ function Invite({ code }: { code: string }) {
         <div className="flex w-full flex-col gap-3">
           <p className="flex items-baseline gap-3">
             <span className="text-muted">Code</span>
-            <span className="font-mono text-3xl font-bold tracking-[0.25em]">{code}</span>
+            <span className="display lobby-code text-3xl">{code}</span>
           </p>
           <label className="flex flex-col gap-1.5">
             Join link
@@ -64,7 +65,7 @@ function StartBar({ store, lobby, settings, isHost }: LobbyProps) {
   const tooFew = pool.anime < settings.songsPerGame;
   const matching = `${pool.themes.toLocaleString('en')} songs from ${pool.anime.toLocaleString('en')} anime match.`;
   return (
-    <div className="sticky bottom-0 z-10 -mx-4 flex flex-wrap items-center gap-3 border-t border-line bg-page/95 px-4 py-3">
+    <div className="start-bar sticky bottom-0 z-10 -mx-4 flex flex-wrap items-center gap-3 border-t border-line bg-page px-4 py-3">
       <p className="flex-1 text-sm" aria-live="polite">
         {matching}
         {tooFew && isHost && ` Play at most ${pool.anime} songs, or widen the filters.`}
@@ -74,13 +75,21 @@ function StartBar({ store, lobby, settings, isHost }: LobbyProps) {
           Start game
         </Button>
       ) : (
-        <p className="text-sm text-muted">Waiting for the host to start.</p>
+        <p className="flex items-center gap-2 text-sm text-muted">
+          <span aria-hidden="true" className="idle-meter">
+            <span />
+            <span />
+            <span />
+          </span>
+          Waiting for the host to start.
+        </p>
       )}
     </div>
   );
 }
 
 export function Lobby({ store, lobby, settings, isHost }: LobbyProps) {
+  usePagePhase('lobby');
   return (
     <>
       <Invite code={lobby.code} />

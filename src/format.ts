@@ -11,6 +11,11 @@ export function place(rank: number): string {
   return `${rank}${SUFFIXES[ORDINALS.select(rank)] ?? 'th'}`;
 }
 
+// Places for scores sorted from highest, shared on a tie: 10, 10, 7 place 1st, 1st and 3rd.
+export function sharedPlaces(sortedScores: readonly number[]): number[] {
+  return sortedScores.map((value) => sortedScores.indexOf(value) + 1);
+}
+
 export function score(value: number): string {
   const digits = Math.abs(value).toLocaleString('en');
   return value < 0 ? `${MINUS}${digits}` : digits;

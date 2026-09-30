@@ -23,6 +23,20 @@ interface HomeProps {
 
 const CODE_MESSAGE = `Lobby codes have ${CODE_LENGTH} letters and digits.`;
 
+// The whole game in three lines, for a friend who has never played (docs/product-specs/game-flow.md).
+function HowToPlay() {
+  return (
+    <details className="panel how-to-play px-4 py-3">
+      <summary className="adjust-summary">How to play</summary>
+      <ol className="mt-3 flex list-decimal flex-col gap-2 pl-5 text-muted">
+        <li>Everyone in the lobby hears the same few seconds of an opening or ending, at the same moment.</li>
+        <li>Pick the anime from four options, by tap or with keys 1 to 4. The host picks how answers score.</li>
+        <li>After each round you see the answer and the scores. You can play alone too.</li>
+      </ol>
+    </details>
+  );
+}
+
 export function Home({ joinCode, notice, prefs, onPrefs, unlockAudio, onSeated }: HomeProps) {
   const [name, setName] = useState('');
   const [code, setCode] = useState(joinCode ?? '');
@@ -72,7 +86,9 @@ export function Home({ joinCode, notice, prefs, onPrefs, unlockAudio, onSeated }
         <PreferencesMenu prefs={prefs} onChange={onPrefs} />
       </div>
       <header className="text-center">
-        <h1 className="display motion-neon text-5xl sm:text-6xl">You Skipped The OP?!</h1>
+        <h1 className="display motion-neon text-5xl sm:text-6xl">
+          You Skipped The OP<span className="title-bang">?!</span>
+        </h1>
         <p className="mt-3 text-muted">Hear a few seconds of an opening or ending, then pick the anime.</p>
       </header>
       {notice && (
@@ -132,6 +148,7 @@ export function Home({ joinCode, notice, prefs, onPrefs, unlockAudio, onSeated }
           {error}
         </p>
       )}
+      <HowToPlay />
       <footer className="mt-auto text-center text-sm text-muted">Song data from AnimeThemes and AniList.</footer>
     </main>
   );

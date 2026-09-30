@@ -1,6 +1,6 @@
 // A round from the player's side (docs/product-specs/game-flow.md): four cards dealt face down while the clip
-// loads and the countdown runs, turned face up exactly when the clip starts, then the reveal. Keys 1 to 4
-// answer too.
+// loads and the countdown runs, turned face up together exactly when the clip starts, then the reveal. Keys 1
+// to 4 answer too.
 import { useEffect } from 'react';
 import type { LobbyState } from '../../shared/protocol.ts';
 import { POINTS } from '../../shared/scoring.ts';
@@ -13,13 +13,21 @@ import { MODE_LABELS } from '../components/SettingsForm.tsx';
 import { Stage } from '../components/Stage.tsx';
 import { ConfirmButton, Panel } from '../components/ui.tsx';
 import { langOf } from '../format.ts';
-import { useReached, useTicker } from '../hooks.ts';
+import { motionAllowed, usePagePhase, useReached, useTicker } from '../hooks.ts';
 import type { ClientRound, RoundStart } from '../realtime/game-state.ts';
 import type { ClipStatus, GameStore } from '../realtime/store.ts';
 import { Reveal } from './Reveal.tsx';
 
 const TICK_MS = 250;
 const OPTION_KEYS = ['1', '2', '3', '4'];
+const LOCK_IN_BUZZ_MS = 12;
+
+// Locking in answers with a short buzz where the device has one, as it stamps the card. It follows the motion
+// setting, since a player who turned motion off asked for a quieter game.
+function answer(store: GameStore, option: number): void {
+  store.answer(option);
+  if (motionAllowed() && 'vibrate' in navigator) navigator.vibrate(LOCK_IN_BUZZ_MS);
+}
 
 interface RoundProps {
   store: GameStore;
@@ -44,7 +52,7 @@ function useAnswerKeys(store: GameStore, active: boolean): void {
     const onKey = (event: KeyboardEvent) => {
       if (event.altKey || event.ctrlKey || event.metaKey || event.repeat || isTypingIn(event.target)) return;
       const option = OPTION_KEYS.indexOf(event.key);
-      if (option >= 0) store.answer(option);
+      if (option >= 0) answer(store, option);
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
@@ -77,14 +85,17 @@ export function Round(props: RoundProps) {
 }
 
 // Each phase that shows time has its own ticker, which reads the clock when it mounts, so a countdown never
-// starts from a time read before the round's start was known.
+// starts from a time read before the round's start was known. Screen readers hear "Get ready" once, not
+// every second.
 function Countdown({ store, startsAt }: { store: GameStore; startsAt: number }) {
   const now = useTicker(store.serverNow, TICK_MS);
   const seconds = Math.max(1, Math.ceil((startsAt - now) / 1000));
   return (
-    <p aria-live="polite" className="flex items-baseline gap-4">
-      <span className="text-muted">Get ready</span>
-      <span key={seconds} className="display motion-tick text-6xl tabular-nums">
+    <p className="flex items-baseline gap-4">
+      <span aria-live="polite" className="text-muted">
+        Get ready
+      </span>
+      <span aria-hidden="true" key={seconds} className="display countdown-number motion-tick text-6xl tabular-nums">
         {seconds}
       </span>
     </p>
@@ -136,8 +147,9 @@ function Answering({ store, lobby, round, start, titleLanguage, clip }: Answerin
             lang={langOf(titleLanguage)}
             state={cardState(round, answered, index)}
             tag={round.choice === index ? 'Your pick' : undefined}
+            dealt
             disabled={!canAnswer}
-            onPick={() => store.answer(index)}
+            onPick={() => answer(store, index)}
           />
         </li>
       ))}
@@ -180,10 +192,11 @@ function RoundView({ store, lobby, round, titleLanguage, isHost, clip }: RoundPr
   const { start, reveal } = round;
   const started = useReached(store.serverNow, start?.startsAt ?? null);
   const solo = lobby.players.length === 1;
+  usePagePhase(reveal ? 'reveal' : started ? 'playing' : 'countdown');
   return (
     <Panel>
       <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2">
-        <h2 className="display text-2xl">
+        <h2 className="display text-[1.375rem] sm:text-2xl">
           Round {round.number} of {round.rounds}
         </h2>
         {isHost && !reveal && (

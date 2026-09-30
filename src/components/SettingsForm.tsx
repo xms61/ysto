@@ -18,6 +18,13 @@ export const MODE_LABELS: Record<ScoringMode, string> = {
   flat: 'Flat',
 };
 
+// What the chosen preset or mode means, under the presets, while the rules themselves stay folded away.
+const SCORING_SUMMARY: Record<ScoringMode, string> = {
+  speed: 'Faster right answers score more. Change the rules under Adjust.',
+  firstCorrect: 'Only the fastest right answer scores. Change the rules under Adjust.',
+  flat: 'Every right answer scores the same. Change the rules under Adjust.',
+};
+
 const MODE_HINTS: Record<ScoringMode, string> = {
   speed: 'faster right answers score more',
   firstCorrect: 'only the fastest right answer scores',
@@ -173,90 +180,6 @@ export function SettingsForm({ settings, bounds, onChange }: SettingsFormProps) 
         )}
       </Group>
 
-      <Group legend="Samples start at">
-        {SAMPLE_STARTS.map((sampleStart) => (
-          <Choice
-            key={sampleStart}
-            type="radio"
-            name="sample-start"
-            checked={settings.sampleStart === sampleStart}
-            onChange={() => set({ sampleStart })}
-          >
-            {SAMPLE_START_LABELS[sampleStart]}
-          </Choice>
-        ))}
-      </Group>
-
-      <Group legend="Songs">
-        {THEME_KINDS.map((kind) => {
-          const checked = settings.kinds.includes(kind);
-          return (
-            <Choice
-              key={kind}
-              type="checkbox"
-              checked={checked}
-              disabled={checked && settings.kinds.length === 1}
-              onChange={() => set({ kinds: toggled(settings.kinds, kind, THEME_KINDS) })}
-            >
-              {kind === 'OP' ? 'Openings' : 'Endings'}
-            </Choice>
-          );
-        })}
-      </Group>
-
-      <Group legend="Years">
-        <div className="grid grid-cols-2 gap-3">
-          <YearSelect
-            label="From"
-            value={range.from}
-            years={years}
-            onPick={(from) => set({ years: { from, to: Math.max(from, range.to) } })}
-          />
-          <YearSelect
-            label="To"
-            value={range.to}
-            years={years}
-            onPick={(to) => set({ years: { from: Math.min(range.from, to), to } })}
-          />
-        </div>
-      </Group>
-
-      <Group legend="Formats">
-        <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-          {MEDIA_FORMATS.map((format) => {
-            const checked = settings.formats.includes(format);
-            return (
-              <Choice
-                key={format}
-                type="checkbox"
-                checked={checked}
-                disabled={checked && settings.formats.length === 1}
-                onChange={() => set({ formats: toggled(settings.formats, format, MEDIA_FORMATS) })}
-              >
-                {format}
-              </Choice>
-            );
-          })}
-        </div>
-      </Group>
-
-      {bounds.genres.length > 0 && (
-        <Group legend="Genres (none picked means any)">
-          <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-            {bounds.genres.map((genre) => (
-              <Choice
-                key={genre}
-                type="checkbox"
-                checked={settings.genres.includes(genre)}
-                onChange={() => set({ genres: toggled(settings.genres, genre, bounds.genres) })}
-              >
-                {genre}
-              </Choice>
-            ))}
-          </div>
-        </Group>
-      )}
-
       <Group legend="Scoring">
         <div className="flex flex-wrap gap-x-5 gap-y-2">
           {PRESET_NAMES.map((name) => (
@@ -271,40 +194,132 @@ export function SettingsForm({ settings, bounds, onChange }: SettingsFormProps) 
             </Choice>
           ))}
         </div>
-        <p className="text-sm text-muted">Pick a preset, then change anything below.</p>
-        {SCORING_MODES.map((mode) => (
-          <Choice
-            key={mode}
-            type="radio"
-            name="mode"
-            checked={settings.scoring.mode === mode}
-            onChange={() => setScoring({ mode })}
-          >
-            {MODE_LABELS[mode]}: {MODE_HINTS[mode]}
-          </Choice>
-        ))}
-        <Choice
-          type="checkbox"
-          checked={settings.scoring.streakBonus}
-          onChange={(event) => setScoring({ streakBonus: event.target.checked })}
-        >
-          Streak bonus: +{POINTS.streakStep} for each right answer in a row
-        </Choice>
-        <Choice
-          type="checkbox"
-          checked={settings.scoring.comeback}
-          onChange={(event) => setScoring({ comeback: event.target.checked })}
-        >
-          Comeback: double streak bonus while behind the leader
-        </Choice>
-        <Choice
-          type="checkbox"
-          checked={settings.scoring.wrongAnswerPenalty}
-          onChange={(event) => setScoring({ wrongAnswerPenalty: event.target.checked })}
-        >
-          Wrong answers cost {POINTS.penalty} points ({POINTS.firstCorrectPenalty} in First correct)
-        </Choice>
+        <p className="text-sm text-muted">{SCORING_SUMMARY[settings.scoring.mode]}</p>
       </Group>
+
+      <details className="adjust">
+        <summary className="adjust-summary">Adjust the song pool and scoring rules</summary>
+        <div className="mt-5 flex flex-col gap-6">
+          <Group legend="Samples start at">
+            {SAMPLE_STARTS.map((sampleStart) => (
+              <Choice
+                key={sampleStart}
+                type="radio"
+                name="sample-start"
+                checked={settings.sampleStart === sampleStart}
+                onChange={() => set({ sampleStart })}
+              >
+                {SAMPLE_START_LABELS[sampleStart]}
+              </Choice>
+            ))}
+          </Group>
+
+          <Group legend="Songs">
+            {THEME_KINDS.map((kind) => {
+              const checked = settings.kinds.includes(kind);
+              return (
+                <Choice
+                  key={kind}
+                  type="checkbox"
+                  checked={checked}
+                  disabled={checked && settings.kinds.length === 1}
+                  onChange={() => set({ kinds: toggled(settings.kinds, kind, THEME_KINDS) })}
+                >
+                  {kind === 'OP' ? 'Openings' : 'Endings'}
+                </Choice>
+              );
+            })}
+          </Group>
+
+          <Group legend="Years">
+            <div className="grid grid-cols-2 gap-3">
+              <YearSelect
+                label="From"
+                value={range.from}
+                years={years}
+                onPick={(from) => set({ years: { from, to: Math.max(from, range.to) } })}
+              />
+              <YearSelect
+                label="To"
+                value={range.to}
+                years={years}
+                onPick={(to) => set({ years: { from: Math.min(range.from, to), to } })}
+              />
+            </div>
+          </Group>
+
+          <Group legend="Formats">
+            <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+              {MEDIA_FORMATS.map((format) => {
+                const checked = settings.formats.includes(format);
+                return (
+                  <Choice
+                    key={format}
+                    type="checkbox"
+                    checked={checked}
+                    disabled={checked && settings.formats.length === 1}
+                    onChange={() => set({ formats: toggled(settings.formats, format, MEDIA_FORMATS) })}
+                  >
+                    {format}
+                  </Choice>
+                );
+              })}
+            </div>
+          </Group>
+
+          {bounds.genres.length > 0 && (
+            <Group legend="Genres (none picked means any)">
+              <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+                {bounds.genres.map((genre) => (
+                  <Choice
+                    key={genre}
+                    type="checkbox"
+                    checked={settings.genres.includes(genre)}
+                    onChange={() => set({ genres: toggled(settings.genres, genre, bounds.genres) })}
+                  >
+                    {genre}
+                  </Choice>
+                ))}
+              </div>
+            </Group>
+          )}
+
+          <Group legend="Scoring rules">
+            {SCORING_MODES.map((mode) => (
+              <Choice
+                key={mode}
+                type="radio"
+                name="mode"
+                checked={settings.scoring.mode === mode}
+                onChange={() => setScoring({ mode })}
+              >
+                {MODE_LABELS[mode]}: {MODE_HINTS[mode]}
+              </Choice>
+            ))}
+            <Choice
+              type="checkbox"
+              checked={settings.scoring.streakBonus}
+              onChange={(event) => setScoring({ streakBonus: event.target.checked })}
+            >
+              Streak bonus: +{POINTS.streakStep} for each right answer in a row
+            </Choice>
+            <Choice
+              type="checkbox"
+              checked={settings.scoring.comeback}
+              onChange={(event) => setScoring({ comeback: event.target.checked })}
+            >
+              Comeback: double streak bonus while behind the leader
+            </Choice>
+            <Choice
+              type="checkbox"
+              checked={settings.scoring.wrongAnswerPenalty}
+              onChange={(event) => setScoring({ wrongAnswerPenalty: event.target.checked })}
+            >
+              Wrong answers cost {POINTS.penalty} points ({POINTS.firstCorrectPenalty} in First correct)
+            </Choice>
+          </Group>
+        </div>
+      </details>
     </div>
   );
 }

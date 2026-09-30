@@ -7,6 +7,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.10.0] - 2026-09-30
+
+### Added
+- The right card lands with its stock's own hit at the reveal: a departure board flapping in the title (Tokyo Rain), a gold ring and a petal burst (Sakura), a red starburst and a shake (Shonen), lock brackets clamping on (Mecha), a foil ring and sparkles (Magical Girl), a flashing window and pixels (Isekai), a tracking glitch (Retro VHS). It lands harder on a streak of 3 and of 5.
+- The results are announced from the bottom up, like a festival bill: the winner's name drops in last, its score counts up, and its theme's material bursts from it.
+- The verdict lands like a stamp with a badge, and a streak chip shows from 2 right answers in a row.
+- The face-down cards carry the game's "?!", slide in off the deck and idle with a passing light; locking in stamps the pick and gives a short buzz on phones.
+- Each backdrop follows the game: more weather while the clip plays, and a flash at the reveal and the results (lightning, speed lines, hazard strips, a foil ring, static). Shonen's page turns speed lines while the clip plays, and Mecha's hangar blinks with beacons.
+- "How to play" on the home screen, and the name's "?!" stamped on in the accent.
+- A painted scene behind each theme's page, with no characters or text, kept faint enough that the page's text still passes AA contrast.
+
+### Changed
+- All four options turn face up together as the clip starts, in 180ms on a curve that shows the titles within about a frame, instead of appearing without a turn.
+- The host's song pool and scoring rules fold under "Adjust the song pool and scoring rules"; the presets stay in view with a line on what the mode means.
+- The lobby code is set in the theme's display face, and the lobby's start bar is solid.
+- The results fill the screen, with Play again at their foot.
+- The countdown's number is in the accent at full strength, and screen readers hear "Get ready" once rather than every second.
+- A new screen (the lobby, a game, the results) moves the focus to its heading.
+
+### Fixed
+- The face-down cards before the clip never drew, in any theme.
+- Players on the same score share a place at the reveal and in the results.
+- Mecha's round heading no longer pushes "Skip round" onto a line of its own on a phone.
+
 ## [0.9.0] - 2026-09-30
 
 ### Added
@@ -77,46 +101,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - The lobby state's `game` holds the final results once a game ends, so a player who reconnects sees them.
 - The browser tests run against `e2e/fixture-server.ts`, which serves a generated catalog and tones instead of none.
-
-## [0.6.0] - 2026-09-29
-
-### Added
-- The game loop ([GAME.md](server/game/GAME.md), [game flow](docs/product-specs/game-flow.md)):
-  - a pure game engine, `step(game, event, now)`, and a shell that runs its effects: timers, clip cuts a round ahead, clip tokens, and messages
-  - the round flow: `round:prepare` with the clip token, the ready barrier (8 s), `round:start` with the options (a 3 s countdown before the first round, 1 s before later ones), answers, `round:answered`, `round:reveal`, and `game:results` with the podium, correct answers, average time and best streak
-  - answer times measured by the server, less half the median ping round trip (at most 150 ms). Early, late and repeated answers are dropped. In First correct the round closes 150 ms after the first correct answer.
-  - host `game:start` (also for playing again, avoiding played themes) and `round:skip`. A skipped round scores nothing and breaks no streak.
-  - late joiners watch and hear the rounds, then play from the next one. A reconnecting player gets the round in progress again.
-  - a round whose clip fails on three themes is dropped, and a game ends when nobody is connected at a round's barrier
-- The lobby state shows the game's phase and round, each player's score, and who is spectating.
-- The reveal teaches the song's title and credited artists, which the catalog loader now reads, plus the cover served from `/covers/`.
-- `/readyz` now also checks the audio folder and ffmpeg. `YSTO_AUDIO_DIR`, `YSTO_FFMPEG_PATH`, `YSTO_FFMPEG_CONCURRENCY` and `YSTO_MAX_GAMES` configure games.
-- Tests: fake-clock games with 8 players in each scoring mode against the scoring table, the leak test, and whole games over real sockets.
-
-### Changed
-- Settings can't change while a game runs.
-- Lobby seats no longer hold a score; the game's standings do.
-
-## [0.5.0] - 2026-09-29
-
-### Added
-- Lobbies ([REALTIME.md](server/realtime/REALTIME.md), [GAME.md](server/game/GAME.md)):
-  - `POST /api/lobbies` creates a lobby and `POST /api/lobbies/:code/players` joins one. Each returns a session token.
-  - A WebSocket at `/ws` binds to a seat with `hello` and sends every player the lobby state after each change: players, host, lock, settings, pool size, and what the settings may choose from.
-  - Players can leave. The host can kick, lock and change the settings. When the host leaves, or stays away past the 60 s grace, the player connected longest takes over.
-  - A player who drops keeps the seat for 60 s. A lobby closes after 15 idle minutes, or after 4 hours.
-- Limits per IP: lobby creations, joins, unknown codes, open lobbies and sockets. Per socket: message rate, frame size, and strikes for invalid messages.
-- Security headers (CSP, nosniff, no referrer, a Permissions-Policy, noindex) on every response. Errors never show a stack trace.
-- `shared/protocol.ts` with the messages, error and close codes, and one validator per message. Also `shared/names.ts` with the name rules, and a settings validator against the catalog's bounds.
-- `/readyz`, JSON log lines at `LOG_LEVEL`, and a shutdown that tells players before closing their sockets.
-- `LOG_LEVEL`, `YSTO_TRUST_PROXY`, `YSTO_ALLOWED_ORIGINS`, `YSTO_MAX_LOBBIES` and `YSTO_MAX_PLAYERS`.
-- The clip route is now mounted with the lobby sessions.
-
-### Changed
-- The server starts without a catalog and reports itself not ready, instead of serving lobbies it can't fill.
-- The custom popularity range starts at every rank when the catalog has fewer than 1,000 anime.
-- Settings offer only genres with at least 50 playable themes, the threshold the catalog gate warns at.
-
----
-
-Older releases are in [docs/CHANGELOG-archive.md](docs/CHANGELOG-archive.md).

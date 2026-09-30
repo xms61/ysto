@@ -179,6 +179,12 @@ test('shows the titles in the language the player picked', async () => {
   expect((await screen.findByText('雨の歌')).getAttribute('lang')).toBe('ja');
 });
 
+function spokenText(element: Element): string {
+  const copy = element.cloneNode(true) as Element;
+  copy.querySelectorAll('[aria-hidden="true"]').forEach((hidden) => hidden.remove());
+  return copy.textContent ?? '';
+}
+
 test('shows the final results, also to a player who reconnects after the game', () => {
   renderSeated(
     lobbyState({
@@ -195,7 +201,8 @@ test('shows the final results, also to a player who reconnects after the game', 
   );
   expect(screen.getByRole('heading', { name: 'Final results' })).toBeTruthy();
   const standings = within(screen.getByRole('list', { name: 'Final standings' })).getAllByRole('listitem');
-  expect(standings.map((standing) => standing.textContent)).toEqual([
+  // What a player is told: the winner's score counts up on screen, hidden from assistive technology.
+  expect(standings.map(spokenText)).toEqual([
     '1stBen3 of 5 right · 4.2 s on average · best streak 22,400 points',
     '2ndAnnyou1 of 5 right · best streak 1900 points',
   ]);

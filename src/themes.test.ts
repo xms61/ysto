@@ -53,6 +53,9 @@ const GRAPHIC_PAIRS: [graphic: string, background: string][] = [
   ['good', 'panel'],
   ['bad', 'panel'],
   ['card-mark', 'card'],
+  // The verdict's badge: its icon in the page color on a right or wrong fill.
+  ['page', 'good'],
+  ['page', 'bad'],
 ];
 
 test.each(THEMES)('%s meets AA contrast for text and graphics', (theme) => {

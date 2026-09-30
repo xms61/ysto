@@ -2,6 +2,49 @@
 
 Releases moved out of `CHANGELOG.md` (which keeps about the latest 5). Newest first.
 
+## [0.6.0] - 2026-09-29
+
+### Added
+- The game loop ([GAME.md](../server/game/GAME.md), [game flow](product-specs/game-flow.md)):
+  - a pure game engine, `step(game, event, now)`, and a shell that runs its effects: timers, clip cuts a round ahead, clip tokens, and messages
+  - the round flow: `round:prepare` with the clip token, the ready barrier (8 s), `round:start` with the options (a 3 s countdown before the first round, 1 s before later ones), answers, `round:answered`, `round:reveal`, and `game:results` with the podium, correct answers, average time and best streak
+  - answer times measured by the server, less half the median ping round trip (at most 150 ms). Early, late and repeated answers are dropped. In First correct the round closes 150 ms after the first correct answer.
+  - host `game:start` (also for playing again, avoiding played themes) and `round:skip`. A skipped round scores nothing and breaks no streak.
+  - late joiners watch and hear the rounds, then play from the next one. A reconnecting player gets the round in progress again.
+  - a round whose clip fails on three themes is dropped, and a game ends when nobody is connected at a round's barrier
+- The lobby state shows the game's phase and round, each player's score, and who is spectating.
+- The reveal teaches the song's title and credited artists, which the catalog loader now reads, plus the cover served from `/covers/`.
+- `/readyz` now also checks the audio folder and ffmpeg. `YSTO_AUDIO_DIR`, `YSTO_FFMPEG_PATH`, `YSTO_FFMPEG_CONCURRENCY` and `YSTO_MAX_GAMES` configure games.
+- Tests: fake-clock games with 8 players in each scoring mode against the scoring table, the leak test, and whole games over real sockets.
+
+### Changed
+- Settings can't change while a game runs.
+- Lobby seats no longer hold a score; the game's standings do.
+
+## [0.5.0] - 2026-09-29
+
+### Added
+- Lobbies ([REALTIME.md](../server/realtime/REALTIME.md), [GAME.md](../server/game/GAME.md)):
+  - `POST /api/lobbies` creates a lobby and `POST /api/lobbies/:code/players` joins one. Each returns a session token.
+  - A WebSocket at `/ws` binds to a seat with `hello` and sends every player the lobby state after each change: players, host, lock, settings, pool size, and what the settings may choose from.
+  - Players can leave. The host can kick, lock and change the settings. When the host leaves, or stays away past the 60 s grace, the player connected longest takes over.
+  - A player who drops keeps the seat for 60 s. A lobby closes after 15 idle minutes, or after 4 hours.
+- Limits per IP: lobby creations, joins, unknown codes, open lobbies and sockets. Per socket: message rate, frame size, and strikes for invalid messages.
+- Security headers (CSP, nosniff, no referrer, a Permissions-Policy, noindex) on every response. Errors never show a stack trace.
+- `shared/protocol.ts` with the messages, error and close codes, and one validator per message. Also `shared/names.ts` with the name rules, and a settings validator against the catalog's bounds.
+- `/readyz`, JSON log lines at `LOG_LEVEL`, and a shutdown that tells players before closing their sockets.
+- `LOG_LEVEL`, `YSTO_TRUST_PROXY`, `YSTO_ALLOWED_ORIGINS`, `YSTO_MAX_LOBBIES` and `YSTO_MAX_PLAYERS`.
+- The clip route is now mounted with the lobby sessions.
+
+### Changed
+- The server starts without a catalog and reports itself not ready, instead of serving lobbies it can't fill.
+- The custom popularity range starts at every rank when the catalog has fewer than 1,000 anime.
+- Settings offer only genres with at least 50 playable themes, the threshold the catalog gate warns at.
+
+---
+
+Older releases are in [docs/CHANGELOG-archive.md](CHANGELOG-archive.md).
+
 ## [0.4.0] - 2026-09-29
 
 ### Added

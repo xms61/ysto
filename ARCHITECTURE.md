@@ -1,6 +1,6 @@
 ---
 status: draft
-last-verified: 2026-09-29
+last-verified: 2026-09-30
 ---
 
 # Architecture
@@ -20,7 +20,7 @@ You Skipped The OP?! is a browser quiz. Players join a lobby with a code, hear a
 - `shared/`: code that runs on both sides. `settings.ts` holds the lobby settings, their limits, defaults and validator; `scoring.ts` the scoring modes, modifiers and presets; `protocol.ts` the messages, codes and validators; `names.ts` the player-name rules; and `validate.ts` the checks the validators share. It imports neither `server/` nor `src/`, and no Node built-ins.
 - `tests/`: server and shared tests (`node:test`), laid out like the folders they test.
 - `e2e/`: browser tests (Playwright) against the production build, served by `e2e/fixture-server.ts` with a generated catalog and tones.
-- `scripts/`: the repo checks (`check-docs.mjs`, `check-tracked-files.mjs`) and their tests.
+- `scripts/`: the repo checks (`check-docs.mjs`, `check-tracked-files.mjs`) and their tests, and `check-plate-contrast.mjs`, which checks the page's text over each theme's backdrop plate ([DESIGN.md](docs/DESIGN.md)).
   - `scripts/catalog/`: the offline catalog build, from AnimeThemes, AniList and the audio library to `catalog.sqlite` ([CATALOG.md](scripts/catalog/CATALOG.md)). It may import `server/config.ts`, `server/catalog/`, the seeded generator in `server/game/random.ts`, and `pool.ts`'s genre threshold.
   - `scripts/clips/bench.ts`: times clip cuts from the real library with the server's cutter.
 - `docs/`: the knowledge base ([KNOWLEDGE_BASE.md](docs/KNOWLEDGE_BASE.md)).
