@@ -2,6 +2,31 @@
 
 Releases moved out of `CHANGELOG.md` (which keeps about the latest 5). Newest first.
 
+## [0.9.0] - 2026-09-30
+
+### Added
+- Seven anime themes, each printing the round's four options on its own card stock ([DESIGN.md](DESIGN.md)):
+  - Tokyo Rain: station name boards in the rain, lit amber when picked
+  - Sakura: hanafuda with a double vermilion rim and a blossom, on a seigaiha page
+  - Shonen: inked manga panels with screentone and one red spot color
+  - Mecha (new): chamfered armor plates with a bevel, rivets, hazard strips and lock brackets
+  - Magical Girl (new): gem cards rimmed in gold foil, with a faceted gem for the index
+  - Isekai (new): JRPG menu windows with numbered slots and a blinking cursor
+  - Retro VHS (new): tape labels with sunset stripes and on-screen-display type
+- Each theme has its own display face and card title face, all OFL fonts from Fontsource in Latin subsets: Zen Kaku Gothic New, Zen Antique, Bangers, Saira Stencil One, Mochiy Pop One, Press Start 2P with Pixelify Sans, and VT323.
+- The options lie face down until the clip starts, then show at once. At the reveal the right card turns over to its printed back.
+- A listening panel above the cards shows whether this player's clip is loading, playing or failed to load, so "I can't hear it" never looks like "I don't know it".
+- Buttons, fields, dropdowns, checkboxes and radios take each theme's stock.
+
+### Changed
+- The reveal puts this player's verdict and standing first, under the round's heading.
+- The standings at the reveal and the final results are billed like a festival lineup, the leader's full name largest. The final results replace the podium and the table.
+- A picked card gets a "Your pick" stamp on its edge, which never changes its size, and the other cards dim as a whole.
+- On wider screens the cards are twice as tall and the equalizer spans the column.
+- Japanese titles use the device's Japanese fonts instead of a display face's fallback.
+- The new faces replace Tilt Neon, M PLUS Rounded 1c and Anton.
+- The contrast test covers the card stock: text on cards, dimmed cards, chosen cards and card backs, and the index marks.
+
 ## [0.8.1] - 2026-09-30
 
 ### Added
