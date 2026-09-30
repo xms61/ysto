@@ -72,7 +72,7 @@ function Bill({ lobby, results, rounds }: { lobby: LobbyState; results: ResultVi
             <span className="bill-who">
               <span className="bill-name">{nameOf(lobby, result.playerId)}</span>
               {result.playerId === lobby.you && (
-                <span className="ml-2 rounded-full border border-line px-2 align-middle text-xs text-muted">you</span>
+                <span className="bill-you ml-2 rounded-full border px-2 align-middle text-xs">you</span>
               )}
               <span className="bill-stats">{statsOf(result, rounds)}</span>
             </span>

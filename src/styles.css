@@ -1028,8 +1028,10 @@
     color: var(--muted);
   }
 
+  /* The leader's place in the ink, not the accent: a spot color on the raised row of this player falls short
+     of AA at this size. */
   .board-row:first-child .board-place {
-    color: var(--accent);
+    color: var(--ink);
   }
 
   .board-total {
@@ -2071,7 +2073,14 @@
     opacity: 0.85;
   }
 
-  .bill-lead .border-line {
+  /* This player's chip, muted on the panel and in the card's own ink on the winner's card back. A class of its
+     own rather than utilities, so the card can recolor it. */
+  .bill-you {
+    border-color: var(--line);
+    color: var(--muted);
+  }
+
+  .bill-lead .bill-you {
     border-color: currentColor;
     color: inherit;
   }
