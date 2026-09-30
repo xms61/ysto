@@ -44,6 +44,7 @@ This file is the map, not the manual. The repository is the system of record: wh
 | Browser tests (smoke, clip decode, a whole game) | `npm run build && npm run test:e2e` (needs ffmpeg) |
 | Clip timing | `npm run clips:bench` (reads the real library) |
 | Catalog | `npm run catalog:build`, then `npm run catalog:check` (all steps: [CATALOG.md](scripts/catalog/CATALOG.md)) |
+| Backdrop plate contrast | `node scripts/check-plate-contrast.mjs` (needs ffmpeg) |
 | Doc checks | `node scripts/check-docs.mjs` |
 | Doc checker tests | `node --test scripts/check-docs.test.mjs` |
 | Tracked-files check | `node scripts/check-tracked-files.mjs` (`--staged`: staged files only) |

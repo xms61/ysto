@@ -1,6 +1,7 @@
 // A seat in a lobby: one store and socket for as long as this tab holds the seat. It shows the lobby, the
 // round or the results, depending on where the lobby's game stands.
-import { useEffect, useState, useSyncExternalStore } from 'react';
+import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
+import type { RefObject } from 'react';
 import type { AudioEngine } from '../audio/engine.ts';
 import { NoticeToast } from '../components/NoticeToast.tsx';
 import { PreferencesMenu } from '../components/PrefsPanel.tsx';
@@ -47,6 +48,20 @@ function useRetryOnReturn(store: GameStore): void {
   }, [store]);
 }
 
+// A new screen (the lobby, a game, the results) takes the focus to its first heading, so a screen reader
+// hears where the player is and the keyboard starts from there. The first screen keeps the page's focus.
+function useFocusOnScreenChange(screen: string, container: RefObject<HTMLDivElement | null>): void {
+  const shown = useRef(screen);
+  useEffect(() => {
+    if (shown.current === screen) return;
+    shown.current = screen;
+    const heading = container.current?.querySelector<HTMLElement>('section h2');
+    if (!heading) return;
+    heading.tabIndex = -1;
+    heading.focus({ preventScroll: true });
+  }, [screen, container]);
+}
+
 export function LobbySession({ session, audio, prefs, onPrefs, onExit, createSocket }: LobbySessionProps) {
   const [store] = useState(() => new GameStore({ session, audio, onExit, createSocket }));
   useEffect(() => {
@@ -58,13 +73,15 @@ export function LobbySession({ session, audio, prefs, onPrefs, onExit, createSoc
   const lobby = game.lobby;
   const host = isHost(game);
   const screen = screenOf(game);
+  const page = useRef<HTMLDivElement>(null);
+  useFocusOnScreenChange(lobby && settings ? screen : 'connecting', page);
 
   return (
-    <div className="mx-auto flex min-h-dvh w-full max-w-3xl flex-col gap-4 px-4 py-4">
+    <div ref={page} className="mx-auto flex min-h-dvh w-full max-w-3xl flex-col gap-4 px-4 py-4">
       <header className="relative flex flex-wrap items-center gap-3">
         <h1 className="display text-lg">
           <span className="sr-only sm:not-sr-only">Lobby </span>
-          <span className="font-mono tracking-widest">{session.code}</span>
+          <span className="lobby-code">{session.code}</span>
         </h1>
         {status === 'reconnecting' && (
           <span role="status" className="text-sm text-muted">

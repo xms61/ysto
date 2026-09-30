@@ -37,7 +37,7 @@ server                                              clients
   - the cover
   - each player's pick and points, and for a player who missed the song, with a wrong answer or none, "You skipped the OP?!" (or the ED)
 - A player whose clip fails to load can still answer. The reveal marks them "no audio", with no penalty.
-- The results bill the standings like a festival lineup, the winner's full name largest, with each player's correct answers, average time and best streak. The lobby state keeps them until the next game, so a player who reloads on the results sees them again.
+- The results bill the standings like a festival lineup, announced from the bottom up, the winner's full name largest, with each player's correct answers, average time and best streak. Players on the same score share a place, at the reveal and in the results. The lobby state keeps them until the next game, so a player who reloads on the results sees them again.
 - The clip plays on through the reveal, and fades out when the next round is prepared, when the host skips, or when the game ends.
 
 ## Acceptance criteria

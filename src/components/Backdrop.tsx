@@ -1,7 +1,9 @@
 // The theme's backdrop behind every screen: its texture, and when motion is on, its weather: rain over Tokyo,
-// falling petals for Sakura, a scanner sweep in the hangar, twinkling stars for Magical Girl, blinking pixel
-// stars for Isekai, a tracking band on the tape. Decoration only: hidden from assistive technology, never in
-// the way of a tap. Shonen's page holds still, like the printed page it is.
+// falling petals for Sakura, a scanner sweep and beacons in the hangar, twinkling stars for Magical Girl,
+// blinking pixel stars for Isekai, a tracking band on the tape, speed lines on Shonen's page. The weather
+// follows the game's phase (data-phase on the page, set by usePagePhase): a second layer of it surges in while
+// the clip plays, and a flash marks the reveal and the results. It never follows the audio, so it can't give a
+// song away. Decoration only: hidden from assistive technology, never in the way of a tap.
 import type { CSSProperties } from 'react';
 import type { Theme } from '../prefs/prefs.ts';
 
@@ -13,37 +15,47 @@ interface Mote {
   size: number; // px
 }
 
-// Spread out by fixed steps rather than at random, so every render and every device draws the same scene.
-function motes(count: number, duration: [number, number], size: [number, number]): Mote[] {
-  return Array.from({ length: count }, (_, index) => ({
-    left: (index * 37 + 11) % 100,
-    top: (index * 61 + 7) % 100,
-    delay: (-((index * 53) % 97) / 97) * duration[1],
-    duration: duration[0] + (((index * 29) % 11) / 10) * (duration[1] - duration[0]),
-    size: size[0] + (((index * 17) % 7) / 6) * (size[1] - size[0]),
-  }));
+// Spread out by fixed steps rather than at random, so every render and every device draws the same scene. The
+// surge layer starts further along the sequence, so its motes fall between the calm layer's.
+function motes(count: number, duration: [number, number], size: [number, number], offset = 0): Mote[] {
+  return Array.from({ length: count }, (_, step) => {
+    const index = step + offset;
+    return {
+      left: (index * 37 + 11) % 100,
+      top: (index * 61 + 7) % 100,
+      delay: (-((index * 53) % 97) / 97) * duration[1],
+      duration: duration[0] + (((index * 29) % 11) / 10) * (duration[1] - duration[0]),
+      size: size[0] + (((index * 17) % 7) / 6) * (size[1] - size[0]),
+    };
+  });
 }
 
-const FALLING = {
-  rain: motes(28, [0.6, 1.3], [48, 110]),
-  petal: motes(12, [9, 16], [9, 16]),
-};
-const STAYING = {
-  twinkle: motes(14, [2.4, 4.8], [7, 15]),
-  'pixel-star': motes(18, [0.9, 2.2], [3, 3]),
+type Falling = 'rain' | 'petal';
+type Staying = 'twinkle' | 'pixel-star' | 'beacon';
+type Sweeping = 'sweep' | 'tracking' | 'speed-lines';
+type Weather = Falling | Staying | Sweeping;
+
+const TIMING: Record<Falling | Staying, { duration: [number, number]; size: [number, number] }> = {
+  rain: { duration: [0.6, 1.3], size: [48, 120] },
+  petal: { duration: [9, 16], size: [11, 22] },
+  twinkle: { duration: [2.4, 4.8], size: [8, 20] },
+  'pixel-star': { duration: [0.9, 2.2], size: [3, 6] },
+  beacon: { duration: [1.6, 3.2], size: [4, 7] },
 };
 
-type Falling = keyof typeof FALLING;
-type Staying = keyof typeof STAYING;
+interface Sky {
+  calm: { kind: Weather; count: number } | null;
+  surge: { kind: Weather; count: number } | null;
+}
 
-const WEATHER: Record<Theme, Falling | Staying | 'sweep' | 'tracking' | null> = {
-  'tokyo-rain': 'rain',
-  sakura: 'petal',
-  shonen: null,
-  mecha: 'sweep',
-  'magical-girl': 'twinkle',
-  isekai: 'pixel-star',
-  'retro-vhs': 'tracking',
+const SKIES: Record<Theme, Sky> = {
+  'tokyo-rain': { calm: { kind: 'rain', count: 34 }, surge: { kind: 'rain', count: 30 } },
+  sakura: { calm: { kind: 'petal', count: 18 }, surge: { kind: 'petal', count: 16 } },
+  shonen: { calm: null, surge: { kind: 'speed-lines', count: 1 } },
+  mecha: { calm: { kind: 'sweep', count: 1 }, surge: { kind: 'beacon', count: 16 } },
+  'magical-girl': { calm: { kind: 'twinkle', count: 22 }, surge: { kind: 'twinkle', count: 18 } },
+  isekai: { calm: { kind: 'pixel-star', count: 26 }, surge: { kind: 'pixel-star', count: 22 } },
+  'retro-vhs': { calm: { kind: 'tracking', count: 1 }, surge: { kind: 'tracking', count: 1 } },
 };
 
 function fallingStyle(mote: Mote, kind: Falling): CSSProperties {
@@ -62,21 +74,34 @@ function stayingStyle(mote: Mote): CSSProperties {
   };
 }
 
-function Weather({ kind }: { kind: Falling | Staying | 'sweep' | 'tracking' }) {
-  if (kind === 'sweep' || kind === 'tracking') return <span className={kind} />;
+function Layer({ kind, count, offset }: { kind: Weather; count: number; offset: number }) {
+  if (kind === 'sweep' || kind === 'tracking' || kind === 'speed-lines') return <span className={kind} />;
+  const { duration, size } = TIMING[kind];
+  const scene = motes(count, duration, size, offset);
   if (kind === 'rain' || kind === 'petal') {
-    return FALLING[kind].map((mote, index) => (
+    return scene.map((mote, index) => (
       <span key={index} className={kind === 'rain' ? 'rain-drop' : 'petal'} style={fallingStyle(mote, kind)} />
     ));
   }
-  return STAYING[kind].map((mote, index) => <span key={index} className={kind} style={stayingStyle(mote)} />);
+  return scene.map((mote, index) => <span key={index} className={kind} style={stayingStyle(mote)} />);
 }
 
 export function Backdrop({ theme, reducedMotion }: { theme: Theme; reducedMotion: boolean }) {
-  const kind = WEATHER[theme];
+  const { calm, surge } = SKIES[theme];
   return (
     <div aria-hidden="true" className="page-texture pointer-events-none fixed inset-0 -z-10 overflow-hidden">
-      {kind && !reducedMotion && <Weather kind={kind} />}
+      <span className="backdrop-plate" />
+      {!reducedMotion && (
+        <>
+          {calm && <Layer kind={calm.kind} count={calm.count} offset={0} />}
+          {surge && (
+            <span className="weather-surge">
+              <Layer kind={surge.kind} count={surge.count} offset={(calm?.count ?? 0) + 5} />
+            </span>
+          )}
+          <span className="phase-flash" />
+        </>
+      )}
     </div>
   );
 }
