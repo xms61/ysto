@@ -2,6 +2,11 @@
 
 Releases moved out of `CHANGELOG.md` (which keeps about the latest 5). Newest first.
 
+## [0.10.1] - 2026-09-30
+
+### Changed
+- M6 is done: a whole game on a real iPhone played every clip, at the 15% default volume and with the silent switch on. The v1 plan and the audio clips doc record the check.
+
 ## [0.10.0] - 2026-09-30
 
 ### Added

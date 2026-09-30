@@ -72,7 +72,6 @@ A group of friends plays together on one small VPS. The catalog holds about 14,5
 | `YSTO_MAX_PLAYERS` | 12 | Per lobby |
 | `YSTO_FFMPEG_PATH` | `ffmpeg` | `ffprobe` is expected next to it |
 | `YSTO_FFMPEG_CONCURRENCY` | CPU count − 1 | Parallel clip jobs |
-| `YSTO_DEV_SERVER_PORT` | 3000 | Development only: the port `vite.config.ts` proxies `/api`, `/covers` and `/ws` to; set it with `PORT` when 3000 is taken |
 
 ## Alternatives considered
 - **Next.js:** rejected. No page needs server rendering, and WebSockets fit it poorly.

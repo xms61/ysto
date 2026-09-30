@@ -1,7 +1,7 @@
 // The reveal (docs/product-specs/game-flow.md): this player's verdict and standing first, under the round's
 // heading, then the four cards in their order, the right one turned over to its printed back, then the answer
-// in every language with its song, and the standings billed like a lineup. Right and wrong show with an icon
-// and words, never color alone. The verdict lands like a stamp, and the right card with its theme's hit, which
+// in every language with its song, and the standings as a scoreboard with who moved. Right and wrong show with
+// an icon and words, never color alone. The verdict lands like a stamp, and the right card with its theme's hit, which
 // grows with this player's streak.
 import { useEffect, useState } from 'react';
 import type { LobbyState, RoundReveal, StandingView } from '../../shared/protocol.ts';
@@ -87,42 +87,74 @@ function cardStateOf(index: number, reveal: RoundReveal, mine: number | null): C
   return index === mine ? 'missed' : 'muted';
 }
 
+type Outcome = 'right' | 'wrong' | 'none';
+
+function outcomeOf(reveal: RoundReveal, playerId: string): Outcome {
+  const pick = reveal.picks.find((candidate) => candidate.playerId === playerId);
+  if (!pick || pick.option === null) return 'none';
+  return pick.option === reveal.correct ? 'right' : 'wrong';
+}
+
+function pointsOf(reveal: RoundReveal, playerId: string): number {
+  return reveal.picks.find((candidate) => candidate.playerId === playerId)?.points ?? 0;
+}
+
+// Each player's rank before this round's points, so the board can show who moved up and who fell back.
+function ranksBefore(reveal: RoundReveal, order: StandingView[]): Map<string, number> {
+  const before = [...order].sort(
+    (a, b) => b.score - pointsOf(reveal, b.playerId) - (a.score - pointsOf(reveal, a.playerId)),
+  );
+  return new Map(before.map((standing, rank) => [standing.playerId, rank]));
+}
+
+function MoveMark({ from, to }: { from: number; to: number }) {
+  const move = from > to ? 'up' : from < to ? 'down' : 'same';
+  return (
+    <span className="board-move" data-move={move}>
+      {move === 'same' ? (
+        <svg aria-hidden="true" viewBox="0 0 14 14">
+          <path d="M3 7 H11" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+        </svg>
+      ) : (
+        <svg aria-hidden="true" viewBox="0 0 14 14" fill="currentColor">
+          <path d={move === 'up' ? 'M7 2 L13 11 H1 Z' : 'M7 12 L13 3 H1 Z'} />
+        </svg>
+      )}
+      <span className="sr-only">{move === 'same' ? 'same place' : `${move} ${Math.abs(from - to)}`}</span>
+    </span>
+  );
+}
+
+// The round's standings as a scoreboard: place, who moved, the name, what this round earned, and the total.
 function Lineup({ reveal, lobby }: { reveal: RoundReveal; lobby: LobbyState }) {
-  const size = (rank: number) =>
-    rank === 0 ? 'display text-2xl' : rank < 3 ? 'text-lg font-semibold' : 'font-semibold';
   const order = ranked(reveal.standings);
   const places = placesOf(order);
+  const before = ranksBefore(reveal, order);
   return (
-    <ol aria-label="Scores" className="border-t border-line pt-2">
+    <ol aria-label="Scores" className="board">
       {order.map((standing, rank) => {
+        const outcome = outcomeOf(reveal, standing.playerId);
+        const gained = pointsOf(reveal, standing.playerId);
         const pick = reveal.picks.find((candidate) => candidate.playerId === standing.playerId);
-        const answered = pick !== undefined && pick.option !== null;
-        const right = answered && pick.option === reveal.correct;
         return (
-          <li key={standing.playerId} className="bill-row">
-            <span className="bill-place">{place(places[rank] ?? rank + 1)}</span>
-            <span className="bill-who flex flex-wrap items-baseline gap-x-2">
-              <span className={`[overflow-wrap:anywhere] ${size(rank)}`}>{nameOf(lobby, standing.playerId)}</span>
-              {standing.playerId === lobby.you && (
-                <span className="rounded-full border border-line px-2 text-xs text-muted">you</span>
-              )}
-              <span className="inline-flex items-center gap-1 text-sm whitespace-nowrap">
-                {!answered ? (
-                  'no answer'
-                ) : right ? (
-                  <>
-                    <CheckIcon /> right
-                  </>
-                ) : (
-                  <>
-                    <CrossIcon /> wrong
-                  </>
-                )}
-                {pick && pick.points !== 0 && <span className="tabular-nums">{points(pick.points)}</span>}
-              </span>
-              {pick?.noAudio && <span className="text-xs text-muted">no audio</span>}
+          <li key={standing.playerId} className="board-row" data-you={standing.playerId === lobby.you || undefined}>
+            <span className="board-place">{place(places[rank] ?? rank + 1)}</span>
+            <MoveMark from={before.get(standing.playerId) ?? rank} to={rank} />
+            <span className="board-name">
+              {nameOf(lobby, standing.playerId)}
+              {standing.playerId === lobby.you && <span className="ml-2 text-xs text-muted">you</span>}
+              {pick?.noAudio && <span className="ml-2 text-xs text-muted">no audio</span>}
             </span>
-            <span className={`bill-score ${rank === 0 ? 'display text-2xl' : ''}`}>{score(standing.score)}</span>
+            <span className="board-delta" data-outcome={outcome}>
+              {outcome === 'none' ? (
+                'no answer'
+              ) : (
+                <>
+                  {outcome === 'right' ? <CheckIcon /> : <CrossIcon />} {gained !== 0 ? points(gained) : outcome}
+                </>
+              )}
+            </span>
+            <span className="board-total">{score(standing.score)}</span>
           </li>
         );
       })}
