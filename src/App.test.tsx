@@ -128,6 +128,8 @@ test('answers with the number keys, then shows the reveal with words as well as 
     socket.receive({ type: 'round:start', roundId: 'g.1', startsAt, endsAt: startsAt + 20_000, options: OPTIONS });
   });
   await screen.findByText('Rain Song');
+  // The options can render from a timer outside act, so flush the effects that attach the number keys.
+  await act(async () => {});
   fireEvent.keyDown(screen.getByLabelText(/^Volume/), { key: '2' });
   expect(socket.sentOfType('answer')).toEqual([]);
   fireEvent.keyDown(window, { key: '3' });
