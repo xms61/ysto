@@ -2,6 +2,30 @@
 
 Releases moved out of `CHANGELOG.md` (which keeps about the latest 5). Newest first.
 
+## [0.10.0] - 2026-09-30
+
+### Added
+- The right card lands with its stock's own hit at the reveal: a departure board flapping in the title (Tokyo Rain), a gold ring and a petal burst (Sakura), a red starburst and a shake (Shonen), lock brackets clamping on (Mecha), a foil ring and sparkles (Magical Girl), a flashing window and pixels (Isekai), a tracking glitch (Retro VHS). It lands harder on a streak of 3 and of 5.
+- The results are announced from the bottom up, like a festival bill: the winner's name drops in last, its score counts up, and its theme's material bursts from it.
+- The verdict lands like a stamp with a badge, and a streak chip shows from 2 right answers in a row.
+- The face-down cards carry the game's "?!", slide in off the deck and idle with a passing light; locking in stamps the pick and gives a short buzz on phones.
+- Each backdrop follows the game: more weather while the clip plays, and a flash at the reveal and the results (lightning, speed lines, hazard strips, a foil ring, static). Shonen's page turns speed lines while the clip plays, and Mecha's hangar blinks with beacons.
+- "How to play" on the home screen, and the name's "?!" stamped on in the accent.
+- A painted scene behind each theme's page, with no characters or text, kept faint enough that the page's text still passes AA contrast.
+
+### Changed
+- All four options turn face up together as the clip starts, in 180ms on a curve that shows the titles within about a frame, instead of appearing without a turn.
+- The host's song pool and scoring rules fold under "Adjust the song pool and scoring rules"; the presets stay in view with a line on what the mode means.
+- The lobby code is set in the theme's display face, and the lobby's start bar is solid.
+- The results fill the screen, with Play again at their foot.
+- The countdown's number is in the accent at full strength, and screen readers hear "Get ready" once rather than every second.
+- A new screen (the lobby, a game, the results) moves the focus to its heading.
+
+### Fixed
+- The face-down cards before the clip never drew, in any theme.
+- Players on the same score share a place at the reveal and in the results.
+- Mecha's round heading no longer pushes "Skip round" onto a line of its own on a phone.
+
 ## [0.9.0] - 2026-09-30
 
 ### Added

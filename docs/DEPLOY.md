@@ -103,7 +103,7 @@ The open items of M8, in order. Each one is a box in the v1 plan's Progress; tic
 5. Run the [checks after setup](#checks-after-setup): a whole game over HTTPS, the clip bench on the VPS, and the port scan.
 6. Verify [RELIABILITY.md](RELIABILITY.md) and [SECURITY.md](SECURITY.md) against the running VPS, set them to `verified`, and set this doc to `verified` too. Then tick M8 in the plan.
 
-Before the first upload, run `npm run catalog:covers` and then `npm run catalog:build`: covers become WebP, about a quarter of their size, and the catalog names the new files. The catalog refresh in the [tech-debt tracker](exec-plans/tech-debt-tracker.md) can run at the same time, now that the AnimeThemes API answers again.
+The catalog and its covers are ready for the first upload: the covers are WebP, and the catalog was rebuilt from the live AnimeThemes API on 2026-09-30. After a later `catalog:covers` or `catalog:build`, rerun step 4 to send the changes.
 
 ## Routines
 ### Release and update
