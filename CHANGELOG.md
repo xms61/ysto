@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.13.0] - 2026-09-30
+
+### Changed
+- The listening panel is a sonar instead of an equalizer: over-ear headphones in a ring, gray while the clip loads and lit in the theme's accent when ready. While the clip plays, rings leave the headphones every 1.4s and sweep the whole round panel behind the cards, and "Listen." is read to screen readers only.
+- The reveal prints the answer on a band: the cover sharp over a blurred wash of itself, the title large beside it and stepping down in size for long titles, then the theme's kind and number on an accent chip with the song, artists and season.
+- The reveal's standings are a scoreboard: an arrow for each player who moved up or fell back this round, the round's points with a check or a cross, and the total in the display face.
+- The winner on the results screen is printed on the theme's card back, with each theme's own ornament.
+
 ## [0.12.1] - 2026-09-30
 
 ### Changed
@@ -40,8 +48,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - The browser tests' fixture catalog is written by `e2e/fixture-data.ts`, which the image check uses too.
 - Dependabot also keeps the base image and Caddy digests current.
-
-## [0.10.1] - 2026-09-30
-
-### Changed
-- M6 is done: a whole game on a real iPhone played every clip, at the 15% default volume and with the silent switch on. The v1 plan and the audio clips doc record the check.

@@ -194,7 +194,7 @@ function RoundView({ store, lobby, round, titleLanguage, isHost, clip }: RoundPr
   const solo = lobby.players.length === 1;
   usePagePhase(reveal ? 'reveal' : started ? 'playing' : 'countdown');
   return (
-    <Panel>
+    <Panel className="round-panel">
       <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2">
         <h2 className="display text-[1.375rem] sm:text-2xl">
           Round {round.number} of {round.rounds}

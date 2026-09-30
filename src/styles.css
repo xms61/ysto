@@ -898,6 +898,192 @@
     }
   }
 
+  /* The answer under the cards: its cover sharp on a blurred wash of itself, the title large beside it. */
+  .reveal-band {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: end;
+    gap: 1.25rem;
+    padding: 1.25rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-xl);
+    background: var(--raised);
+  }
+
+  /* Faint, so the text on the band stays readable over a bright cover. */
+  .reveal-wash {
+    position: absolute;
+    inset: -3rem;
+    z-index: -1;
+    width: calc(100% + 6rem);
+    max-width: none;
+    height: calc(100% + 6rem);
+    object-fit: cover;
+    filter: blur(32px) saturate(1.5);
+    opacity: 0.3;
+  }
+
+  .reveal-cover {
+    width: 6.5rem;
+    aspect-ratio: 2 / 3;
+    object-fit: cover;
+    border-radius: var(--radius-lg);
+    box-shadow: 0 0.75rem 1.5rem -0.5rem rgb(0 0 0 / 0.6);
+  }
+
+  .reveal-titles {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .reveal-title {
+    font-size: clamp(1.75rem, 7vw, 2.75rem);
+    line-height: 1.02;
+    text-wrap: balance;
+    overflow-wrap: anywhere;
+  }
+
+  /* A long title steps down, so it stays a headline of two or three lines instead of a wall. */
+  .reveal-title[data-length='mid'] {
+    font-size: clamp(1.375rem, 5vw, 2rem);
+    line-height: 1.08;
+  }
+
+  .reveal-title[data-length='long'] {
+    font-size: clamp(1.125rem, 4vw, 1.5rem);
+    line-height: 1.15;
+  }
+
+  .reveal-song {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.25rem 0.625rem;
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--line);
+  }
+
+  .reveal-kind {
+    padding: 0.125rem 0.5rem;
+    border-radius: var(--radius-lg);
+    background: var(--accent);
+    color: var(--accent-ink);
+    font-size: 0.8125rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+
+  @media (min-width: 40rem) {
+    .reveal-band {
+      gap: 1.75rem;
+      padding: 1.75rem;
+    }
+
+    .reveal-cover {
+      width: 8rem;
+    }
+  }
+
+  /* The round's standings at the reveal, as a scoreboard: place, who moved, the name, the round's points and the
+     total, the numbers in the display face and tabular. */
+  .board {
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--line);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .board-row {
+    display: grid;
+    grid-template-columns: 2.25rem 1.5rem minmax(0, 1fr) auto 4.5rem;
+    align-items: center;
+    column-gap: 0.5rem;
+    padding: 0.5rem;
+    border-radius: var(--radius-lg);
+  }
+
+  .board-row + .board-row {
+    border-top: 1px dashed var(--line);
+  }
+
+  .board-row[data-you] {
+    background: var(--raised);
+  }
+
+  .board-place,
+  .board-total {
+    font-family: var(--display-font);
+    font-weight: var(--display-weight);
+    font-size-adjust: var(--display-adjust, 0.52);
+  }
+
+  .board-place {
+    font-size: 1.125rem;
+    color: var(--muted);
+  }
+
+  /* The leader's place in the ink, not the accent: a spot color on the raised row of this player falls short
+     of AA at this size. */
+  .board-row:first-child .board-place {
+    color: var(--ink);
+  }
+
+  .board-total {
+    font-size: 1.375rem;
+    text-align: right;
+  }
+
+  .board-move {
+    display: grid;
+    place-items: center;
+    width: 1.5rem;
+    height: 1.5rem;
+    color: var(--muted);
+  }
+
+  .board-move[data-move='up'] {
+    color: var(--good);
+  }
+
+  .board-move[data-move='down'] {
+    color: var(--bad);
+  }
+
+  .board-move svg {
+    width: 0.875rem;
+    height: 0.875rem;
+  }
+
+  .board-name {
+    min-width: 0;
+    font-weight: 600;
+    overflow-wrap: anywhere;
+  }
+
+  .board-delta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  .board-delta[data-outcome='right'] {
+    color: var(--good);
+  }
+
+  .board-delta[data-outcome='wrong'] {
+    color: var(--bad);
+  }
+
   /* Mecha cuts corners off its cards and panels; each element sets its own cut. */
   :root[data-theme='mecha'] .panel {
     --cut: 0.875rem;
@@ -1454,7 +1640,8 @@
     background-repeat: no-repeat;
   }
 
-  /* ---- The listening panel: bars at rest while the clip loads, lit when ready, moving while it plays. ---- */
+  /* ---- The listening panel: headphones in a ring, dim while the clip loads, lit when ready, sending out rings
+     while it plays. ---- */
   .listening {
     flex: 1;
     display: flex;
@@ -1463,99 +1650,76 @@
     gap: 0.5rem;
   }
 
-  .eq {
+  /* Not positioned, so the ring field inside it lays out over the whole round panel. */
+  .sonar {
     flex: 1;
     display: flex;
-    align-items: stretch;
-    gap: 0.25rem;
-    min-height: 3.5rem;
-    max-height: 11rem;
+    align-items: center;
+    justify-content: center;
+    min-height: 7rem;
+    color: var(--line);
+    transition:
+      color 300ms,
+      opacity 300ms;
   }
 
-  /* A bar stretches to the panel's height, so its fill's percentage height has something to resolve against.
-     The bars span the column: fourteen on a phone, twenty-four on a wider screen. */
-  .eq-bar {
-    flex: 1;
-    display: flex;
-    align-items: flex-end;
+  .listening[data-status='ready'] .sonar {
+    color: var(--accent);
   }
 
-  .eq-bar:nth-child(n + 15) {
-    display: none;
+  .listening[data-status='failed'] .sonar {
+    opacity: 0.4;
   }
 
-  @media (min-width: 40rem) {
-    .eq {
-      min-height: 5rem;
-      gap: 0.375rem;
-    }
-
-    .eq-bar:nth-child(n + 15) {
-      display: flex;
-    }
+  .sonar-core {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    place-items: center;
+    width: 4rem;
+    height: 4rem;
+    border: 2px solid currentColor;
+    border-radius: 50%;
+    background: var(--panel);
   }
 
-  .eq-fill {
-    width: 100%;
-    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
-    background: var(--line);
-    transform: scaleY(0.3);
-    transform-origin: bottom;
-    transition: transform 300ms cubic-bezier(0.16, 1, 0.3, 1);
+  .sonar-core svg {
+    width: 1.75rem;
+    height: 1.75rem;
   }
 
-  .listening[data-status='ready'] .eq-fill {
-    background: var(--accent);
-    transform: scaleY(0.45);
+  /* Behind the panel's content and above its background, clipped to the panel's corners. */
+  .round-panel {
+    position: relative;
+    isolation: isolate;
   }
 
-  .listening[data-status='ready'][data-playing] .eq-fill {
-    transform: none;
+  .sonar-field {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+    border-radius: var(--radius-2xl);
+    pointer-events: none;
   }
 
-  .listening[data-status='failed'] .eq-fill {
-    transform: scaleY(0.12);
+  .sonar-ring {
+    position: absolute;
+    top: var(--ring-y, 50%);
+    left: var(--ring-x, 50%);
+    width: 4rem;
+    height: 4rem;
+    border: 2px solid currentColor;
+    border-radius: 50%;
+    opacity: 0;
+    transform: translate(-50%, -50%);
   }
 
-  :root[data-theme='tokyo-rain'] .eq-fill,
-  :root:not([data-theme]) .eq-fill,
-  :root[data-theme='mecha'] .eq-fill {
-    border-radius: 0;
-    mask: repeating-linear-gradient(to top, #000 0 5px, transparent 5px 7px);
-  }
-
-  :root[data-theme='mecha'] .listening[data-status='ready'] .eq-fill {
-    background: var(--good);
-  }
-
-  :root[data-theme='isekai'] .eq-fill {
-    border-radius: 0;
-    mask: repeating-linear-gradient(to top, #000 0 6px, transparent 6px 8px);
-  }
-
-  :root[data-theme='shonen'] .eq-fill {
-    border-radius: 0;
-  }
-
-  :root[data-theme='shonen'] .listening[data-status='ready'] .eq-fill {
-    background: var(--ink);
-  }
-
-  /* Rounded only a little: the bars scale on one axis, which would squash a full round into an oval. */
-  :root[data-theme='magical-girl'] .eq-fill {
-    border-radius: 0.375rem 0.375rem 0 0;
-  }
-
-  :root[data-theme='magical-girl'] .listening[data-status='ready'] .eq-bar:nth-child(even) .eq-fill {
-    background: var(--foil);
-  }
-
-  :root[data-theme='retro-vhs'] .listening[data-status='ready'] .eq-bar:nth-child(3n + 2) .eq-fill {
-    background: var(--stripe-2);
-  }
-
-  :root[data-theme='retro-vhs'] .listening[data-status='ready'] .eq-bar:nth-child(3n) .eq-fill {
-    background: var(--stripe-3);
+  /* A ready clip holds one faint ring, the rest of the wave still to come. */
+  .listening[data-status='ready'] .sonar-ring:first-child {
+    width: 6rem;
+    height: 6rem;
+    opacity: 0.35;
   }
 
   /* ---- Backdrop decorations, drawn only while motion is full (Backdrop.tsx). ---- */
@@ -1890,9 +2054,99 @@
     background: rgb(255 255 255 / 0.14);
   }
 
-  /* ---- The results bill, announced from the bottom up. ---- */
+  /* ---- The results bill, announced from the bottom up. The winner is printed on the theme's card back, the
+     stock the right answer turns over to at the reveal, with the theme's own ornament. ---- */
   .bill-lead {
     position: relative;
+    margin-bottom: 1rem;
+    padding: 1.25rem 1.25rem 1.5rem;
+    border-radius: var(--radius-xl);
+    background: var(--card-back);
+    color: var(--card-back-ink);
+    box-shadow:
+      inset 0 -0.5rem 0 var(--card-mark),
+      var(--panel-shadow);
+  }
+
+  .bill-lead :is(.bill-place, .bill-stats) {
+    color: inherit;
+    opacity: 0.85;
+  }
+
+  /* This player's chip, muted on the panel and in the card's own ink on the winner's card back. A class of its
+     own rather than utilities, so the card can recolor it. */
+  .bill-you {
+    border-color: var(--line);
+    color: var(--muted);
+  }
+
+  .bill-lead .bill-you {
+    border-color: currentColor;
+    color: inherit;
+  }
+
+  :root[data-theme='sakura'] .bill-lead {
+    box-shadow:
+      inset 0 0 0 5px var(--card-back),
+      inset 0 0 0 6px var(--card-back-ink),
+      var(--panel-shadow);
+  }
+
+  /* An inked frame with screentone and a spot-red print offset. */
+  :root[data-theme='shonen'] .bill-lead {
+    border: 3px solid var(--ink);
+    border-radius: 0;
+    box-shadow: 0.375rem 0.375rem 0 var(--accent);
+    background-image: radial-gradient(circle, rgb(255 255 255 / 0.18) 1.2px, transparent 1.6px);
+    background-size: 7px 7px;
+  }
+
+  :root[data-theme='mecha'] .bill-lead {
+    padding-top: 1.75rem;
+    border-radius: 0;
+    clip-path: polygon(1rem 0, calc(100% - 1rem) 0, 100% 1rem, 100% 100%, 0 100%, 0 1rem);
+    box-shadow: var(--panel-shadow);
+    background-image: repeating-linear-gradient(-45deg, var(--card-back-ink) 0 0.5rem, var(--card-back) 0.5rem 1rem);
+    background-size: 100% 0.5rem;
+    background-repeat: no-repeat;
+  }
+
+  :root[data-theme='magical-girl'] .bill-lead {
+    border: 2px solid var(--foil);
+    border-radius: 1.5rem;
+    box-shadow:
+      inset 0 0 0 4px var(--card-back),
+      inset 0 0 0 5px var(--foil),
+      var(--panel-shadow);
+  }
+
+  /* A menu window, its cursor on the winner. */
+  :root[data-theme='isekai'] .bill-lead {
+    padding-left: 2.25rem;
+    border: 3px solid var(--card-back-ink);
+    border-radius: 0;
+    box-shadow:
+      0 0 0 3px var(--page),
+      var(--panel-shadow);
+  }
+
+  :root[data-theme='isekai'] .bill-lead::before {
+    content: '';
+    position: absolute;
+    top: 1.6rem;
+    left: 0.75rem;
+    width: 0.75rem;
+    height: 1rem;
+    background: var(--card-back-ink);
+    clip-path: polygon(0 0, 100% 50%, 0 100%);
+  }
+
+  :root[data-theme='retro-vhs'] .bill-lead {
+    padding-top: 1.75rem;
+    box-shadow: var(--panel-shadow);
+    background-image: linear-gradient(var(--stripe-1) 0 33.3%, var(--stripe-2) 33.3% 66.6%, var(--stripe-3) 66.6%);
+    background-size: 100% 0.5625rem;
+    background-repeat: no-repeat;
   }
 
   /* ---- The lobby. ---- */
@@ -2113,9 +2367,24 @@
   }
 }
 
-@keyframes eq-level {
+/* A ring leaves the headphones and fades as it spreads to the panel's farthest corner; the headphones beat
+   three times to each ring. Width and height grow rather than a scale, so the 2px rim stays 2px all the way out. */
+@keyframes sonar-out {
   from {
-    transform: scaleY(0.3);
+    width: 4rem;
+    height: 4rem;
+    opacity: 0.7;
+  }
+  to {
+    width: var(--ring-reach, 40rem);
+    height: var(--ring-reach, 40rem);
+    opacity: 0;
+  }
+}
+
+@keyframes sonar-beat {
+  from {
+    transform: scale(1.08);
   }
   to {
     transform: none;
@@ -2179,8 +2448,20 @@
   animation: card-turn 700ms cubic-bezier(0.2, 0.7, 0.2, 1) 200ms both;
 }
 
-:root[data-motion='full'] .listening[data-status='ready'][data-playing] .eq-fill {
-  animation: eq-level 850ms ease-in-out infinite alternate;
+:root[data-motion='full'] .listening[data-status='ready'][data-playing] .sonar-ring {
+  animation: sonar-out 4.2s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+}
+
+:root[data-motion='full'] .listening[data-status='ready'][data-playing] .sonar-ring:nth-child(2) {
+  animation-delay: -1.4s;
+}
+
+:root[data-motion='full'] .listening[data-status='ready'][data-playing] .sonar-ring:nth-child(3) {
+  animation-delay: -2.8s;
+}
+
+:root[data-motion='full'] .listening[data-status='ready'][data-playing] .sonar-core {
+  animation: sonar-beat 1.4s cubic-bezier(0.16, 1, 0.3, 1) infinite;
 }
 
 :root[data-motion='full'] .motion-rise {
@@ -2197,6 +2478,28 @@
 
 :root[data-motion='full'][data-theme='retro-vhs'] .motion-neon {
   animation: flicker 6s linear infinite;
+}
+
+@keyframes band-wipe {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0);
+  }
+}
+
+@keyframes cover-focus {
+  from {
+    transform: scale(1.12);
+    filter: blur(8px);
+    opacity: 0;
+  }
+  to {
+    transform: none;
+    filter: none;
+    opacity: 1;
+  }
 }
 
 @keyframes deal-in {
@@ -2413,6 +2716,27 @@
   }
 }
 
+@keyframes board-pop {
+  from {
+    opacity: 0;
+    transform: scale(1.4);
+  }
+}
+
+@keyframes board-rise {
+  from {
+    opacity: 0;
+    transform: translateY(0.5rem);
+  }
+}
+
+@keyframes board-fall {
+  from {
+    opacity: 0;
+    transform: translateY(-0.5rem);
+  }
+}
+
 @keyframes headliner-drop {
   0% {
     opacity: 0;
@@ -2593,6 +2917,15 @@
   animation: heat-pulse 360ms ease-in-out 600ms 2;
 }
 
+/* The answer wipes in after the right card has turned over, and its cover comes into focus. */
+:root[data-motion='full'] .reveal-band {
+  animation: band-wipe 900ms cubic-bezier(0.16, 1, 0.3, 1) 450ms both;
+}
+
+:root[data-motion='full'] .reveal-cover {
+  animation: cover-focus 1100ms cubic-bezier(0.16, 1, 0.3, 1) 650ms both;
+}
+
 /* The right card's hit, after it has turned over. */
 :root[data-motion='full'] .burst-mote {
   animation: burst-fly 900ms cubic-bezier(0.16, 1, 0.3, 1) both;
@@ -2644,6 +2977,23 @@
   display: inline-block;
   animation: headliner-drop 720ms cubic-bezier(0.2, 0.9, 0.3, 1) calc(var(--act-delay) + 160ms) both;
   transform-origin: left bottom;
+}
+
+:root[data-motion='full'][data-theme='isekai'] .bill-lead::before {
+  animation: cursor-blink 1s steps(1) infinite;
+}
+
+/* The round's board: the points pop in, and a player who moved slides in from where they were. */
+:root[data-motion='full'] .board-delta {
+  animation: board-pop 500ms cubic-bezier(0.16, 1, 0.3, 1) 500ms both;
+}
+
+:root[data-motion='full'] .board-move[data-move='up'] {
+  animation: board-rise 700ms cubic-bezier(0.16, 1, 0.3, 1) 600ms both;
+}
+
+:root[data-motion='full'] .board-move[data-move='down'] {
+  animation: board-fall 700ms cubic-bezier(0.16, 1, 0.3, 1) 600ms both;
 }
 
 /* The lobby: a player joining takes a seat, and a waiting guest's meter idles. */
