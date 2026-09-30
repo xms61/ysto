@@ -134,3 +134,18 @@ test('exits when the server ends the seat', () => {
   socket.closeFromServer(4001);
   expect(exits).toEqual(['kicked']);
 });
+
+test("tells the screens whether this player's clip is loading, ready or failed", async () => {
+  const { store, socket, audio } = seatedStore();
+  audio.hold = true;
+  socket.receive(prepare('g.1'));
+  expect(store.getSnapshot().clip).toEqual({ roundId: 'g.1', status: 'loading' });
+  audio.release();
+  await settle();
+  expect(store.getSnapshot().clip).toEqual({ roundId: 'g.1', status: 'ready' });
+  audio.hold = false;
+  audio.loaded = false;
+  socket.receive(prepare('g.2'));
+  await settle();
+  expect(store.getSnapshot().clip).toEqual({ roundId: 'g.2', status: 'failed' });
+});

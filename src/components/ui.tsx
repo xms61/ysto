@@ -3,18 +3,27 @@
 import { useState } from 'react';
 import type { ButtonHTMLAttributes, ReactNode } from 'react';
 
+// Each theme prints its buttons on its own stock (.button in styles.css), in its display face.
 const BUTTON_BASE =
-  'inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 font-semibold transition ' +
+  'button display inline-flex items-center justify-center gap-2 transition ' +
   'disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-2 focus-visible:outline-offset-2 ' +
   'focus-visible:outline-accent';
 
 const BUTTON_VARIANTS = {
-  primary: `${BUTTON_BASE} display bg-accent text-accent-ink hover:brightness-110`,
-  quiet: `${BUTTON_BASE} border border-line bg-raised text-ink hover:border-accent`,
+  primary: `${BUTTON_BASE} button-primary px-4 py-2.5`,
+  // Secondary actions are a size smaller, so a phone's header holds them on one line in every face.
+  quiet: `${BUTTON_BASE} button-quiet px-3 py-2 text-sm`,
 } as const;
 
+type ButtonVariant = keyof typeof BUTTON_VARIANTS;
+
+// For an element that acts as a button without being one, such as a menu's summary.
+export function buttonClass(variant: ButtonVariant): string {
+  return BUTTON_VARIANTS[variant];
+}
+
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: keyof typeof BUTTON_VARIANTS;
+  variant?: ButtonVariant;
 }
 
 export function Button({ variant = 'primary', className = '', type = 'button', ...props }: ButtonProps) {
@@ -53,7 +62,7 @@ export function ConfirmButton({
 }
 
 export const INPUT =
-  'w-full rounded-lg border border-edge bg-page px-3 py-2.5 text-ink placeholder:text-muted ' +
+  'field w-full px-3 py-2.5 text-ink placeholder:text-muted ' +
   'focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-accent';
 
 interface PanelProps {
@@ -64,7 +73,7 @@ interface PanelProps {
 
 export function Panel({ title, children, className = '' }: PanelProps) {
   return (
-    <section className={`panel-shadow rounded-2xl border border-line bg-panel p-4 sm:p-6 ${className}`}>
+    <section className={`panel p-4 sm:p-6 ${className}`}>
       {title && <h2 className="display mb-3 text-xl">{title}</h2>}
       {children}
     </section>

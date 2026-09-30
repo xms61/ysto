@@ -2,6 +2,24 @@
 
 Releases moved out of `CHANGELOG.md` (which keeps about the latest 5). Newest first.
 
+## [0.4.0] - 2026-09-29
+
+### Added
+- The clip service (`server/clips/`, [CLIPS.md](../server/clips/CLIPS.md)):
+  - a cutter that re-encodes the chosen part of a song to a 128 kbps MP3 with short fades, no tags, and only from files inside `YSTO_AUDIO_DIR`
+  - an ffmpeg runner with an argument array, a 10 s timeout and a concurrency limit
+  - clip tokens that belong to one lobby and expire
+  - `GET /api/clips/:token`, which needs the player's session token and answers every refusal with the same 404. Lobbies wire it up in M4.
+  - `prepareClip`, which moves a round to another theme when its cut fails, up to three themes, and logs each failure once
+- `replacementQuestion` in the question engine draws that other theme from an anime the game doesn't use yet.
+- `npm run clips:bench` times clip cuts from the real library. A 30 s clip took about 0.3 s on the development machine.
+- A browser decode test (`e2e/clip-decode.spec.ts`) checks that the cutter's MP3 decodes through Web Audio at its length. The browser tests now run in Firefox too.
+
+### Changed
+- Clips are MP3 rather than the planned AAC: faster to encode, no container tags, and decodable without proprietary codecs.
+- The e2e tests have their own TypeScript project with DOM types (`tsconfig.e2e.json`), which `npm run typecheck` includes.
+- The hosting doc puts the library export at about half the original size, as measured, instead of 40%.
+
 ## [0.3.0] - 2026-09-25
 
 ### Added

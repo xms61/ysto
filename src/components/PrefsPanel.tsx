@@ -1,12 +1,21 @@
 // This device's settings: volume, theme, title language and motion (docs/product-specs/settings.md). They
 // apply at once and stay on this device. PreferencesMenu puts them behind a button on every screen.
+import { useEffect, useRef } from 'react';
 import { TITLE_LANGUAGES } from '../../shared/settings.ts';
 import type { TitleLanguage } from '../../shared/settings.ts';
 import { MOTIONS, THEMES } from '../prefs/prefs.ts';
 import type { Motion, Prefs, Theme } from '../prefs/prefs.ts';
-import { INPUT } from './ui.tsx';
+import { INPUT, buttonClass } from './ui.tsx';
 
-const THEME_LABELS: Record<Theme, string> = { 'tokyo-rain': 'Tokyo Rain', sakura: 'Sakura', shonen: 'Shonen' };
+const THEME_LABELS: Record<Theme, string> = {
+  'tokyo-rain': 'Tokyo Rain',
+  sakura: 'Sakura',
+  shonen: 'Shonen',
+  mecha: 'Mecha',
+  'magical-girl': 'Magical Girl',
+  isekai: 'Isekai',
+  'retro-vhs': 'Retro VHS',
+};
 
 const LANGUAGE_LABELS: Record<TitleLanguage, string> = {
   english: 'English',
@@ -38,18 +47,19 @@ export function VolumeSlider({ volume, onChange }: { volume: number; onChange: (
   );
 }
 
-// Each choice shows its theme in its own colors and type, since a theme block also applies inside another.
+// Each choice previews its theme's card stock in its own colors and type, since a theme block also applies
+// inside another.
 function ThemePicker({ theme, onChange }: { theme: Theme; onChange: (theme: Theme) => void }) {
   return (
     <fieldset>
       <legend className="mb-1.5">Theme</legend>
-      <div className="grid grid-cols-3 gap-2">
+      <div className="grid grid-cols-2 gap-2">
         {THEMES.map((option) => (
           <label
             key={option}
             data-theme={option}
             className={
-              'panel-shadow flex cursor-pointer flex-col items-center gap-1.5 rounded-xl border-2 bg-panel p-2 text-ink ' +
+              'page-texture flex cursor-pointer items-center gap-2 rounded-xl border-2 p-2 text-ink ' +
               'outline-offset-2 has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-accent ' +
               (option === theme ? 'border-accent' : 'border-line')
             }
@@ -61,12 +71,13 @@ function ThemePicker({ theme, onChange }: { theme: Theme; onChange: (theme: Them
               checked={option === theme}
               onChange={() => onChange(option)}
             />
-            <span aria-hidden="true" className="flex gap-1">
-              <span className="size-3 rounded-full bg-accent" />
-              <span className="size-3 rounded-full bg-good" />
-              <span className="size-3 rounded-full border border-edge bg-page" />
+            <span
+              aria-hidden="true"
+              className="grid h-9 w-7 shrink-0 place-items-start rounded-lg border-2 border-[var(--card-mark)] bg-[var(--card)] p-0.5"
+            >
+              <span className="size-2.5 rounded-sm bg-[var(--card-mark)]" />
             </span>
-            <span className="display text-sm">{THEME_LABELS[option]}</span>
+            <span className="display text-sm leading-tight">{THEME_LABELS[option]}</span>
           </label>
         ))}
       </div>
@@ -117,14 +128,32 @@ export function PrefsPanel({ prefs, onChange }: { prefs: Prefs; onChange: (chang
   );
 }
 
-// The settings behind a button, opening over the screen from its top right corner.
+// The settings behind a button, opening over the screen from its top right corner. A tap outside or Escape
+// closes it, so it never sits over the options for a whole round.
 export function PreferencesMenu({ prefs, onChange }: { prefs: Prefs; onChange: (change: Partial<Prefs>) => void }) {
+  const menu = useRef<HTMLDetailsElement>(null);
+  useEffect(() => {
+    const close = (event: Event) => {
+      const details = menu.current;
+      if (!details?.open) return;
+      const outside = event.target instanceof Node && !details.contains(event.target);
+      if (event instanceof KeyboardEvent ? event.key === 'Escape' : outside) {
+        details.open = false;
+      }
+    };
+    document.addEventListener('pointerdown', close);
+    document.addEventListener('keydown', close);
+    return () => {
+      document.removeEventListener('pointerdown', close);
+      document.removeEventListener('keydown', close);
+    };
+  }, []);
   return (
-    <details className="ml-auto">
-      <summary className="cursor-pointer list-none rounded-lg border border-line bg-raised px-3 py-2 [&::-webkit-details-marker]:hidden">
+    <details ref={menu} className="ml-auto">
+      <summary className={`${buttonClass('quiet')} cursor-pointer list-none [&::-webkit-details-marker]:hidden`}>
         Preferences
       </summary>
-      <div className="panel-shadow absolute top-full right-0 z-30 mt-2 w-80 max-w-full rounded-2xl border border-line bg-panel p-4">
+      <div className="panel absolute top-full right-0 z-30 mt-2 w-80 max-w-full p-4">
         <PrefsPanel prefs={prefs} onChange={onChange} />
       </div>
     </details>

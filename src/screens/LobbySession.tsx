@@ -54,7 +54,7 @@ export function LobbySession({ session, audio, prefs, onPrefs, onExit, createSoc
     return () => store.disconnect();
   }, [store]);
   useRetryOnReturn(store);
-  const { status, game, settings, notice } = useSyncExternalStore(store.subscribe, store.getSnapshot);
+  const { status, game, settings, notice, clip } = useSyncExternalStore(store.subscribe, store.getSnapshot);
   const lobby = game.lobby;
   const host = isHost(game);
   const screen = screenOf(game);
@@ -63,7 +63,8 @@ export function LobbySession({ session, audio, prefs, onPrefs, onExit, createSoc
     <div className="mx-auto flex min-h-dvh w-full max-w-3xl flex-col gap-4 px-4 py-4">
       <header className="relative flex flex-wrap items-center gap-3">
         <h1 className="display text-lg">
-          Lobby <span className="font-mono tracking-widest">{session.code}</span>
+          <span className="sr-only sm:not-sr-only">Lobby </span>
+          <span className="font-mono tracking-widest">{session.code}</span>
         </h1>
         {status === 'reconnecting' && (
           <span role="status" className="text-sm text-muted">
@@ -79,7 +80,14 @@ export function LobbySession({ session, audio, prefs, onPrefs, onExit, createSoc
           <p aria-live="polite">Connecting to the lobby…</p>
         </Panel>
       ) : screen === 'round' ? (
-        <Round store={store} lobby={lobby} round={game.round} titleLanguage={prefs.titleLanguage} isHost={host} />
+        <Round
+          store={store}
+          lobby={lobby}
+          round={game.round}
+          titleLanguage={prefs.titleLanguage}
+          isHost={host}
+          clip={clip && clip.roundId === game.round?.id ? clip.status : null}
+        />
       ) : screen === 'results' ? (
         <Results store={store} lobby={lobby} isHost={host} />
       ) : (

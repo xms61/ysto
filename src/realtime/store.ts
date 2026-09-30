@@ -19,11 +19,15 @@ export interface Notice {
   code: NoticeCode;
 }
 
+// This player's clip for a round: still loading, ready to play, or failed to load (they can still answer).
+export type ClipStatus = 'loading' | 'ready' | 'failed';
+
 export interface Snapshot {
   status: ConnectionStatus;
   game: GameState;
   settings: LobbySettings | null; // the host's edit on its way to the server, or the lobby's settings
   notice: Notice | null;
+  clip: { roundId: string; status: ClipStatus } | null;
 }
 
 export interface StoreOptions {
@@ -62,6 +66,7 @@ export class GameStore {
   #game: GameState = INITIAL_GAME;
   #pendingSettings: LobbySettings | null = null;
   #notice: Notice | null = null;
+  #clip: Snapshot['clip'] = null;
   #notices = 0;
   #snapshot: Snapshot;
 
@@ -186,7 +191,13 @@ export class GameStore {
 
   // The barrier waits for this player's ready, loaded or not, but a round that already started doesn't.
   async #loadClip(round: ClientRound): Promise<void> {
+    this.#clip = { roundId: round.id, status: 'loading' };
+    this.#publish();
     const loaded = await this.#audio.load(round.clipToken, this.#session.sessionToken);
+    if (this.#clip?.roundId === round.id) {
+      this.#clip = { roundId: round.id, status: loaded ? 'ready' : 'failed' };
+      this.#publish();
+    }
     const current = this.#game.round;
     if (current?.id === round.id && !current.start) {
       this.#connection.send({ type: 'round:ready', roundId: round.id, loaded });
@@ -221,6 +232,7 @@ export class GameStore {
       game: this.#game,
       settings: this.#pendingSettings ?? this.#game.lobby?.settings ?? null,
       notice: this.#notice,
+      clip: this.#clip,
     };
   }
 

@@ -6,7 +6,8 @@ import type { TitleLanguage } from '../../shared/settings.ts';
 import { isIntegerIn, isOneOf, isRecord } from '../../shared/validate.ts';
 import { readJson, writeItem } from '../storage.ts';
 
-export const THEMES = ['tokyo-rain', 'sakura', 'shonen'] as const;
+// Stored by id, so an id is permanent once released; the names players see live in PrefsPanel.
+export const THEMES = ['tokyo-rain', 'sakura', 'shonen', 'mecha', 'magical-girl', 'isekai', 'retro-vhs'] as const;
 export type Theme = (typeof THEMES)[number];
 
 // 'system' follows the device's reduced-motion setting; the other two override it.

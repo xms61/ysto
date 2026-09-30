@@ -1,6 +1,6 @@
 ---
 status: draft
-last-verified: 2026-09-29
+last-verified: 2026-09-30
 ---
 
 # Settings
@@ -23,7 +23,7 @@ The host shapes the game (pool, length, difficulty, scoring). Each player sets w
 | Scoring mode | Lobby | Speed, First correct, Flat | Speed |
 | Streak bonus, Comeback, Wrong-answer penalty | Lobby | on or off each | on, off, off |
 | Volume | Player (device) | 0–100% | 15% |
-| Theme | Player (device) | Shonen, Sakura, Tokyo Rain ([DESIGN.md](../DESIGN.md)) | Tokyo Rain |
+| Theme | Player (device) | Tokyo Rain, Sakura, Shonen, Mecha, Magical Girl, Isekai, Retro VHS ([DESIGN.md](../DESIGN.md)) | Tokyo Rain |
 | Title language | Player (device) | English, romaji, Japanese | English, falling back to romaji |
 | Reduced motion | Player (device) | follows the OS setting, can be overridden | OS setting |
 
