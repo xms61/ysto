@@ -1,6 +1,6 @@
 ---
 status: draft
-last-verified: 2026-09-29
+last-verified: 2026-09-30
 ---
 
 # Game flow
@@ -9,7 +9,7 @@ last-verified: 2026-09-29
 A group plays a full game together: every player hears each sample at the same time, answers on their own device, and sees the same reveal and final results.
 
 ## Behavior
-Home → create a lobby, or join one with a code and a name ([lobby](lobby.md)) → lobby (players, host settings, live pool size) → countdown → N rounds → results (podium and stats) → play again in the same lobby. A lobby with one player is solo play.
+Home → create a lobby, or join one with a code and a name ([lobby](lobby.md)) → lobby (players, host settings, live pool size) → countdown → N rounds → results (the standings and stats) → play again in the same lobby. A lobby with one player is solo play.
 
 Every device plays the clip. A round runs like this:
 ```
@@ -37,7 +37,7 @@ server                                              clients
   - the cover
   - each player's pick and points, and for a player who missed the song, with a wrong answer or none, "You skipped the OP?!" (or the ED)
 - A player whose clip fails to load can still answer. The reveal marks them "no audio", with no penalty.
-- The results show the podium, each player's correct answers, average time and best streak. The lobby state keeps them until the next game, so a player who reloads on the results sees them again.
+- The results bill the standings like a festival lineup, the winner's full name largest, with each player's correct answers, average time and best streak. The lobby state keeps them until the next game, so a player who reloads on the results sees them again.
 - The clip plays on through the reveal, and fades out when the next round is prepared, when the host skips, or when the game ends.
 
 ## Acceptance criteria

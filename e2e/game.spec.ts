@@ -49,9 +49,9 @@ test('two players play a whole game', async ({ browser }) => {
 
   for (const page of [host, guest]) {
     await expect(page.getByRole('heading', { name: 'Final results' })).toBeVisible(WAIT);
-    const table = page.getByRole('table');
-    await expect(table).toContainText('Ann');
-    await expect(table).toContainText('Ben');
+    const standings = page.getByRole('list', { name: 'Final standings' });
+    await expect(standings).toContainText('Ann');
+    await expect(standings).toContainText('Ben');
   }
   await expect(host.getByRole('button', { name: 'Play again' })).toBeVisible();
 });

@@ -1,6 +1,6 @@
 ---
 status: verified
-last-verified: 2026-09-29
+last-verified: 2026-09-30
 ---
 
 # Frontend
@@ -11,18 +11,18 @@ How the UI code is built. How it should look is in [DESIGN.md](DESIGN.md), and w
 - React 19 and TypeScript 6.0, bundled by Vite 8 (`vite.config.ts`).
 - Tailwind CSS 4 through `@tailwindcss/vite`. It is configured in CSS (`src/styles.css`), with no config file.
 - `uqr` draws the join link's QR code. It is the only runtime library besides React.
-- The themes' display fonts come from Fontsource packages (`@fontsource/tilt-neon`, `m-plus-rounded-1c` and `anton`, Latin subsets only), which Vite copies into `dist/` so they're served from our own origin.
+- The themes' display fonts come from Fontsource packages (`@fontsource/zen-kaku-gothic-new`, `zen-antique`, `bangers`, `saira-stencil-one`, `mochiy-pop-one`, `press-start-2p` and `vt323`, plus `pixelify-sans` for Isekai's card titles, Latin subsets only), which Vite copies into `dist/` so they're served from our own origin. A page loads only the fonts it shows. Japanese titles use the device's Japanese fonts (`--ja-font`), never a display face's fallback.
 - The client libraries are devDependencies: Vite bundles them into `dist/`, and the production image installs only what the server needs at runtime.
 
 ## Structure
 `index.html` loads `src/main.tsx`, which mounts `App` with the browser's audio engine and storage.
 - `App.tsx`: the home screen until the tab holds a seat, then `LobbySession`. It keeps the seat, the device settings, and the address bar (`/j/<code>` while in a lobby).
 - `screens/`: `Home` (create or join), `LobbySession` (one store and socket per seat; picks the screen), `Lobby` (invite, players, settings, start), `Round` (countdown, options, timer), `Reveal` and `Results`.
-- `components/`: the settings form and its summary, the player list, the QR code, the device settings with the theme picker and the Preferences menu (`PrefsPanel.tsx`), the theme's backdrop (`Backdrop.tsx`), the sound banner, the notice toast, and the shared buttons and panels in `ui.tsx`.
+- `components/`: the option cards and the face-down deal (`OptionCard.tsx`), the round's layout that keeps the cards in one place (`Stage.tsx`), the listening panel (`Listening.tsx`), the settings form and its summary, the player list, the QR code, the device settings with the theme picker and the Preferences menu (`PrefsPanel.tsx`), the theme's backdrop (`Backdrop.tsx`), the sound banner, the notice toast, and the shared buttons and panels in `ui.tsx`.
 - `realtime/`: the lobby routes (`api.ts`), the socket with hello, pings and reconnects (`connection.ts`), the server clock (`clock.ts`), the pure reducer of server messages (`game-state.ts`), and `store.ts`, which ties them to the audio engine and gives the screens one snapshot.
 - `audio/engine.ts`: fetches, decodes and plays each clip through Web Audio ([audio clips](design-docs/audio-clips.md)).
 - `prefs/prefs.ts`: volume, theme, title language and motion, in `localStorage`. `usePrefs` puts `data-theme`, `data-motion` and the browser's theme color on `<html>` before the first paint.
-- `styles.css`: Tailwind, the three themes as blocks of variables, the component classes (`.display`, `.panel-shadow`, `.page-texture`) and the animations ([DESIGN.md](DESIGN.md)). `realtime/session.ts` keeps the seat in `sessionStorage`. Both go through `storage.ts`, which survives blocked storage.
+- `styles.css`: Tailwind, the seven themes as blocks of variables, the component classes (`.display`, `.panel`, `.card` and its faces, `.listening`, `.page-texture`), each theme's card stock and frames, and the animations ([DESIGN.md](DESIGN.md)). `realtime/session.ts` keeps the seat in `sessionStorage`. Both go through `storage.ts`, which survives blocked storage.
 - `copy.ts` words every error code. `format.ts` formats places, points, times, titles and credits.
 - `testing/fakes.ts`: a fake socket, a fake `AudioContext`, and builders for server messages. Only tests import it.
 
@@ -36,7 +36,9 @@ How the UI code is built. How it should look is in [DESIGN.md](DESIGN.md), and w
 - Nothing sends settings the server would refuse: the store checks them with `validateSettings` first, because every refusal counts against the socket.
 - Storage keys (`ysto_prefs`, `ysto_session`) are permanent once released.
 - Colors, radii, type and shadows come from the theme tokens, never from raw values in a component, so every theme applies to every screen.
-- An animation runs only through a `motion-*` class or a theme decoration that `styles.css` starts under `:root[data-motion='full']`. The options never animate.
+- An animation runs only through a `motion-*` class or a theme decoration that `styles.css` starts under `:root[data-motion='full']`. The options never animate in: they lie face down until the clip starts, then show at once.
+- The four option cards are always equal: one `OptionCard` per option, the same stock and index mark, and a state (`open`, `chosen`, `muted`, `missed`, `right`) that never singles one out before the reveal.
+- A theme's stock hangs off `:root[data-theme='<id>']` selectors, so it applies to the page's own theme. The theme picker's previews use only variables, which is why they can show another theme inside the page.
 - The CSP allows no inline `<style>` and no `style` attributes in HTML. React's `style` prop sets styles through the CSSOM, which the CSP allows; keep it to values that change at runtime, such as the progress bar's width.
 
 ## Checks

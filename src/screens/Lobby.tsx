@@ -94,7 +94,7 @@ export function Lobby({ store, lobby, settings, isHost }: LobbyProps) {
           <label className="mt-3 flex items-center gap-2">
             <input
               type="checkbox"
-              className="size-4"
+              className="choice"
               checked={lobby.locked}
               onChange={(event) => store.setLocked(event.target.checked)}
             />

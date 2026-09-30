@@ -73,7 +73,7 @@ function Group({ legend, children }: { legend: string; children: ReactNode }) {
 function Choice({ children, ...input }: { children: ReactNode } & InputHTMLAttributes<HTMLInputElement>) {
   return (
     <label className="flex items-center gap-2">
-      <input className="size-4 shrink-0" {...input} />
+      <input className="choice" {...input} />
       <span>{children}</span>
     </label>
   );

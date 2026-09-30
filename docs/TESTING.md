@@ -1,6 +1,6 @@
 ---
 status: draft
-last-verified: 2026-09-29
+last-verified: 2026-09-30
 ---
 
 # Testing
@@ -26,7 +26,7 @@ The browser tests need their browsers once per machine: `npx playwright install 
 - The client tests pass their fakes to the code under test: `socketFactory()` and `FakeSocket` for the lobby socket, `FakeAudioContext` for Web Audio, `FakeClipPlayer` for the store, and `lobbyState()` and friends for server messages, all in `src/testing/fakes.ts`. `App` takes the audio engine, the storage and the socket factory as props for this.
 - The browser tests run against `e2e/fixture-server.ts`: it builds a 12-anime catalog in code with the catalog build's own writer, makes 40 s tones with ffmpeg in a temporary folder, and starts `server/main.ts` on them. It never reads `.env`, so no browser test touches the real library. The game test plays five rounds, the fewest a game allows, in under a minute per browser.
 - Each browser project sends its own `X-Forwarded-For` address and the fixture server trusts one proxy hop (`YSTO_TRUST_PROXY=1`), so the per-IP lobby limits count each browser's tests on their own.
-- `src/themes.test.ts` reads each theme's colors from `styles.css` (Vitest processes that one stylesheet, `vitest.config.ts`) and checks WCAG AA for every text and graphic pair. `e2e/a11y.spec.ts` plays a game alone and runs axe on each screen in all three themes, failing on any serious or critical issue.
+- `src/themes.test.ts` reads each theme's colors from `styles.css` (Vitest processes that one stylesheet, `vitest.config.ts`) and checks WCAG AA for every text and graphic pair. `e2e/a11y.spec.ts` plays a game alone and runs axe on each screen in all seven themes, failing on any serious or critical issue. The contrast test covers the card stock too: text on cards, chosen cards, card backs and index marks.
 - The game engine is tested without any shell: a simulator in `tests/game/engine.test.ts` feeds it events on a fake clock, serves its clip cuts at once and fires its timers in order.
 - Every test builds its own fixtures with a small function (`clientDirWith(files)`), and temporary folders are deleted in `after`. No state carries over from one test to the next.
 - Use in-memory or temp-dir databases, never the app's singleton for writes.

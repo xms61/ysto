@@ -1,13 +1,19 @@
 @import 'tailwindcss';
-@import '@fontsource/tilt-neon/latin-400.css';
-@import '@fontsource/m-plus-rounded-1c/latin-800.css';
-@import '@fontsource/anton/latin-400.css';
+@import '@fontsource/zen-kaku-gothic-new/latin-700.css';
+@import '@fontsource/zen-antique/latin-400.css';
+@import '@fontsource/bangers/latin-400.css';
+@import '@fontsource/saira-stencil-one/latin-400.css';
+@import '@fontsource/mochiy-pop-one/latin-400.css';
+@import '@fontsource/press-start-2p/latin-400.css';
+@import '@fontsource/vt323/latin-400.css';
+@import '@fontsource/pixelify-sans/latin-500.css';
 
 /*
- * Themes (docs/DESIGN.md). Each theme is one block of variables on any element with data-theme, so a
- * theme can also preview inside another (the theme picker). Components use only these tokens: colors as
- * utilities such as bg-panel, the display type through .display, and Tailwind's radius scale, which each
- * theme resizes. Textures and glows are decoration: text always sits on a solid token color.
+ * Seven themes, one card anatomy (docs/DESIGN.md). Every round deals four identical cards, and each theme
+ * prints them on its own genre's card stock. A theme is one block of variables on any element with
+ * data-theme, so the theme picker can preview a theme inside another. Colors reach components as
+ * utilities such as bg-panel; each theme's stock, frames and ornaments hang off :root[data-theme] below.
+ * Text always sits on a solid token color, never on a texture.
  */
 @theme inline {
   --color-page: var(--page);
@@ -24,93 +30,394 @@
 }
 
 @layer base {
-  /* Tokyo Rain, the default: dark navy, neon signs, rain on glass. */
+  /* Tokyo Rain, the default: the last train on a rainy night, options as station name boards. */
   :root:not([data-theme]),
   [data-theme='tokyo-rain'] {
+    --display-adjust: 0.52;
     color-scheme: dark;
-    --page: #0a1020;
-    --panel: #121a31;
-    --raised: #1b2544;
-    --line: #2b3963;
-    --edge: #6878ad;
-    --ink: #e8ecfa;
-    --muted: #a6b0d0;
-    --accent: #3dd6f5;
-    --accent-ink: #03141a;
-    --good: #56e0a0;
-    --bad: #ff8095;
-    --display-font: 'Tilt Neon', ui-sans-serif, system-ui, sans-serif;
+    --page: #0b1220;
+    --panel: #121c30;
+    --raised: #1b2842;
+    --line: #2c3b5c;
+    --edge: #6b7da8;
+    --ink: #eaf0fa;
+    --muted: #a7b4cf;
+    --accent: #ffb000;
+    --accent-ink: #1a1200;
+    --good: #52d69a;
+    --bad: #ff7a8c;
+    --card: #f2f4f1;
+    --card-ink: #15181d;
+    --card-muted: #4a515e;
+    --card-dim: #c3c8ce;
+    --card-mark: #137a52;
+    --card-mark-ink: #ffffff;
+    --card-chosen: #fff4d6;
+    --card-chosen-ink: #15181d;
+    --card-alert: #c0263b;
+    --card-back: #0d0d0f;
+    --card-back-ink: #ffb000;
+    --display-font: 'Zen Kaku Gothic New', ui-sans-serif, system-ui, sans-serif;
+    --display-weight: 700;
+    --display-case: none;
+    --display-tracking: 0.02em;
+    --title-font: var(--display-font);
+    --title-weight: 700;
+    --title-case: none;
+    --title-tracking: 0.01em;
+    --title-adjust: 0.52;
+    --panel-shadow: 0 1.25rem 2.5rem -1.5rem rgb(0 0 0 / 0.8);
+    --page-texture:
+      radial-gradient(circle at 12% 18%, rgb(255 176 0 / 0.1) 0 2.6rem, transparent 3rem),
+      radial-gradient(circle at 86% 26%, rgb(29 158 108 / 0.12) 0 3.6rem, transparent 4.1rem),
+      radial-gradient(circle at 72% 88%, rgb(255 90 140 / 0.08) 0 4.4rem, transparent 5rem),
+      radial-gradient(circle at 22% 74%, rgb(170 225 255 / 0.06) 0 1.8rem, transparent 2.2rem);
+    --radius-lg: 0.375rem;
+    --radius-xl: 0.375rem;
+    --radius-2xl: 0.625rem;
+  }
+
+  /* Sakura: hanafuda under cherry blossom, vermilion seals and washi. */
+  [data-theme='sakura'] {
+    --display-adjust: 0.5;
+    color-scheme: light;
+    --page: #f9e8ed;
+    --panel: #fffaf6;
+    --raised: #fbe3ea;
+    --line: #efc4d1;
+    --edge: #b5657f;
+    --ink: #2a171d;
+    --muted: #6c4552;
+    --accent: #b8302a;
+    --accent-ink: #ffffff;
+    --good: #1f7a4d;
+    --bad: #7a1f4a;
+    --card: #fffaf6;
+    --card-ink: #2a171d;
+    --card-muted: #6e4a56;
+    --card-dim: #efe1df;
+    --card-mark: #b8302a;
+    --card-mark-ink: #ffffff;
+    --card-chosen: #fbe3ea;
+    --card-chosen-ink: #2a171d;
+    --card-alert: #9e2a24;
+    --card-back: #a82b26;
+    --card-back-ink: #fff8f0;
+    --blossom: #ee9ab2;
+    --foil: #c9a14a;
+    --display-font: 'Zen Antique', 'Hiragino Mincho ProN', 'Yu Mincho', serif;
     --display-weight: 400;
     --display-case: none;
     --display-tracking: 0.01em;
-    --display-glow: 0 0 0.4em rgb(61 214 245 / 0.55), 0 0 1.2em rgb(255 62 165 / 0.25);
-    --panel-shadow: 0 0 0 1px rgb(61 214 245 / 0.06), 0 1.25rem 2.5rem -1.5rem rgb(0 0 0 / 0.8);
+    --title-font: var(--display-font);
+    --title-weight: 400;
+    --title-case: none;
+    --title-tracking: 0.01em;
+    --title-adjust: 0.5;
+    --panel-shadow: 0 0.75rem 1.75rem -1rem rgb(168 43 38 / 0.28);
+    /* Seigaiha, the wave pattern of washi and kimono, a shade off the page. */
+    --wave: #f4dce4;
     --page-texture:
-      radial-gradient(50rem 28rem at 90% -8%, rgb(255 62 165 / 0.16), transparent 65%),
-      radial-gradient(46rem 30rem at -12% 108%, rgb(61 214 245 / 0.14), transparent 65%);
-    --radius-lg: 0.5rem;
-    --radius-xl: 0.75rem;
-    --radius-2xl: 1rem;
+      radial-gradient(
+          circle at 100% 150%,
+          var(--page) 24%,
+          var(--wave) 24% 28%,
+          var(--page) 28% 36%,
+          var(--wave) 36% 40%,
+          transparent 40%
+        )
+        0 0 / 5rem 2.5rem,
+      radial-gradient(
+          circle at 0 150%,
+          var(--page) 24%,
+          var(--wave) 24% 28%,
+          var(--page) 28% 36%,
+          var(--wave) 36% 40%,
+          transparent 40%
+        )
+        0 0 / 5rem 2.5rem,
+      radial-gradient(
+          circle at 50% 100%,
+          var(--wave) 10%,
+          var(--page) 10% 23%,
+          var(--wave) 23% 30%,
+          var(--page) 30% 43%,
+          var(--wave) 43% 50%,
+          var(--page) 50% 63%,
+          var(--wave) 63% 71%,
+          transparent 71%
+        )
+        0 0 / 5rem 2.5rem,
+      radial-gradient(
+          circle at 100% 50%,
+          var(--wave) 5%,
+          var(--page) 5% 15%,
+          var(--wave) 15% 20%,
+          var(--page) 20% 29%,
+          var(--wave) 29% 34%,
+          var(--page) 34% 44%,
+          var(--wave) 44% 49%,
+          transparent 49%
+        )
+        0 0 / 5rem 2.5rem,
+      radial-gradient(
+          circle at 0 50%,
+          var(--wave) 5%,
+          var(--page) 5% 15%,
+          var(--wave) 15% 20%,
+          var(--page) 20% 29%,
+          var(--wave) 29% 34%,
+          var(--page) 34% 44%,
+          var(--wave) 44% 49%,
+          transparent 49%
+        )
+        0 0 / 5rem 2.5rem;
+    --radius-lg: 0.25rem;
+    --radius-xl: 0.25rem;
+    --radius-2xl: 0.375rem;
   }
 
-  /* Sakura: pastel pink, falling petals, soft rounded type. */
-  [data-theme='sakura'] {
-    color-scheme: light;
-    --page: #fff2f6;
-    --panel: #ffffff;
-    --raised: #ffe3ec;
-    --line: #f1c6d5;
-    --edge: #b86a86;
-    --ink: #3b1627;
-    --muted: #7a4459;
-    --accent: #c2185b;
-    --accent-ink: #ffffff;
-    --good: #1c7a4c;
-    --bad: #b3261e;
-    --display-font: 'M PLUS Rounded 1c', ui-rounded, system-ui, sans-serif;
-    --display-weight: 800;
-    --display-case: none;
-    --display-tracking: 0;
-    --display-glow: none;
-    --panel-shadow: 0 0.75rem 1.75rem -1rem rgb(194 24 91 / 0.3);
-    --page-texture:
-      radial-gradient(38rem 24rem at 100% 0%, rgb(255 183 206 / 0.55), transparent 70%),
-      radial-gradient(34rem 24rem at 0% 100%, rgb(255 208 224 / 0.6), transparent 70%);
-    --radius-lg: 0.875rem;
-    --radius-xl: 1.25rem;
-    --radius-2xl: 1.75rem;
-  }
-
-  /* Shonen: black, orange and yellow, halftone and speed lines, heavy condensed type. */
+  /* Shonen: a battle manga page, inked panels on newsprint with one red spot color. */
   [data-theme='shonen'] {
-    color-scheme: dark;
-    --page: #111111;
-    --panel: #1c1c1c;
-    --raised: #292929;
-    --line: #474747;
-    --edge: #8c8c8c;
-    --ink: #fff7e0;
-    --muted: #d6c49a;
-    --accent: #ff8a00;
-    --accent-ink: #111111;
-    --good: #ffd21f;
-    --bad: #ff6b6b;
-    --display-font: 'Anton', 'Arial Narrow', Impact, sans-serif;
+    --display-adjust: 0.76;
+    color-scheme: light;
+    --page: #eeede7;
+    --panel: #ffffff;
+    --raised: #e4e3dc;
+    --line: #1a1a1a;
+    --edge: #1a1a1a;
+    --ink: #111111;
+    --muted: #4d4d4d;
+    --accent: #d42a1c;
+    --accent-ink: #ffffff;
+    --good: #1f6e3c;
+    --bad: #b3140a;
+    --card: #ffffff;
+    --card-ink: #111111;
+    --card-muted: #5a5a5a;
+    --card-dim: #e4e3dc;
+    --card-mark: #111111;
+    --card-mark-ink: #ffffff;
+    --card-chosen: #111111;
+    --card-chosen-ink: #ffffff;
+    --card-alert: #b3140a;
+    --card-back: #111111;
+    --card-back-ink: #ffffff;
+    --display-font: 'Bangers', 'Arial Narrow', sans-serif;
     --display-weight: 400;
     --display-case: uppercase;
-    --display-tracking: 0.03em;
-    --display-glow: none;
-    --panel-shadow: 0.3rem 0.3rem 0 rgb(255 138 0 / 0.35);
+    --display-tracking: 0.04em;
+    --title-font: var(--display-font);
+    --title-weight: 400;
+    --title-case: uppercase;
+    --title-tracking: 0.04em;
+    --title-adjust: 0.76;
+    --field-rim: 2px;
+    --panel-shadow: none;
     --page-texture:
-      repeating-conic-gradient(from 0deg at 100% 0%, rgb(255 210 31 / 0.07) 0deg 1.5deg, transparent 1.5deg 6deg),
-      radial-gradient(rgb(255 138 0 / 0.13) 1.4px, transparent 1.6px) 0 0 / 0.75rem 0.75rem;
+      repeating-conic-gradient(from 0deg at 100% 0%, rgb(0 0 0 / 0.05) 0deg 1deg, transparent 1deg 5deg),
+      radial-gradient(rgb(0 0 0 / 0.09) 1px, transparent 1.4px) 0 0 / 6px 6px;
     --radius-lg: 2px;
-    --radius-xl: 3px;
-    --radius-2xl: 4px;
+    --radius-xl: 2px;
+    --radius-2xl: 2px;
+  }
+
+  /* Mecha: a hangar bay, riveted armor plates, hazard stripes and lock brackets. */
+  [data-theme='mecha'] {
+    --display-adjust: 0.55;
+    color-scheme: dark;
+    --page: #111417;
+    --panel: #1c2126;
+    --raised: #262d33;
+    --line: #3a434b;
+    --edge: #7d8a95;
+    --ink: #e8edf0;
+    --muted: #a9b4bc;
+    --accent: #f2c230;
+    --accent-ink: #141414;
+    --good: #5cf28a;
+    --bad: #ff6a55;
+    --card: #252b31;
+    --card-ink: #eef2f4;
+    --card-muted: #9aa6af;
+    --card-dim: #181c20;
+    --card-mark: #f2c230;
+    --card-mark-ink: #141414;
+    --card-chosen: #1b2b22;
+    --card-chosen-ink: #eef2f4;
+    --card-alert: #ff6a55;
+    --card-back: #f2c230;
+    --card-back-ink: #141414;
+    --display-font: 'Saira Stencil One', 'Arial Narrow', sans-serif;
+    --display-weight: 400;
+    --display-case: uppercase;
+    --display-tracking: 0.05em;
+    --title-font: ui-sans-serif, system-ui, sans-serif;
+    --title-weight: 700;
+    --title-case: uppercase;
+    --title-tracking: 0.06em;
+    --title-adjust: none;
+    --panel-shadow: 0 1rem 2rem -1.25rem rgb(0 0 0 / 0.85);
+    --page-texture:
+      linear-gradient(rgb(125 138 149 / 0.07) 1px, transparent 1px) 0 0 / 2rem 2rem,
+      linear-gradient(90deg, rgb(125 138 149 / 0.07) 1px, transparent 1px) 0 0 / 2rem 2rem;
+    --radius-lg: 0;
+    --radius-xl: 0;
+    --radius-2xl: 0;
+  }
+
+  /* Magical Girl: a transformation at night, gem cards in gold foil. */
+  [data-theme='magical-girl'] {
+    --display-adjust: 0.52;
+    color-scheme: dark;
+    --page: #170c33;
+    --panel: #231249;
+    --raised: #321a64;
+    --line: #4a2e82;
+    --edge: #a98ad8;
+    --ink: #fff4fb;
+    --muted: #d6c3f0;
+    --accent: #ff5fb4;
+    --accent-ink: #1a0b2e;
+    --good: #7cf2c0;
+    --bad: #ff8aa8;
+    --card: #fff0fa;
+    --card-ink: #36104a;
+    --card-muted: #6d4a7c;
+    --card-dim: #e8daef;
+    --card-mark: #c21d7c;
+    --card-mark-ink: #ffffff;
+    --card-chosen: #e2ceff;
+    --card-chosen-ink: #36104a;
+    --card-alert: #b0184d;
+    --card-back: #a81d68;
+    --card-back-ink: #ffffff;
+    --foil: #f2c14e;
+    --foil-sheen: linear-gradient(135deg, #fff1b8, #d9a23a 28%, #fff6d8 48%, #b7862e 66%, #f2c14e 84%, #fff1b8);
+    --display-font: 'Mochiy Pop One', 'Hiragino Maru Gothic ProN', ui-rounded, system-ui, sans-serif;
+    --display-weight: 400;
+    --display-case: none;
+    --display-tracking: 0.01em;
+    --title-font: var(--display-font);
+    --title-weight: 400;
+    --title-case: none;
+    --title-tracking: 0;
+    --title-adjust: 0.52;
+    --panel-shadow: 0 1rem 2.25rem -1.25rem rgb(10 0 30 / 0.8);
+    --page-texture:
+      radial-gradient(rgb(255 244 251 / 0.5) 1px, transparent 1.6px) 0 0 / 53px 53px,
+      radial-gradient(rgb(242 193 78 / 0.4) 1px, transparent 1.7px) 23px 31px / 89px 89px;
+    --radius-lg: 0.75rem;
+    --radius-xl: 1.25rem;
+    --radius-2xl: 1.5rem;
+  }
+
+  /* Isekai: a JRPG menu, blue windows with white rims and a blinking cursor. */
+  [data-theme='isekai'] {
+    --display-adjust: 0.46;
+    color-scheme: dark;
+    --page: #0b0e1c;
+    --panel: #1d2f94;
+    --raised: #2a3fb0;
+    --line: #6f7fd6;
+    --edge: #ffffff;
+    --ink: #ffffff;
+    --muted: #c9d2ff;
+    --accent: #ffd84a;
+    --accent-ink: #16162a;
+    --good: #6ff29a;
+    --bad: #ff9a9a;
+    --card: #1f3399;
+    --card-ink: #ffffff;
+    --card-muted: #b9c3f7;
+    --card-dim: #16246c;
+    --card-mark: #ffd84a;
+    --card-mark-ink: #16162a;
+    --card-chosen: #ffffff;
+    --card-chosen-ink: #1f3399;
+    --card-alert: #ffb3b3;
+    --card-back: #ffd84a;
+    --card-back-ink: #16162a;
+    --display-font: 'Press Start 2P', ui-monospace, monospace;
+    --display-weight: 400;
+    --display-case: none;
+    --display-tracking: 0;
+    --title-font: 'Pixelify Sans', ui-monospace, monospace;
+    --title-weight: 500;
+    --title-case: none;
+    --title-tracking: 0.01em;
+    --title-adjust: none;
+    --field-rim: 3px;
+    --panel-shadow: 0 0 0 2px #05060f;
+    --page-texture: conic-gradient(
+        rgb(255 255 255 / 0.035) 25%,
+        transparent 0 50%,
+        rgb(255 255 255 / 0.035) 0 75%,
+        transparent 0
+      )
+      0 0 / 4px 4px;
+    --radius-lg: 0.25rem;
+    --radius-xl: 0.375rem;
+    --radius-2xl: 0.5rem;
+  }
+
+  /* Retro VHS: an eighties anime on tape, sunset-striped labels and on-screen-display type. */
+  [data-theme='retro-vhs'] {
+    --display-adjust: 0.56;
+    color-scheme: dark;
+    --page: #0d0b14;
+    --panel: #17142a;
+    --raised: #231e3d;
+    --line: #3a3360;
+    --edge: #9a8fd1;
+    --ink: #f4f1ff;
+    --muted: #b9b1d9;
+    --accent: #ff8a1f;
+    --accent-ink: #140d06;
+    --good: #5ef0c8;
+    --bad: #ff6f8a;
+    --card: #eeedf1;
+    --card-ink: #17121f;
+    --card-muted: #4f4862;
+    --card-dim: #d3d1da;
+    --card-mark: #17121f;
+    --card-mark-ink: #3ee0cf;
+    --card-chosen: #d9fbf6;
+    --card-chosen-ink: #17121f;
+    --card-alert: #c21f4a;
+    --card-back: #0d0b14;
+    --card-back-ink: #3ee0cf;
+    --stripe-1: #ff8a1f;
+    --stripe-2: #ff3d7f;
+    --stripe-3: #8a3ffc;
+    --display-font: 'VT323', ui-monospace, monospace;
+    --display-weight: 400;
+    --display-case: uppercase;
+    --display-tracking: 0.04em;
+    --title-font: var(--display-font);
+    --title-weight: 400;
+    --title-case: uppercase;
+    --title-tracking: 0.04em;
+    --title-adjust: 0.56;
+    --panel-shadow: 0 1rem 2.25rem -1.25rem rgb(0 0 0 / 0.85);
+    --page-texture: repeating-linear-gradient(to bottom, rgb(255 255 255 / 0.035) 0 1px, transparent 1px 3px);
+    --radius-lg: 0.1875rem;
+    --radius-xl: 0.25rem;
+    --radius-2xl: 0.375rem;
   }
 
   :root {
+    --ja-font:
+      'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Noto Sans JP', 'Noto Sans CJK JP', 'Yu Gothic UI', 'Yu Gothic',
+      Meiryo, system-ui, sans-serif;
     accent-color: var(--accent);
+    caret-color: var(--accent);
+    scrollbar-color: var(--edge) var(--page);
+  }
+
+  ::selection {
+    background: var(--accent);
+    color: var(--accent-ink);
   }
 
   body {
@@ -121,19 +428,19 @@
 
   /* Japanese titles pick Japanese fonts, so Han characters never show in a Chinese style. */
   :lang(ja) {
-    font-family:
-      'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Noto Sans JP', 'Noto Sans CJK JP', 'Yu Gothic UI', 'Yu Gothic',
-      Meiryo, system-ui, sans-serif;
+    font-family: var(--ja-font);
   }
 }
 
 @layer components {
+  /* The theme's display face. font-size-adjust evens out the faces' very different x-heights, so a heading
+     keeps its size from Tokyo Rain's gothic to Isekai's pixels. */
   .display {
     font-family: var(--display-font);
     font-weight: var(--display-weight);
     text-transform: var(--display-case);
     letter-spacing: var(--display-tracking);
-    text-shadow: var(--display-glow);
+    font-size-adjust: var(--display-adjust, 0.52);
     font-synthesis: none;
   }
 
@@ -141,26 +448,1076 @@
     box-shadow: var(--panel-shadow);
   }
 
-  /* The shorthand, since a texture layer may carry its own position and size (Shonen's halftone). */
+  /* The shorthand, since a texture layer may carry its own position and size. */
   .page-texture {
     background: var(--page-texture) var(--page);
   }
 
-  /* Shonen's speed lines burst behind the answer's title. */
-  .reveal-title {
-    position: relative;
-    isolation: isolate;
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-2xl);
+    box-shadow: var(--panel-shadow);
   }
 
-  [data-theme='shonen'] .reveal-title::before {
+  /* Buttons and fields are printed on the theme's stock too: its face, its rims and its corners. */
+  .button {
+    border-radius: var(--radius-lg);
+  }
+
+  .button-primary {
+    background: var(--accent);
+    color: var(--accent-ink);
+  }
+
+  .button-primary:hover:not(:disabled) {
+    filter: brightness(1.1);
+  }
+
+  .button-quiet {
+    background: var(--raised);
+    color: var(--ink);
+    border: 1px solid var(--line);
+  }
+
+  .button-quiet:hover:not(:disabled) {
+    border-color: var(--accent);
+  }
+
+  .field {
+    border: var(--field-rim, 1px) solid var(--edge);
+    border-radius: var(--radius-lg);
+    background-color: var(--page);
+  }
+
+  /* A native select without the platform's arrow, and a chevron drawn in the theme's ink. */
+  select.field {
+    appearance: none;
+    padding-right: 2.25rem;
+    background-image:
+      linear-gradient(45deg, transparent 50%, var(--ink) 50%), linear-gradient(135deg, var(--ink) 50%, transparent 50%);
+    background-position:
+      calc(100% - 1.25rem) 50%,
+      calc(100% - 0.9375rem) 50%;
+    background-size: 0.3125rem 0.3125rem;
+    background-repeat: no-repeat;
+  }
+
+  /* Checkboxes and radios on the theme's field: a check on the accent, or an accent dot. */
+  .choice {
+    appearance: none;
+    display: inline-grid;
+    place-content: center;
+    flex-shrink: 0;
+    width: 1.125rem;
+    height: 1.125rem;
+    margin: 0;
+    border: var(--field-rim, 1.5px) solid var(--edge);
+    border-radius: min(var(--radius-lg), 0.25rem);
+    background: var(--page);
+    cursor: pointer;
+  }
+
+  .choice::before {
+    content: '';
+    width: 0.625rem;
+    height: 0.625rem;
+    background: var(--accent-ink);
+    clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+    transform: scale(0);
+  }
+
+  .choice:checked {
+    border-color: var(--accent);
+    background: var(--accent);
+  }
+
+  .choice:checked::before {
+    transform: none;
+  }
+
+  .choice[type='radio'] {
+    border-radius: 50%;
+  }
+
+  .choice[type='radio']:checked {
+    background: var(--page);
+  }
+
+  .choice[type='radio']::before {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    clip-path: none;
+    background: var(--accent);
+  }
+
+  .choice:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
+  .choice:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  /* The card: an index mark in the corner, the title at the foot, and a printed back the reveal turns over.
+     Cards in a row share one height, whatever their titles. */
+  .card {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 100%;
+    text-align: left;
+    perspective: 60rem;
+  }
+
+  .card-turn {
+    display: grid;
+    height: 100%;
+    min-height: 6rem;
+    transform-style: preserve-3d;
+  }
+
+  .card-face {
+    position: relative;
+    grid-area: 1 / 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding: 0.75rem 0.875rem 1rem;
+    border-radius: var(--radius-xl);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    overflow: hidden;
+  }
+
+  /* Each stock sets its titles' face, weight, case and tracking. */
+  .card-front {
+    background-color: var(--card);
+    color: var(--card-ink);
+    border: 2px solid var(--card-mark);
+    font-family: var(--title-font);
+    font-weight: var(--title-weight);
+    text-transform: var(--title-case);
+    letter-spacing: var(--title-tracking);
+    font-size: 1rem;
+    font-size-adjust: var(--title-adjust, none);
+    line-height: 1.3;
+    transition: transform 150ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* On a wider screen the cards grow to fill the first view, twice a phone's height. */
+  @media (min-width: 40rem) {
+    .card-turn {
+      min-height: 11.5rem;
+    }
+
+    .card-front {
+      font-size: 1.25rem;
+    }
+  }
+
+  @media (hover: hover) {
+    .card[data-state='open']:hover .card-front {
+      transform: translateY(-2px);
+    }
+  }
+
+  /* Dealt face down: the back without its turn, nothing printed on it yet. */
+  .card-down {
+    transform: none;
+  }
+
+  .card-back {
+    justify-content: center;
+    gap: 0.25rem;
+    background: var(--card-back);
+    color: var(--card-back-ink);
+    transform: rotateY(180deg);
+  }
+
+  .card[data-turned] .card-turn {
+    transform: rotateY(180deg);
+  }
+
+  .card-index {
+    position: relative;
+    display: grid;
+    place-items: center;
+    min-width: 1.875rem;
+    height: 1.875rem;
+    padding-inline: 0.25rem;
+    border-radius: var(--radius-lg);
+    background: var(--card-mark);
+    color: var(--card-mark-ink);
+    font-family: var(--display-font);
+    font-size: 0.95rem;
+    line-height: 1;
+    font-size-adjust: var(--display-adjust, 0.52);
+    text-transform: none;
+    letter-spacing: 0;
+  }
+
+  .card-title {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  /* The pick's stamp sits on the card's top edge, over the card rather than in it, so a picked card keeps
+     its height and its row stays even. */
+  .card-tag {
+    position: absolute;
+    top: -0.5625rem;
+    right: 0.5rem;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.0625rem 0.375rem;
+    border-radius: var(--radius-lg);
+    background: var(--card-mark);
+    color: var(--card-mark-ink);
+    font-family: var(--title-font);
+    font-weight: var(--title-weight);
+    text-transform: var(--title-case);
+    letter-spacing: var(--title-tracking);
+    font-size: 0.75rem;
+    font-size-adjust: var(--title-adjust, none);
+    line-height: 1.25;
+    white-space: nowrap;
+    pointer-events: none;
+  }
+
+  .card-tag svg {
+    width: 0.875rem;
+    height: 0.875rem;
+  }
+
+  .card[data-state='missed'] .card-tag {
+    background: var(--card);
+    color: var(--card-alert);
+    box-shadow: inset 0 0 0 2px var(--card-alert);
+  }
+
+  .card[data-state='chosen'] .card-front {
+    background-color: var(--card-chosen);
+    color: var(--card-chosen-ink);
+  }
+
+  /* Locked in, or not the answer: the whole card steps back to a dimmer stock, its text still readable. */
+  .card[data-state='muted'] .card-front {
+    background-color: var(--card-dim);
+    color: var(--card-muted);
+  }
+
+  .card[data-state='muted'] .card-index {
+    background: transparent;
+    color: var(--card-muted);
+    box-shadow: inset 0 0 0 1.5px var(--card-muted);
+  }
+
+  .card[data-state='missed'] .card-title {
+    text-decoration: line-through;
+    text-decoration-thickness: 2px;
+    text-decoration-color: var(--card-alert);
+  }
+
+  /* The back prints the title in the same face and size as the front, so a turned card is no taller than
+     its neighbors. */
+  .card-back-label,
+  .card-back-meta {
+    font-size: 0.75rem;
+  }
+
+  .card-back-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-weight: 700;
+  }
+
+  .card-back-label svg {
+    width: 1rem;
+    height: 1rem;
+  }
+
+  .card-back-title {
+    font-family: var(--title-font);
+    font-weight: var(--title-weight);
+    text-transform: var(--title-case);
+    letter-spacing: var(--title-tracking);
+    font-size: 1rem;
+    font-size-adjust: var(--title-adjust, none);
+    line-height: 1.25;
+    overflow-wrap: anywhere;
+  }
+
+  @media (min-width: 40rem) {
+    .card-back-title {
+      font-size: 1.25rem;
+    }
+  }
+
+  /* The display faces are Latin only, so Japanese titles take a Japanese face, never a fallback's. */
+  .display:lang(ja),
+  .card-title:lang(ja),
+  .card-back-title:lang(ja) {
+    font-family: var(--ja-font);
+    text-transform: none;
+    letter-spacing: normal;
+    font-size-adjust: none;
+  }
+
+  /* Standings billed like a festival lineup: the leader's full name largest, the rest packed below it. */
+  .bill-row {
+    display: grid;
+    grid-template-columns: 2.5rem minmax(0, 1fr) auto;
+    grid-template-areas: 'place who score';
+    align-items: baseline;
+    column-gap: 0.75rem;
+    padding-block: 0.625rem;
+  }
+
+  .bill-row + .bill-row {
+    border-top: 1px solid var(--line);
+  }
+
+  .bill-place {
+    grid-area: place;
+    font-size: 0.875rem;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .bill-who {
+    grid-area: who;
+    min-width: 0;
+  }
+
+  .bill-name {
+    font-weight: 600;
+    overflow-wrap: anywhere;
+  }
+
+  .bill-stats {
+    display: block;
+    font-size: 0.875rem;
+    color: var(--muted);
+  }
+
+  .bill-score {
+    grid-area: score;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .bill-lead {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      'place score'
+      'who who';
+    row-gap: 0.25rem;
+    padding-block: 0 1rem;
+  }
+
+  .bill-lead .bill-name,
+  .bill-lead .bill-score,
+  .bill-support .bill-name {
+    font-family: var(--display-font);
+    font-weight: var(--display-weight);
+    text-transform: var(--display-case);
+    letter-spacing: var(--display-tracking);
+    font-size-adjust: var(--display-adjust, 0.52);
+  }
+
+  .bill-lead .bill-name {
+    font-size: 2.75rem;
+    line-height: 1.05;
+  }
+
+  .bill-lead .bill-score {
+    font-size: 1.5rem;
+  }
+
+  .bill-support .bill-name {
+    font-size: 1.5rem;
+    line-height: 1.15;
+  }
+
+  .bill-support .bill-score {
+    font-size: 1.125rem;
+  }
+
+  @media (min-width: 40rem) {
+    .bill-lead .bill-name {
+      font-size: 4rem;
+    }
+  }
+
+  /* Mecha cuts corners off its cards and panels; each element sets its own cut. */
+  :root[data-theme='mecha'] .panel {
+    --cut: 0.875rem;
+  }
+
+  :root[data-theme='mecha'] .card-face {
+    --cut: 0.625rem;
+  }
+
+  :root[data-theme='mecha'] :is(.panel, .card-face),
+  :root[data-theme='mecha'] .card-front::before {
+    clip-path: polygon(
+      var(--cut) 0,
+      calc(100% - var(--cut)) 0,
+      100% var(--cut),
+      100% calc(100% - var(--cut)),
+      calc(100% - var(--cut)) 100%,
+      var(--cut) 100%,
+      0 calc(100% - var(--cut)),
+      0 var(--cut)
+    );
+  }
+
+  /* ---- Tokyo Rain: station name boards, a line band along the bottom, lit amber when chosen, unlit when not. ---- */
+  :root[data-theme='tokyo-rain'] .panel,
+  :root:not([data-theme]) .panel {
+    box-shadow:
+      inset 0 3px 0 var(--card-mark),
+      var(--panel-shadow);
+  }
+
+  :root[data-theme='tokyo-rain'] .card-front {
+    border: 0;
+    box-shadow: inset 0 -0.625rem 0 var(--card-mark);
+    padding-bottom: 1.625rem;
+  }
+
+  :root[data-theme='tokyo-rain'] .card-index {
+    flex-direction: column;
+    min-width: 2.25rem;
+    height: 2.5rem;
+    gap: 0.05rem;
+    background: var(--card);
+    color: var(--card-ink);
+    box-shadow: inset 0 0 0 2px var(--card-mark);
+  }
+
+  :root[data-theme='tokyo-rain'] .card-index::before {
+    content: 'TR';
+    font-size: 0.5rem;
+    letter-spacing: 0.08em;
+  }
+
+  :root[data-theme='tokyo-rain'] .card[data-state='chosen'] .card-front {
+    box-shadow: inset 0 -0.625rem 0 var(--accent);
+  }
+
+  :root[data-theme='tokyo-rain'] .card[data-state='muted'] .card-front {
+    box-shadow: inset 0 -0.625rem 0 var(--card-muted);
+  }
+
+  :root[data-theme='tokyo-rain'] .card[data-state='muted'] .card-index {
+    background: transparent;
+    color: var(--card-muted);
+    box-shadow: inset 0 0 0 2px var(--card-muted);
+  }
+
+  :root[data-theme='tokyo-rain'] .card-back {
+    background:
+      repeating-linear-gradient(to bottom, transparent 0 3px, rgb(255 176 0 / 0.07) 3px 4px), var(--card-back);
+    letter-spacing: 0.03em;
+  }
+
+  :root[data-theme='tokyo-rain'] .button-quiet {
+    box-shadow: inset 0 -3px 0 var(--card-mark);
+  }
+
+  :root[data-theme='tokyo-rain'] .button-quiet:hover:not(:disabled) {
+    border-color: var(--line);
+    box-shadow: inset 0 -3px 0 var(--accent);
+  }
+
+  /* ---- Sakura: hanafuda with a double vermilion rim, a seal for the index, a blossom in the corner. ---- */
+  :root[data-theme='sakura'] .panel {
+    border: 2px solid var(--card-mark);
+    outline: 1px solid var(--card-mark);
+    outline-offset: -7px;
+  }
+
+  :root[data-theme='sakura'] .card-front {
+    box-shadow:
+      inset 0 0 0 3px var(--card),
+      inset 0 0 0 4px var(--card-mark);
+  }
+
+  :root[data-theme='sakura'] .card-front::after {
     content: '';
     position: absolute;
-    inset: -2.5rem -1rem;
-    z-index: -1;
-    background: repeating-conic-gradient(from 0deg, rgb(255 210 31 / 0.16) 0deg 2deg, transparent 2deg 9deg);
-    mask-image: radial-gradient(closest-side, transparent 35%, #000 70%, transparent 100%);
+    top: 0.75rem;
+    right: 0.75rem;
+    width: 1.375rem;
+    height: 1.375rem;
+    background: var(--blossom);
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-12 -12 24 24'%3E%3Cpath id='p' d='M0 -1.6C-3 -4 -3.6 -8 -1.3 -10.6L0 -9.1L1.3 -10.6C3.6 -8 3 -4 0 -1.6Z'/%3E%3Cuse href='%23p' transform='rotate(72)'/%3E%3Cuse href='%23p' transform='rotate(144)'/%3E%3Cuse href='%23p' transform='rotate(216)'/%3E%3Cuse href='%23p' transform='rotate(288)'/%3E%3C/svg%3E")
+      center / contain no-repeat;
   }
 
+  :root[data-theme='sakura'] .card[data-state='chosen'] .card-front {
+    border-color: var(--card-ink);
+    box-shadow:
+      inset 0 0 0 3px var(--card-chosen),
+      inset 0 0 0 4px var(--card-ink);
+  }
+
+  :root[data-theme='sakura'] .card[data-state='muted'] .card-front {
+    border-color: var(--card-muted);
+    box-shadow:
+      inset 0 0 0 3px var(--card-dim),
+      inset 0 0 0 4px var(--card-muted);
+  }
+
+  :root[data-theme='sakura'] .card[data-state='muted'] .card-front::after {
+    background: var(--line);
+  }
+
+  :root[data-theme='sakura'] .card-back {
+    box-shadow:
+      inset 0 0 0 4px var(--card-back),
+      inset 0 0 0 5px var(--foil);
+  }
+
+  :root[data-theme='sakura'] .button-quiet {
+    background: var(--panel);
+    border-color: var(--card-mark);
+    box-shadow:
+      inset 0 0 0 2px var(--panel),
+      inset 0 0 0 3px var(--card-mark);
+  }
+
+  :root[data-theme='sakura'] .button-quiet:hover:not(:disabled) {
+    border-color: var(--card-mark);
+    background: var(--raised);
+    box-shadow:
+      inset 0 0 0 2px var(--raised),
+      inset 0 0 0 3px var(--card-mark);
+  }
+
+  :root[data-theme='sakura'] .button-primary {
+    box-shadow:
+      inset 0 0 0 2px var(--accent),
+      inset 0 0 0 3px rgb(255 255 255 / 0.75);
+  }
+
+  /* ---- Shonen: inked panels, a screentone corner, inverted ink when chosen, speed lines on the back. ---- */
+  :root[data-theme='shonen'] .panel {
+    border: 3px solid var(--line);
+  }
+
+  :root[data-theme='shonen'] .card-front {
+    border: 3px solid var(--card-mark);
+  }
+
+  :root[data-theme='shonen'] .card-front::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 40%;
+    height: 70%;
+    background: radial-gradient(rgb(0 0 0 / 0.2) 1px, transparent 1.5px) 0 0 / 5px 5px;
+    mask: linear-gradient(135deg, transparent 35%, #000 90%);
+    pointer-events: none;
+  }
+
+  :root[data-theme='shonen'] .card-index {
+    border-radius: 999px;
+  }
+
+  :root[data-theme='shonen'] .card[data-state='chosen'] .card-index {
+    background: var(--card-chosen-ink);
+    color: var(--card-chosen);
+  }
+
+  :root[data-theme='shonen'] .card[data-state='chosen'] .card-front::after {
+    background: radial-gradient(rgb(255 255 255 / 0.25) 1px, transparent 1.5px) 0 0 / 5px 5px;
+  }
+
+  :root[data-theme='shonen'] .card[data-state='muted'] .card-front {
+    border-color: #8a8a8a;
+  }
+
+  /* The pick is shouted in the one spot color, lettered at a tilt. */
+  :root[data-theme='shonen'] .card[data-state='chosen'] .card-tag {
+    background: var(--accent);
+    color: var(--accent-ink);
+    box-shadow: 0 0 0 2px var(--ink);
+    transform: rotate(-3deg);
+  }
+
+  :root[data-theme='shonen'] .card-back {
+    background:
+      radial-gradient(closest-side, var(--card-back) 55%, transparent 85%),
+      repeating-conic-gradient(from 0deg, rgb(255 255 255 / 0.16) 0deg 2deg, transparent 2deg 9deg), var(--card-back);
+  }
+
+  /* Buttons are inked like the panels, and a quiet one inverts to solid ink under the pointer. */
+  :root[data-theme='shonen'] .button {
+    border: 3px solid var(--ink);
+  }
+
+  :root[data-theme='shonen'] .button-quiet {
+    background: var(--panel);
+  }
+
+  :root[data-theme='shonen'] .button-quiet:hover:not(:disabled) {
+    border-color: var(--ink);
+    background: var(--ink);
+    color: var(--panel);
+  }
+
+  /* ---- Mecha: chamfered armor plates with a bevel, a seam and rivets, a hazard strip, lock brackets when chosen. ---- */
+  :root[data-theme='mecha'] .panel {
+    border: 0;
+    background:
+      repeating-linear-gradient(-45deg, var(--accent) 0 0.5rem, #141414 0.5rem 1rem) top / 100% 0.375rem no-repeat,
+      var(--panel);
+  }
+
+  /* The front's own color is the plate's bevel, showing round the plate itself, drawn a little smaller. */
+  :root[data-theme='mecha'] .card-front {
+    border: 0;
+    isolation: isolate;
+    background-color: #6b7680;
+  }
+
+  :root[data-theme='mecha'] .card-front::before {
+    content: '';
+    position: absolute;
+    inset: 2px;
+    z-index: -1;
+    --cut: calc(0.625rem - 1.2px);
+    background:
+      linear-gradient(#0c0f12, #0c0f12) 0 calc(2.625rem + 2px) / 100% 1px no-repeat,
+      linear-gradient(#3d464e, #3d464e) 0 calc(2.625rem + 3px) / 100% 1px no-repeat,
+      radial-gradient(circle at calc(100% - 0.875rem) 0.875rem, #6b7680 0 2px, transparent 2.5px),
+      radial-gradient(circle at calc(100% - 1.625rem) 0.875rem, #6b7680 0 2px, transparent 2.5px),
+      repeating-linear-gradient(-45deg, var(--card-mark) 0 0.375rem, #141414 0.375rem 0.75rem) bottom / 100% 0.3125rem
+        no-repeat;
+    background-color: var(--card);
+  }
+
+  :root[data-theme='mecha'] .card[data-state='chosen'] .card-front {
+    background-color: var(--accent);
+  }
+
+  :root[data-theme='mecha'] .card[data-state='chosen'] .card-front::before {
+    background-color: var(--card-chosen);
+  }
+
+  :root[data-theme='mecha'] .card[data-state='muted'] .card-front {
+    background-color: #3a434b;
+  }
+
+  :root[data-theme='mecha'] .card[data-state='muted'] .card-front::before {
+    background-color: var(--card-dim);
+  }
+
+  :root[data-theme='mecha'] .card-index,
+  :root[data-theme='retro-vhs'] .card-index {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  :root[data-theme='mecha'] .card-index {
+    background: transparent;
+    color: var(--card-mark);
+    font-size: 1.35rem;
+  }
+
+  :root[data-theme='mecha'] .card-index::before {
+    content: '0';
+  }
+
+  :root[data-theme='mecha'] .card[data-state='chosen']::after {
+    content: '';
+    position: absolute;
+    inset: -0.3125rem;
+    pointer-events: none;
+    background:
+      linear-gradient(var(--accent), var(--accent)) top left / 1rem 2px,
+      linear-gradient(var(--accent), var(--accent)) top left / 2px 1rem,
+      linear-gradient(var(--accent), var(--accent)) top right / 1rem 2px,
+      linear-gradient(var(--accent), var(--accent)) top right / 2px 1rem,
+      linear-gradient(var(--accent), var(--accent)) bottom left / 1rem 2px,
+      linear-gradient(var(--accent), var(--accent)) bottom left / 2px 1rem,
+      linear-gradient(var(--accent), var(--accent)) bottom right / 1rem 2px,
+      linear-gradient(var(--accent), var(--accent)) bottom right / 2px 1rem;
+    background-repeat: no-repeat;
+  }
+
+  :root[data-theme='mecha'] .card[data-state='muted'] .card-index {
+    box-shadow: none;
+  }
+
+  :root[data-theme='mecha'] .button-quiet {
+    border: 0;
+    background:
+      repeating-linear-gradient(-45deg, var(--accent) 0 4px, #141414 4px 8px) left / 0.375rem 100% no-repeat,
+      var(--raised);
+  }
+
+  :root[data-theme='mecha'] .button-quiet:hover:not(:disabled) {
+    background-color: var(--line);
+  }
+
+  /* ---- Magical Girl: gem cards rimmed in gold foil, a faceted gem for the index, sparkles when chosen. ---- */
+  :root[data-theme='magical-girl'] .panel {
+    position: relative;
+    border-color: transparent;
+    border-width: 2px;
+  }
+
+  :root[data-theme='magical-girl'] .card-front {
+    border: 0;
+  }
+
+  /* Foil is a sheen, not a flat rule: the rim is a ring cut out of the gradient. */
+  :root[data-theme='magical-girl'] .panel::after,
+  :root[data-theme='magical-girl'] .card-face::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    padding: 3px;
+    border-radius: inherit;
+    background: var(--foil-sheen);
+    mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  :root[data-theme='magical-girl'] .panel::after {
+    inset: -2px;
+    padding: 2px;
+  }
+
+  :root[data-theme='magical-girl'] .card-back::after {
+    inset: 5px;
+    padding: 1.5px;
+    border-radius: calc(var(--radius-xl) - 5px);
+  }
+
+  :root[data-theme='magical-girl'] .card[data-state='muted'] .card-front::after {
+    padding: 2px;
+    background: var(--card-muted);
+  }
+
+  :root[data-theme='magical-girl'] .card-index {
+    isolation: isolate;
+    background: transparent;
+  }
+
+  :root[data-theme='magical-girl'] .card-index::before {
+    content: '';
+    position: absolute;
+    inset: 0.0625rem;
+    z-index: -1;
+    border: 2px solid transparent;
+    border-radius: 0.25rem;
+    background:
+      conic-gradient(#c21d7c 0 25%, #86104f 0 50%, #b01a70 0 75%, #9c145f 0) padding-box,
+      var(--foil-sheen) border-box;
+    transform: rotate(45deg);
+  }
+
+  :root[data-theme='magical-girl'] .card[data-state='muted'] .card-index {
+    box-shadow: none;
+  }
+
+  :root[data-theme='magical-girl'] .card[data-state='muted'] .card-index::before {
+    border-color: var(--card-muted);
+    background: transparent;
+  }
+
+  :root[data-theme='magical-girl'] .card[data-state='chosen']::before,
+  :root[data-theme='magical-girl'] .card[data-state='chosen']::after {
+    content: '';
+    position: absolute;
+    z-index: 1;
+    background: var(--foil-sheen);
+    clip-path: polygon(50% 0, 61% 39%, 100% 50%, 61% 61%, 50% 100%, 39% 61%, 0 50%, 39% 39%);
+    pointer-events: none;
+  }
+
+  :root[data-theme='magical-girl'] .card[data-state='chosen']::before {
+    top: -0.625rem;
+    left: -0.5rem;
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+
+  :root[data-theme='magical-girl'] .card[data-state='chosen']::after {
+    right: 0.75rem;
+    bottom: -0.5rem;
+    width: 1rem;
+    height: 1rem;
+  }
+
+  :root[data-theme='magical-girl'] .button {
+    border: 2px solid transparent;
+    border-radius: 999px;
+  }
+
+  :root[data-theme='magical-girl'] .button-quiet {
+    background:
+      linear-gradient(var(--raised), var(--raised)) padding-box,
+      var(--foil-sheen) border-box;
+  }
+
+  :root[data-theme='magical-girl'] .button-primary {
+    background:
+      linear-gradient(var(--accent), var(--accent)) padding-box,
+      var(--foil-sheen) border-box;
+  }
+
+  :root[data-theme='magical-girl'] .button-quiet:hover:not(:disabled) {
+    border-color: transparent;
+    filter: brightness(1.2);
+  }
+
+  :root[data-theme='magical-girl'] .choice[type='radio']::before {
+    width: 0.75rem;
+    height: 0.75rem;
+    border-radius: 0;
+    clip-path: polygon(50% 0, 61% 39%, 100% 50%, 61% 61%, 50% 100%, 39% 61%, 0 50%, 39% 39%);
+  }
+
+  /* ---- Isekai: menu windows with white rims, numbered slots, a pixel cursor on the chosen item. ---- */
+  :root[data-theme='isekai'] .panel {
+    border: 3px solid var(--edge);
+  }
+
+  :root[data-theme='isekai'] .card-front {
+    border: 3px solid var(--edge);
+    box-shadow: 0 0 0 2px #05060f;
+  }
+
+  /* Every item keeps a gutter for the cursor, so choosing one moves nothing. */
+  :root[data-theme='isekai'] .card-index {
+    margin-left: 1.25rem;
+    min-width: 2rem;
+    height: 2rem;
+    background: var(--page);
+    color: var(--card-mark);
+    box-shadow: inset 0 0 0 2px var(--edge);
+    font-size: 1.125rem;
+  }
+
+  :root[data-theme='isekai'] .card[data-state='muted'] .card-index {
+    background: transparent;
+    box-shadow: inset 0 0 0 2px var(--card-muted);
+  }
+
+  :root[data-theme='isekai'] .card[data-state='chosen'] .card-front::before {
+    content: '';
+    position: absolute;
+    top: 1.25rem;
+    left: 0.875rem;
+    width: 0.75rem;
+    height: 1rem;
+    background: var(--card-chosen-ink);
+    clip-path: polygon(0 0, 100% 50%, 0 100%);
+  }
+
+  :root[data-theme='isekai'] .card-back {
+    border: 3px solid var(--edge);
+    box-shadow: 0 0 0 2px #05060f;
+  }
+
+  :root[data-theme='isekai'] .button {
+    border: 3px solid var(--edge);
+    box-shadow: 0 0 0 2px #05060f;
+  }
+
+  :root[data-theme='isekai'] .button-quiet {
+    background: var(--panel);
+  }
+
+  :root[data-theme='isekai'] .button-quiet:hover:not(:disabled) {
+    border-color: var(--edge);
+    background: var(--raised);
+  }
+
+  :root[data-theme='isekai'] .choice[type='radio'] {
+    border-radius: 0;
+  }
+
+  :root[data-theme='isekai'] .choice[type='radio']::before {
+    width: 0.5rem;
+    height: 0.625rem;
+    border-radius: 0;
+    clip-path: polygon(0 0, 100% 50%, 0 100%);
+  }
+
+  /* ---- Retro VHS: tape labels with sunset stripes, a channel counter, an on-screen-display outline. ---- */
+  :root[data-theme='retro-vhs'] .panel {
+    background:
+      linear-gradient(var(--stripe-1) 0 33.3%, var(--stripe-2) 33.3% 66.6%, var(--stripe-3) 66.6%) top / 100% 0.5625rem
+        no-repeat,
+      var(--panel);
+  }
+
+  :root[data-theme='retro-vhs'] .card-front {
+    border: 0;
+    padding-bottom: 1.875rem;
+    background-image: linear-gradient(var(--stripe-1) 0 33.3%, var(--stripe-2) 33.3% 66.6%, var(--stripe-3) 66.6%);
+    background-position: bottom;
+    background-size: 100% 0.75rem;
+    background-repeat: no-repeat;
+  }
+
+  /* An unchosen label fades to grey, its stripes too. */
+  :root[data-theme='retro-vhs'] .card[data-state='muted'] .card-front {
+    background-image: linear-gradient(#b3afbf 0 33.3%, #a29db3 33.3% 66.6%, #908aa3 66.6%);
+  }
+
+  :root[data-theme='retro-vhs'] .card-index::before {
+    content: 'CH';
+    margin-right: 0.15rem;
+  }
+
+  :root[data-theme='retro-vhs'] .card[data-state='chosen'] .card-front {
+    outline: 3px solid var(--card-mark-ink);
+    outline-offset: -3px;
+  }
+
+  :root[data-theme='retro-vhs'] .card-back {
+    background:
+      repeating-linear-gradient(to bottom, rgb(62 224 207 / 0.06) 0 1px, transparent 1px 3px), var(--card-back);
+    text-transform: uppercase;
+  }
+
+  :root[data-theme='retro-vhs'] .button-quiet {
+    background-image: linear-gradient(
+      to right,
+      var(--stripe-1) 0 33.3%,
+      var(--stripe-2) 33.3% 66.6%,
+      var(--stripe-3) 66.6%
+    );
+    background-position: bottom;
+    background-size: 100% 3px;
+    background-repeat: no-repeat;
+  }
+
+  /* ---- The listening panel: bars at rest while the clip loads, lit when ready, moving while it plays. ---- */
+  .listening {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: 0.5rem;
+  }
+
+  .eq {
+    flex: 1;
+    display: flex;
+    align-items: stretch;
+    gap: 0.25rem;
+    min-height: 3.5rem;
+    max-height: 11rem;
+  }
+
+  /* A bar stretches to the panel's height, so its fill's percentage height has something to resolve against.
+     The bars span the column: fourteen on a phone, twenty-four on a wider screen. */
+  .eq-bar {
+    flex: 1;
+    display: flex;
+    align-items: flex-end;
+  }
+
+  .eq-bar:nth-child(n + 15) {
+    display: none;
+  }
+
+  @media (min-width: 40rem) {
+    .eq {
+      min-height: 5rem;
+      gap: 0.375rem;
+    }
+
+    .eq-bar:nth-child(n + 15) {
+      display: flex;
+    }
+  }
+
+  .eq-fill {
+    width: 100%;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    background: var(--line);
+    transform: scaleY(0.3);
+    transform-origin: bottom;
+    transition: transform 300ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .listening[data-status='ready'] .eq-fill {
+    background: var(--accent);
+    transform: scaleY(0.45);
+  }
+
+  .listening[data-status='ready'][data-playing] .eq-fill {
+    transform: none;
+  }
+
+  .listening[data-status='failed'] .eq-fill {
+    transform: scaleY(0.12);
+  }
+
+  :root[data-theme='tokyo-rain'] .eq-fill,
+  :root:not([data-theme]) .eq-fill,
+  :root[data-theme='mecha'] .eq-fill {
+    border-radius: 0;
+    mask: repeating-linear-gradient(to top, #000 0 5px, transparent 5px 7px);
+  }
+
+  :root[data-theme='mecha'] .listening[data-status='ready'] .eq-fill {
+    background: var(--good);
+  }
+
+  :root[data-theme='isekai'] .eq-fill {
+    border-radius: 0;
+    mask: repeating-linear-gradient(to top, #000 0 6px, transparent 6px 8px);
+  }
+
+  :root[data-theme='shonen'] .eq-fill {
+    border-radius: 0;
+  }
+
+  :root[data-theme='shonen'] .listening[data-status='ready'] .eq-fill {
+    background: var(--ink);
+  }
+
+  /* Rounded only a little: the bars scale on one axis, which would squash a full round into an oval. */
+  :root[data-theme='magical-girl'] .eq-fill {
+    border-radius: 0.375rem 0.375rem 0 0;
+  }
+
+  :root[data-theme='magical-girl'] .listening[data-status='ready'] .eq-bar:nth-child(even) .eq-fill {
+    background: var(--foil);
+  }
+
+  :root[data-theme='retro-vhs'] .listening[data-status='ready'] .eq-bar:nth-child(3n + 2) .eq-fill {
+    background: var(--stripe-2);
+  }
+
+  :root[data-theme='retro-vhs'] .listening[data-status='ready'] .eq-bar:nth-child(3n) .eq-fill {
+    background: var(--stripe-3);
+  }
+
+  /* ---- Backdrop decorations, drawn only while motion is full (Backdrop.tsx). ---- */
   .rain-drop {
     position: absolute;
     top: 0;
@@ -176,6 +1533,40 @@
     background: linear-gradient(135deg, #ffc4d6, #ff8fb3);
     opacity: 0.8;
     animation: petal-fall linear infinite;
+  }
+
+  .twinkle {
+    position: absolute;
+    background: #fff4fb;
+    clip-path: polygon(50% 0, 58% 42%, 100% 50%, 58% 58%, 50% 100%, 42% 58%, 0 50%, 42% 42%);
+    animation: twinkle ease-in-out infinite;
+  }
+
+  .pixel-star {
+    position: absolute;
+    width: 3px;
+    height: 3px;
+    background: #ffffff;
+    animation: pixel-blink steps(2, jump-none) infinite;
+  }
+
+  .sweep {
+    position: absolute;
+    inset-inline: 0;
+    top: 0;
+    height: 2px;
+    background: rgb(92 242 138 / 0.35);
+    box-shadow: 0 0 1.5rem 0.25rem rgb(92 242 138 / 0.12);
+    animation: sweep 7s linear infinite;
+  }
+
+  .tracking {
+    position: absolute;
+    inset-inline: 0;
+    top: 0;
+    height: 2.5rem;
+    background: repeating-linear-gradient(to bottom, rgb(255 255 255 / 0.07) 0 1px, transparent 1px 4px);
+    animation: tracking 9s linear infinite;
   }
 }
 
@@ -201,6 +1592,63 @@
   }
 }
 
+@keyframes twinkle {
+  0%,
+  100% {
+    opacity: 0.15;
+    transform: scale(0.5);
+  }
+  50% {
+    opacity: 0.95;
+    transform: scale(1);
+  }
+}
+
+@keyframes pixel-blink {
+  from {
+    opacity: 0.2;
+  }
+  to {
+    opacity: 0.9;
+  }
+}
+
+@keyframes sweep {
+  from {
+    transform: translateY(-5vh);
+  }
+  to {
+    transform: translateY(105vh);
+  }
+}
+
+@keyframes tracking {
+  from {
+    transform: translateY(-10vh);
+  }
+  to {
+    transform: translateY(110vh);
+  }
+}
+
+@keyframes eq-level {
+  from {
+    transform: scaleY(0.3);
+  }
+  to {
+    transform: none;
+  }
+}
+
+@keyframes card-turn {
+  from {
+    transform: rotateY(0deg);
+  }
+  to {
+    transform: rotateY(180deg);
+  }
+}
+
 @keyframes rise-in {
   from {
     opacity: 0;
@@ -208,18 +1656,6 @@
   }
   to {
     opacity: 1;
-    transform: none;
-  }
-}
-
-@keyframes pop {
-  0% {
-    transform: scale(0.96);
-  }
-  60% {
-    transform: scale(1.03);
-  }
-  100% {
     transform: none;
   }
 }
@@ -232,6 +1668,12 @@
   to {
     opacity: 1;
     transform: none;
+  }
+}
+
+@keyframes cursor-blink {
+  50% {
+    opacity: 0;
   }
 }
 
@@ -251,35 +1693,29 @@
   }
 }
 
-@keyframes burst {
-  from {
-    opacity: 0;
-    transform: scale(0.5);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
+/* The reveal: the right card turns over while the verdict and the answer rise in behind it. */
+:root[data-motion='full'] .card[data-turned] .card-turn {
+  animation: card-turn 700ms cubic-bezier(0.2, 0.7, 0.2, 1) 200ms both;
+}
+
+:root[data-motion='full'] .listening[data-status='ready'][data-playing] .eq-fill {
+  animation: eq-level 850ms ease-in-out infinite alternate;
 }
 
 :root[data-motion='full'] .motion-rise {
-  animation: rise-in 350ms ease-out both;
-}
-
-:root[data-motion='full'] .motion-pop {
-  animation: pop 450ms ease-out 150ms both;
+  animation: rise-in 350ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 :root[data-motion='full'] .motion-tick {
-  animation: tick 300ms ease-out both;
+  animation: tick 300ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
-:root[data-motion='full'][data-theme='tokyo-rain'] .motion-neon {
-  animation: flicker 7s linear infinite;
+:root[data-motion='full'][data-theme='isekai'] .card[data-state='chosen'] .card-front::before {
+  animation: cursor-blink 1s steps(1) infinite;
 }
 
-:root[data-motion='full'][data-theme='shonen'] .reveal-title::before {
-  animation: burst 400ms ease-out both;
+:root[data-motion='full'][data-theme='retro-vhs'] .motion-neon {
+  animation: flicker 6s linear infinite;
 }
 
 :root[data-motion='reduced'] *,

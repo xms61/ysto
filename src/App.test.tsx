@@ -1,4 +1,4 @@
-import { act, cleanup, fireEvent, render, screen } from '@testing-library/react';
+import { act, cleanup, fireEvent, render, screen, within } from '@testing-library/react';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
 import { App } from './App.tsx';
 import { AudioEngine } from './audio/engine.ts';
@@ -136,7 +136,7 @@ test('answers with the number keys, then shows the reveal with words as well as 
   act(() => socket.receive(revealOf('g.1')));
   expect(screen.getByRole('heading', { name: 'The answer' })).toBeTruthy();
   expect(screen.getByText('Right: +850')).toBeTruthy();
-  expect(screen.getByText('right answer, your pick')).toBeTruthy();
+  expect(screen.getByText('Right answer, your pick')).toBeTruthy();
   expect(screen.getByText('no audio')).toBeTruthy();
   expect(screen.getByText('by Singer (as Heroine)')).toBeTruthy();
 });
@@ -194,8 +194,11 @@ test('shows the final results, also to a player who reconnects after the game', 
     }),
   );
   expect(screen.getByRole('heading', { name: 'Final results' })).toBeTruthy();
-  const rows = screen.getAllByRole('row').map((row) => row.textContent);
-  expect(rows[1]).toBe('1stBen2,4003/54.2 s2');
+  const standings = within(screen.getByRole('list', { name: 'Final standings' })).getAllByRole('listitem');
+  expect(standings.map((standing) => standing.textContent)).toEqual([
+    '1stBen3 of 5 right · 4.2 s on average · best streak 22,400 points',
+    '2ndAnnyou1 of 5 right · best streak 1900 points',
+  ]);
   expect(screen.getByRole('button', { name: 'Play again' })).toBeTruthy();
 });
 

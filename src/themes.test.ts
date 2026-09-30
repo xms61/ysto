@@ -35,6 +35,15 @@ const TEXT_PAIRS: [text: string, background: string][] = [
   ['accent-ink', 'accent'],
   ['bad', 'page'],
   ['bad', 'panel'],
+  // The card stock: a card, a dimmed card, a chosen card, a turned card's back, the index mark, and the
+  // stamp on a wrong pick.
+  ['card-ink', 'card'],
+  ['card-muted', 'card'],
+  ['card-muted', 'card-dim'],
+  ['card-chosen-ink', 'card-chosen'],
+  ['card-back-ink', 'card-back'],
+  ['card-mark-ink', 'card-mark'],
+  ['card-alert', 'card'],
 ];
 const GRAPHIC_PAIRS: [graphic: string, background: string][] = [
   ['edge', 'page'],
@@ -43,6 +52,7 @@ const GRAPHIC_PAIRS: [graphic: string, background: string][] = [
   ['accent', 'panel'],
   ['good', 'panel'],
   ['bad', 'panel'],
+  ['card-mark', 'card'],
 ];
 
 test.each(THEMES)('%s meets AA contrast for text and graphics', (theme) => {
