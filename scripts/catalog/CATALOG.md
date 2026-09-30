@@ -9,7 +9,7 @@ Entry: `scripts/catalog/bin/*.ts`, one command per ingest step. Why the catalog 
 - `animethemes.ts`: syncs AnimeThemes pages or imports a dump, and parses the fields the catalog uses.
 - `anilist.ts`: batched GraphQL enrichment. `isAdultMedia` is the one adult rule.
 - `audio.ts`: lists the library, reads durations with ffprobe (cached), and measures loudness with ffmpeg.
-- `covers.ts`: downloads AnimeThemes covers as `<animeId>.<ext>`.
+- `covers.ts`: downloads AnimeThemes covers and stores them as `<animeId>.webp`, at most 600 px wide; converts covers in other formats once.
 - `export.ts`: re-encodes the files the catalog plays into the copy of the library the VPS serves ([DEPLOY.md](../../docs/DEPLOY.md)).
 - `assemble.ts`: pure. Turns the caches into catalog rows and the build report.
 - `store.ts`: writes `catalog.sqlite` from `server/catalog/schema.ts`, and reads the facts the gate checks.
@@ -24,7 +24,7 @@ They need `YSTO_AUDIO_DIR` in `.env`, and ffmpeg and ffprobe (on PATH, or `YSTO_
 | `npm run catalog:sync-animethemes` | Fetches AnimeThemes pages. `-- --refresh` starts over; `-- --from-dump <file>` imports a dump instead |
 | `npm run catalog:scan-audio` | Reads the durations of new or changed files |
 | `npm run catalog:enrich-anilist` | Fetches AniList data for anime it hasn't seen |
-| `npm run catalog:covers` | Downloads missing AnimeThemes covers (optional; needs a live sync, since a dump has no cover links) |
+| `npm run catalog:covers` | Converts covers on disk to WebP, then downloads missing AnimeThemes covers as WebP (optional; downloads need a live sync, since a dump has no cover links). Run `catalog:build` afterwards so the catalog names the `.webp` files |
 | `npm run catalog:build` | Scan, enrich, assemble, write `catalog.sqlite`, regenerate the schema doc, print the report |
 | `npm run catalog:check` | The gate; `-- --loudness-sample 0` skips the loudness part |
 | `npm run catalog:export` | Re-encodes every playable file to 128 kbps Opus in `YSTO_EXPORT_DIR` (default `data/export/`), for the VPS. Reruns encode only new or changed files and remove copies no longer played |

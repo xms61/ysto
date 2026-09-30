@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.12.0] - 2026-09-30
+
+### Changed
+- Covers are stored as WebP, at most 600 px wide and never enlarged. `npm run catalog:covers` converts the covers already on disk once, then downloads new ones in the same format; `npm run catalog:build` afterwards records the new file names. A sample shrank to about 29 % of its size, most covers at full resolution.
+- Browsers keep covers for a day, so a cover that comes back in a game isn't fetched again.
+
 ## [0.11.0] - 2026-09-30
 
 ### Added
@@ -75,12 +81,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Japanese titles use the device's Japanese fonts instead of a display face's fallback.
 - The new faces replace Tilt Neon, M PLUS Rounded 1c and Anton.
 - The contrast test covers the card stock: text on cards, dimmed cards, chosen cards and card backs, and the index marks.
-
-## [0.8.1] - 2026-09-30
-
-### Added
-- `PRODUCT.md`, the product record: who plays, what success means, what sets the game apart from other anime music quizzes, its constraints, what evidence exists (and what must never be invented), its principles and its accessibility commitments. The Impeccable design skill reads it, and AGENTS.md links it.
-
-### Changed
-- `docs/PRODUCT_SENSE.md` points to `PRODUCT.md` for who plays, instead of describing the players twice.
-- The Impeccable skill's local settings folder, `.impeccable/`, is ignored by git and by the doc checks.

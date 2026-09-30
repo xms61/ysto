@@ -1,6 +1,6 @@
 ---
 status: draft
-last-verified: 2026-09-29
+last-verified: 2026-09-30
 ---
 
 # System design
@@ -53,7 +53,7 @@ A group of friends plays together on one small VPS. The catalog holds about 14,5
 | `POST /api/lobbies` | Create a lobby: `{ name }` → `{ code, playerId, sessionToken }` |
 | `POST /api/lobbies/:code/players` | Join: `{ name }` → `{ playerId, sessionToken }` |
 | `GET /api/clips/:token` | The round's clip; needs `Authorization: Bearer <sessionToken>` from a player in that lobby ([audio clips](audio-clips.md)) |
-| `GET /covers/:file` | Cover art, referenced only in reveals |
+| `GET /covers/:file` | Cover art (WebP), referenced only in reveals; browsers may keep it for a day |
 | `GET /healthz`, `GET /readyz` | Liveness; readiness means the catalog is loaded, the audio folder is there and ffmpeg runs |
 
 **Configuration.** `server/config.ts` reads every variable, and `.env.example` lists each one as it lands. None is a secret, and once released none may be renamed.
