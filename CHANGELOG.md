@@ -18,6 +18,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 - Tokyo Rain's departure-board letter flap at the reveal, with the station boards it belonged to.
+## [0.14.1] - 2026-10-01
+
+### Changed
+- CI installs ffmpeg from Ubuntu packages kept in the Actions cache, downloaded once per runner image, instead of fetching them from the mirror in every job, where they took up to 15 minutes.
+- The e2e job keeps Playwright's browsers in the Actions cache per Playwright version, and on a hit installs only their system libraries.
 
 ## [0.14.0] - 2026-10-01
 
