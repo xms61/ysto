@@ -70,7 +70,7 @@ jobs:
       - run: npm ci
       # The catalog's audio tests and the clip tests generate tones and cut them with ffmpeg and ffprobe.
       - name: Install ffmpeg
-        run: command -v ffprobe || (sudo apt-get update -q && sudo apt-get install -y -q --no-install-recommends ffmpeg)
+        uses: ./.github/actions/ffmpeg
       - name: Lint, format, typecheck, tests with coverage, web tests
         run: npm run test:ci
       - name: Build
@@ -89,7 +89,7 @@ jobs:
       - run: npm ci
       # The clip decode test and the fixture server make tones with ffmpeg.
       - name: Install ffmpeg
-        run: command -v ffmpeg || (sudo apt-get update -q && sudo apt-get install -y -q --no-install-recommends ffmpeg)
+        uses: ./.github/actions/ffmpeg
       - name: Install browsers
         run: npx playwright install --with-deps chromium firefox webkit
       - name: Build
@@ -108,7 +108,7 @@ jobs:
           node-version-file: .nvmrc
       # The fixture's tones are made with ffmpeg.
       - name: Install ffmpeg
-        run: command -v ffmpeg || (sudo apt-get update -q && sudo apt-get install -y -q --no-install-recommends ffmpeg)
+        uses: ./.github/actions/ffmpeg
       - name: Build the image
         run: docker build -t ysto:ci .
       - name: Start it on the fixture catalog, hardened as on the VPS

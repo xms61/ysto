@@ -1,6 +1,6 @@
 ---
 status: draft
-last-verified: 2026-09-30
+last-verified: 2026-10-01
 ---
 
 # Testing
@@ -14,7 +14,7 @@ last-verified: 2026-09-30
 | `npm run test:ci` | Lint, format check, typecheck, coverage and client tests: everything CI runs except the build, the smoke test and the repo checks | `.github/workflows/ci.yml` |
 | `node --test scripts/*.test.mjs` | Tests of the doc and tracked-files checks | `scripts/` |
 
-The browser tests need their browsers once per machine: `npx playwright install chromium firefox webkit`. The catalog's audio tests, the clip tests and the browser tests need `ffmpeg` and `ffprobe` on PATH (CI installs them). The e2e folder has its own TypeScript project (`tsconfig.e2e.json`), because code inside `page.evaluate` runs in the browser and needs the DOM types that server code must not see.
+The browser tests need their browsers once per machine: `npx playwright install chromium firefox webkit`. The catalog's audio tests, the clip tests and the browser tests need `ffmpeg` and `ffprobe` on PATH. CI installs them with `.github/actions/ffmpeg`, which keeps the Ubuntu packages in the Actions cache per runner image, since the mirror can take a quarter of an hour to send them. The e2e folder has its own TypeScript project (`tsconfig.e2e.json`), because code inside `page.evaluate` runs in the browser and needs the DOM types that server code must not see.
 
 ## Isolation
 - Tests never touch the network or the real data directory.

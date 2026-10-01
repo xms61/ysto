@@ -1,8 +1,9 @@
 version: 2
 updates:
-  # Keeps the SHA-pinned actions in the workflows current; the version comments update with them.
+  # Keeps the SHA-pinned actions in the workflows and the local actions current; the version comments update
+  # with them.
   - package-ecosystem: github-actions
-    directory: /
+    directories: ['/', '/.github/actions/*']
     schedule:
       interval: weekly
     groups:
