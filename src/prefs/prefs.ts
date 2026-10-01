@@ -7,7 +7,23 @@ import { isIntegerIn, isOneOf, isRecord } from '../../shared/validate.ts';
 import { readJson, writeItem } from '../storage.ts';
 
 // Stored by id, so an id is permanent once released; the names players see live in PrefsPanel.
-export const THEMES = ['tokyo-rain', 'sakura', 'shonen', 'mecha', 'magical-girl', 'isekai', 'retro-vhs'] as const;
+export const THEMES = [
+  'tokyo-rain',
+  'konbini',
+  'karaoke',
+  'sakura',
+  'omikuji',
+  'blossom-map',
+  'shonen',
+  'tournament-arc',
+  'splash-page',
+  'night-arc',
+  'mecha',
+  'magical-girl',
+  'isekai',
+  'retro-vhs',
+  'side-a',
+] as const;
 export type Theme = (typeof THEMES)[number];
 
 // 'system' follows the device's reduced-motion setting; the other two override it.
