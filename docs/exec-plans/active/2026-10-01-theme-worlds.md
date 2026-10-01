@@ -24,7 +24,7 @@ Chosen by the owner on 2026-10-01, one theme at a time, through the Impeccable s
 
 | Id | Name | World | Round | Reveal and results |
 | :-- | :-- | :-- | :-- | :-- |
-| `tokyo-rain` | Tokyo Rain | A ramen ticket machine under the noren, out of the rain | The round on the noren, an amber LED counting seconds, four equal backlit buttons 2x2, keys on round coin lamps | The right button prints a ticket stamped with the answer time; wrong ones light "Sold out"; results clip every ticket to the order rail, the leader's first |
+| `tokyo-rain` | Tokyo Rain | A ramen ticket machine under the noren, out of the rain | The round on the noren, an amber LED counting seconds, four equal backlit buttons 2x2, keys on round coin lamps | The right button prints a ticket with the title, kind and year (the protocol sends no per-pick time); wrong ones light "Sold out"; results clip every ticket to the order rail, the leader's first |
 | `konbini` | Konbini 2 a.m. | The one bright shop on a wet street | A register with a 7-segment countdown, a two-color shop stripe (never a real chain's), four marker-lettered price cards 2x2, keys in starbursts | Wrong cards marked down and stamped sold out; the answer prints as a receipt in thermal dot type; results are the night's last receipt with the standings as line items |
 | `karaoke` | Karaoke Box | The booth's lyric screen and song remote | The lyric screen on top, the round title wiping white to pink as the timer; four song rows on the remote | Verdict on the lyric screen; results as the end-of-song score screen |
 | `sakura` | Hanami | A lacquer bento on the blue picnic tarp | The tarp owns the page; a dango skewer loses a piece per step as the timer; four compartments 2x2 split by leaf dividers | Your compartment lifts with a doubled vermilion rim; wrong ones get their lid back, title still on it; results seat the players around the tarp |
@@ -56,7 +56,8 @@ Each milestone is one or more PRs on `feat/…` branches with a version bump, a 
 - [x] 2026-10-01 Fifteen theme ids, the new names, provisional tokens for the eight new themes, and all fifteen plates (v0.14.0)
 - [x] 2026-10-01 Theme stage (`src/themes/stage.ts`: readout and wrong mark), with Tokyo Rain (v0.15.0)
 - [ ] The picker
-- [x] 2026-10-01 Tokyo Rain: the ramen ticket machine (v0.15.0)
+- [x] 2026-10-01 Tokyo Rain: the ramen ticket machine (v0.15.0); the cabinet and motion (v0.18.0)
+- [ ] Tokyo Rain: the noren as cloth (Owner review findings)
 - [x] 2026-10-01 Who picked each option, shown at the reveal in every theme (v0.15.0)
 - [x] 2026-10-02 Hanami: the lacquer bento on the blue tarp, with the dango timer (v0.16.0)
 - [x] 2026-10-02 Fighter Select: the arcade character select, with arcade digits and health bars (v0.17.0)
@@ -73,6 +74,22 @@ Each milestone is one or more PRs on `feat/…` branches with a version bump, a 
 - [ ] Night Arc
 - [ ] Side A
 - [x] 2026-10-01 Plates in place for all fifteen
+
+## Owner review findings
+What the owner found playing the built worlds on 2026-10-02, and where each stands. A finding that is fixed stays here with its version, so the next world avoids it from the start.
+
+| Finding | Theme | Status |
+| :-- | :-- | :-- |
+| The rebuilt worlds read blander than the stocks they replaced: the shared motion still ran, but no world had moves of its own, and Tokyo Rain had lost its letter flap | Tokyo Rain, Hanami, Fighter Select | Fixed in v0.18.0: each world's own motion. Rule for every later world below |
+| Only Tokyo Rain's buttons read as a ticket machine; the panel around them was a generic dark box | Tokyo Rain | Fixed in v0.18.0: the round panel is the cabinet, with a grille, a recessed bank, an outlet and a coin slot |
+| The noren at the top is a flat indigo band with two hairline slits; it reads as a header bar, not as cloth hanging over a shop's door | Tokyo Rain | Open: make it cloth. Full-height splits into three or four panels with a gap of the cabinet between them, a pole along its top edge, the hem slightly uneven, a printed white crest band in the dye (no letters, no shop name), and with motion on a slow sway as the clip plays. Keep the heading on a solid indigo panel for AA |
+| The lobby's start bar is sticky inside the lobby panel, so scrolling to the end lifts it with the panel's foot and the backdrop shows below; it is also outside every theme's world | Every theme | Open: [tech-debt tracker](../tech-debt-tracker.md) |
+| At round start the listening ring sits off-center from the headphones | Every theme | Open: [tech-debt tracker](../tech-debt-tracker.md) |
+
+### Rules every later world follows
+- **The world fills the round's panel, not only the options.** The heading, the readout, the listening light and the panel's own frame belong to the world, the way the whole cabinet is Tokyo Rain's machine. Check the full panel at 375 px, not the cards alone.
+- **The world moves.** One authored moment at the reveal and a little feedback on the pick, built in the same PR, motion-gated, and checked with motion on in a real game (record the animation names firing, as in v0.18.0).
+- **No flat bars.** A header or footer that is a plain colored strip is the generic version; draw the world's object instead (cloth, a sign, a plank, a screen).
 
 ## Decision log
 - 2026-10-01: Each theme may lay out the round, reveal and results its own way; home, lobby and preferences stay shared, because that gives each world its signature moments at a fraction of fourteen full flows. Rejected: skin-only themes; every screen per theme.
