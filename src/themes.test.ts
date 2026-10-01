@@ -35,6 +35,10 @@ const TEXT_PAIRS: [text: string, background: string][] = [
   ['accent-ink', 'accent'],
   ['bad', 'page'],
   ['bad', 'panel'],
+  // The scoreboard's round result, in the right or wrong color on a player's row and on this player's raised row.
+  ['good', 'panel'],
+  ['good', 'raised'],
+  ['bad', 'raised'],
   // The card stock: a card, a dimmed card, a chosen card, a turned card's back, the index mark, and the
   // stamp on a wrong pick.
   ['card-ink', 'card'],

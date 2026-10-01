@@ -35,7 +35,7 @@ colors:
   sakura-muted: "#6c4552"
   sakura-accent: "#b8302a"
   sakura-accent-ink: "#ffffff"
-  sakura-good: "#1f7a4d"
+  sakura-good: "#1b6e45"
   sakura-bad: "#7a1f4a"
   sakura-card: "#fffaf6"
   sakura-card-ink: "#2a171d"
@@ -128,7 +128,7 @@ colors:
   isekai-accent: "#ffd84a"
   isekai-accent-ink: "#16162a"
   isekai-good: "#6ff29a"
-  isekai-bad: "#ff9a9a"
+  isekai-bad: "#ffb0b0"
   isekai-card: "#1f3399"
   isekai-card-ink: "#ffffff"
   isekai-card-muted: "#b9c3f7"
@@ -391,7 +391,7 @@ Each theme is one block of variables on any element with `data-theme`, in two fa
 
 ### Contrast the tests enforce
 `src/themes.test.ts` reads every theme block and fails below these ratios:
-- Text at 4.5:1: `ink` on `page`, `panel` and `raised`; `muted` on `page`, `panel` and `raised`; `accent-ink` on `accent`; `bad` on `page` and `panel`; `card-ink` on `card`; `card-muted` on `card` and on `card-dim`; `card-chosen-ink` on `card-chosen`; `card-back-ink` on `card-back`; `card-mark-ink` on `card-mark`; `card-alert` on `card`.
+- Text at 4.5:1: `ink` on `page`, `panel` and `raised`; `muted` on `page`, `panel` and `raised`; `accent-ink` on `accent`; `bad` on `page`, `panel` and `raised`; `good` on `panel` and `raised` (the scoreboard's round result, on a row and on this player's raised row); `card-ink` on `card`; `card-muted` on `card` and on `card-dim`; `card-chosen-ink` on `card-chosen`; `card-back-ink` on `card-back`; `card-mark-ink` on `card-mark`; `card-alert` on `card`.
 - Graphics at 3:1: `edge` on `page` and `panel`; `accent` on `page` and `panel`; `good` on `panel`; `bad` on `panel`; `card-mark` on `card`.
 
 A new color role that carries text or a boundary gets a pair here in the same change.
