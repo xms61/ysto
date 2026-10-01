@@ -58,7 +58,7 @@ Each milestone is one or more PRs on `feat/…` branches with a version bump, a 
 - [ ] The picker
 - [x] 2026-10-01 Tokyo Rain: the ramen ticket machine (v0.15.0)
 - [x] 2026-10-01 Who picked each option, shown at the reveal in every theme (v0.15.0)
-- [ ] Hanami
+- [x] 2026-10-02 Hanami: the lacquer bento on the blue tarp, with the dango timer (v0.16.0)
 - [ ] Fighter Select
 - [ ] Model Kit
 - [ ] Gachapon
@@ -89,6 +89,8 @@ Each milestone is one or more PRs on `feat/…` branches with a version bump, a 
 
 - 2026-10-01: The reveal names who picked each option, under its card, in every theme, because the owner asked for it. Picks already travel only in the reveal, which the server sends once the round has closed for everyone, so nothing shows while anyone can still answer.
 - 2026-10-01: The stage is a small table of what a world changes (the readout and the wrong mark) read through a context, not a set of per-theme screen components; each later world adds the fields it needs.
+
+- 2026-10-02: Hanami's plate shows at 0.05, barely there: the tarp is now the page color itself, and a stronger blend of the plate's bright blossom breaks the page's contrast.
 
 ## Surprises
 - 2026-10-01: The protocol sends no per-pick answer time, so Tokyo Rain's ticket carries the title, kind and year instead of the answer time the shape promised.
