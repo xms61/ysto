@@ -1474,20 +1474,12 @@
     margin: -1rem -1rem 0.75rem;
     padding: 0.875rem 1rem 1.375rem;
     border-radius: var(--radius-2xl) var(--radius-2xl) 0 0;
-    background: var(--noren);
-    color: var(--noren-ink);
-  }
-
-  /* The noren's two slits, cut up from its hem below the heading. */
-  :root[data-theme='tokyo-rain'] .round-head::after,
-  :root:not([data-theme]) .round-head::after {
-    content: '';
-    position: absolute;
-    inset: auto 0 0;
-    height: 0.75rem;
+    /* The noren's two slits, cut up 0.75rem from its hem, below the heading. */
     background:
-      linear-gradient(var(--panel), var(--panel)) 33.333% 100% / 3px 100% no-repeat,
-      linear-gradient(var(--panel), var(--panel)) 66.666% 100% / 3px 100% no-repeat;
+      linear-gradient(var(--panel), var(--panel)) 33.333% 100% / 3px 0.75rem no-repeat,
+      linear-gradient(var(--panel), var(--panel)) 66.666% 100% / 3px 0.75rem no-repeat,
+      var(--noren);
+    color: var(--noren-ink);
   }
 
   @media (min-width: 40rem) {
