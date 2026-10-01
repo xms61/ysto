@@ -1,6 +1,6 @@
 ---
 status: draft
-last-verified: 2026-10-02
+last-verified: 2026-10-01
 ---
 
 # Tech debt tracker
