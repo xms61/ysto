@@ -9,6 +9,7 @@ import { Button, Panel } from '../components/ui.tsx';
 import { place, score, seconds, sharedPlaces } from '../format.ts';
 import { useCountUp, usePagePhase } from '../hooks.ts';
 import type { GameStore } from '../realtime/store.ts';
+import { useStage } from '../themes/stage.ts';
 
 interface ResultsProps {
   store: GameStore;
@@ -56,8 +57,15 @@ function LeadScore({ value, delayMs }: { value: number; delayMs: number }) {
   );
 }
 
+// A score as a share of the winner's, for a theme that draws it as a bar. Nothing below zero.
+function shareOf(value: number, top: number): number {
+  return top > 0 ? Math.max(0, value) / top : 0;
+}
+
 function Bill({ lobby, results, rounds }: { lobby: LobbyState; results: ResultView[]; rounds: number }) {
   const places = sharedPlaces(results.map((result) => result.score));
+  const { scoreBars } = useStage();
+  const top = results[0]?.score ?? 0;
   return (
     <ol aria-label="Final standings" className="bill">
       {results.map((result, rank) => {
@@ -75,6 +83,13 @@ function Bill({ lobby, results, rounds }: { lobby: LobbyState; results: ResultVi
                 <span className="bill-you ml-2 rounded-full border px-2 align-middle text-xs">you</span>
               )}
               <span className="bill-stats">{statsOf(result, rounds)}</span>
+              {scoreBars && (
+                <span
+                  aria-hidden="true"
+                  className="bill-bar"
+                  style={{ '--share': shareOf(result.score, top) } as CSSProperties}
+                />
+              )}
             </span>
             {rank === 0 ? (
               <LeadScore value={result.score} delayMs={delayMs} />

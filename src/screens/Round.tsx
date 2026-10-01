@@ -113,7 +113,7 @@ function Countdown({ store, startsAt }: { store: GameStore; startsAt: number }) 
 }
 
 // The time left: the shared bar draining with the seconds beside it, or the theme's own: a seven-segment
-// display of the seconds, or a dango skewer eaten down with the seconds beside it.
+// display of the seconds, a dango skewer eaten down with the seconds beside it, or huge arcade digits.
 function TimeLeft({ elapsed, secondsLeft }: { elapsed: number; secondsLeft: number }) {
   const { readout } = useStage();
   if (readout === 'segments') {
@@ -121,6 +121,14 @@ function TimeLeft({ elapsed, secondsLeft }: { elapsed: number; secondsLeft: numb
       <p className="readout self-start">
         <Segments value={secondsLeft} digits={2} />
         <span className="readout-unit">s left</span>
+        <span className="sr-only">{secondsLeft} seconds left</span>
+      </p>
+    );
+  }
+  if (readout === 'digits') {
+    return (
+      <p className="arcade-timer" data-low={secondsLeft <= 5 || undefined}>
+        <span aria-hidden="true">{String(secondsLeft).padStart(2, '0')}</span>
         <span className="sr-only">{secondsLeft} seconds left</span>
       </p>
     );
