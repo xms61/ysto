@@ -2329,7 +2329,7 @@
     padding: 0.125rem 0.5rem;
     border-radius: 0.1875rem;
     background: var(--card-alert);
-    color: #ffffff;
+    color: var(--card);
     font-family: var(--display-font);
     font-size: 0.75rem;
     font-weight: 700;
