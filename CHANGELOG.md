@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.15.0] - 2026-10-01
+
+### Added
+- The reveal shows who picked each option, as name chips under its card, yours in the theme's accent. Picks arrive only with the reveal, once the round has closed for everyone.
+- Themes can lay out their own world in the round (`src/themes/stage.ts`): how the time left reads, and a mark on the options that were not the answer.
+
+### Changed
+- Tokyo Rain is a ramen ticket machine under the noren: the round's heading on an indigo noren, the seconds on an amber LED, the options as backlit buttons keyed by coin lamps. A pick lights its button; at the reveal the right one prints a ticket and the rest light "Sold out". The final standings hang from an order rail.
+
+### Removed
+- Tokyo Rain's departure-board letter flap at the reveal, with the station boards it belonged to.
+
 ## [0.14.0] - 2026-10-01
 
 ### Added

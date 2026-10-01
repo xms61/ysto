@@ -58,6 +58,11 @@ const GRAPHIC_PAIRS: [graphic: string, background: string][] = [
   ['page', 'bad'],
 ];
 
+// Pairs only a theme's own world draws: Tokyo Rain's heading on its noren.
+const WORLD_TEXT_PAIRS: Partial<Record<(typeof THEMES)[number], [text: string, background: string][]>> = {
+  'tokyo-rain': [['noren-ink', 'noren']],
+};
+
 test.each(THEMES)('%s meets AA contrast for text and graphics', (theme) => {
   const colors = colorsOf(theme);
   const ratio = ([front, back]: [string, string]) => {
@@ -65,6 +70,8 @@ test.each(THEMES)('%s meets AA contrast for text and graphics', (theme) => {
     if (!a || !b) throw new Error(`${theme} has no ${front} or ${back} color`);
     return contrast(a, b);
   };
-  for (const pair of TEXT_PAIRS) expect(ratio(pair), `${theme}: ${pair.join(' on ')}`).toBeGreaterThanOrEqual(4.5);
+  for (const pair of [...TEXT_PAIRS, ...(WORLD_TEXT_PAIRS[theme] ?? [])]) {
+    expect(ratio(pair), `${theme}: ${pair.join(' on ')}`).toBeGreaterThanOrEqual(4.5);
+  }
   for (const pair of GRAPHIC_PAIRS) expect(ratio(pair), `${theme}: ${pair.join(' on ')}`).toBeGreaterThanOrEqual(3);
 });

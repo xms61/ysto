@@ -30,7 +30,8 @@
 }
 
 @layer base {
-  /* Tokyo Rain, the default: the last train on a rainy night, options as station name boards. */
+  /* Tokyo Rain, the default: a ramen ticket machine under the noren, out of the rain. The options are its
+     backlit buttons, their keys on indigo coin lamps; the answer prints as a ticket. */
   :root:not([data-theme]),
   [data-theme='tokyo-rain'] {
     --display-adjust: 0.52;
@@ -48,17 +49,17 @@
     --accent-ink: #1a1200;
     --good: #52d69a;
     --bad: #ff7a8c;
-    --card: #f2f4f1;
-    --card-ink: #15181d;
-    --card-muted: #4a515e;
-    --card-dim: #c3c8ce;
-    --card-mark: #137a52;
+    --card: #fff1c9;
+    --card-ink: #1d1606;
+    --card-muted: #4e4636;
+    --card-dim: #c2bba8;
+    --card-mark: #1f2a5c;
     --card-mark-ink: #ffffff;
-    --card-chosen: #fff4d6;
-    --card-chosen-ink: #15181d;
-    --card-alert: #c0263b;
-    --card-back: #0d0d0f;
-    --card-back-ink: #ffb000;
+    --card-chosen: #ffd36a;
+    --card-chosen-ink: #1d1606;
+    --card-alert: #b3261e;
+    --card-back: #fbfbf7;
+    --card-back-ink: #1a1a1a;
     --display-font: 'Zen Kaku Gothic New', ui-sans-serif, system-ui, sans-serif;
     --display-weight: 700;
     --display-case: none;
@@ -69,11 +70,12 @@
     --title-tracking: 0.01em;
     --title-adjust: 0.52;
     --panel-shadow: 0 1.25rem 2.5rem -1.5rem rgb(0 0 0 / 0.8);
-    --page-texture:
-      radial-gradient(circle at 12% 18%, rgb(255 176 0 / 0.1) 0 2.6rem, transparent 3rem),
-      radial-gradient(circle at 86% 26%, rgb(29 158 108 / 0.12) 0 3.6rem, transparent 4.1rem),
-      radial-gradient(circle at 72% 88%, rgb(255 90 140 / 0.08) 0 4.4rem, transparent 5rem),
-      radial-gradient(circle at 22% 74%, rgb(170 225 255 / 0.06) 0 1.8rem, transparent 2.2rem);
+    --page-texture: none;
+    /* The machine's face and the noren over it. Neither carries text but the noren's, in --noren-ink. */
+    --machine: #262c34;
+    --machine-rim: #4f5965;
+    --noren: #1f2a5c;
+    --noren-ink: #f3f1ea;
     --radius-lg: 0.375rem;
     --radius-xl: 0.375rem;
     --radius-2xl: 0.625rem;
@@ -1462,63 +1464,140 @@
     );
   }
 
-  /* ---- Tokyo Rain: station name boards, a line band along the bottom, lit amber when chosen, unlit when not. ---- */
-  :root[data-theme='tokyo-rain'] .panel,
-  :root:not([data-theme]) .panel {
+  /* ---- Tokyo Rain: a ramen ticket machine under the noren. The round's heading hangs on the noren; the
+     options are backlit buttons on the machine's dark face, keyed by indigo coin lamps. A pick lights its
+     button and lamp amber while the rest go dark; at the reveal the right button prints its ticket and the
+     others light "Sold out". ---- */
+  :root[data-theme='tokyo-rain'] .round-head,
+  :root:not([data-theme]) .round-head {
+    position: relative;
+    margin: -1rem -1rem 0.75rem;
+    padding: 0.875rem 1rem 1.375rem;
+    border-radius: var(--radius-2xl) var(--radius-2xl) 0 0;
+    background: var(--noren);
+    color: var(--noren-ink);
+  }
+
+  /* The noren's two slits, cut up from its hem below the heading. */
+  :root[data-theme='tokyo-rain'] .round-head::after,
+  :root:not([data-theme]) .round-head::after {
+    content: '';
+    position: absolute;
+    inset: auto 0 0;
+    height: 0.75rem;
+    background:
+      linear-gradient(var(--panel), var(--panel)) 33.333% 100% / 3px 100% no-repeat,
+      linear-gradient(var(--panel), var(--panel)) 66.666% 100% / 3px 100% no-repeat;
+  }
+
+  @media (min-width: 40rem) {
+    :root[data-theme='tokyo-rain'] .round-head,
+    :root:not([data-theme]) .round-head {
+      margin: -1.5rem -1.5rem 1rem;
+      padding: 1.125rem 1.5rem 1.625rem;
+    }
+  }
+
+  :root[data-theme='tokyo-rain'] .round-head .button-quiet,
+  :root:not([data-theme]) .round-head .button-quiet {
+    border-color: rgb(243 241 234 / 0.45);
+    background: transparent;
+    color: var(--noren-ink);
+  }
+
+  :root[data-theme='tokyo-rain'] .options,
+  :root:not([data-theme]) .options {
+    padding: 0.625rem;
+    border-radius: 0.5rem;
+    background: var(--machine);
     box-shadow:
-      inset 0 3px 0 var(--card-mark),
-      var(--panel-shadow);
+      inset 0 0 0 2px var(--machine-rim),
+      0 0.75rem 1.5rem -0.75rem rgb(0 0 0 / 0.7);
   }
 
-  :root[data-theme='tokyo-rain'] .card-front {
+  :root[data-theme='tokyo-rain'] .card-face,
+  :root:not([data-theme]) .card-face {
+    border-radius: 0.25rem;
+  }
+
+  /* A button: the backlit paper insert inside a dark bezel, the coin lamp above the title. */
+  :root[data-theme='tokyo-rain'] .card-front,
+  :root:not([data-theme]) .card-front {
     border: 0;
-    box-shadow: inset 0 -0.625rem 0 var(--card-mark);
-    padding-bottom: 1.625rem;
+    box-shadow:
+      inset 0 0 0 3px #12161c,
+      inset 0 -0.375rem 0 rgb(0 0 0 / 0.08);
   }
 
-  :root[data-theme='tokyo-rain'] .card-index {
-    flex-direction: column;
-    min-width: 2.25rem;
-    height: 2.5rem;
-    gap: 0.05rem;
-    background: var(--card);
-    color: var(--card-ink);
-    box-shadow: inset 0 0 0 2px var(--card-mark);
+  :root[data-theme='tokyo-rain'] .card-index,
+  :root:not([data-theme]) .card-index {
+    min-width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    box-shadow: inset 0 0 0 2px rgb(255 255 255 / 0.25);
   }
 
-  :root[data-theme='tokyo-rain'] .card-index::before {
-    content: 'TR';
-    font-size: 0.5rem;
-    letter-spacing: 0.08em;
+  :root[data-theme='tokyo-rain'] .card[data-state='chosen'] .card-front,
+  :root:not([data-theme]) .card[data-state='chosen'] .card-front {
+    box-shadow:
+      inset 0 0 0 3px #12161c,
+      0 0 1.25rem -0.25rem rgb(255 176 0 / 0.7);
+    transform: translateY(1px);
   }
 
-  :root[data-theme='tokyo-rain'] .card[data-state='chosen'] .card-front {
-    box-shadow: inset 0 -0.625rem 0 var(--accent);
+  :root[data-theme='tokyo-rain'] .card[data-state='chosen'] .card-index,
+  :root:not([data-theme]) .card[data-state='chosen'] .card-index {
+    background: var(--accent);
+    color: var(--accent-ink);
+    box-shadow: 0 0 0.75rem rgb(255 176 0 / 0.8);
   }
 
-  :root[data-theme='tokyo-rain'] .card[data-state='muted'] .card-front {
-    box-shadow: inset 0 -0.625rem 0 var(--card-muted);
-  }
-
-  :root[data-theme='tokyo-rain'] .card[data-state='muted'] .card-index {
+  /* Unlit: the insert goes grey and the lamp is only its rim. */
+  :root[data-theme='tokyo-rain'] .card[data-state='muted'] .card-index,
+  :root[data-theme='tokyo-rain'] .card[data-state='missed'] .card-index,
+  :root:not([data-theme]) .card[data-state='muted'] .card-index,
+  :root:not([data-theme]) .card[data-state='missed'] .card-index {
     background: transparent;
     color: var(--card-muted);
     box-shadow: inset 0 0 0 2px var(--card-muted);
   }
 
-  :root[data-theme='tokyo-rain'] .card-back {
-    background:
-      repeating-linear-gradient(to bottom, transparent 0 3px, rgb(255 176 0 / 0.07) 3px 4px), var(--card-back);
-    letter-spacing: 0.03em;
+  :root[data-theme='tokyo-rain'] .card[data-state='missed'] .card-front,
+  :root:not([data-theme]) .card[data-state='missed'] .card-front {
+    background-color: var(--card-dim);
+    color: var(--card-muted);
   }
 
-  :root[data-theme='tokyo-rain'] .button-quiet {
-    box-shadow: inset 0 -3px 0 var(--card-mark);
+  /* The right button's ticket: thermal paper with a torn perforation along each edge. */
+  :root[data-theme='tokyo-rain'] .card-back,
+  :root:not([data-theme]) .card-back {
+    border-block: 2px dashed rgb(26 26 26 / 0.35);
+    box-shadow: 0 0.5rem 1rem -0.5rem rgb(0 0 0 / 0.6);
   }
 
-  :root[data-theme='tokyo-rain'] .button-quiet:hover:not(:disabled) {
-    border-color: var(--line);
-    box-shadow: inset 0 -3px 0 var(--accent);
+  :root[data-theme='tokyo-rain'] .card-printed,
+  :root:not([data-theme]) .card-printed {
+    background: var(--machine);
+    color: var(--machine-rim);
+    border: 0;
+    box-shadow: inset 0 0 0 3px #12161c;
+  }
+
+  :root[data-theme='tokyo-rain'] .button-quiet:hover:not(:disabled),
+  :root:not([data-theme]) .button-quiet:hover:not(:disabled) {
+    border-color: var(--accent);
+  }
+
+  /* The final standings are tickets clipped to the order rail over the counter, the leader's first. */
+  :root[data-theme='tokyo-rain'] .bill,
+  :root:not([data-theme]) .bill {
+    border-top: 4px solid var(--machine-rim);
+    padding-top: 0.75rem;
+  }
+
+  :root[data-theme='tokyo-rain'] .bill-lead,
+  :root:not([data-theme]) .bill-lead {
+    border-block: 2px dashed rgb(26 26 26 / 0.35);
   }
 
   /* ---- Sakura: hanafuda with a double vermilion rim, a seal for the index, a blossom in the corner. ---- */
@@ -2175,6 +2254,98 @@
     color: var(--accent);
   }
 
+  /* A theme's seven-segment readout of the seconds left (Segments.tsx): lit digits in the accent behind the
+     dark glass of an LED window, the unlit segments a faint ghost. */
+  .readout {
+    display: inline-flex;
+    align-items: flex-end;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.25rem;
+    background: #0b0d10;
+    box-shadow: inset 0 0 0 2px var(--machine-rim, var(--line));
+    color: var(--accent);
+  }
+
+  .segments {
+    display: inline-flex;
+    gap: 0.25rem;
+  }
+
+  .segment-digit {
+    width: 1.5rem;
+    height: 2.5rem;
+    fill: currentColor;
+  }
+
+  .segment-off {
+    opacity: 0.12;
+  }
+
+  .countdown-readout .segment-digit {
+    width: 2.25rem;
+    height: 3.75rem;
+  }
+
+  .readout-unit {
+    padding-bottom: 0.125rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  /* At the reveal each option keeps a second row under its card for who picked it. The rows are shared across
+     the grid, so the two cards in a row stay one height whatever names hang below them. */
+  .options-picked > li {
+    display: grid;
+    grid-row: span 2;
+    grid-template-rows: subgrid;
+    row-gap: 0.375rem;
+  }
+
+  .pickers {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+    align-content: flex-start;
+  }
+
+  .picker {
+    padding: 0.0625rem 0.5rem;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: var(--raised);
+    color: var(--ink);
+    font-size: 0.75rem;
+    font-weight: 600;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+  }
+
+  .picker[data-you] {
+    border-color: var(--accent);
+    background: var(--accent);
+    color: var(--accent-ink);
+  }
+
+  /* The mark a theme prints on each option that was not the answer, lit across the face's corner. */
+  .card-mark-plate {
+    position: absolute;
+    top: 1.125rem;
+    right: 0.625rem;
+    padding: 0.125rem 0.5rem;
+    border-radius: 0.1875rem;
+    background: var(--card-alert);
+    color: #ffffff;
+    font-family: var(--display-font);
+    font-size: 0.75rem;
+    font-weight: 700;
+    line-height: 1.4;
+    white-space: nowrap;
+    box-shadow: 0 0 0.75rem -0.125rem var(--card-alert);
+  }
+
   /* ---- A burst of the theme's material (Burst.tsx): the right card's hit, and the winner's. ---- */
   .burst {
     position: absolute;
@@ -2203,7 +2374,7 @@
 
   :root[data-theme='tokyo-rain'] .burst-mote:nth-child(3n),
   :root:not([data-theme]) .burst-mote:nth-child(3n) {
-    background: var(--good);
+    background: var(--card-back);
   }
 
   :root[data-theme='sakura'] .burst-mote {
@@ -2387,8 +2558,6 @@
     pointer-events: none;
   }
 
-  :root[data-theme='tokyo-rain'] .card[data-turned] .card-back::before,
-  :root:not([data-theme]) .card[data-turned] .card-back::before,
   :root[data-theme='retro-vhs'] .card[data-turned] .card-back::before {
     inset: 0 0 auto;
     width: auto;
@@ -3313,7 +3482,6 @@
   animation: sheen 1.6s ease-in-out 900ms both;
 }
 
-:root[data-motion='full']:is([data-theme='tokyo-rain'], :not([data-theme])) .card[data-turned] .card-back::before,
 :root[data-motion='full'][data-theme='retro-vhs'] .card[data-turned] .card-back::before {
   animation: scan-pass 700ms linear 880ms both;
 }

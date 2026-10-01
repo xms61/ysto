@@ -16,6 +16,7 @@ interface OptionCardProps {
   lang: string | undefined;
   state: CardState;
   tag?: ReactNode;
+  mark?: string; // printed on the face at the reveal, such as Tokyo Rain's "Sold out"
   back?: ReactNode;
   dealt?: boolean; // turned face up from its back as the clip starts
   heat?: number; // 1 to 3: how hard the right card lands, from this player's streak
@@ -29,7 +30,7 @@ const FOCUS = 'focus-visible:outline-3 focus-visible:outline-offset-4 focus-visi
 const BURST_BY_HEAT = [0, 12, 18, 26];
 
 export function OptionCard(props: OptionCardProps) {
-  const { index, title, lang, state, tag, back, dealt = false, heat = 1, onPick, disabled = false } = props;
+  const { index, title, lang, state, tag, mark, back, dealt = false, heat = 1, onPick, disabled = false } = props;
   const turned = state === 'right' && back !== undefined;
   const faces = (
     <span className="card-turn">
@@ -41,6 +42,11 @@ export function OptionCard(props: OptionCardProps) {
           {title}
           {turned && <span className="sr-only"> (the right answer)</span>}
         </span>
+        {mark && (
+          <span aria-hidden="true" className="card-mark-plate">
+            {mark}
+          </span>
+        )}
       </span>
       {turned && (
         <span aria-hidden="true" className="card-face card-back">
@@ -93,7 +99,7 @@ function PrintedBack({ down = false }: { down?: boolean }) {
 // one after another, then idle until the clip starts and they turn face up together.
 export function FaceDownCards() {
   return (
-    <ul aria-hidden="true" className="grid grid-cols-2 gap-3">
+    <ul aria-hidden="true" className="options grid grid-cols-2 gap-3">
       {[0, 1, 2, 3].map((slot) => (
         <li key={slot} className="card card-dealing" data-state="down" style={{ '--deal': slot } as CSSProperties}>
           <span className="card-turn">
