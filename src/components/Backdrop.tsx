@@ -50,12 +50,20 @@ interface Sky {
 
 const SKIES: Record<Theme, Sky> = {
   'tokyo-rain': { calm: { kind: 'rain', count: 34 }, surge: { kind: 'rain', count: 30 } },
+  konbini: { calm: { kind: 'rain', count: 24 }, surge: { kind: 'rain', count: 24 } },
+  karaoke: { calm: { kind: 'twinkle', count: 14 }, surge: { kind: 'twinkle', count: 18 } },
   sakura: { calm: { kind: 'petal', count: 18 }, surge: { kind: 'petal', count: 16 } },
+  omikuji: { calm: { kind: 'petal', count: 10 }, surge: { kind: 'petal', count: 10 } },
+  'blossom-map': { calm: { kind: 'petal', count: 12 }, surge: { kind: 'petal', count: 12 } },
   shonen: { calm: null, surge: { kind: 'speed-lines', count: 1 } },
+  'tournament-arc': { calm: null, surge: { kind: 'speed-lines', count: 1 } },
+  'splash-page': { calm: null, surge: { kind: 'speed-lines', count: 1 } },
+  'night-arc': { calm: null, surge: { kind: 'speed-lines', count: 1 } },
   mecha: { calm: { kind: 'sweep', count: 1 }, surge: { kind: 'beacon', count: 16 } },
   'magical-girl': { calm: { kind: 'twinkle', count: 22 }, surge: { kind: 'twinkle', count: 18 } },
   isekai: { calm: { kind: 'pixel-star', count: 26 }, surge: { kind: 'pixel-star', count: 22 } },
   'retro-vhs': { calm: { kind: 'tracking', count: 1 }, surge: { kind: 'tracking', count: 1 } },
+  'side-a': { calm: { kind: 'tracking', count: 1 }, surge: { kind: 'tracking', count: 1 } },
 };
 
 function fallingStyle(mote: Mote, kind: Falling): CSSProperties {

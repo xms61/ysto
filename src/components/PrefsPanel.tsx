@@ -9,12 +9,20 @@ import { INPUT, buttonClass } from './ui.tsx';
 
 const THEME_LABELS: Record<Theme, string> = {
   'tokyo-rain': 'Tokyo Rain',
-  sakura: 'Sakura',
-  shonen: 'Shonen',
-  mecha: 'Mecha',
-  'magical-girl': 'Magical Girl',
-  isekai: 'Isekai',
-  'retro-vhs': 'Retro VHS',
+  konbini: 'Konbini 2 a.m.',
+  karaoke: 'Karaoke Box',
+  sakura: 'Hanami',
+  omikuji: 'Omikuji',
+  'blossom-map': 'Blossom Map',
+  shonen: 'Fighter Select',
+  'tournament-arc': 'Tournament Arc',
+  'splash-page': 'Splash Page',
+  'night-arc': 'Night Arc',
+  mecha: 'Model Kit',
+  'magical-girl': 'Gachapon',
+  isekai: 'Quest Board',
+  'retro-vhs': 'Back Issue',
+  'side-a': 'Side A',
 };
 
 const LANGUAGE_LABELS: Record<TitleLanguage, string> = {

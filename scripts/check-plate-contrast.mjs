@@ -8,7 +8,23 @@ import { fileURLToPath } from 'node:url';
 
 const CSS_PATH = new URL('../src/styles.css', import.meta.url);
 const PLATES_DIR = new URL('../src/assets/plates/', import.meta.url);
-const THEMES = ['tokyo-rain', 'sakura', 'shonen', 'mecha', 'magical-girl', 'isekai', 'retro-vhs'];
+const THEMES = [
+  'tokyo-rain',
+  'konbini',
+  'karaoke',
+  'sakura',
+  'omikuji',
+  'blossom-map',
+  'shonen',
+  'tournament-arc',
+  'splash-page',
+  'night-arc',
+  'mecha',
+  'magical-girl',
+  'isekai',
+  'retro-vhs',
+  'side-a',
+];
 const DEFAULT_OPACITY = 0.5;
 // Wide enough that a highlight the size of a letter still counts, as a plate is shown at about this size.
 const SAMPLE_WIDTH = 800;

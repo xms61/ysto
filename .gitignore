@@ -62,3 +62,6 @@ Thumbs.db
 
 # Local tool settings (the Impeccable design skill; PRODUCT.md itself is committed)
 .impeccable/
+
+# The owner's full-size plate originals; the build ships the WebP made from each.
+src/assets/plates/*.jpg

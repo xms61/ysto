@@ -163,7 +163,7 @@ test('applies the theme and motion picked in the preferences at once', () => {
   renderApp();
   expect(document.documentElement.dataset.theme).toBe('tokyo-rain');
   expect(document.documentElement.dataset.motion).toBe('full');
-  fireEvent.click(screen.getByLabelText('Sakura'));
+  fireEvent.click(screen.getByLabelText('Hanami'));
   fireEvent.change(screen.getByLabelText('Motion'), { target: { value: 'reduced' } });
   expect(document.documentElement.dataset.theme).toBe('sakura');
   expect(document.documentElement.dataset.motion).toBe('reduced');

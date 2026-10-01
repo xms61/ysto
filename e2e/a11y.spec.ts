@@ -3,9 +3,25 @@ import { expect, test } from '@playwright/test';
 import type { Page } from '@playwright/test';
 
 // Accessibility (docs/DESIGN.md#accessibility): axe finds no serious or critical issue on any screen, in any
-// theme. One player plays a whole game, and each screen is checked in all three themes on the way. The
+// theme. One player plays a whole game, and each screen is checked in every theme on the way. The
 // themes' token contrast is also checked on its own, in src/themes.test.ts.
-const THEMES = ['tokyo-rain', 'sakura', 'shonen', 'mecha', 'magical-girl', 'isekai', 'retro-vhs'];
+const THEMES = [
+  'tokyo-rain',
+  'konbini',
+  'karaoke',
+  'sakura',
+  'omikuji',
+  'blossom-map',
+  'shonen',
+  'tournament-arc',
+  'splash-page',
+  'night-arc',
+  'mecha',
+  'magical-girl',
+  'isekai',
+  'retro-vhs',
+  'side-a',
+];
 const ROUNDS = 5;
 const WAIT = { timeout: 20_000 };
 

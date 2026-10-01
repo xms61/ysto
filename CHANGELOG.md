@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.14.0] - 2026-10-01
+
+### Added
+- Eight new themes: Konbini 2 a.m., Karaoke Box, Omikuji, Blossom Map, Tournament Arc, Splash Page, Night Arc and Side A. For now they print the shared card layout in their own colors and faces; each gets its own round, reveal and results in a later release.
+- A new backdrop plate for every theme, from the prompts in docs/PLATE_PROMPTS.md.
+
+### Changed
+- Six themes take the names of the worlds they are becoming: Sakura is Hanami, Shonen is Fighter Select, Mecha is Model Kit, Magical Girl is Gachapon, Isekai is Quest Board and Retro VHS is Back Issue. Saved settings keep working, since the ids are unchanged.
+
 ## [0.13.0] - 2026-09-30
 
 ### Changed

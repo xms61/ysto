@@ -2,7 +2,7 @@
 
 A multiplayer anime music quiz in the browser. Players join a lobby with a code and a name, hear a random sample of an anime opening or ending, and pick the right anime from four options.
 
-Status: early development. Games play end to end in the browser, in seven anime themes, each printing the options on its own card stock: create a lobby, share the link or QR code, and play with friends on any device. The Docker image and the VPS setup are ready, and the first deploy is next ([v1 plan](docs/exec-plans/active/2026-09-25-ysto-v1.md)).
+Status: early development. Games play end to end in the browser, in fifteen anime themes: create a lobby, share the link or QR code, and play with friends on any device. The Docker image and the VPS setup are ready, and the first deploy is next ([v1 plan](docs/exec-plans/active/2026-09-25-ysto-v1.md)).
 
 ## Setup
 ```bash
