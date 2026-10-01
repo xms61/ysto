@@ -90,8 +90,23 @@ jobs:
       # The clip decode test and the fixture server make tones with ffmpeg.
       - name: Install ffmpeg
         uses: ./.github/actions/ffmpeg
+      # The browsers are kept in the Actions cache per Playwright version, which pins their builds; the system
+      # libraries they need still come from apt, and are mostly on the runner image already.
+      - name: Playwright version
+        id: playwright
+        run: echo "version=$(node -p "require('@playwright/test/package.json').version")" >> "$GITHUB_OUTPUT"
+      - name: Cache browsers
+        id: browsers
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ runner.arch }}-${{ steps.playwright.outputs.version }}
       - name: Install browsers
+        if: steps.browsers.outputs.cache-hit != 'true'
         run: npx playwright install --with-deps chromium firefox webkit
+      - name: Install the browsers' system libraries
+        if: steps.browsers.outputs.cache-hit == 'true'
+        run: npx playwright install-deps chromium firefox webkit
       - name: Build
         run: npm run build
       - name: Browser tests (Chromium, Firefox, WebKit)
