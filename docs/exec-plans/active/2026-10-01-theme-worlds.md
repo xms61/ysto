@@ -75,6 +75,20 @@ Each milestone is one or more PRs on `feat/…` branches with a version bump, a 
 - [ ] Side A
 - [x] 2026-10-01 Plates in place for all fifteen
 
+## Where to pick up
+State at the end of the session on 2026-10-02: `main` is v0.18.0 (Tokyo Rain, Hanami and Fighter Select rebuilt with their motion; the other twelve themes on the shared card layout with their own tokens and plates). No branch holds unfinished work.
+
+Do next, in this order, then continue with Model Kit:
+1. **The listening ring off-center at round start** ([tech-debt tracker](../tech-debt-tracker.md)). Likely cause, found but not fixed: the stage slot changes height from the countdown (the big number) to the answering readout (the bar, LED, dango or digits) while the panel keeps its size, so `useRingField` in `src/components/Listening.tsx`, which observes only the panel, keeps the old center. Observe the `.sonar` box too and remeasure on `document.fonts.ready`; add a browser test comparing the ring's center (`--ring-x`, `--ring-y` on `.sonar-field`) with `.sonar-core`'s.
+2. **The lobby's start bar rising on scroll** ([tech-debt tracker](../tech-debt-tracker.md)). `StartBar` in `src/screens/Lobby.tsx` is `sticky bottom-0` inside the page column of `src/screens/LobbySession.tsx`, which has `py-4`; at the end of the scroll the column's bottom padding shows the backdrop under the bar. Let the bar reach the viewport's foot (cancel the column's bottom padding under it, or pad the bar's own foot), then print it on each rebuilt world's material.
+3. **Tokyo Rain's noren as cloth** (Owner review findings above). The heading row is `.round-head` in `src/styles.css` (Tokyo Rain stock section). Keep the heading on solid `--noren`; draw the pole as a pseudo-element across its top, and the panels, splits, crest band and uneven hem in a hem strip below the heading row, where the sway can run without moving text.
+
+Working notes for a new session:
+- Check a theme by eye with `npm run build`, then the "start" preview (production server on :5173), a solo lobby, and `localStorage.ysto_prefs` set to the theme with `motion: 'full'` to see motion or `'reduced'` for steady screenshots. A solo answer ends the round at once; set Songs per game to 5 to reach the results quickly.
+- Run `npx playwright test --project=chromium --project=firefox` locally; WebKit can't decode audio on the owner's Windows machine, so CI covers it.
+- Date `last-verified` by `date -u +%F`; CI rejects a date ahead of UTC.
+- Each world: tokens in its `[data-theme]` block (contrast in `src/themes.test.ts`, world-only pairs in `WORLD_TEXT_PAIRS`), its stock section in `src/styles.css`, its stage fields in `src/themes/stage.ts`, its motion in the theme-worlds motion section, its plate opacity from the plate check, and its rows and paragraph in DESIGN.md.
+
 ## Owner review findings
 What the owner found playing the built worlds on 2026-10-02, and where each stands. A finding that is fixed stays here with its version, so the next world avoids it from the start.
 

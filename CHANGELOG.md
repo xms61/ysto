@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.18.1] - 2026-10-01
+
+### Changed
+- The theme worlds plan says where to pick up: the three open review findings in order, with the causes found so far, and notes for checking a world locally.
+
 ## [0.18.0] - 2026-10-02
 
 ### Added
