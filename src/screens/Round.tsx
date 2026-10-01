@@ -128,7 +128,9 @@ function TimeLeft({ elapsed, secondsLeft }: { elapsed: number; secondsLeft: numb
   if (readout === 'digits') {
     return (
       <p className="arcade-timer" data-low={secondsLeft <= 5 || undefined}>
-        <span aria-hidden="true">{String(secondsLeft).padStart(2, '0')}</span>
+        <span aria-hidden="true" key={secondsLeft} className="motion-tick inline-block">
+          {String(secondsLeft).padStart(2, '0')}
+        </span>
         <span className="sr-only">{secondsLeft} seconds left</span>
       </p>
     );

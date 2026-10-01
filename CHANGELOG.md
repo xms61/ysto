@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.18.0] - 2026-10-02
+
+### Added
+- The rebuilt worlds move in their own way, with motion on: Tokyo Rain's ticket feeds out of the machine line by line and its "Sold out" lamps flicker on; Hanami's dumplings pop off the skewer as they are eaten and the lids slide down over the other compartments; Fighter Select's chosen slot flashes as the select is confirmed, its digits tick each second, and the health bars fill as each player is billed.
+
+### Changed
+- Tokyo Rain's whole round panel is the ticket machine: a steel cabinet with the noren over its top, the listening light as a speaker grille, a recessed button bank, and a ticket outlet and coin slot along its foot.
+
 ## [0.17.0] - 2026-10-02
 
 ### Changed

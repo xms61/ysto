@@ -1423,6 +1423,64 @@
      options are backlit buttons on the machine's dark face, keyed by indigo coin lamps. A pick lights its
      button and lamp amber while the rest go dark; at the reveal the right button prints its ticket and the
      others light "Sold out". ---- */
+  /* The round's panel is the machine itself: a steel cabinet with lit and shaded side edges, the noren over its
+     top, the LED and the button bank set into its face, and a coin slot and the ticket outlet along its foot. */
+  :root[data-theme='tokyo-rain'] .round-panel,
+  :root:not([data-theme]) .round-panel {
+    border: 0;
+    background: var(--machine);
+    box-shadow:
+      inset 0 0 0 2px var(--machine-rim),
+      inset 0.5rem 0 0 rgb(255 255 255 / 0.05),
+      inset -0.5rem 0 0 rgb(0 0 0 / 0.22),
+      0 1.5rem 2.5rem -1rem rgb(0 0 0 / 0.85);
+  }
+
+  /* The ticket outlet: a dark mouth across the foot of the cabinet, under a steel lip, after the panel's last
+     line so it never sits over text. */
+  :root[data-theme='tokyo-rain'] .round-panel::after,
+  :root:not([data-theme]) .round-panel::after {
+    content: '';
+    display: block;
+    width: min(60%, 16rem);
+    height: 2.25rem;
+    margin: 1.75rem auto 0.25rem;
+    border-radius: 0.375rem;
+    background: #0b0d10;
+    box-shadow:
+      inset 0 0.5rem 0.75rem rgb(0 0 0 / 0.9),
+      0 0 0 3px var(--machine-rim),
+      0 -0.25rem 0 3px rgb(255 255 255 / 0.06);
+  }
+
+  /* The coin slot beside the outlet, with its return cup below. */
+  :root[data-theme='tokyo-rain'] .round-panel::before,
+  :root:not([data-theme]) .round-panel::before {
+    content: '';
+    position: absolute;
+    right: 1.75rem;
+    bottom: 1.5rem;
+    width: 0.375rem;
+    height: 1.75rem;
+    border-radius: 0.25rem;
+    background: #0b0d10;
+    box-shadow: 0 0 0 4px var(--machine-rim);
+  }
+
+  /* The listening light is the machine's speaker: the headphones inside a perforated grille. */
+  :root[data-theme='tokyo-rain'] .sonar-core,
+  :root:not([data-theme]) .sonar-core {
+    background:
+      radial-gradient(circle, #0b0d10 1.2px, transparent 1.6px) 0 0 / 6px 6px,
+      var(--machine);
+  }
+
+  /* The button bank is recessed into the cabinet's face. */
+  :root[data-theme='tokyo-rain'] .options,
+  :root:not([data-theme]) .options {
+    background: #1b2027;
+  }
+
   :root[data-theme='tokyo-rain'] .round-head,
   :root:not([data-theme]) .round-head {
     position: relative;
@@ -1456,10 +1514,9 @@
   :root:not([data-theme]) .options {
     padding: 0.625rem;
     border-radius: 0.5rem;
-    background: var(--machine);
     box-shadow:
-      inset 0 0 0 2px var(--machine-rim),
-      0 0.75rem 1.5rem -0.75rem rgb(0 0 0 / 0.7);
+      inset 0 0.375rem 0.75rem rgb(0 0 0 / 0.6),
+      inset 0 0 0 2px var(--machine-rim);
   }
 
   :root[data-theme='tokyo-rain'] .card-face,
@@ -3631,6 +3688,149 @@
 
 :root[data-motion='full']:is([data-phase='reveal'], [data-phase='results'])[data-theme='isekai'] .phase-flash {
   animation: window-flash 360ms steps(1) 760ms both;
+}
+
+/* ---- The theme worlds' own motion (docs/DESIGN.md, Theme worlds). Each world has one authored moment and a
+   little feedback; with motion reduced, the same states change at once. ---- */
+
+/* Tokyo Rain: a pressed button lights its coin lamp; at the reveal the right button's ticket feeds out of the
+   machine line by line, like a thermal printer, and the other buttons' "Sold out" lamps flicker on in turn. */
+:root[data-motion='full']:is([data-theme='tokyo-rain'], :not([data-theme])) .card-index {
+  transition:
+    background-color 150ms ease-out,
+    color 150ms ease-out,
+    box-shadow 150ms ease-out;
+}
+
+:root[data-motion='full']:is([data-theme='tokyo-rain'], :not([data-theme])) .card[data-turned] .card-back {
+  animation: ticket-feed 640ms steps(12, end) 620ms both;
+}
+
+:root[data-motion='full']:is([data-theme='tokyo-rain'], :not([data-theme])) .card-mark-plate {
+  animation: lamp-on 480ms 900ms both;
+}
+
+:root[data-motion='full'] .options > li:nth-child(2) .card-mark-plate {
+  animation-delay: 1020ms;
+}
+
+:root[data-motion='full'] .options > li:nth-child(3) .card-mark-plate {
+  animation-delay: 1140ms;
+}
+
+:root[data-motion='full'] .options > li:nth-child(4) .card-mark-plate {
+  animation-delay: 1260ms;
+}
+
+@keyframes ticket-feed {
+  from {
+    clip-path: inset(0 0 100% 0);
+  }
+
+  to {
+    clip-path: inset(0);
+  }
+}
+
+/* Abrupt steps between the stops, so the lamp flickers rather than fades. */
+@keyframes lamp-on {
+  0% {
+    opacity: 0;
+    animation-timing-function: steps(1, end);
+  }
+
+  30% {
+    opacity: 1;
+    animation-timing-function: steps(1, end);
+  }
+
+  45% {
+    opacity: 0.25;
+    animation-timing-function: steps(1, end);
+  }
+
+  60%,
+  100% {
+    opacity: 1;
+  }
+}
+
+/* Hanami: an eaten dumpling pops up off the skewer; the others' lids slide down to rest when a pick is made. */
+.dango [data-eaten] {
+  opacity: 0;
+}
+
+:root[data-motion='full'] .dango circle {
+  transform-box: fill-box;
+  transform-origin: center;
+  transition:
+    transform 280ms cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 280ms ease-out;
+}
+
+:root[data-motion='full'] .dango [data-eaten] {
+  transform: translateY(-70%) scale(0.3);
+}
+
+:root[data-motion='full'][data-theme='sakura'] .card:is([data-state='muted'], [data-state='missed']) .card-front {
+  animation: lid-close 320ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes lid-close {
+  from {
+    box-shadow: inset 0 0 0 var(--lacquer);
+  }
+
+  to {
+    box-shadow: inset 0 0.375rem 0 var(--lacquer);
+  }
+}
+
+/* Fighter Select: the chosen slot flashes twice as the select is confirmed, the countdown's digits tick each
+   second, and at the results each health bar fills as its player is billed. */
+:root[data-motion='full'][data-theme='shonen'] .card[data-state='chosen'] .card-front {
+  animation: select-flash 280ms both;
+}
+
+:root[data-motion='full'] .arcade-timer .motion-tick {
+  animation-name: arcade-tick;
+}
+
+:root[data-motion='full'] .bill-bar {
+  animation: bar-fill 700ms cubic-bezier(0.16, 1, 0.3, 1) calc(var(--act-delay, 0ms) + 320ms) both;
+}
+
+@keyframes select-flash {
+  0%,
+  50% {
+    background-color: #ffffff;
+    animation-timing-function: steps(1, end);
+  }
+
+  25%,
+  75%,
+  100% {
+    background-color: var(--card-chosen);
+    animation-timing-function: steps(1, end);
+  }
+}
+
+@keyframes arcade-tick {
+  from {
+    transform: scale(1.18);
+  }
+
+  to {
+    transform: none;
+  }
+}
+
+@keyframes bar-fill {
+  from {
+    background-size:
+      0 100%,
+      auto;
+  }
 }
 
 :root[data-motion='reduced'] *,

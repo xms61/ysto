@@ -92,6 +92,8 @@ Each milestone is one or more PRs on `feat/…` branches with a version bump, a 
 
 - 2026-10-02: Hanami's plate shows at 0.05, barely there: the tarp is now the page color itself, and a stronger blend of the plate's bright blossom breaks the page's contrast.
 
+- 2026-10-02: Every world ships its own motion in the PR that builds it: one authored moment and a little feedback, motion-gated like the rest. The first three worlds shipped without it and read blander than the stocks they replaced (owner's review), so v0.18.0 added theirs. Tokyo Rain's whole round panel became the machine at the same review, since the buttons alone did not read as a ticket machine.
+
 ## Surprises
 - 2026-10-01: The protocol sends no per-pick answer time, so Tokyo Rain's ticket carries the title, kind and year instead of the answer time the shape promised.
 - 2026-10-01: The supplied Tokyo Rain plate carries made-up glyph marks on its lanterns; the encode blurs it slightly so nothing reads as text.
