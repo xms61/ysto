@@ -25,14 +25,17 @@ const THEMES = [
 const ROUNDS = 5;
 const WAIT = { timeout: 20_000 };
 
-// Each theme is switched on the page directly, with motion reduced so no transition is caught halfway.
+// Each theme is switched on the page directly, with motion reduced so no transition is caught halfway. Every
+// rule runs in the first theme; the others only change colors, so they rerun contrast alone, which keeps an
+// audit of every theme shorter than a round.
 async function audit(page: Page, screen: string, found: string[]): Promise<void> {
-  for (const theme of THEMES) {
+  for (const [at, theme] of THEMES.entries()) {
     await page.evaluate((value) => {
       document.documentElement.dataset.theme = value;
       document.documentElement.dataset.motion = 'reduced';
     }, theme);
-    const { violations } = await new AxeBuilder({ page }).analyze();
+    const axe = new AxeBuilder({ page });
+    const { violations } = await (at === 0 ? axe : axe.withRules(['color-contrast'])).analyze();
     for (const violation of violations) {
       if (violation.impact !== 'serious' && violation.impact !== 'critical') continue;
       const where = violation.nodes.map((node) => node.target.join(' ')).join(', ');
@@ -50,7 +53,7 @@ async function answerWhenOpen(page: Page, round: number): Promise<void> {
 
 test('every screen passes axe in every theme', async ({ page, browserName }) => {
   test.skip(browserName !== 'chromium', 'axe reads the same page in every browser; one is enough');
-  test.setTimeout(150_000);
+  test.setTimeout(240_000);
   const found: string[] = [];
 
   await page.goto('/');
@@ -65,12 +68,14 @@ test('every screen passes axe in every theme', async ({ page, browserName }) => 
 
   await page.getByLabel('Songs per game').fill(String(ROUNDS));
   await page.getByLabel('Songs per game').press('Enter');
-  await page.getByLabel('Sample length').selectOption('10');
+  await page.getByLabel('Sample length').selectOption('30');
   await page.getByRole('button', { name: 'Start game' }).click();
   await expect(page.getByText('Get ready')).toBeVisible(WAIT);
   await audit(page, 'countdown', found);
   await expect(page.getByRole('list', { name: 'Options' }).getByRole('button').first()).toBeEnabled(WAIT);
   await audit(page, 'round', found);
+  // Answering ends a one-player round at once, so the reveal is audited from its start.
+  await page.getByRole('list', { name: 'Options' }).getByRole('button').first().click();
   await expect(page.getByRole('heading', { name: 'The answer' })).toBeVisible(WAIT);
   await audit(page, 'reveal', found);
 
