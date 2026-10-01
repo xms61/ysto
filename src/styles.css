@@ -2584,9 +2584,9 @@
       var(--panel-shadow);
   }
 
+  /* In the full ink: a faded ink on a saturated back, such as Blossom Map's green, falls short of AA. */
   .bill-lead :is(.bill-place, .bill-stats) {
     color: inherit;
-    opacity: 0.85;
   }
 
   /* This player's chip, muted on the panel and in the card's own ink on the winner's card back. A class of its
