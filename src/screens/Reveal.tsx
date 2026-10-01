@@ -1,9 +1,8 @@
 // The reveal (docs/product-specs/game-flow.md): this player's verdict and standing first, under the round's
-// heading, then the four cards in their order, the right one turned over to its printed back, then the answer
-// in every language with its song, and the standings as a scoreboard with who moved. Right and wrong show with
-// an icon and words, never color alone. The verdict lands like a stamp, and the right card with its theme's hit, which
+// heading, then the four cards in their order, the right one turned over to its printed back and each with who
+// picked it, then the answer in every language with its song, and the standings as a scoreboard with who
+// moved. Right and wrong show with an icon and words, never color alone. The verdict lands like a stamp, and the right card with its theme's hit, which
 // grows with this player's streak.
-import { useEffect, useState } from 'react';
 import type { LobbyState, RoundReveal, StandingView } from '../../shared/protocol.ts';
 import type { TitleLanguage } from '../../shared/settings.ts';
 import { OptionCard } from '../components/OptionCard.tsx';
@@ -11,8 +10,8 @@ import type { CardState } from '../components/OptionCard.tsx';
 import { CheckIcon, CrossIcon } from '../components/ui.tsx';
 import { aired, animeTitle, credits, langOf, otherTitles, place, points, score, sharedPlaces } from '../format.ts';
 import type { Title } from '../format.ts';
-import { motionAllowed } from '../hooks.ts';
 import type { ClientRound } from '../realtime/game-state.ts';
+import { useStage } from '../themes/stage.ts';
 
 interface RevealProps {
   round: ClientRound;
@@ -125,6 +124,25 @@ function MoveMark({ from, to }: { from: number; to: number }) {
   );
 }
 
+// Who picked this option, under its card, so everyone sees who fell for which. Picks reach the client only
+// with the reveal, after the round has closed for everyone, so this can never show while anyone can still
+// answer.
+function Pickers({ reveal, lobby, option }: { reveal: RoundReveal; lobby: LobbyState; option: number }) {
+  const pickers = reveal.picks.filter((pick) => pick.option === option);
+  if (pickers.length === 0) return <span />;
+  return (
+    <p className="pickers">
+      <span className="sr-only">Picked by </span>
+      {pickers.map((pick, at) => (
+        <span key={pick.playerId} className="picker" data-you={pick.playerId === lobby.you || undefined}>
+          {nameOf(lobby, pick.playerId)}
+          {at < pickers.length - 1 && <span className="sr-only">, </span>}
+        </span>
+      ))}
+    </p>
+  );
+}
+
 // The round's standings as a scoreboard: place, who moved, the name, what this round earned, and the total.
 function Lineup({ reveal, lobby }: { reveal: RoundReveal; lobby: LobbyState }) {
   const order = ranked(reveal.standings);
@@ -162,40 +180,6 @@ function Lineup({ reveal, lobby }: { reveal: RoundReveal; lobby: LobbyState }) {
   );
 }
 
-const FLAP_GLYPHS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-const FLAP_DELAY_MS = 760;
-const FLAP_MS = 640;
-
-function flapFrame(text: string, progress: number): string {
-  return [...text]
-    .map((glyph, at) =>
-      glyph === ' ' || at / text.length < progress
-        ? glyph
-        : (FLAP_GLYPHS[Math.floor(Math.random() * FLAP_GLYPHS.length)] ?? glyph),
-    )
-    .join('');
-}
-
-// Tokyo Rain prints the answer on a departure board: the letters flap through the alphabet and settle left
-// to right. Every other stock, and a player without motion, sees the title at once.
-function FlapText({ text }: { text: string }) {
-  const [shown, setShown] = useState(text);
-  useEffect(() => {
-    const theme = document.documentElement.dataset.theme ?? 'tokyo-rain';
-    if (theme !== 'tokyo-rain' || !motionAllowed()) return;
-    let frame = 0;
-    const startAt = performance.now() + FLAP_DELAY_MS;
-    const step = (time: number) => {
-      const progress = (time - startAt) / FLAP_MS;
-      setShown(progress >= 1 ? text : flapFrame(text, Math.max(0, progress)));
-      if (progress < 1) frame = requestAnimationFrame(step);
-    };
-    frame = requestAnimationFrame(step);
-    return () => cancelAnimationFrame(frame);
-  }, [text]);
-  return <>{shown}</>;
-}
-
 function VerdictLine({ verdict, standing, streak }: { verdict: Verdict; standing: string | null; streak: number }) {
   const mood = verdict.right === true ? 'right' : verdict.right === false ? 'wrong' : 'none';
   return (
@@ -231,6 +215,7 @@ export function Reveal({ round, reveal, lobby, titleLanguage }: RevealProps) {
   const standing = standingLine(reveal, lobby.you);
   const streak = streakOf(reveal, lobby.you);
   const heat = mine === reveal.correct ? heatOf(streak) : 1;
+  const { wrongMark } = useStage();
 
   const slot = verdict ? (
     <VerdictLine verdict={verdict} standing={standing} streak={streak} />
@@ -244,7 +229,7 @@ export function Reveal({ round, reveal, lobby, titleLanguage }: RevealProps) {
         {mine === reveal.correct ? 'Right answer, your pick' : 'Right answer'}
       </span>
       <span className="card-back-title" lang={title.lang}>
-        <FlapText text={options[reveal.correct] ?? title.text} />
+        {options[reveal.correct] ?? title.text}
       </span>
       <span className="card-back-meta">
         {[`${reveal.theme.kind} ${reveal.theme.sequence}`, reveal.year].filter(Boolean).join(' · ')}
@@ -252,7 +237,7 @@ export function Reveal({ round, reveal, lobby, titleLanguage }: RevealProps) {
     </>
   );
   const cards = (
-    <ol aria-label="Options" className="grid grid-cols-2 gap-3">
+    <ol aria-label="Options" className="options options-picked grid grid-cols-2 gap-3">
       {options.map((optionTitle, index) => (
         <li key={index}>
           <OptionCard
@@ -267,9 +252,11 @@ export function Reveal({ round, reveal, lobby, titleLanguage }: RevealProps) {
                 </>
               ) : undefined
             }
+            mark={index === reveal.correct ? undefined : (wrongMark ?? undefined)}
             back={index === reveal.correct ? back : undefined}
             heat={heat}
           />
+          <Pickers reveal={reveal} lobby={lobby} option={index} />
         </li>
       ))}
     </ol>

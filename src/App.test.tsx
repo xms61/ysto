@@ -135,12 +135,18 @@ test('answers with the number keys, then shows the reveal with words as well as 
   fireEvent.keyDown(window, { key: '3' });
   expect(socket.sentOfType('answer')).toEqual([{ type: 'answer', roundId: 'g.1', option: 2 }]);
   expect(screen.getByText('Locked in. Waiting for the others.')).toBeTruthy();
+  expect(screen.queryByText(/Picked by/)).toBeNull();
   act(() => socket.receive(revealOf('g.1')));
   expect(screen.getByRole('heading', { name: 'The answer' })).toBeTruthy();
   expect(screen.getByText('Right: +850')).toBeTruthy();
   expect(screen.getByText('Right answer, your pick')).toBeTruthy();
   expect(screen.getByText('no audio')).toBeTruthy();
   expect(screen.getByText('by Singer (as Heroine)')).toBeTruthy();
+  // Who picked what shows only now, under each card.
+  const options = within(screen.getByRole('list', { name: 'Options' })).getAllByRole('listitem');
+  expect(options[2]?.textContent).toContain('Picked by Ann');
+  expect(options[0]?.textContent).toContain('Picked by Ben');
+  expect(options[1]?.textContent).not.toContain('Picked by');
 });
 
 test("greets a missed opening with the game's own line, with the penalty when there is one", async () => {

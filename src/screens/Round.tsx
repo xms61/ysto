@@ -10,12 +10,14 @@ import { Listening } from '../components/Listening.tsx';
 import { FaceDownCards, OptionCard } from '../components/OptionCard.tsx';
 import type { CardState } from '../components/OptionCard.tsx';
 import { MODE_LABELS } from '../components/SettingsForm.tsx';
+import { Segments } from '../components/Segments.tsx';
 import { Stage } from '../components/Stage.tsx';
 import { ConfirmButton, Panel } from '../components/ui.tsx';
 import { langOf } from '../format.ts';
 import { motionAllowed, usePagePhase, useReached, useTicker } from '../hooks.ts';
 import type { ClientRound, RoundStart } from '../realtime/game-state.ts';
 import type { ClipStatus, GameStore } from '../realtime/store.ts';
+import { useStage } from '../themes/stage.ts';
 import { Reveal } from './Reveal.tsx';
 
 const TICK_MS = 250;
@@ -89,16 +91,49 @@ export function Round(props: RoundProps) {
 // every second.
 function Countdown({ store, startsAt }: { store: GameStore; startsAt: number }) {
   const now = useTicker(store.serverNow, TICK_MS);
+  const { readout } = useStage();
   const seconds = Math.max(1, Math.ceil((startsAt - now) / 1000));
   return (
     <p className="flex items-baseline gap-4">
       <span aria-live="polite" className="text-muted">
         Get ready
       </span>
-      <span aria-hidden="true" key={seconds} className="display countdown-number motion-tick text-6xl tabular-nums">
-        {seconds}
-      </span>
+      {readout === 'segments' ? (
+        <span className="readout countdown-readout">
+          <Segments value={seconds} digits={2} />
+        </span>
+      ) : (
+        <span aria-hidden="true" key={seconds} className="display countdown-number motion-tick text-6xl tabular-nums">
+          {seconds}
+        </span>
+      )}
     </p>
+  );
+}
+
+// The time left: the shared bar draining with the seconds beside it, or the theme's own display of the
+// seconds alone.
+function TimeLeft({ elapsed, secondsLeft }: { elapsed: number; secondsLeft: number }) {
+  const { readout } = useStage();
+  if (readout === 'segments') {
+    return (
+      <p className="readout self-start">
+        <Segments value={secondsLeft} digits={2} />
+        <span className="readout-unit">s left</span>
+        <span className="sr-only">{secondsLeft} seconds left</span>
+      </p>
+    );
+  }
+  return (
+    <div className="flex items-center gap-3">
+      <div aria-hidden="true" className="h-2 flex-1 overflow-hidden rounded-full bg-raised">
+        <div
+          className="h-full origin-left bg-accent transition-transform duration-300 ease-linear"
+          style={{ transform: `scaleX(${1 - elapsed})` }}
+        />
+      </div>
+      <p className="w-16 text-right tabular-nums">{secondsLeft} s left</p>
+    </div>
   );
 }
 
@@ -126,19 +161,9 @@ function Answering({ store, lobby, round, start, titleLanguage, clip }: Answerin
   const elapsed = Math.min(1, Math.max(0, (now - start.startsAt) / (start.endsAt - start.startsAt)));
   const players = lobby.players.filter((player) => !player.spectating).length;
 
-  const timer = (
-    <div className="flex items-center gap-3">
-      <div aria-hidden="true" className="h-2 flex-1 overflow-hidden rounded-full bg-raised">
-        <div
-          className="h-full origin-left bg-accent transition-transform duration-300 ease-linear"
-          style={{ transform: `scaleX(${1 - elapsed})` }}
-        />
-      </div>
-      <p className="w-16 text-right tabular-nums">{Math.max(0, Math.ceil((start.endsAt - now) / 1000))} s left</p>
-    </div>
-  );
+  const timer = <TimeLeft elapsed={elapsed} secondsLeft={Math.max(0, Math.ceil((start.endsAt - now) / 1000))} />;
   const cards = (
-    <ol aria-label="Options" className="grid grid-cols-2 gap-3">
+    <ol aria-label="Options" className="options grid grid-cols-2 gap-3">
       {start.options[titleLanguage].map((title, index) => (
         <li key={index}>
           <OptionCard
@@ -195,7 +220,7 @@ function RoundView({ store, lobby, round, titleLanguage, isHost, clip }: RoundPr
   usePagePhase(reveal ? 'reveal' : started ? 'playing' : 'countdown');
   return (
     <Panel className="round-panel">
-      <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2">
+      <div className="round-head flex flex-wrap items-center justify-between gap-x-3 gap-y-2">
         <h2 className="display text-[1.375rem] sm:text-2xl">
           Round {round.number} of {round.rounds}
         </h2>

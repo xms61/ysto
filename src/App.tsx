@@ -11,6 +11,7 @@ import { readSession, writeSession } from './realtime/session.ts';
 import type { Session } from './realtime/session.ts';
 import { Home } from './screens/Home.tsx';
 import { LobbySession } from './screens/LobbySession.tsx';
+import { ThemeContext } from './themes/stage.ts';
 
 export interface AppStorage {
   local: Storage | null; // device settings
@@ -109,9 +110,9 @@ export function App({ audio, storage, createSocket }: AppProps) {
   }
 
   return (
-    <>
+    <ThemeContext value={prefs.theme}>
       <Backdrop theme={prefs.theme} reducedMotion={reducedMotion} />
       {screen()}
-    </>
+    </ThemeContext>
   );
 }

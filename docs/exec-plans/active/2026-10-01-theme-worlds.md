@@ -54,9 +54,10 @@ Each milestone is one or more PRs on `feat/…` branches with a version bump, a 
 - [x] 2026-10-01 Shape every theme with the owner; worlds, names and invariants recorded above
 - [x] 2026-10-01 Plate prompts written for the owner
 - [x] 2026-10-01 Fifteen theme ids, the new names, provisional tokens for the eight new themes, and all fifteen plates (v0.14.0)
-- [ ] Theme stage
+- [x] 2026-10-01 Theme stage (`src/themes/stage.ts`: readout and wrong mark), with Tokyo Rain (v0.15.0)
 - [ ] The picker
-- [ ] Tokyo Rain
+- [x] 2026-10-01 Tokyo Rain: the ramen ticket machine (v0.15.0)
+- [x] 2026-10-01 Who picked each option, shown at the reveal in every theme (v0.15.0)
 - [ ] Hanami
 - [ ] Fighter Select
 - [ ] Model Kit
@@ -86,7 +87,11 @@ Each milestone is one or more PRs on `feat/…` branches with a version bump, a 
 
 - 2026-10-01: The eight new themes ship first on the shared card layout with their own tokens and plates, and the theme stage lands with the first theme that needs it, because a layout registry with no second layout would be a speculative abstraction (CODE_STYLE.md).
 
+- 2026-10-01: The reveal names who picked each option, under its card, in every theme, because the owner asked for it. Picks already travel only in the reveal, which the server sends once the round has closed for everyone, so nothing shows while anyone can still answer.
+- 2026-10-01: The stage is a small table of what a world changes (the readout and the wrong mark) read through a context, not a set of per-theme screen components; each later world adds the fields it needs.
+
 ## Surprises
+- 2026-10-01: The protocol sends no per-pick answer time, so Tokyo Rain's ticket carries the title, kind and year instead of the answer time the shape promised.
 - 2026-10-01: The supplied Tokyo Rain plate carries made-up glyph marks on its lanterns; the encode blurs it slightly so nothing reads as text.
 
 ## Validation
