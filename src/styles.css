@@ -131,34 +131,37 @@
     --radius-2xl: 0.625rem;
   }
 
-  /* Shonen: a battle manga page, inked panels on newsprint with one red spot color. */
+  /* Fighter Select (id shonen): an arcade fighting game's character select. Black screen, slanted name plates,
+     a two-digit countdown in yellow, a red cursor on the pick, a gold plate for the winner. */
   [data-theme='shonen'] {
     --display-adjust: 0.76;
-    color-scheme: light;
-    --page: #eeede7;
+    color-scheme: dark;
+    --page: #0a0a12;
     --plate: url('./assets/plates/shonen.webp');
-    --plate-opacity: 0.12;
-    --panel: #ffffff;
-    --raised: #e4e3dc;
-    --line: #1a1a1a;
-    --edge: #1a1a1a;
-    --ink: #111111;
-    --muted: #4d4d4d;
-    --accent: #d42a1c;
-    --accent-ink: #ffffff;
-    --good: #1f6e3c;
-    --bad: #b3140a;
-    --card: #ffffff;
-    --card-ink: #111111;
-    --card-muted: #5a5a5a;
-    --card-dim: #e4e3dc;
-    --card-mark: #111111;
+    --plate-opacity: 0.18;
+    --panel: #12121c;
+    --raised: #1d1d2e;
+    --line: #34344e;
+    --edge: #9a9ac0;
+    --ink: #ffffff;
+    --muted: #b9b9d0;
+    --accent: #ffcc00;
+    --accent-ink: #1a1400;
+    --good: #5cf28a;
+    --bad: #ff7070;
+    --card: #1b1b30;
+    --card-ink: #ffffff;
+    --card-muted: #a9a9c4;
+    --card-dim: #101020;
+    --card-mark: #e0262c;
     --card-mark-ink: #ffffff;
-    --card-chosen: #111111;
+    --card-chosen: #3a0d14;
     --card-chosen-ink: #ffffff;
-    --card-alert: #b3140a;
-    --card-back: #111111;
-    --card-back-ink: #ffffff;
+    --card-alert: #ff8a8a;
+    --card-back: #ffcc00;
+    --card-back-ink: #1a1400;
+    /* The name plate behind each slot's title; it carries the title in card-ink. */
+    --nameplate: #2c2c48;
     --display-font: 'Bangers', 'Arial Narrow', sans-serif;
     --display-weight: 400;
     --display-case: uppercase;
@@ -169,10 +172,8 @@
     --title-tracking: 0.04em;
     --title-adjust: 0.76;
     --field-rim: 2px;
-    --panel-shadow: none;
-    --page-texture:
-      repeating-conic-gradient(from 0deg at 100% 0%, rgb(0 0 0 / 0.05) 0deg 1deg, transparent 1deg 5deg),
-      radial-gradient(rgb(0 0 0 / 0.09) 1px, transparent 1.4px) 0 0 / 6px 6px;
+    --panel-shadow: 0 1rem 2rem -1rem rgb(0 0 0 / 0.9);
+    --page-texture: none;
     --radius-lg: 2px;
     --radius-xl: 2px;
     --radius-2xl: 2px;
@@ -737,6 +738,12 @@
   ::selection {
     background: var(--accent);
     color: var(--accent-ink);
+  }
+
+  /* A screen's heading takes the focus when the screen changes (LobbySession.tsx), so a screen reader hears
+     where the player is. It is not a control, so it draws no focus ring. */
+  h2[tabindex='-1']:focus {
+    outline: none;
   }
 
   body {
@@ -1621,71 +1628,86 @@
       inset 0 0 0 3px rgb(42 15 24 / 0.6);
   }
 
-  /* ---- Shonen: inked panels, a screentone corner, inverted ink when chosen, speed lines on the back. ---- */
+  /* ---- Fighter Select: an arcade character select. The round's heading is a red slanted banner; the options
+     are fighter slots, each title on a slanted name plate under a red slanted number. The pick takes the red
+     player cursor; at the reveal the right slot turns gold behind a starburst. ---- */
   :root[data-theme='shonen'] .panel {
-    border: 3px solid var(--line);
+    border: 2px solid var(--line);
+  }
+
+  :root[data-theme='shonen'] .round-head h2 {
+    padding: 0.125rem 1rem;
+    background: var(--card-mark);
+    color: var(--card-mark-ink);
+    transform: skewX(-12deg);
   }
 
   :root[data-theme='shonen'] .card-front {
-    border: 3px solid var(--card-mark);
-  }
-
-  :root[data-theme='shonen'] .card-front::after {
-    content: '';
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    width: 40%;
-    height: 70%;
-    background: radial-gradient(rgb(0 0 0 / 0.2) 1px, transparent 1.5px) 0 0 / 5px 5px;
-    mask: linear-gradient(135deg, transparent 35%, #000 90%);
-    pointer-events: none;
+    border: 2px solid var(--line);
+    justify-content: space-between;
   }
 
   :root[data-theme='shonen'] .card-index {
-    border-radius: 999px;
+    border-radius: 0;
+    transform: skewX(-12deg);
   }
 
-  :root[data-theme='shonen'] .card[data-state='chosen'] .card-index {
-    background: var(--card-chosen-ink);
-    color: var(--card-chosen);
+  :root[data-theme='shonen'] .card-title {
+    padding: 0.25rem 0.625rem;
+    background: var(--nameplate);
+    transform: skewX(-8deg);
   }
 
-  :root[data-theme='shonen'] .card[data-state='chosen'] .card-front::after {
-    background: radial-gradient(rgb(255 255 255 / 0.25) 1px, transparent 1.5px) 0 0 / 5px 5px;
+  :root[data-theme='shonen'] .card[data-state='chosen'] .card-front {
+    border-color: var(--card-mark);
+    box-shadow:
+      inset 0 0 0 2px var(--card-mark),
+      0 0 0 2px var(--ink);
   }
 
-  :root[data-theme='shonen'] .card[data-state='muted'] .card-front {
-    border-color: #8a8a8a;
+  :root[data-theme='shonen'] .card[data-state='muted'] .card-title,
+  :root[data-theme='shonen'] .card[data-state='missed'] .card-title {
+    background: transparent;
   }
 
-  /* The pick is shouted in the one spot color, lettered at a tilt. */
+  /* The player cursor's tag: red, slanted, in the display face. */
   :root[data-theme='shonen'] .card[data-state='chosen'] .card-tag {
-    background: var(--accent);
-    color: var(--accent-ink);
+    background: var(--card-mark);
+    color: var(--card-mark-ink);
     box-shadow: 0 0 0 2px var(--ink);
-    transform: rotate(-3deg);
+    transform: skewX(-12deg);
   }
 
-  :root[data-theme='shonen'] .card-back {
-    background:
-      radial-gradient(closest-side, var(--card-back) 55%, transparent 85%),
-      repeating-conic-gradient(from 0deg, rgb(255 255 255 / 0.16) 0deg 2deg, transparent 2deg 9deg), var(--card-back);
+  :root[data-theme='shonen'] .card-printed {
+    background: var(--card-dim);
+    color: var(--card-mark);
+    box-shadow: inset 0 0 0 2px var(--line);
   }
 
-  /* Buttons are inked like the panels, and a quiet one inverts to solid ink under the pointer. */
   :root[data-theme='shonen'] .button {
-    border: 3px solid var(--ink);
-  }
-
-  :root[data-theme='shonen'] .button-quiet {
-    background: var(--panel);
+    border: 2px solid var(--line);
+    transform: skewX(-8deg);
   }
 
   :root[data-theme='shonen'] .button-quiet:hover:not(:disabled) {
-    border-color: var(--ink);
-    background: var(--ink);
-    color: var(--panel);
+    border-color: var(--accent);
+  }
+
+  /* The countdown's digits: huge, yellow and slanted, red in the last five seconds. */
+  .arcade-timer {
+    align-self: center;
+    font-family: var(--display-font);
+    font-size: 4.5rem;
+    font-size-adjust: var(--display-adjust, 0.52);
+    line-height: 1;
+    letter-spacing: 0.04em;
+    color: var(--accent);
+    transform: skewX(-8deg);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .arcade-timer[data-low] {
+    color: var(--bad);
   }
 
   /* ---- Mecha: chamfered armor plates with a bevel, a seam and rivets, a hazard strip, lock brackets when chosen. ---- */
@@ -2596,13 +2618,27 @@
       var(--panel-shadow);
   }
 
-  /* An inked frame with screentone and a spot-red print offset. */
+  /* The winner's gold plate in a white frame, slanted like the select screen. */
   :root[data-theme='shonen'] .bill-lead {
-    border: 3px solid var(--ink);
+    border: 2px solid var(--ink);
     border-radius: 0;
-    box-shadow: 0.375rem 0.375rem 0 var(--accent);
-    background-image: radial-gradient(circle, rgb(255 255 255 / 0.18) 1.2px, transparent 1.6px);
-    background-size: 7px 7px;
+  }
+
+  /* Each final score as a health bar against the winner's (Results.tsx, the stage's scoreBars). */
+  .bill-bar {
+    display: block;
+    height: 0.5rem;
+    margin-top: 0.375rem;
+    background:
+      linear-gradient(var(--accent), var(--accent)) 0 0 / calc(var(--share, 0) * 100%) 100% no-repeat,
+      var(--raised);
+    transform: skewX(-12deg);
+  }
+
+  .bill-lead .bill-bar {
+    background:
+      linear-gradient(currentColor, currentColor) 0 0 / calc(var(--share, 0) * 100%) 100% no-repeat,
+      rgb(26 20 0 / 0.25);
   }
 
   :root[data-theme='mecha'] .bill-lead {
@@ -2762,7 +2798,7 @@
   }
 
   /* The manga themes' impact frame: ink speed lines rushing in from the edges of the page. */
-  :root:is([data-theme='shonen'], [data-theme='tournament-arc'], [data-theme='splash-page']) .phase-flash {
+  :root:is([data-theme='tournament-arc'], [data-theme='splash-page']) .phase-flash {
     inset: -40%;
     background: repeating-conic-gradient(from 0deg at 50% 50%, rgb(0 0 0 / 0.16) 0deg 1.2deg, transparent 1.2deg 7deg);
     mask: radial-gradient(circle, transparent 18%, #000 42%);
@@ -2794,8 +2830,9 @@
     animation: spin 90s linear infinite;
   }
 
-  /* Night Arc's page is black, so its speed lines and impact frame are drawn in white ink. */
-  :root[data-theme='night-arc'] .speed-lines {
+  /* Night Arc's and Fighter Select's pages are black, so their speed lines are drawn in white; Night Arc's
+     impact frame too. */
+  :root:is([data-theme='night-arc'], [data-theme='shonen']) .speed-lines {
     background: repeating-conic-gradient(
       from 0deg at 50% 50%,
       rgb(255 255 255 / 0.08) 0deg 0.6deg,
@@ -3331,6 +3368,16 @@
   }
 }
 
+@keyframes impact-invert {
+  from {
+    filter: invert(1);
+  }
+
+  to {
+    filter: none;
+  }
+}
+
 @keyframes phase-flash {
   0% {
     opacity: 0;
@@ -3478,6 +3525,12 @@
   animation: starburst 900ms cubic-bezier(0.16, 1, 0.3, 1) 820ms both;
 }
 
+/* Fighter Select's impact frame: the round's panel inverts for one frame as the answer lands, as a battle anime
+   cuts to negative on the hit. One flash, never repeated. */
+:root[data-motion='full'][data-phase='reveal'][data-theme='shonen'] .round-panel {
+  animation: impact-invert 120ms steps(1) 820ms;
+}
+
 :root[data-motion='full'][data-theme='shonen'] .card[data-turned] {
   animation: ink-shake 320ms linear 860ms;
 }
@@ -3560,7 +3613,6 @@
 }
 
 :root[data-motion='full']:is([data-phase='reveal'], [data-phase='results']):is(
-    [data-theme='shonen'],
     [data-theme='tournament-arc'],
     [data-theme='splash-page'],
     [data-theme='night-arc']

@@ -59,7 +59,7 @@ Each milestone is one or more PRs on `feat/…` branches with a version bump, a 
 - [x] 2026-10-01 Tokyo Rain: the ramen ticket machine (v0.15.0)
 - [x] 2026-10-01 Who picked each option, shown at the reveal in every theme (v0.15.0)
 - [x] 2026-10-02 Hanami: the lacquer bento on the blue tarp, with the dango timer (v0.16.0)
-- [ ] Fighter Select
+- [x] 2026-10-02 Fighter Select: the arcade character select, with arcade digits and health bars (v0.17.0)
 - [ ] Model Kit
 - [ ] Gachapon
 - [ ] Quest Board

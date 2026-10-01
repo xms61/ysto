@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.17.0] - 2026-10-02
+
+### Changed
+- Fighter Select (the theme stored as Shonen) is an arcade character select: a black screen, the round on a red slanted banner, the seconds as two huge yellow digits that turn red in the last five, and the options as fighter slots with slanted name plates. A pick takes the red player cursor; at the reveal the right slot turns gold behind a starburst and the round's panel inverts for one frame. The results draw each score as a health bar against the winner's.
+
+### Fixed
+- A screen's heading no longer shows the browser's focus ring after it takes the focus for screen readers.
+
 ## [0.16.0] - 2026-10-02
 
 ### Changed
