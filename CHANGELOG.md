@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.16.0] - 2026-10-02
+
+### Changed
+- Hanami (the theme stored as Sakura) is a lacquer bento opened on the blue picnic tarp: the page is the tarp, panels are black lacquer with a vermilion rim, and the options are the box's four rice-paper compartments split by green leaf dividers. The time left is a dango skewer eaten one dumpling at a time. A pick lifts its compartment while the others' lids close; at the reveal the right one turns to its vermilion seal.
+
 ## [0.15.0] - 2026-10-01
 
 ### Added

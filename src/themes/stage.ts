@@ -5,7 +5,7 @@ import { createContext, useContext } from 'react';
 import type { Theme } from '../prefs/prefs.ts';
 
 export interface ThemeStage {
-  readout: 'bar' | 'segments'; // the shared timer bar, or a seven-segment display of the seconds left
+  readout: 'bar' | 'segments' | 'dango'; // the shared bar, a seven-segment display, or a dango skewer eaten down
   wrongMark: string | null; // printed on each option that was not the answer, at the reveal
 }
 
@@ -13,6 +13,7 @@ const SHARED_STAGE: ThemeStage = { readout: 'bar', wrongMark: null };
 
 const STAGES: Partial<Record<Theme, Partial<ThemeStage>>> = {
   'tokyo-rain': { readout: 'segments', wrongMark: 'Sold out' },
+  sakura: { readout: 'dango' },
 };
 
 export function stageOf(theme: Theme): ThemeStage {

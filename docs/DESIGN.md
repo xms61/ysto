@@ -15,42 +15,47 @@ colors:
   tokyo-rain-accent-ink: "#1a1200"
   tokyo-rain-good: "#52d69a"
   tokyo-rain-bad: "#ff7a8c"
-  tokyo-rain-card: "#f2f4f1"
-  tokyo-rain-card-ink: "#15181d"
-  tokyo-rain-card-muted: "#4a515e"
-  tokyo-rain-card-dim: "#c3c8ce"
-  tokyo-rain-card-mark: "#137a52"
+  tokyo-rain-card: "#fff1c9"
+  tokyo-rain-card-ink: "#1d1606"
+  tokyo-rain-card-muted: "#4e4636"
+  tokyo-rain-card-dim: "#c2bba8"
+  tokyo-rain-card-mark: "#1f2a5c"
   tokyo-rain-card-mark-ink: "#ffffff"
-  tokyo-rain-card-chosen: "#fff4d6"
-  tokyo-rain-card-chosen-ink: "#15181d"
-  tokyo-rain-card-alert: "#c0263b"
-  tokyo-rain-card-back: "#0d0d0f"
-  tokyo-rain-card-back-ink: "#ffb000"
-  sakura-page: "#f9e8ed"
-  sakura-panel: "#fffaf6"
-  sakura-raised: "#fbe3ea"
-  sakura-line: "#efc4d1"
-  sakura-edge: "#b5657f"
-  sakura-ink: "#2a171d"
-  sakura-muted: "#6c4552"
-  sakura-accent: "#b8302a"
-  sakura-accent-ink: "#ffffff"
-  sakura-good: "#1b6e45"
-  sakura-bad: "#7a1f4a"
-  sakura-card: "#fffaf6"
-  sakura-card-ink: "#2a171d"
-  sakura-card-muted: "#6e4a56"
-  sakura-card-dim: "#efe1df"
+  tokyo-rain-card-chosen: "#ffd36a"
+  tokyo-rain-card-chosen-ink: "#1d1606"
+  tokyo-rain-card-alert: "#b3261e"
+  tokyo-rain-card-back: "#fbfbf7"
+  tokyo-rain-card-back-ink: "#1a1a1a"
+  tokyo-rain-machine: "#262c34"
+  tokyo-rain-machine-rim: "#4f5965"
+  tokyo-rain-noren: "#1f2a5c"
+  tokyo-rain-noren-ink: "#f3f1ea"
+  sakura-page: "#1f4f99"
+  sakura-panel: "#1c1515"
+  sakura-raised: "#2b2121"
+  sakura-line: "#4a3636"
+  sakura-edge: "#f0c9d2"
+  sakura-ink: "#fff8f4"
+  sakura-muted: "#ecd3da"
+  sakura-accent: "#f7a8bd"
+  sakura-accent-ink: "#2a0f18"
+  sakura-good: "#8fe0a8"
+  sakura-bad: "#ffc2bb"
+  sakura-card: "#fbfaf6"
+  sakura-card-ink: "#1c1515"
+  sakura-card-muted: "#5c4a45"
+  sakura-card-dim: "#e3dccf"
   sakura-card-mark: "#b8302a"
   sakura-card-mark-ink: "#ffffff"
-  sakura-card-chosen: "#fbe3ea"
-  sakura-card-chosen-ink: "#2a171d"
-  sakura-card-alert: "#9e2a24"
-  sakura-card-back: "#a82b26"
+  sakura-card-chosen: "#fde3ea"
+  sakura-card-chosen-ink: "#1c1515"
+  sakura-card-alert: "#9e1f1f"
+  sakura-card-back: "#b8302a"
   sakura-card-back-ink: "#fff8f0"
-  sakura-blossom: "#ee9ab2"
+  sakura-blossom: "#f4a7b9"
   sakura-foil: "#c9a14a"
-  sakura-wave: "#f4dce4"
+  sakura-lacquer: "#0f0b0b"
+  sakura-leaf: "#3d7f22"
   shonen-page: "#eeede7"
   shonen-panel: "#ffffff"
   shonen-raised: "#e4e3dc"
@@ -170,8 +175,8 @@ rounded:
   tokyo-rain-xl: "0.375rem"
   tokyo-rain-2xl: "0.625rem"
   sakura-lg: "0.25rem"
-  sakura-xl: "0.25rem"
-  sakura-2xl: "0.375rem"
+  sakura-xl: "0.375rem"
+  sakura-2xl: "0.625rem"
   shonen-lg: "2px"
   shonen-xl: "2px"
   shonen-2xl: "2px"
@@ -367,7 +372,7 @@ The themes are being rebuilt as fifteen worlds, each laying out the round, the r
 Each theme is one block of variables on any element with `data-theme`, in two families: the chrome around the cards and the card stock itself.
 
 ### Primary
-- **Accent** (`accent`, with `accent-ink` on it): the primary button, the timer's fill, the lit sonar in the listening panel, focus outlines, the selected theme in the picker, the caret and text selection. Tokyo Rain's is signal amber, Sakura's vermilion, Shonen's spot red, Mecha's hazard yellow, Magical Girl's pink, Isekai's menu yellow, Retro VHS's sunset orange.
+- **Accent** (`accent`, with `accent-ink` on it): the primary button, the timer's fill, the lit sonar in the listening panel, focus outlines, the selected theme in the picker, the caret and text selection. Tokyo Rain's is signal amber, Hanami's blossom pink, Shonen's spot red, Mecha's hazard yellow, Magical Girl's pink, Isekai's menu yellow, Retro VHS's sunset orange.
 
 ### Secondary
 - **Card stock** (`card`, `card-ink`): the face of an open card.
@@ -379,7 +384,7 @@ Each theme is one block of variables on any element with `data-theme`, in two fa
 
 ### Tertiary
 - **Right and wrong** (`good`, `bad`): verdict and error colors on the panels. They never carry meaning alone; an icon and words always go with them.
-- **Material colors**, only where a theme's stock needs them: Sakura's `blossom` and gold `foil`, Magical Girl's `foil` and its `--foil-sheen` gradient, Retro VHS's three sunset stripes (`stripe-1` to `stripe-3`).
+- **Material colors**, only where a theme's stock needs them: Hanami's `blossom` and gold `foil`, Magical Girl's `foil` and its `--foil-sheen` gradient, Retro VHS's three sunset stripes (`stripe-1` to `stripe-3`).
 
 ### Neutral
 - **Page** (`page`): behind everything, under the theme's texture. Also the fill of fields.
@@ -387,7 +392,7 @@ Each theme is one block of variables on any element with `data-theme`, in two fa
 - **Line** (`line`): dividers and quiet borders, and the listening panel's sonar while the clip loads.
 - **Edge** (`edge`): the rim of fields and choices, at 3:1 on the page and the panel.
 - **Ink** and **muted** (`ink`, `muted`): body text and secondary text.
-- Sakura's `wave` is the seigaiha pattern, one shade off its page.
+- Hanami's `lacquer` and `leaf` are the bento's black lacquer rim and its green leaf dividers; Tokyo Rain's `machine`, `machine-rim`, `noren` and `noren-ink` are the ticket machine's face and the noren with its heading.
 
 ### Contrast the tests enforce
 `src/themes.test.ts` reads every theme block and fails below these ratios:
@@ -451,8 +456,8 @@ Mobile first: every screen works one-handed from 360 px wide and scales up to de
 Depth is printed, not lifted. Stocks show their edges with inset rims, bands and rings drawn in `box-shadow: inset`, outlines, pseudo-elements and clip paths. The only drop shadow is the panel's soft ambient shadow (`--panel-shadow`), which sets panels off the page texture; Shonen has none.
 
 ### Shadow Vocabulary
-- **Panel shadow** (`--panel-shadow`, for example Tokyo Rain's `0 1.25rem 2.5rem -1.5rem rgb(0 0 0 / 0.8)`): a soft shadow below each panel. Sakura tints its shadow vermilion.
-- **Printed rim** (`inset 0 0 0 <n>px <color>`): Sakura's double rims, the muted index mark's outline, the missed stamp's ring.
+- **Panel shadow** (`--panel-shadow`, for example Tokyo Rain's `0 1.25rem 2.5rem -1.5rem rgb(0 0 0 / 0.8)`): a soft shadow below each panel. Hanami's shadow is a deep blue-black, the tarp in shade.
+- **Printed rim** (`inset 0 0 0 <n>px <color>`): Hanami's double vermilion rims, the muted index mark's outline, the missed stamp's ring.
 - **Window ring** (`0 0 0 2px #05060f`): Isekai's dark ring round its white rims, and Isekai's panel shadow. It has no offset.
 
 ### Named Rules
@@ -494,7 +499,7 @@ A small tag across the card's top edge, 0.5rem from the right, outside the faces
 | Theme | Stock and frame | Index mark | Chosen | Printed back |
 | :-- | :-- | :-- | :-- | :-- |
 | Tokyo Rain | A ticket machine's button (see Theme worlds): a backlit paper insert in a dark bezel, on the machine's face | A round indigo coin lamp with a white numeral | The insert lit brighter amber and the button pressed in, the lamp lit amber; muted buttons go unlit grey, the lamp only its rim | The machine's dark face; the right answer's back is a ticket on thermal paper with a dashed perforation along each edge |
-| Sakura | Hanafuda on washi: a vermilion frame with a hairline inner rim, a blossom in the top corner | A filled vermilion seal | Blush stock, both rims in ink; muted cards grey their rims and blossom | Vermilion with a gold foil hairline inside the edge |
+| Hanami (`sakura`) | A compartment of a lacquer bento (see Theme worlds): a rice-paper slip, its edge a faint hairline, between green leaf dividers | A filled vermilion seal | The compartment lifts 3px with a doubled vermilion rim; the others' lids close, a lacquer edge across the top of each dimmed slip | Vermilion with a gold foil hairline inside the edge; face down, black lacquer with a vermilion rim |
 | Shonen | An inked manga panel: a 3px ink frame, a screentone corner at the foot | A round ink badge | Inverted: solid ink stock with white type, the badge and screentone inverted, the stamp in spot red | Ink with white speed lines radiating round a solid center |
 | Mecha | A riveted armor plate: chamfered corners, a grey bevel, a seam under the header, two rivets, a hazard strip along the foot | A yellow stencil numeral with a leading zero ("01"), unboxed | A hazard yellow bevel on a dark green plate, and yellow lock brackets round the card's corners (green stays for the right answer) | A hazard yellow plate with black type |
 | Magical Girl | A gem card: pale pink stock inside a 3px gold foil rim, cut from the foil gradient | A faceted magenta gem, set on the diagonal in foil | Lilac stock and two foil sparkles on its corners; muted cards lose the foil for a plain rim | Magenta with a foil hairline inset |
@@ -507,7 +512,7 @@ After the right card turns over, its stock prints a hit round it (`.card-impact`
 | Theme | The hit | The burst |
 | :-- | :-- | :-- |
 | Tokyo Rain | The shared sheen passes over the printed ticket | Amber LED segments and scraps of ticket paper |
-| Sakura | A gold foil ring with a vermilion hairline opens round the card; a sheen passes over the back | Blossom and gold petals |
+| Hanami (`sakura`) | A gold foil ring with a vermilion hairline opens round the card; a sheen passes over the back | Blossom and gold petals |
 | Shonen | A starburst in the spot red behind the card, and the card shakes | Ink shards, a few in red |
 | Mecha | Green lock brackets clamp onto the corners and strobe twice | Hazard yellow and green chips |
 | Magical Girl | A foil ring opens round the card; a sheen passes over the back | Foil sparkles, a few in pink |
@@ -519,7 +524,7 @@ After the right card turns over, its stock prints a hit round it (`.card-impact`
 | Theme | Display face | Title face | Backdrop | Buttons and fields |
 | :-- | :-- | :-- | :-- | :-- |
 | Tokyo Rain | Zen Kaku Gothic New, bold | The same | A rainy ramen alley at night; slanted rain with motion on, heavier while the clip plays, and lightning at the reveal | The round panel's heading hangs on an indigo noren; quiet buttons light an amber rim under the pointer; 1px field rim |
-| Sakura | Zen Antique | The same | A seigaiha wave pattern on blush; falling petals with motion on, more while the clip plays, and a soft flash at the reveal | Panels and quiet buttons carry a double vermilion rim; the primary button a white hairline inside; 1px rose field rim |
+| Hanami (`sakura`) | Zen Antique | The same | The blue picnic tarp as the page, its plate of blossom from above barely showing; falling petals with motion on, more while the clip plays, and a soft flash at the reveal | Panels are black lacquer with a double vermilion rim, as are quiet buttons; the primary button a dark hairline inside; 1px field rim |
 | Shonen | Bangers, in capitals | The same | Newsprint halftone and faint speed lines from the top corner; holds still like a printed page in the lobby, turns slow ink speed lines while the clip plays, and hits an impact frame of speed lines at the reveal | Panels and every button take a 3px ink frame; a quiet button inverts to solid ink under the pointer; 2px field rim |
 | Mecha | Saira Stencil One, in capitals | System sans, bold capitals | A hangar grid; a green scanner line sweeps down with motion on, status beacons blink while the clip plays, and hazard strips flash along the edges at the reveal | Panels are chamfered with a hazard strip across the top; quiet buttons are unframed plates with a hazard strip on the left; square fields with a 1px rim |
 | Magical Girl | Mochiy Pop One | The same | A violet night with white and gold star dots; stars twinkle with motion on, more while the clip plays, and a foil ring opens at the reveal | Pill buttons with a gold foil rim; panels ringed in foil; sparkle radio dots; 1px field rim |
@@ -530,6 +535,8 @@ After the right card turns over, its stock prints a hit round it (`.card-impact`
 The fifteen themes are becoming worlds that each lay out the round, the reveal and the results in their own way ([plan](exec-plans/active/2026-10-01-theme-worlds.md)). What a world changes beyond its stock lives in `src/themes/stage.ts`, read through `useStage()`: how the time left reads (`readout`: the shared bar, or a seven-segment display of the seconds), and the mark printed on each option that was not the answer (`wrongMark`). A theme that sets nothing plays the shared round. The stage never changes what the four options are, their sizes, or when they show.
 
 **Tokyo Rain: a ramen ticket machine under the noren.** The round's heading hangs on an indigo noren across the top of the round panel (`--noren`, its text `--noren-ink`), with two slits cut up from its hem. The time left reads on the machine's amber LED (`Segments.tsx`: lit segments in the accent, unlit ones at 12% behind dark glass), "S LEFT" beside it, and the countdown on a larger LED. The options are four backlit buttons in a 2x2 grid on the machine's dark face (`--machine`, its rim `--machine-rim`), each a paper insert in a 3px bezel with its key on a round indigo coin lamp. A pick presses its button in, lights the insert brighter amber and the lamp amber with a soft glow; the others go unlit. At the reveal the right button turns over to its ticket, and every other button lights a red "Sold out" plate beside its lamp (`.card-mark-plate`, decoration hidden from screen readers, who hear which card is right). The results hang from a steel order rail, the leader's ticket perforated like the round's.
+
+**Hanami (`sakura`): a lacquer bento on the blue tarp.** The page is the tarp itself, a deep picnic blue; panels are black lacquer with a vermilion rim. The time left is a dango skewer (`Dango.tsx`): six dumplings in pink, white and green, eaten one at a time from the tip as the round runs down, the seconds beside it. The options are the box's four compartments: rice-paper slips in a 2x2 grid, split by green leaf dividers (`--leaf`), inside a vermilion and black lacquer rim (`--lacquer`). Face down they are closed lids. A pick lifts its compartment with a doubled vermilion rim, and the others' lids close, a lacquer edge across the top of each. At the reveal the right one turns to its vermilion seal and the lids stay on the rest, their titles still readable.
 
 ### The backdrop plates
 Each theme sets a painted scene behind its page: `--plate` names the image in `src/assets/plates/` and `--plate-opacity` how strongly it shows over the page color. The opacity is the highest that keeps the page pairs passing over every pixel (Contrast the tests enforce), so Hanami's bright tarp shows least and Blossom Map's flat park most. With motion on the plate drifts slowly (Motion).
