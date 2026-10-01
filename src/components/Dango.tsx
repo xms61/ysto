@@ -1,6 +1,6 @@
 // The time left as a hanami dango skewer: six dumplings in pink, white and green, eaten one at a time from the
-// tip as the round runs down, so the bare stick shows what is gone. Decoration only; the caller gives screen
-// readers the seconds in words.
+// tip as the round runs down, so the bare stick shows what is gone; with motion on, each pops off as it goes.
+// Decoration only; the caller gives screen readers the seconds in words.
 
 const DUMPLINGS = 6;
 const COLORS = ['dango-pink', 'dango-white', 'dango-green'];
@@ -14,8 +14,15 @@ export function Dango({ left }: { left: number }) {
   return (
     <svg aria-hidden="true" viewBox={`0 0 ${width} 24`} className="dango">
       <line x1="2" y1="12" x2={width - 2} y2="12" className="dango-stick" />
-      {Array.from({ length: kept }, (_, at) => (
-        <circle key={at} cx={14 + at * SPACING} cy="12" r={RADIUS} className={COLORS[at % COLORS.length]} />
+      {Array.from({ length: DUMPLINGS }, (_, at) => (
+        <circle
+          key={at}
+          cx={14 + at * SPACING}
+          cy="12"
+          r={RADIUS}
+          className={COLORS[at % COLORS.length]}
+          data-eaten={at >= kept || undefined}
+        />
       ))}
     </svg>
   );

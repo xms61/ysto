@@ -62,9 +62,16 @@ const GRAPHIC_PAIRS: [graphic: string, background: string][] = [
   ['page', 'bad'],
 ];
 
-// Pairs only a theme's own world draws: Tokyo Rain's heading on its noren, Fighter Select's titles on their plates.
+// Pairs only a theme's own world draws: Tokyo Rain's heading on its noren and the round's text on the machine's
+// cabinet, Fighter Select's titles on their plates.
 const WORLD_TEXT_PAIRS: Partial<Record<(typeof THEMES)[number], [text: string, background: string][]>> = {
-  'tokyo-rain': [['noren-ink', 'noren']],
+  'tokyo-rain': [
+    ['noren-ink', 'noren'],
+    ['ink', 'machine'],
+    ['muted', 'machine'],
+    ['bad', 'machine'],
+    ['good', 'machine'],
+  ],
   shonen: [['card-ink', 'nameplate']],
 };
 
