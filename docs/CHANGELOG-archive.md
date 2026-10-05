@@ -2,6 +2,12 @@
 
 Releases moved out of `CHANGELOG.md` (which keeps about the latest 5). Newest first.
 
+## [1.4.0] - 2026-10-05
+
+### Added
+- The results list the game's songs, folded away below the standings: each round's anime in the player's title languages, OP or ED, the song and its artists, when it aired, and a link to the anime on AnimeThemes.
+- The features plan gains M15, a short "What's new" dialog on a player's first visit after an update.
+
 ## [1.3.0] - 2026-10-05
 
 ### Added

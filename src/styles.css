@@ -854,6 +854,14 @@
     --radius-2xl: 0.5rem;
   }
 
+  /* Large screens: everything is sized in rem, so the root size scales the whole page with the window. Up to
+     1920 x 1080 it stays at the player's own font size; past that it grows with the smaller of width and
+     height, to twice the size on a 4K screen. Media queries in rem keep the browser's size, so the layouts
+     switch where they always did. */
+  html {
+    font-size: clamp(100%, min(100vw / 120, 100vh / 67.5), 200%);
+  }
+
   :root {
     --ja-font:
       'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Noto Sans JP', 'Noto Sans CJK JP', 'Yu Gothic UI', 'Yu Gothic',

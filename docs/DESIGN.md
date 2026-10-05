@@ -767,6 +767,8 @@ Per theme, in the variables `--display-*` and `--title-*`: the font, weight, cas
 
 Mobile first: every screen works one-handed from 360 px wide and scales up to desktop. One breakpoint changes the cards: from 40rem (640 px) the cards double their height and their titles grow.
 
+Large screens scale the whole page: every size is in rem, and past 1920 x 1080 the root font size grows with the smaller of the window's width and height (`clamp(100%, min(100vw / 120, 100vh / 67.5), 200%)`), to twice the size on a 4K screen. Up to 1080p it stays at the player's own font size. The breakpoints are media queries in rem, which keep the browser's size, so the layouts switch where they always did. New sizes go in rem, never px, or they won't grow with the page.
+
 - **The round's stage** (`Stage.tsx`): a slot above the cards, the cards, and the lines below them. On a phone the stage fills the first screen (the viewport height less 15rem) and pushes the cards to the bottom, within thumb reach. The slot keeps one height, so the cards sit in the same place from the face-down deal through the answer.
 - **The cards** sit in a 2x2 grid with 0.75rem gaps, each half the width. A card is at least 6rem tall on a phone and 11.5rem from 640 px, and cards in a row share one height whatever their titles.
 - **The listening panel and the world's timer** fill the slot during a round. The countdown fills it before the clip starts.

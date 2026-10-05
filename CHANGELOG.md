@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.9.0] - 2026-10-05
+
+### Changed
+- Large screens: past 1920 x 1080 the whole page scales with the window, to twice the size on a 4K screen, instead of a small panel in the middle. Phones and screens up to 1080p are unchanged.
+
 ## [1.8.0] - 2026-10-05
 
 ### Added
@@ -27,9 +32,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - What's new: the first time a device opens a newer version, a small dialog says what changed for players in up to three lines, on the home screen or in the lobby. The notes live in `src/whats-new.ts`, written for players; a first visit shows nothing.
-
-## [1.4.0] - 2026-10-05
-
-### Added
-- The results list the game's songs, folded away below the standings: each round's anime in the player's title languages, OP or ED, the song and its artists, when it aired, and a link to the anime on AnimeThemes.
-- The features plan gains M15, a short "What's new" dialog on a player's first visit after an update.
