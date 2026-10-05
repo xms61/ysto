@@ -76,7 +76,7 @@ Each milestone is one or more PRs on `feat/…` branches with a version bump, a 
 - [x] 2026-10-05 Quest Board: the owner's monster sprites in place of the line drawings (v0.21.2)
 - [x] 2026-10-05 Back Issue: the eighties magazine, its masthead, the ruler, the readers' poll (v0.22.0)
 - [x] 2026-10-05 Konbini 2 a.m.: the register under the lit sign, price cards on the shelf, the receipt (v0.24.0)
-- [ ] Karaoke Box
+- [x] 2026-10-05 Karaoke Box: the lyric line as the timer, song rows on the remote, the score screen (v0.25.0)
 - [ ] Omikuji
 - [ ] Blossom Map
 - [ ] Tournament Arc
@@ -86,9 +86,9 @@ Each milestone is one or more PRs on `feat/…` branches with a version bump, a 
 - [x] 2026-10-01 Plates in place for all fifteen
 
 ## Where to pick up
-State on 2026-10-05: the seven reshaped themes are all rebuilt as worlds with their motion, answer boxes, pick chips and type: Tokyo Rain, Hanami, Fighter Select, Model Kit, Gachapon, Quest Board (with the owner's monster sprites) and Back Issue (v0.22.0). The picker is built (v0.23.0). Of the eight new themes, Konbini 2 a.m. is built (v0.24.0); the other seven still run on the shared card layout with their own tokens and plates.
+State on 2026-10-05: the seven reshaped themes are all rebuilt as worlds with their motion, answer boxes, pick chips and type: Tokyo Rain, Hanami, Fighter Select, Model Kit, Gachapon, Quest Board (with the owner's monster sprites) and Back Issue (v0.22.0). The picker is built (v0.23.0). Of the eight new themes, Konbini 2 a.m. (v0.24.0) and Karaoke Box (v0.25.0) are built; the other six still run on the shared card layout with their own tokens and plates.
 
-Do next: the seven remaining new themes, one PR each, starting with Karaoke Box, following the rules under Owner review findings; each keeps its picker icon in step with its world.
+Do next: the six remaining new themes, one PR each, starting with Omikuji, following the rules under Owner review findings; each keeps its picker icon in step with its world.
 
 Working notes for a new session:
 - Check a theme by eye with `npm run build`, then the "start" preview (production server on :5173), a solo lobby, and `localStorage.ysto_prefs` set to the theme with `motion: 'full'` to see motion or `'reduced'` for steady screenshots. A solo answer ends the round at once; set Songs per game to 5 to reach the results quickly.
@@ -117,6 +117,7 @@ What the owner found playing the built worlds on 2026-10-02, and where each stan
 ## Decision log
 - 2026-10-01: Each theme may lay out the round, reveal and results its own way; home, lobby and preferences stay shared, because that gives each world its signature moments at a fraction of fourteen full flows. Rejected: skin-only themes; every screen per theme.
 - 2026-10-01: Option geometry may bend per theme while all four stay equal, because a vertical strip or a map is what several worlds are. Every other invariant holds.
+- 2026-10-05: Karaoke Box's options stand in one column (the stage's `rows`), since a remote lists songs; the readout is the round's heading itself, sung as a lyric line, so the heading reads its own clock (`LyricHeading` in `Round.tsx`) rather than taking the time from the answering view. The verdict stays the shared one under the screen.
 - 2026-10-01: Where the owner took several cards in one round, the card the owner chose on the decision page keeps the theme's id and the rest become new themes; Tokyo Rain kept its name and got its own round.
 - 2026-10-01: Display names follow the worlds (Model Kit, Gachapon, Quest Board, Back Issue, Hanami, Fighter Select); ids stay, because renaming an id resets players' saved theme.
 - 2026-10-01: The picker is one ungrouped strip of live miniatures, because the owner asked for something creative rather than groups.

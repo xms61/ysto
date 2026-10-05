@@ -226,6 +226,36 @@ colors:
   konbini-vfd: "#46f0c4"
   konbini-receipt-muted: "#555555"
   konbini-laser: "#ff2a3c"
+  karaoke-page: "#120a1f"
+  karaoke-panel: "#1b1030"
+  karaoke-raised: "#261742"
+  karaoke-line: "#3b2862"
+  karaoke-edge: "#9b86d6"
+  karaoke-ink: "#f6f2ff"
+  karaoke-muted: "#c3b6e6"
+  karaoke-accent: "#ff4fa3"
+  karaoke-accent-ink: "#1a0612"
+  karaoke-good: "#5ef0c8"
+  karaoke-bad: "#ff8aa8"
+  karaoke-card: "#f3f4ff"
+  karaoke-card-ink: "#17123a"
+  karaoke-card-muted: "#4a4570"
+  karaoke-card-dim: "#d6d8ec"
+  karaoke-card-mark: "#2b1f7a"
+  karaoke-card-mark-ink: "#ffffff"
+  karaoke-card-chosen: "#ffd0e6"
+  karaoke-card-chosen-ink: "#17123a"
+  karaoke-card-alert: "#c2185b"
+  karaoke-card-back: "#3ee0f0"
+  karaoke-card-back-ink: "#06202a"
+  karaoke-screen: "#0b1a56"
+  karaoke-screen-ink: "#ffffff"
+  karaoke-screen-muted: "#b8c4f2"
+  karaoke-lyric-sung: "#ff6fb8"
+  karaoke-lyric-edge: "#7290ff"
+  karaoke-bezel: "#05081f"
+  karaoke-remote: "#262838"
+  karaoke-remote-rim: "#4a4d62"
 rounded:
   tokyo-rain-lg: "0.375rem"
   tokyo-rain-xl: "0.375rem"
@@ -251,6 +281,9 @@ rounded:
   konbini-lg: "0.1875rem"
   konbini-xl: "0.25rem"
   konbini-2xl: "0.375rem"
+  karaoke-lg: "0.5rem"
+  karaoke-xl: "0.75rem"
+  karaoke-2xl: "1rem"
 typography:
   tokyo-rain-display:
     fontFamily: "'Zen Kaku Gothic New', ui-sans-serif, system-ui, sans-serif"
@@ -315,6 +348,14 @@ typography:
   konbini-title:
     fontFamily: "'Yusei Magic', 'Comic Sans MS', ui-rounded, sans-serif"
     fontWeight: 400
+    letterSpacing: "0"
+  karaoke-display:
+    fontFamily: "'M PLUS Rounded 1c', 'Hiragino Maru Gothic ProN', ui-rounded, system-ui, sans-serif"
+    fontWeight: 800
+    letterSpacing: "0.01em"
+  karaoke-title:
+    fontFamily: "'M PLUS Rounded 1c', 'Hiragino Maru Gothic ProN', ui-rounded, system-ui, sans-serif"
+    fontWeight: 700
     letterSpacing: "0"
   home-title:
     fontSize: "3rem"
@@ -439,7 +480,7 @@ The themes are being rebuilt as fifteen worlds, each laying out the round, the r
 Each theme is one block of variables on any element with `data-theme`, in two families: the chrome around the cards and the card stock itself.
 
 ### Primary
-- **Accent** (`accent`, with `accent-ink` on it): the primary button, the timer's fill, the lit sonar in the listening panel, focus outlines, the selected theme in the picker, the caret and text selection. Tokyo Rain's is signal amber, Hanami's blossom pink, Fighter Select's arcade yellow, Model Kit's yellow part plastic, Gachapon's candy red, Quest Board's candle amber, Back Issue's process magenta, kept to what can be tapped, Konbini 2 a.m.'s saffron from its shop stripe.
+- **Accent** (`accent`, with `accent-ink` on it): the primary button, the timer's fill, the lit sonar in the listening panel, focus outlines, the selected theme in the picker, the caret and text selection. Tokyo Rain's is signal amber, Hanami's blossom pink, Fighter Select's arcade yellow, Model Kit's yellow part plastic, Gachapon's candy red, Quest Board's candle amber, Back Issue's process magenta, kept to what can be tapped, Konbini 2 a.m.'s saffron from its shop stripe, Karaoke Box's booth pink.
 
 ### Secondary
 - **Card stock** (`card`, `card-ink`): the face of an open card.
@@ -451,7 +492,7 @@ Each theme is one block of variables on any element with `data-theme`, in two fa
 
 ### Tertiary
 - **Right and wrong** (`good`, `bad`): verdict and error colors on the panels. They never carry meaning alone; an icon and words always go with them.
-- **Material colors**, only where a theme's stock needs them: Hanami's `blossom` and gold `foil`, Gachapon's gold `foil` and its `--foil-sheen` gradient for the charm, Back Issue's process-yellow `slab`, process `cyan` and `halftone`, Konbini 2 a.m.'s shop (see Theme worlds).
+- **Material colors**, only where a theme's stock needs them: Hanami's `blossom` and gold `foil`, Gachapon's gold `foil` and its `--foil-sheen` gradient for the charm, Back Issue's process-yellow `slab`, process `cyan` and `halftone`, Konbini 2 a.m.'s shop and Karaoke Box's booth (see Theme worlds).
 
 ### Neutral
 - **Page** (`page`): behind everything, under the theme's texture. Also the fill of fields.
@@ -572,6 +613,7 @@ A small tag across the card's top edge, 0.5rem from the right, outside the faces
 | Quest Board (`isekai`) | A bounty notice pinned to the board (see Theme worlds): parchment in a double-ruled frame with corner marks, a red heading and lines in a made-up script, its monster drawn faintly behind the title | A red rank stamp, a double rule pressed askew | Lit by the candle: an amber rim and glow, its pin pulled; dimmed notices drop their drawings | Aged parchment with a large round "Completed" seal in half-strength red ink behind the text; face down, blank parchment |
 | Back Issue (`retro-vhs`) | A feature box on the slab (see Theme worlds): white paper in a 2px ink rule, its cyan shadow off register, a reader's ballot square top right | A magenta box with a white numeral, the one color kept for what can be tapped | The ballot marked with an X over pale yellow; muted boxes screened back under halftone dots | The answer page in process cyan with black type; face down, white paper with an ink "?!" |
 | Konbini 2 a.m. (`konbini`) | A price card on the shelf (see Theme worlds): white card under a plum header band, the title in marker, standing on a clear price rail | A saffron price star with a dark numeral | Pale saffron, its star turned plum; muted cards drop their band and star, the number left on grey card | A thermal receipt in dot type, torn off along a jagged foot; face down, the plum stock with a saffron "?!" |
+| Karaoke Box (`karaoke`) | A song row on the remote (see Theme worlds): a pale row, one of four in a single column, the title beside its number | A navy box with a white numeral, the song's number | Pale pink, its number box turned pink; muted rows go grey | "Now playing" in cyan, its label, title and details in one row; face down, a navy row with a pink "?!" |
 
 ### The reveal's hit
 After the right card turns over, its stock prints a hit round it (`.card-impact`) and a burst of its own material flies out from the middle (`Burst.tsx`). With a streak of 3 or more right answers the hit lands harder, and harder again from 5: more motes, a wider ring, a bigger shake (`data-heat`, 1 to 3).
@@ -586,6 +628,7 @@ After the right card turns over, its stock prints a hit round it (`.card-impact`
 | Quest Board (`isekai`) | An amber rim opens round the notice in a candle glow; the completed seal thunks on | Amber and parchment scraps |
 | Back Issue (`retro-vhs`) | A cyan frame printed off register round the answer page; the page settles into register | Trimmed paper in cyan, yellow and ink |
 | Konbini 2 a.m. (`konbini`) | The scanner's red line passes down the receipt | The shared burst in the theme's colors |
+| Karaoke Box (`karaoke`) | The right row wipes to "now playing" from the left, as a lyric is sung | The shared burst in the theme's colors |
 
 ### Themes beyond the card
 
@@ -599,9 +642,10 @@ After the right card turns over, its stock prints a hit round it (`.card-impact`
 | Quest Board (`isekai`) | Cinzel, inscriptional capitals as carved on the guild's plank, with lining figures so a 1 never reads as an I | IM Fell English, an old printer's face | The guild's common room by candlelight behind faint plank lines; nothing moves, and the room flashes at the reveal | Panels take a 2px rim; quiet buttons are dark oak with a 2px rim; 1px field rim |
 | Back Issue (`retro-vhs`) | Anton, in capitals | Archivo Narrow, bold | Process-color shapes and halftone on glossy paper; nothing moves, and a pass of halftone at the reveal | Panels take a 2px ink rule and a cyan shadow off register; quiet buttons a 2px ink rule; the lobby's start bar is the page's foot under an ink rule |
 | Konbini 2 a.m. (`konbini`) | DotGothic16, the dot type of a register's receipt | Yusei Magic, a marker pen's lettering, as on a shop's handwritten price cards | A wet street at night lit by the shop; slanted rain with motion on | The round's heading is the shop's lit fascia sign; quiet buttons light a saffron rim under the pointer; the lobby's start bar is the counter's front under the shop's stripe |
+| Karaoke Box (`karaoke`) | M PLUS Rounded 1c, extra bold, the round gothic of lyric subtitles, outlined on the screen | M PLUS Rounded 1c, bold | An empty booth with a vinyl bench and mirror-ball spots; lights twinkle with motion on | The round's heading is the booth's lyric screen; quiet buttons light a pink rim under the pointer; the lobby's start bar is the remote's dark body |
 
 ### Theme worlds
-The fifteen themes are becoming worlds that each lay out the round, the reveal and the results in their own way ([plan](exec-plans/active/2026-10-01-theme-worlds.md)). What a world changes beyond its stock lives in `src/themes/stage.ts`, read through `useStage()`: how the time left reads (`readout`: the shared bar, or a seven-segment display of the seconds), and the mark printed on each option that was not the answer (`wrongMark`). A theme that sets nothing plays the shared round. The stage never changes what the four options are, their sizes, or when they show.
+The fifteen themes are becoming worlds that each lay out the round, the reveal and the results in their own way ([plan](exec-plans/active/2026-10-01-theme-worlds.md)). What a world changes beyond its stock lives in `src/themes/stage.ts`, read through `useStage()`: how the time left reads (`readout`: the shared bar, a seven-segment display of the seconds, or a world's own object), the mark printed on each option that was not the answer (`wrongMark`), and whether the four options stand in one column of rows instead of 2x2 (`rows`). A theme that sets nothing plays the shared round. The stage never changes what the four options are, that they are equal in size, or when they show.
 
 **Tokyo Rain: a ramen ticket machine under the noren.** The round's panel is the machine's steel cabinet (`--machine`, its rim `--machine-rim`), with a lit and a shaded side edge, a recessed button bank, the listening light as a perforated speaker grille, and a ticket outlet and a coin slot along its foot. The round's heading hangs on an indigo noren across its top, cloth hung from a wooden pole (`--noren-pole`) that runs past the cabinet's edges. The heading row is one solid indigo panel (`--noren`, its text `--noren-ink`); below it the hem splits into four panels with the cabinet showing through the slits, carries a printed white band and a white crest that the middle slit cuts in two (no letters, no shop name), and ends a little unevenly. The time left reads on the machine's amber LED (`Segments.tsx`: lit segments in the accent, unlit ones at 12% behind dark glass), "S LEFT" beside it, and the countdown on a larger LED. The options are four backlit buttons in a 2x2 grid on the machine's dark face (`--machine`, its rim `--machine-rim`), each a paper insert in a 3px bezel with its key on a round indigo coin lamp. A pick presses its button in, lights the insert brighter amber and the lamp amber with a soft glow; the others go unlit. At the reveal the right button turns over to its ticket, and every other button lights a red "Sold out" plate beside its lamp (`.card-mark-plate`, decoration hidden from screen readers, who hear which card is right). The results hang from a steel order rail, the leader's ticket perforated like the round's. With motion on, a pressed button's coin lamp lights in 150ms, the right button's ticket feeds out line by line like a thermal printer after it turns (640ms in 12 steps), and the "Sold out" lamps flicker on one after another, 120ms apart. While the clip plays the noren's hem sways slowly in the street's draft (3.6s each way); the heading row above it stays still. Below the cards, the answer box is the machine's lit display panel, and the names of who picked each button sit on ticket stubs, this player's in amber.
 
@@ -618,6 +662,8 @@ The fifteen themes are becoming worlds that each lay out the round, the reveal a
 **Back Issue (`retro-vhs`): an eighties monthly anime magazine.** A light world: glossy paper with fine halftone over the plate's process-color shapes. The round's panel is the magazine's page, white with crop marks at its corners. The round's heading is the issue's masthead (`masthead`): the round as the issue number at monumental size, "No. 03 / 15", over a double rule; screen readers still hear "Round 3 of 15". The listening light is a registration mark, lit in ink. The time left is a printer's steel ruler across the row (`readout: 'ruler'`, `Ruler.tsx`), ticked in millimetres, with a process-cyan bar (`--cyan`) that shortens from the right. The options are four feature boxes on one process-yellow slab (`--slab`), each white in an ink rule with its cyan shadow a little off register, its key in a magenta box and a reader's ballot square at its top right. Magenta is kept for what can be tapped: the keys, the primary button and focus; the title's "?!" is ink on a swipe of the slab's yellow. A pick marks its ballot with an X. At the reveal the other boxes are screened back under halftone dots (`--halftone`, with the screened text at 4.5:1), and the right one turns to the answer page in process cyan. Below the cards, the answer box is the article page, ruled in ink with its cyan shadow, its kind on a black caption tag; the pickers' names are black caption tags, this player's in the answer page's cyan. The results are the readers' poll, the winner printed on the slab's yellow. With motion on, the X is drawn into the ballot (260ms), the ruler's bar shortens smoothly, and the answer page settles into register as it lands (520ms). The backdrop keeps still.
 
 **Konbini 2 a.m. (`konbini`): the one bright shop on a wet street.** The page is the street at night in the rain. The round's panel is the register's dark body (`--register`, its rim `--register-rim`). The round's heading is the shop's fascia sign: a lit face (`--sign`, its text `--sign-ink`) in a dark metal frame, glowing a little, with the shop's two-color stripe along its foot, saffron (`accent`) over plum (`--stripe`); the pair belongs to no real chain. The listening light is the scanner's window, dark glass with its red line across (`--laser`). The time left reads on the register's display (`readout: 'segments'`, the same `Segments.tsx` as Tokyo Rain's LED), its figures in teal (`--vfd`). The options are four price cards on a bright shelf (`--shelf`), each a white card under a plum header band, its title lettered in marker, standing on a clear price rail (`--shelf-lip`), its key on a saffron price star. A pick turns the card pale saffron and its star plum. At the reveal the right card turns over to a thermal receipt in dot type, torn off along a jagged foot, and every other card takes a red "Sold out" label from the price gun (`wrongMark`), its star peeled off. Below the cards, the answer box is the receipt itself (`--card-back`, its grey print `--receipt-muted`), the kind in the printer's inverse type and the cover's wash cut back; the names of who picked each card sit on price-gun labels, this player's in saffron. The results are the night's last receipt: a printed head with the time, the standings as its line items in dot type and the winner in inverse type, torn off at the foot. The lobby's start bar is the counter's front under the stripe. With motion on, a picked card's star turns plum with a quick spin (320ms), at the reveal the scanner's line passes down the receipt (560ms) and the "Sold out" labels slap on one after another (260ms), and at the results each line of the receipt prints in six steps (420ms). The rain keeps falling in the backdrop.
+
+**Karaoke Box (`karaoke`): the booth's lyric screen and song remote.** The page is the booth at night under twinkling lights. The round's heading is the booth's lyric screen: deep blue glass (`--screen`) in a black bezel (`--bezel`) across the panel's top, with "Round 1 of 5" set large as a lyric line, white (`--screen-ink`) in a periwinkle outline (`--lyric-edge`, which axe reads as the text color, so it passes on the screen by itself). The line is the timer (`readout: 'lyric'`): its words fill with pink (`--lyric-sung`) from the left as the round runs, empty before it starts and full at the reveal, a copy hidden from screen readers cut back to the share sung; the seconds show small beside the listening light. The listening light is the microphone's silver grille. The options are four song rows on the remote (`rows`: one column instead of 2x2), the remote a dark plastic body (`--remote`, its rim `--remote-rim`), each row pale with the title beside its number in a navy box. A pick turns the row pale pink and its number box pink. At the reveal the right row turns to "now playing" in cyan, its label, title and details in one row; the others go grey. Below the cards, the answer box is the lyric screen again, the title outlined like a lyric and the kind on a pink tag; the names of who picked each row sit on the remote's dark keys, this player's in pink. The results are the end-of-song score screen: the winner on the lyric screen, the score huge in outlined pink. The lobby's start bar is the remote's dark body. With motion on, the lyric's color follows the time smoothly (300ms steps), a picked row's number sends with a pink pulse like the remote's key (420ms), the right row wipes to "now playing" from the left (640ms), and the winner's score lands on the screen (560ms).
 
 ### The backdrop plates
 Each theme sets a painted scene behind its page: `--plate` names the image in `src/assets/plates/` and `--plate-opacity` how strongly it shows over the page color. The opacity is the highest that keeps the page pairs passing over every pixel (Contrast the tests enforce), so Hanami's bright tarp shows least and Blossom Map's flat park most. With motion on the plate drifts slowly (Motion).

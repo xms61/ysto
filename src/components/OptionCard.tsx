@@ -4,6 +4,7 @@
 // turns over to its printed back and lands with its theme's hit. A tag such as "Your pick" is a stamp on the
 // card's edge, outside its faces, so it never changes the card's size.
 import type { CSSProperties, ReactNode } from 'react';
+import { useOptionColumns } from '../themes/stage.ts';
 import { Burst } from './Burst.tsx';
 
 // open: answerable; chosen: this player's pick; muted: stepped back (locked in, or not the answer);
@@ -98,8 +99,9 @@ function PrintedBack({ down = false }: { down?: boolean }) {
 // The four cards as dealt before the clip starts: backs up, nothing to read yet. They slide in off the deck
 // one after another, then idle until the clip starts and they turn face up together.
 export function FaceDownCards() {
+  const columns = useOptionColumns();
   return (
-    <ul aria-hidden="true" className="options grid grid-cols-2 gap-3">
+    <ul aria-hidden="true" className={`options grid ${columns} gap-3`}>
       {[0, 1, 2, 3].map((slot) => (
         <li key={slot} className="card card-dealing" data-state="down" style={{ '--deal': slot } as CSSProperties}>
           <span className="card-turn">

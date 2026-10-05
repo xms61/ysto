@@ -135,6 +135,22 @@ test('sets the round as a masthead number in Back Issue, still named as the roun
   expect(within(heading).getByText('/ 05')).toBeTruthy();
 });
 
+test('sings the round as a lyric line in Karaoke Box, still named as the round, with the options in rows', async () => {
+  localStorage.setItem('ysto_prefs', JSON.stringify({ volume: 15, theme: 'karaoke' }));
+  const { socket } = renderSeated(lobbyState({ game: PLAYING }));
+  act(() => {
+    socket.receive({ type: 'round:prepare', roundId: 'g.1', clipToken: 'c1', number: 1, rounds: 5 });
+    const startsAt = Date.now() - 10_000;
+    socket.receive({ type: 'round:start', roundId: 'g.1', startsAt, endsAt: startsAt + 20_000, options: OPTIONS });
+  });
+  const heading = screen.getByRole('heading', { name: 'Round 1 of 5' });
+  const sung = Number(heading.style.getPropertyValue('--sung'));
+  expect(sung).toBeGreaterThan(0.4);
+  expect(sung).toBeLessThan(0.6);
+  const options = await screen.findByRole('list', { name: 'Options' });
+  expect(options.className).toContain('grid-cols-1');
+});
+
 test('answers with the number keys, then shows the reveal with words as well as icons', async () => {
   const { socket } = renderSeated(lobbyState({ game: PLAYING }));
   act(() => {
