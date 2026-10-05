@@ -13,6 +13,7 @@ import { isHost } from '../realtime/game-state.ts';
 import type { GameState } from '../realtime/game-state.ts';
 import type { Session } from '../realtime/session.ts';
 import { GameStore } from '../realtime/store.ts';
+import { reloadIfStale } from '../version.ts';
 import { Lobby } from './Lobby.tsx';
 import { Results } from './Results.tsx';
 import { Round } from './Round.tsx';
@@ -24,6 +25,12 @@ interface LobbySessionProps {
   onPrefs: (change: Partial<Prefs>) => void;
   onExit: (reason: ExitReason) => void;
   createSocket?: (url: string) => SocketLike;
+  storage: Storage | null; // this tab's session storage, where a reload for a new version is noted
+  reload?: () => void;
+}
+
+function reloadPage(): void {
+  window.location.reload();
 }
 
 function screenOf(game: GameState): 'lobby' | 'round' | 'results' {
@@ -48,6 +55,16 @@ function useRetryOnReturn(store: GameStore): void {
   }, [store]);
 }
 
+// A page from an older build reloads to the server's, but never during a round, where a reload would cost
+// the player their clip and their answer.
+function useReloadWhenStale(stale: { version: string | undefined; screen: string }, props: LobbySessionProps): void {
+  const { version, screen } = stale;
+  const { storage, reload = reloadPage } = props;
+  useEffect(() => {
+    if (version !== undefined && screen !== 'round') reloadIfStale(version, storage, reload);
+  }, [version, screen, storage, reload]);
+}
+
 // A new screen (the lobby, a game, the results) takes the focus to its first heading, so a screen reader
 // hears where the player is and the keyboard starts from there. The first screen keeps the page's focus.
 function useFocusOnScreenChange(screen: string, container: RefObject<HTMLDivElement | null>): void {
@@ -62,7 +79,8 @@ function useFocusOnScreenChange(screen: string, container: RefObject<HTMLDivElem
   }, [screen, container]);
 }
 
-export function LobbySession({ session, audio, prefs, onPrefs, onExit, createSocket }: LobbySessionProps) {
+export function LobbySession(props: LobbySessionProps) {
+  const { session, audio, prefs, onPrefs, onExit, createSocket } = props;
   const [store] = useState(() => new GameStore({ session, audio, onExit, createSocket }));
   useEffect(() => {
     store.connect();
@@ -73,6 +91,7 @@ export function LobbySession({ session, audio, prefs, onPrefs, onExit, createSoc
   const lobby = game.lobby;
   const host = isHost(game);
   const screen = screenOf(game);
+  useReloadWhenStale({ version: lobby?.version, screen }, props);
   const page = useRef<HTMLDivElement>(null);
   useFocusOnScreenChange(lobby && settings ? screen : 'connecting', page);
 

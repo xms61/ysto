@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.3.0] - 2026-10-05
+
+### Added
+- A page from an older version reloads itself after a deploy, in the lobby or on the results but never during a round, and keeps its seat. Before, an old tab's settings were refused by the new server.
+
 ## [1.2.1] - 2026-10-05
 
 ### Added
@@ -31,11 +36,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - 1.0: the v1 plan is complete. The game runs on its VPS from the released image; the load test meets its targets and the security review has no high findings. The playtest with friends, the clip timing on the VPS and an external port scan follow (tech-debt tracker).
 - The docs describe the running deployment: DEPLOY.md lists the open checks, SECURITY.md records the review, and the README's status is 1.0.
-
-## [0.33.0] - 2026-10-05
-
-### Added
-- A load test, `npm run load`: 25 lobbies of 8 bots play whole games against a running server and check the targets in RELIABILITY.md (clips and event-loop lag at the 95th percentile). Three runs passed: every game finished, clips at p95 under 120 ms and ping round trips under 10 ms.
-
-### Fixed
-- A round that not everyone answered could stay open for good: Node can run a timer a millisecond before the clock reaches its time, the round's close was then ignored, and nothing tried again. Timers now wait out the rest.
