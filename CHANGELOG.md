@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.18.4] - 2026-10-05
+
+### Changed
+- Tokyo Rain's noren is cloth: it hangs from a wooden pole across the machine's top, and below the heading its hem splits into four panels with the cabinet between them, printed with a white band and a crest the middle slit cuts in two, ending a little unevenly. With motion on, the hem sways slowly while the clip plays.
+
 ## [0.18.3] - 2026-10-05
 
 ### Fixed
