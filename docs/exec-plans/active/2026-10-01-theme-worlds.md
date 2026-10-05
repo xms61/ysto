@@ -67,7 +67,7 @@ Each milestone is one or more PRs on `feat/…` branches with a version bump, a 
 - [x] 2026-10-05 Gachapon: the capsule machine, light, with the coin dial (v0.20.0)
 - [x] 2026-10-05 Quest Board: the guild's notice board, bounty notices, the candle (v0.21.0)
 - [x] 2026-10-05 The answer box and pick chips in the world's material for Tokyo Rain, Hanami, Fighter Select, Model Kit and Gachapon (v0.21.1)
-- [ ] Quest Board: the owner's monster sprites in place of the line drawings ([prompts](../../PLATE_PROMPTS.md#quest-board-monster-sprites))
+- [x] 2026-10-05 Quest Board: the owner's monster sprites in place of the line drawings (v0.21.2)
 - [ ] Back Issue
 - [ ] Konbini 2 a.m.
 - [ ] Karaoke Box
@@ -82,7 +82,7 @@ Each milestone is one or more PRs on `feat/…` branches with a version bump, a 
 ## Where to pick up
 State on 2026-10-05: v0.18.4 closed the three open review findings (the listening ring, the lobby's start bar, Tokyo Rain's noren), v0.19.0 built Model Kit, v0.20.0 Gachapon and v0.21.0 Quest Board. Tokyo Rain, Hanami, Fighter Select, Model Kit, Gachapon and Quest Board are rebuilt with their motion; the other nine themes run on the shared card layout with their own tokens and plates.
 
-Do next: drop in the owner's Quest Board sprites when they arrive (encode each PNG to a faded WebP, check the title's contrast over it), then Back Issue, following the rules under Owner review findings.
+Do next: Back Issue, following the rules under Owner review findings.
 
 Working notes for a new session:
 - Check a theme by eye with `npm run build`, then the "start" preview (production server on :5173), a solo lobby, and `localStorage.ysto_prefs` set to the theme with `motion: 'full'` to see motion or `'reduced'` for steady screenshots. A solo answer ends the round at once; set Songs per game to 5 to reach the results quickly.
@@ -131,6 +131,7 @@ What the owner found playing the built worlds on 2026-10-02, and where each stan
 - 2026-10-05: Model Kit's plate shows at 0.05, like Hanami's: the page turned cutting-mat green, and at the old 0.13 the workbench plate dropped the wrong color and the field rims below AA (plate check).
 - 2026-10-05: Gachapon turns light, as its plate prompt and its sunny street call for; the provisional night palette was left from Magical Girl. Its plate shows at 0.07, the strongest that keeps the field rims at 3:1 on the light page. Like Model Kit it was built from its row without its own shape round, and the starry backdrop went with the night: nothing falls on a sunny street. It keeps the four-point sparkle as the charm.
 - 2026-10-05: Quest Board's notices are all one bounty design, after the owner's reference images and review: a ruled frame, a red heading and lines in a made-up script, and a monster drawn faintly behind the title, no skulls. Rejected on review: rolled parchment ends, tilted and overlapping notices, and four different notice styles. No notice carries words, because generated text joins the option's accessible name; the script and monsters are images. The monsters are line drawings until the owner's sprites arrive. The "Completed" seal sits behind the right notice's text in half-strength ink, where the text keeps 4.5:1, because over the corner it covered the neighboring notice. The pixel stars and the cursor blink went with the JRPG menu; the plate shows at 0.18.
+- 2026-10-05: The owner's monster sprites came as JPEGs with a checkerboard painted where transparency should be. Rather than ask for new ones, each becomes an ink layer: light neutral pixels go transparent and the rest are drawn in sepia as strong as they are dark, capped at 0.28 so the title keeps 7:1 (PLATE_PROMPTS.md has the command).
 
 ## Surprises
 - 2026-10-01: The protocol sends no per-pick answer time, so Tokyo Rain's ticket carries the title, kind and year instead of the answer time the shape promised.

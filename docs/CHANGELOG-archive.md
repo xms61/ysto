@@ -2,6 +2,14 @@
 
 Releases moved out of `CHANGELOG.md` (which keeps about the latest 5). Newest first.
 
+## [0.19.0] - 2026-10-05
+
+### Added
+- Model Kit is its own world: a step of a plastic model kit's manual on the cutting mat. The round's heading is the step header on the manual's paper; the options are four armor parts on one grey runner, keyed by gate tags A1 to A4; the time left is a nipper cutting along the runner's frame. At the reveal the right part is cut free in yellow plastic and snaps into place, and the rest stay on the runner as spares. With motion on, the nipper's jaws snap at each cut and the right part lifts and snaps down.
+
+### Removed
+- The hangar's scanner sweep and status beacons behind the old Mecha theme; Model Kit's workbench keeps still.
+
 ## [0.18.4] - 2026-10-05
 
 ### Changed

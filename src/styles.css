@@ -2277,19 +2277,19 @@
   }
 
   :root[data-theme='isekai'] .options > li:nth-child(1) .card-front {
-    background-image: url('./assets/notices/script-1.svg'), url('./assets/notices/slime.svg');
+    background-image: url('./assets/notices/script-1.svg'), url('./assets/notices/slime.webp');
   }
 
   :root[data-theme='isekai'] .options > li:nth-child(2) .card-front {
-    background-image: url('./assets/notices/script-2.svg'), url('./assets/notices/beast.svg');
+    background-image: url('./assets/notices/script-2.svg'), url('./assets/notices/beast.webp');
   }
 
   :root[data-theme='isekai'] .options > li:nth-child(3) .card-front {
-    background-image: url('./assets/notices/script-3.svg'), url('./assets/notices/wyvern.svg');
+    background-image: url('./assets/notices/script-3.svg'), url('./assets/notices/wyvern.webp');
   }
 
   :root[data-theme='isekai'] .options > li:nth-child(4) .card-front {
-    background-image: url('./assets/notices/script-4.svg'), url('./assets/notices/golem.svg');
+    background-image: url('./assets/notices/script-4.svg'), url('./assets/notices/golem.webp');
   }
 
   :root[data-theme='isekai'] .options > li .card:is([data-state='muted'], [data-state='missed']) .card-front {
