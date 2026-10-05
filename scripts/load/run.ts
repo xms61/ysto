@@ -6,6 +6,8 @@
 // against a server players use.
 import { parseArgs } from 'node:util';
 import WebSocket from 'ws';
+import { normalizeCode } from '../../shared/protocol.ts';
+import { isToken } from '../../server/tokens.ts';
 import { parseFlagsOrExit, runOrExit } from '../catalog/cli.ts';
 import { verdictOf } from './stats.ts';
 import type { LoadResult } from './stats.ts';
@@ -68,9 +70,14 @@ async function post(path: string, ip: string, name: string): Promise<Seat> {
   return body;
 }
 
+// Only a well-formed token goes into a clip URL, so a server's reply can never point a request elsewhere.
 async function fetchClip(token: string, seat: Seat, ip: string): Promise<boolean> {
+  if (!isToken(token)) {
+    result.errors.push('malformed clip token');
+    return false;
+  }
   const started = performance.now();
-  const response = await fetch(new URL(`/api/clips/${token}`, flags.url), {
+  const response = await fetch(new URL(`/api/clips/${encodeURIComponent(token)}`, flags.url), {
     headers: { Authorization: `Bearer ${seat.sessionToken}`, 'X-Forwarded-For': ip },
   });
   await response.arrayBuffer();
@@ -152,9 +159,11 @@ function playSeat(seat: Seat, ip: string, isHost: boolean): Promise<void> {
 async function playLobby(lobby: number): Promise<void> {
   const hostIp = addressOf(lobby, 0);
   const host = await post('/api/lobbies', hostIp, 'Bot 1');
+  const code = normalizeCode(host.code);
+  if (code === null) throw new Error('the server sent a malformed lobby code');
   const guests = await Promise.all(
     Array.from({ length: flags.players - 1 }, (_, at) =>
-      post(`/api/lobbies/${host.code}/players`, addressOf(lobby, at + 1), `Bot ${at + 2}`),
+      post(`/api/lobbies/${code}/players`, addressOf(lobby, at + 1), `Bot ${at + 2}`),
     ),
   );
   await Promise.all([
