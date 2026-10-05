@@ -9,7 +9,7 @@ interface PlayerListProps {
 }
 
 function Tag({ children }: { children: string }) {
-  return <span className="rounded-full border border-line px-2 py-0.5 text-xs text-muted">{children}</span>;
+  return <span className="rounded-lg border border-line px-2 py-0.5 text-xs text-muted">{children}</span>;
 }
 
 export function PlayerList({ lobby, onKick, showScores }: PlayerListProps) {

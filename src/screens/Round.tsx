@@ -233,7 +233,7 @@ function TimeLeft({ elapsed, secondsLeft }: { elapsed: number; secondsLeft: numb
   }
   return (
     <div className="flex items-center gap-3">
-      <div aria-hidden="true" className="h-2 flex-1 overflow-hidden rounded-full bg-raised">
+      <div aria-hidden="true" className="h-2 flex-1 overflow-hidden rounded-lg bg-raised">
         <div
           className="h-full origin-left bg-accent transition-transform duration-300 ease-linear"
           style={{ transform: `scaleX(${1 - elapsed})` }}
