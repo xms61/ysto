@@ -1,6 +1,6 @@
 ---
 status: draft
-last-verified: 2026-09-30
+last-verified: 2026-10-05
 ---
 
 # Reliability
@@ -33,7 +33,7 @@ How the app behaves when something fails or slows down. The general rules are in
 - A 30 s clip takes under 500 ms to cut at the 95th percentile. M3 measured 306 ms on the development machine with `npm run clips:bench`, and M8 repeats it on the VPS.
 - The next clip is cut during the current round, so the gap between rounds is the reveal (about 7 s).
 - Players hear the clip start within about the same moment, using clock offsets from `time:ping`.
-- Load target: 25 concurrent lobbies of 8 players on the VPS, with clip p95 under 1 s and event-loop lag under 50 ms (M9 load script).
+- Load target: 25 concurrent lobbies of 8 players, with clip p95 under 1 s and event-loop lag under 50 ms, checked by `npm run load` ([TESTING.md](TESTING.md)). On 2026-10-05 it ran three times on the development machine against the fixture server, each run 200 bots playing a 5-round game with one bot in ten letting a round run out: every game finished with no refusal, clips at p95 90 to 116 ms, and ping round trips at p95 3 to 9 ms (13 ms at most). Its first runs found rounds that never closed (a timer that fired a millisecond early), now fixed ([GAME.md](../server/game/GAME.md#gotchas)).
 - The client is about 100 KB gzipped (90 KB of script, 12 KB of styles), plus the theme's display font, 10 to 24 KB. Its budget is 125 KB gzipped, fonts aside; `npm run build` prints the sizes.
 
 ## Logging

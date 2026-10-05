@@ -1,6 +1,6 @@
 ---
 status: verified
-last-verified: 2026-09-29
+last-verified: 2026-10-05
 ---
 
 # Game: lobbies, questions and rounds
@@ -33,6 +33,7 @@ Entry: `server/game/questions.ts`. `buildGame(catalog, settings, random, playedT
 
 ## Gotchas
 - The engine's timers carry their round's id, so a stale timer (an early close's twin, or a timer of a finished round) does nothing. `Games` replaces a timer of the same name and round.
+- The engine checks the clock when a timer runs (`now >= round.closeAt`) and nothing re-arms a timer that ran early. Node can fire a `setTimeout` a millisecond before `Date.now()` reaches its time, so `systemScheduler.at` waits out the rest; without that, a round nobody finished answering stayed open for good (found by the load test, fixed in 0.33.0).
 - In First correct the round closes 150 ms after the first correct answer, since a slower connection's answer may still have the lower adjusted time.
 - Popularity comes two ways. `popularityPct` is a percentile among playable anime, from 0 (most popular) to 1. `popularityRank` starts at 1 for the most popular. Custom filters by rank, while the distractor bands compare percentiles.
 - The universe is not the pool. `optionUniverse` applies only the anime filters (years, genres, formats), so an anime whose themes are all filtered out can still be an option.
