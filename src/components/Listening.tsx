@@ -13,13 +13,16 @@ function wordsFor(status: ClipStatus | null, playing: boolean): string {
 }
 
 // The rings live in a layer over the whole panel, behind its content. They start on the headphones, and grow
-// until they reach the panel's farthest corner, so each one sweeps the panel edge to edge.
+// until they reach the panel's farthest corner, so each one sweeps the panel edge to edge. The headphones can
+// move while the panel keeps its size, when the stage slot trades the countdown for a world's timer or a web
+// font lands, so the sonar box that holds them is watched as well as the panel.
 function useRingField(core: RefObject<HTMLElement | null>, field: RefObject<HTMLElement | null>): void {
   useEffect(() => {
     const icon = core.current;
     const layer = field.current;
     const panel = icon?.closest('.panel');
-    if (!icon || !layer || !panel) return;
+    const sonar = icon?.closest('.sonar');
+    if (!icon || !layer || !panel || !sonar) return;
     const measure = () => {
       const box = panel.getBoundingClientRect();
       const at = icon.getBoundingClientRect();
@@ -31,10 +34,22 @@ function useRingField(core: RefObject<HTMLElement | null>, field: RefObject<HTML
       layer.style.setProperty('--ring-reach', `${Math.ceil(reach)}px`);
     };
     measure();
-    if (typeof ResizeObserver === 'undefined') return;
+    let live = true;
+    void document.fonts?.ready.then(() => {
+      if (live) measure();
+    });
+    if (typeof ResizeObserver === 'undefined') {
+      return () => {
+        live = false;
+      };
+    }
     const observer = new ResizeObserver(measure);
     observer.observe(panel);
-    return () => observer.disconnect();
+    observer.observe(sonar);
+    return () => {
+      live = false;
+      observer.disconnect();
+    };
   }, [core, field]);
 }
 
