@@ -284,6 +284,31 @@ colors:
   omikuji-rope: "#c9a66b"
   omikuji-fold: "#e4dccf"
   omikuji-brass: "#d4a43a"
+  blossom-map-page: "#eef6e4"
+  blossom-map-panel: "#ffffff"
+  blossom-map-raised: "#e2f0d3"
+  blossom-map-line: "#bcd9a4"
+  blossom-map-edge: "#4f7d3a"
+  blossom-map-ink: "#1e2a1a"
+  blossom-map-muted: "#4a5a43"
+  blossom-map-accent: "#c92a62"
+  blossom-map-accent-ink: "#ffffff"
+  blossom-map-good: "#276f38"
+  blossom-map-bad: "#a3203f"
+  blossom-map-card: "#ffffff"
+  blossom-map-card-ink: "#1e2a1a"
+  blossom-map-card-muted: "#4a5a43"
+  blossom-map-card-dim: "#e7efe0"
+  blossom-map-card-mark: "#2b7a3d"
+  blossom-map-card-mark-ink: "#ffffff"
+  blossom-map-card-chosen: "#fde3ec"
+  blossom-map-card-chosen-ink: "#1e2a1a"
+  blossom-map-card-alert: "#a3203f"
+  blossom-map-card-back: "#ffe0ea"
+  blossom-map-card-back-ink: "#1e2a1a"
+  blossom-map-route: "#8a7a55"
+  blossom-map-blossom: "#f6b8cc"
+  blossom-map-blossom-heart: "#e0507f"
 rounded:
   tokyo-rain-lg: "0.375rem"
   tokyo-rain-xl: "0.375rem"
@@ -315,6 +340,9 @@ rounded:
   omikuji-lg: "0.125rem"
   omikuji-xl: "0.25rem"
   omikuji-2xl: "0.25rem"
+  blossom-map-lg: "999px"
+  blossom-map-xl: "1.25rem"
+  blossom-map-2xl: "1.5rem"
 typography:
   tokyo-rain-display:
     fontFamily: "'Zen Kaku Gothic New', ui-sans-serif, system-ui, sans-serif"
@@ -396,6 +424,14 @@ typography:
     fontFamily: "'Shippori Mincho', 'Hiragino Mincho ProN', 'Yu Mincho', serif"
     fontWeight: 600
     letterSpacing: "0.01em"
+  blossom-map-display:
+    fontFamily: "'Zen Maru Gothic', 'Hiragino Maru Gothic ProN', ui-rounded, system-ui, sans-serif"
+    fontWeight: 700
+    letterSpacing: "0.01em"
+  blossom-map-title:
+    fontFamily: "'Zen Maru Gothic', 'Hiragino Maru Gothic ProN', ui-rounded, system-ui, sans-serif"
+    fontWeight: 700
+    letterSpacing: "0"
   home-title:
     fontSize: "3rem"
     lineHeight: 1
@@ -519,7 +555,7 @@ The themes are being rebuilt as fifteen worlds, each laying out the round, the r
 Each theme is one block of variables on any element with `data-theme`, in two families: the chrome around the cards and the card stock itself.
 
 ### Primary
-- **Accent** (`accent`, with `accent-ink` on it): the primary button, the timer's fill, the lit sonar in the listening panel, focus outlines, the selected theme in the picker, the caret and text selection. Tokyo Rain's is signal amber, Hanami's blossom pink, Fighter Select's arcade yellow, Model Kit's yellow part plastic, Gachapon's candy red, Quest Board's candle amber, Back Issue's process magenta, kept to what can be tapped, Konbini 2 a.m.'s saffron from its shop stripe, Karaoke Box's booth pink, Omikuji's shrine vermilion.
+- **Accent** (`accent`, with `accent-ink` on it): the primary button, the timer's fill, the lit sonar in the listening panel, focus outlines, the selected theme in the picker, the caret and text selection. Tokyo Rain's is signal amber, Hanami's blossom pink, Fighter Select's arcade yellow, Model Kit's yellow part plastic, Gachapon's candy red, Quest Board's candle amber, Back Issue's process magenta, kept to what can be tapped, Konbini 2 a.m.'s saffron from its shop stripe, Karaoke Box's booth pink, Omikuji's shrine vermilion, Blossom Map's blossom pink for this player's chip.
 
 ### Secondary
 - **Card stock** (`card`, `card-ink`): the face of an open card.
@@ -531,7 +567,7 @@ Each theme is one block of variables on any element with `data-theme`, in two fa
 
 ### Tertiary
 - **Right and wrong** (`good`, `bad`): verdict and error colors on the panels. They never carry meaning alone; an icon and words always go with them.
-- **Material colors**, only where a theme's stock needs them: Hanami's `blossom` and gold `foil`, Gachapon's gold `foil` and its `--foil-sheen` gradient for the charm, Back Issue's process-yellow `slab`, process `cyan` and `halftone`, Konbini 2 a.m.'s shop, Karaoke Box's booth and Omikuji's shrine (see Theme worlds).
+- **Material colors**, only where a theme's stock needs them: Hanami's `blossom` and gold `foil`, Gachapon's gold `foil` and its `--foil-sheen` gradient for the charm, Back Issue's process-yellow `slab`, process `cyan` and `halftone`, Konbini 2 a.m.'s shop, Karaoke Box's booth, Omikuji's shrine and Blossom Map's map (see Theme worlds).
 
 ### Neutral
 - **Page** (`page`): behind everything, under the theme's texture. Also the fill of fields.
@@ -654,6 +690,7 @@ A small tag across the card's top edge, 0.5rem from the right, outside the faces
 | Konbini 2 a.m. (`konbini`) | A price card on the shelf (see Theme worlds): white card under a plum header band, the title in marker, standing on a clear price rail | A saffron price star with a dark numeral | Pale saffron, its star turned plum; muted cards drop their band and star, the number left on grey card | A thermal receipt in dot type, torn off along a jagged foot; face down, the plum stock with a saffron "?!" |
 | Karaoke Box (`karaoke`) | A song row on the remote (see Theme worlds): a pale row, one of four in a single column, the title beside its number | A navy box with a white numeral, the song's number | Pale pink, its number box turned pink; muted rows go grey | "Now playing" in cyan, its label, title and details in one row; face down, a navy row with a pink "?!" |
 | Omikuji (`omikuji`) | A folded slip (see Theme worlds): washi with its top corner folded down, in a hairline | A brushed vermilion numeral, no box | A vermilion rim round the drawn slip; muted slips are tied to the branch, a paper knot across the top and the numeral faded | The great blessing: the slip unfolded, framed twice in vermilion, 大吉 brushed faintly down one side; face down, the plain folded slip with a vermilion "?!" |
+| Blossom Map (`blossom-map`) | A viewing spot on the map (see Theme worlds): a white capsule at its own place over the map's lawns and paths, all four the same size | A green spot marker with a white numeral | A pink rim, this player's chip on the capsule's leading edge; muted spots go pale green | The spot in bloom: blossom pink with a five-petal flower open at its foot; face down, a green capsule with a white "?!" |
 
 ### The reveal's hit
 After the right card turns over, its stock prints a hit round it (`.card-impact`) and a burst of its own material flies out from the middle (`Burst.tsx`). With a streak of 3 or more right answers the hit lands harder, and harder again from 5: more motes, a wider ring, a bigger shake (`data-heat`, 1 to 3).
@@ -670,6 +707,7 @@ After the right card turns over, its stock prints a hit round it (`.card-impact`
 | Konbini 2 a.m. (`konbini`) | The scanner's red line passes down the receipt | The shared burst in the theme's colors |
 | Karaoke Box (`karaoke`) | The right row wipes to "now playing" from the left, as a lyric is sung | The shared burst in the theme's colors |
 | Omikuji (`omikuji`) | The slip unfolds from its top as it lands | The shared burst in the theme's colors |
+| Blossom Map (`blossom-map`) | The flower opens on the right spot | The shared burst in the theme's colors |
 
 ### Themes beyond the card
 
@@ -685,6 +723,7 @@ After the right card turns over, its stock prints a hit round it (`.card-impact`
 | Konbini 2 a.m. (`konbini`) | DotGothic16, the dot type of a register's receipt | Yusei Magic, a marker pen's lettering, as on a shop's handwritten price cards | A wet street at night lit by the shop; slanted rain with motion on | The round's heading is the shop's lit fascia sign; quiet buttons light a saffron rim under the pointer; the lobby's start bar is the counter's front under the shop's stripe |
 | Karaoke Box (`karaoke`) | M PLUS Rounded 1c, extra bold, the round gothic of lyric subtitles, outlined on the screen | M PLUS Rounded 1c, bold | An empty booth with a vinyl bench and mirror-ball spots; lights twinkle with motion on | The round's heading is the booth's lyric screen; quiet buttons light a pink rim under the pointer; the lobby's start bar is the remote's dark body |
 | Omikuji (`omikuji`) | Yuji Syuku, a brush face, for the headings and the slips' numerals | Shippori Mincho, semibold, as printed on a fortune | A misty shrine courtyard with tied fortunes and a blossom branch; petals fall with motion on | The round's heading hangs on a torii's vermilion beam under its black cap; quiet buttons light a vermilion rim under the pointer; the lobby's start bar is the torii's beam |
+| Blossom Map (`blossom-map`) | Zen Maru Gothic, bold, the rounded type of a park's guide map | The same | A flat illustrated park map; petals fall with motion on | The round's heading is the map's green title cartouche with a north arrow; pill buttons, quiet ones lighting a pink rim under the pointer; the lobby's start bar is the map sheet's foot with its scale bar |
 
 ### Theme worlds
 The fifteen themes are becoming worlds that each lay out the round, the reveal and the results in their own way ([plan](exec-plans/active/2026-10-01-theme-worlds.md)). What a world changes beyond its stock lives in `src/themes/stage.ts`, read through `useStage()`: how the time left reads (`readout`: the shared bar, a seven-segment display of the seconds, or a world's own object), the mark printed on each option that was not the answer (`wrongMark`), and whether the four options stand in one column of rows instead of 2x2 (`rows`). A theme that sets nothing plays the shared round. The stage never changes what the four options are, that they are equal in size, or when they show.
@@ -708,6 +747,8 @@ The fifteen themes are becoming worlds that each lay out the round, the reveal a
 **Karaoke Box (`karaoke`): the booth's lyric screen and song remote.** The page is the booth at night under twinkling lights. The round's heading is the booth's lyric screen: deep blue glass (`--screen`) in a black bezel (`--bezel`) across the panel's top, with "Round 1 of 5" set large as a lyric line, white (`--screen-ink`) in a periwinkle outline (`--lyric-edge`, which axe reads as the text color, so it passes on the screen by itself). The line is the timer (`readout: 'lyric'`): its words fill with pink (`--lyric-sung`) from the left as the round runs, empty before it starts and full at the reveal, a copy hidden from screen readers cut back to the share sung; the seconds show small beside the listening light. The listening light is the microphone's silver grille. The options are four song rows on the remote (`rows`: one column instead of 2x2), the remote a dark plastic body (`--remote`, its rim `--remote-rim`), each row pale with the title beside its number in a navy box. A pick turns the row pale pink and its number box pink. At the reveal the right row turns to "now playing" in cyan, its label, title and details in one row; the others go grey. Below the cards, the answer box is the lyric screen again, the title outlined like a lyric and the kind on a pink tag; the names of who picked each row sit on the remote's dark keys, this player's in pink. The results are the end-of-song score screen: the winner on the lyric screen, the score huge in outlined pink. The lobby's start bar is the remote's dark body. With motion on, the lyric's color follows the time smoothly (300ms steps), a picked row's number sends with a pink pulse like the remote's key (420ms), the right row wipes to "now playing" from the left (640ms), and the winner's score lands on the screen (560ms).
 
 **Omikuji (`omikuji`): a shrine's fortune slips in spring.** A light world: washi under a misty courtyard with petals falling. The round's heading hangs on a torii: the vermilion beam (`--beam`, its text `--beam-ink`) with the black cap above it (`--lintel`) rising at both ends. The listening light is the shrine's brass bell (`--brass`) with its slit. The time left is a straw rope (`--rope`) across the row with eight zigzag paper streamers hanging from it (`readout: 'shide'`, `Shide.tsx`), taken one at a time from the right, the seconds beside it. The options are four folded slips of washi in a 2x2 grid, each with its top corner folded down (`--fold`) and its key brushed in vermilion. A pick rims the drawn slip in vermilion. At the reveal the right slip unfolds as the great blessing: framed twice in vermilion with 大吉 brushed faintly down one side, hidden from screen readers; the others are tied to the branch, a twist of white paper knotted across their tops and their numerals faded. Below the cards, the answer box is the fortune unfolded, framed twice in vermilion with its kind in a vermilion seal and the cover's wash cut back; the names of who picked each slip sit on little paper slips, this player's in vermilion. The results give the winner the great blessing, the unfolded slip with a 大吉 seal in its foot's corner. The lobby's start bar is the torii's beam. With motion on, the streamers sway while the clip plays and each falls as it goes (360ms), a picked slip is drawn up out of the box (380ms), the right slip unfolds from its top (560ms), the knots tie on (300ms), and the results' slips flutter in.
+
+**Blossom Map (`blossom-map`): a hanami park's guide map in flat color lobes.** A light world. The round's heading is the map's title cartouche: a green pill (`card-mark`) with a north arrow at its end. The listening light is the map's "you are here" mark, a white disc in a pink ring (`--blossom`). The time left is a walk on the map (`readout: 'route'`, `Route.tsx`): a dotted route (`--route`) across the row to a blossom tree, the part walked drawn solid in green and the player's pink pin walking along it, the seconds beside it. The options are four viewing spots on the map itself: the map's ground is a flat drawing of lawns, a pond, sand paths and pink tree clusters (`src/assets/map/ground.svg`, no text) inside the sheet's white margin, and each spot is a white capsule set at its own fixed place, nudged up or down, all four the same size, its key on a green spot marker. A pick rims the capsule in pink and sends this player's chip across to its leading edge. At the reveal the right spot blooms: blossom pink (`card-back`) with a five-petal flower (`--blossom`, its heart `--blossom-heart`) opening at its foot; the others go pale green. Below the cards, the answer box is the map's legend box in a green rule, its kind on a green tag; the names of who picked each spot sit on round map chips, this player's in pink. The results give the winner the spot in bloom, a pink capsule with its flower open. The lobby's start bar is the map sheet's foot with its green and white scale bar. With motion on, the pin walks the route smoothly, a picked capsule's chip crosses to its leading edge (420ms), and the flower opens on the right spot (520ms) and again on the winner.
 
 ### The backdrop plates
 Each theme sets a painted scene behind its page: `--plate` names the image in `src/assets/plates/` and `--plate-opacity` how strongly it shows over the page color. The opacity is the highest that keeps the page pairs passing over every pixel (Contrast the tests enforce), so Hanami's bright tarp shows least and Blossom Map's flat park most. With motion on the plate drifts slowly (Motion).

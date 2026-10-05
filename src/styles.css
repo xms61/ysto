@@ -15,6 +15,7 @@
 @import '@fontsource/m-plus-rounded-1c/latin-800.css';
 @import '@fontsource/yuji-syuku/latin-400.css';
 @import '@fontsource/shippori-mincho/latin-600.css';
+@import '@fontsource/zen-maru-gothic/latin-700.css';
 
 /*
  * Seven themes, one card anatomy (docs/DESIGN.md). Every round deals four identical cards, and each theme
@@ -576,7 +577,9 @@
     --radius-2xl: 0.25rem;
   }
 
-  /* Blossom Map: a hanami park's guide map in flat color lobes. */
+  /* Blossom Map: a hanami park's guide map in flat color lobes. The round's heading is the map's title
+     cartouche, the time left a walk along a dotted route, and the options four viewing spots as capsules at fixed
+     places on the map. */
   [data-theme='blossom-map'] {
     --display-adjust: 0.52;
     color-scheme: light;
@@ -602,14 +605,19 @@
     --card-chosen: #fde3ec;
     --card-chosen-ink: #1e2a1a;
     --card-alert: #a3203f;
-    --card-back: #2b7a3d;
-    --card-back-ink: #ffffff;
-    --display-font: 'Mochiy Pop One', 'Hiragino Maru Gothic ProN', ui-rounded, system-ui, sans-serif;
-    --display-weight: 400;
+    --card-back: #ffe0ea;
+    --card-back-ink: #1e2a1a;
+    /* The map: its ground is an image (assets/map/ground.svg); the route's dots, the blossom and its heart are
+       drawn over it. None of them carries text. */
+    --route: #8a7a55;
+    --blossom: #f6b8cc;
+    --blossom-heart: #e0507f;
+    --display-font: 'Zen Maru Gothic', 'Hiragino Maru Gothic ProN', ui-rounded, system-ui, sans-serif;
+    --display-weight: 700;
     --display-case: none;
     --display-tracking: 0.01em;
     --title-font: var(--display-font);
-    --title-weight: 400;
+    --title-weight: 700;
     --title-case: none;
     --title-tracking: 0;
     --title-adjust: 0.52;
@@ -3187,6 +3195,166 @@
     opacity: 0;
   }
 
+  /* ---- Blossom Map: a hanami park's guide map in flat color lobes. The round's heading is the map's title
+     cartouche in park green with a north arrow; the time left is a walk along a dotted route to a blossom tree;
+     the options are four viewing spots, white capsules set at fixed places over the map's lawns, pond and paths,
+     each keyed by a green spot number. A pick sends this player's chip across to the capsule's leading edge; at
+     the reveal the right spot blooms in blossom pink. ---- */
+  /* The title cartouche: a green pill on the map, a north arrow at its end. */
+  :root[data-theme='blossom-map'] .round-head {
+    position: relative;
+    margin-bottom: 1rem;
+    padding: 0.625rem 2.75rem 0.625rem 1.25rem;
+    border-radius: 999px;
+    background: var(--card-mark);
+    color: var(--card-mark-ink);
+    box-shadow: 0 0.25rem 0 rgb(30 42 26 / 0.18);
+  }
+
+  :root[data-theme='blossom-map'] .round-head::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: 1rem;
+    width: 0.875rem;
+    height: 1.25rem;
+    margin-top: -0.625rem;
+    background: linear-gradient(90deg, var(--card-mark-ink) 50%, rgb(255 255 255 / 0.45) 50%);
+    clip-path: polygon(50% 0, 100% 100%, 50% 75%, 0 100%);
+  }
+
+  :root[data-theme='blossom-map'] .round-head .button-quiet {
+    border: 2px solid var(--card-mark-ink);
+    background: transparent;
+    color: var(--card-mark-ink);
+  }
+
+  /* The listening light is the map's "you are here" mark: a white disc in a pink ring. */
+  :root[data-theme='blossom-map'] .sonar-core {
+    background: var(--panel);
+    box-shadow: inset 0 0 0 0.25rem var(--blossom);
+  }
+
+  /* The map: flat lawns, a pond and sand paths, inside the sheet's white margin. */
+  :root[data-theme='blossom-map'] .options {
+    padding: 1.25rem 1rem;
+    border-radius: var(--radius-xl);
+    background: url('./assets/map/ground.svg') center / cover no-repeat;
+    box-shadow:
+      inset 0 0 0 0.3125rem var(--panel),
+      inset 0 0 0 calc(0.3125rem + 1px) var(--line);
+  }
+
+  /* Each spot keeps its own place on the map; all four stay the same size. */
+  :root[data-theme='blossom-map'] .options > li:nth-child(1) {
+    translate: 0 -0.375rem;
+  }
+
+  :root[data-theme='blossom-map'] .options > li:nth-child(2) {
+    translate: 0 0.375rem;
+  }
+
+  :root[data-theme='blossom-map'] .options > li:nth-child(3) {
+    translate: 0 -0.125rem;
+  }
+
+  :root[data-theme='blossom-map'] .options > li:nth-child(4) {
+    translate: 0 0.5rem;
+  }
+
+  /* A spot: a white capsule, its number on a green marker. */
+  :root[data-theme='blossom-map'] .card-face {
+    padding-inline: 1rem;
+    border-radius: 2rem;
+  }
+
+  :root[data-theme='blossom-map'] .card-front {
+    border: 0;
+    box-shadow: 0 0.25rem 0.5rem -0.125rem rgb(30 42 26 / 0.3);
+  }
+
+  :root[data-theme='blossom-map'] .card[data-state='chosen'] .card-front {
+    box-shadow:
+      inset 0 0 0 2px var(--accent),
+      0 0.25rem 0.5rem -0.125rem rgb(30 42 26 / 0.3);
+  }
+
+  /* This player's chip sits on the chosen capsule's leading edge. */
+  :root[data-theme='blossom-map'] .card[data-state='chosen'] .card-tag {
+    right: auto;
+    left: 0.75rem;
+    background: var(--accent);
+    color: var(--accent-ink);
+  }
+
+  :root[data-theme='blossom-map'] .card:is([data-state='muted'], [data-state='missed']) .card-front {
+    box-shadow: none;
+  }
+
+  /* The right spot blooms: blossom pink, a five-petal flower open at its foot's corner. */
+  :root[data-theme='blossom-map'] .card-back:not(.card-printed)::after {
+    content: '';
+    position: absolute;
+    right: 0.75rem;
+    bottom: 0.5rem;
+    width: 2rem;
+    height: 2rem;
+    background:
+      radial-gradient(circle at 50% 50%, var(--blossom-heart) 0 16%, transparent 17%),
+      radial-gradient(circle at 50% 22%, var(--blossom) 0 22%, transparent 23%),
+      radial-gradient(circle at 77% 41%, var(--blossom) 0 22%, transparent 23%),
+      radial-gradient(circle at 67% 74%, var(--blossom) 0 22%, transparent 23%),
+      radial-gradient(circle at 33% 74%, var(--blossom) 0 22%, transparent 23%),
+      radial-gradient(circle at 23% 41%, var(--blossom) 0 22%, transparent 23%);
+  }
+
+  /* Face down, a green capsule with a white "?!". */
+  :root[data-theme='blossom-map'] .card-printed {
+    border: 0;
+    background: var(--card-mark);
+    color: var(--card-mark-ink);
+  }
+
+  :root[data-theme='blossom-map'] .button-quiet:hover:not(:disabled) {
+    border-color: var(--accent);
+  }
+
+  /* Blossom Map's walk (Route.tsx): the dotted way ahead, the green way walked, the tree and the player's pin. */
+  .route {
+    flex: 1;
+    min-width: 0;
+    height: auto;
+    overflow: visible;
+  }
+
+  .route-ahead,
+  .route-walked {
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .route-ahead {
+    stroke: var(--route);
+    stroke-width: 2;
+    stroke-dasharray: 0.5 5;
+  }
+
+  .route-walked {
+    stroke: var(--card-mark);
+    stroke-width: 3;
+  }
+
+  .route-tree {
+    fill: var(--blossom);
+  }
+
+  .route-pin {
+    fill: var(--accent);
+    stroke: var(--panel);
+    stroke-width: 2;
+  }
+
   /* ---- The reveal's answer box (.reveal-band) and the names under each card (.picker), in each rebuilt world's
      material. Text keeps a tested pair; the cover's wash is cut back on light paper. ---- */
   /* Tokyo Rain: the machine's lit display panel; the pickers' names on ticket stubs. */
@@ -3433,13 +3601,38 @@
     color: var(--card-mark-ink);
   }
 
+  /* Blossom Map: the map's legend box in a green rule, its kind on a green tag; names on round map chips, this
+     player's in pink. */
+  :root[data-theme='blossom-map'] .reveal-band {
+    border: 2px solid var(--card-mark);
+    background: var(--panel);
+  }
+
+  :root[data-theme='blossom-map'] .reveal-kind {
+    background: var(--card-mark);
+    color: var(--card-mark-ink);
+  }
+
+  :root[data-theme='blossom-map'] .picker {
+    border: 2px solid var(--card-mark);
+    background: var(--panel);
+    color: var(--ink);
+  }
+
+  :root[data-theme='blossom-map'] .picker[data-you] {
+    border-color: var(--accent);
+    background: var(--accent);
+    color: var(--accent-ink);
+  }
+
   /* On light paper the cover's wash is cut back, so the dark ink keeps its contrast. */
   :root:is(
       [data-theme='mecha'],
       [data-theme='magical-girl'],
       [data-theme='retro-vhs'],
       [data-theme='konbini'],
-      [data-theme='omikuji']
+      [data-theme='omikuji'],
+      [data-theme='blossom-map']
     )
     .reveal-wash {
     opacity: 0.12;
@@ -4214,6 +4407,30 @@
     writing-mode: vertical-rl;
   }
 
+  /* Blossom Map's winner is the spot in bloom: a blossom-pink capsule, its flower open between the place and the
+     score. */
+  :root[data-theme='blossom-map'] .bill-lead {
+    border-radius: 2rem;
+    box-shadow: var(--panel-shadow);
+  }
+
+  :root[data-theme='blossom-map'] .bill-lead::after {
+    content: '';
+    position: absolute;
+    top: 0.875rem;
+    left: 50%;
+    margin-left: -1.375rem;
+    width: 2.75rem;
+    height: 2.75rem;
+    background:
+      radial-gradient(circle at 50% 50%, var(--blossom-heart) 0 16%, transparent 17%),
+      radial-gradient(circle at 50% 22%, var(--blossom) 0 22%, transparent 23%),
+      radial-gradient(circle at 77% 41%, var(--blossom) 0 22%, transparent 23%),
+      radial-gradient(circle at 67% 74%, var(--blossom) 0 22%, transparent 23%),
+      radial-gradient(circle at 33% 74%, var(--blossom) 0 22%, transparent 23%),
+      radial-gradient(circle at 23% 41%, var(--blossom) 0 22%, transparent 23%);
+  }
+
   /* ---- The theme picker (ThemeSheet.tsx): a full-screen sheet over the page, which tries on the selected world
      behind it. Each tile nests its own theme, so its tokens draw the world's object and colors. ---- */
   .theme-row {
@@ -4486,6 +4703,15 @@
     background:
       linear-gradient(var(--lintel), var(--lintel)) 0 0 / 100% 0.3125rem no-repeat,
       linear-gradient(var(--beam), var(--beam)) 0 0.3125rem / 100% 0.375rem no-repeat,
+      var(--panel);
+  }
+
+  /* Blossom Map: the map sheet's foot, its scale bar in green and white along the top edge. */
+  :root[data-theme='blossom-map'] .start-bar {
+    border-top: 1px solid var(--line);
+    background:
+      repeating-linear-gradient(90deg, var(--card-mark) 0 1.5rem, var(--panel) 1.5rem 3rem) 0 0 / 100% 0.3125rem
+        no-repeat,
       var(--panel);
   }
 
@@ -5866,6 +6092,40 @@
   to {
     opacity: 1;
     transform: none;
+  }
+}
+
+/* Blossom Map: the pin walks the route smoothly; a pick sends this player's chip across the capsule to its leading
+   edge; at the reveal the right spot's flower opens, and the winner's opens again at the results. */
+:root[data-motion='full'] .route-pin {
+  transition:
+    cx 300ms linear,
+    cy 300ms linear;
+}
+
+:root[data-motion='full'][data-theme='blossom-map'] .card[data-state='chosen'] .card-tag {
+  animation: chip-cross 420ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+:root[data-motion='full'][data-theme='blossom-map'] .card[data-turned] .card-back::after {
+  animation: bloom 520ms cubic-bezier(0.16, 1, 0.3, 1) 800ms both;
+}
+
+:root[data-motion='full'][data-theme='blossom-map'] .bill-lead.bill-act::after {
+  animation: bloom 520ms cubic-bezier(0.16, 1, 0.3, 1) calc(var(--act-delay) + 400ms) both;
+}
+
+@keyframes chip-cross {
+  from {
+    translate: 4rem 0;
+    opacity: 0;
+  }
+}
+
+@keyframes bloom {
+  from {
+    scale: 0;
+    rotate: -72deg;
   }
 }
 

@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.27.0] - 2026-10-05
+
+### Added
+- Blossom Map is its own world: a hanami park's guide map. The round's heading is the map's green title cartouche with a north arrow; the time left is a walk along a dotted route to a blossom tree, the player's pin walking it; the options are four viewing spots, white capsules at their own places over the map's lawns, pond and paths. A pick sends this player's chip across to the capsule's leading edge; at the reveal the right spot blooms pink with a flower. The answer box is the map's legend, the pickers' names round map chips, and the winner is the spot in bloom. Type is Zen Maru Gothic.
+
+### Changed
+- Blossom Map's right answer blooms in blossom pink, in place of a solid green back.
+- The browser tests run Chromium and Firefox muted.
+
 ## [0.26.0] - 2026-10-05
 
 ### Added
