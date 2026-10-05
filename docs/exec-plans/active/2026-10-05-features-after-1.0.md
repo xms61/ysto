@@ -150,7 +150,7 @@ Each milestone is one PR on a `feat/…` branch (two where noted), with a versio
 - [x] 2026-10-05 M15 What's new (1.5.0)
 - [x] 2026-10-05 M16 Large screens (1.9.0)
 - [x] 2026-10-05 M17 A reveal that fits the screen (1.10.0)
-- [ ] M18 The anime log
+- [x] 2026-10-05 M18 The anime log (1.13.0)
 - [x] 2026-10-05 M19 Player icons as stamps (1.11.0)
 - [x] 2026-10-05 M2 The game's songs at the results (1.4.0)
 - [x] 2026-10-05 M3 Report a broken clip (1.6.0)
@@ -176,6 +176,7 @@ Each milestone is one PR on a `feat/…` branch (two where noted), with a versio
 - 2026-10-05: The daily's seed takes a server secret, because the code and the catalog's sources are public. Rejected: a seed from the date alone.
 - 2026-10-05: The streak lives on the device, because the game has no accounts and keeps no personal data. Rejected: a server-side streak, which would need an identity.
 - 2026-10-05: Reports keep no names, addresses or lobby codes, because nothing about a report needs them, and SECURITY.md keeps no personal data. Rejected: free-text reports, which would need moderating.
+- 2026-10-05: The anime log (M18) learns which songs the player got right from the results' song list, which now names the players who picked each song right. It is sent only once the game is over, so it tells nobody an answer early. Rejected: collecting each round's reveal on the client, which a player who reconnects at the results would miss.
 
 ## Open questions
 Each has a default the milestone builds unless the owner decides otherwise:

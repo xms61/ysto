@@ -9,6 +9,7 @@ import { usePrefs } from './prefs/prefs.ts';
 import type { ExitReason, SocketLike } from './realtime/connection.ts';
 import { readSession, writeSession } from './realtime/session.ts';
 import type { Session } from './realtime/session.ts';
+import { GameLog } from './screens/GameLog.tsx';
 import { Home } from './screens/Home.tsx';
 import { LobbySession } from './screens/LobbySession.tsx';
 import { ThemeContext } from './themes/stage.ts';
@@ -47,6 +48,7 @@ export function App({ audio, storage, createSocket, reload }: AppProps) {
   const [joinCode, setJoinCode] = useState(() => codeFromPath(window.location.pathname));
   const [notice, setNotice] = useState<string | null>(null);
   const [replaced, setReplaced] = useState(false);
+  const [showLog, setShowLog] = useState(false);
   const [notes, setNotes] = useState(() => notesToShow(storage.local, CLIENT_VERSION));
   const notesSeen = () => {
     markSeen(storage.local, CLIENT_VERSION);
@@ -77,6 +79,10 @@ export function App({ audio, storage, createSocket, reload }: AppProps) {
   }
 
   function screen() {
+    if (!session && showLog) {
+      const titles = { first: prefs.titleLanguage, second: prefs.secondTitleLanguage };
+      return <GameLog storage={storage.local} titles={titles} onBack={() => setShowLog(false)} />;
+    }
     if (!session) {
       return (
         <>
@@ -87,6 +93,7 @@ export function App({ audio, storage, createSocket, reload }: AppProps) {
             onPrefs={updatePrefs}
             unlockAudio={() => audio.unlock()}
             onSeated={seated}
+            onShowLog={() => setShowLog(true)}
           />
           {notes.length > 0 && <WhatsNew lines={notes} onClose={notesSeen} />}
         </>
@@ -118,6 +125,7 @@ export function App({ audio, storage, createSocket, reload }: AppProps) {
         onExit={exited}
         createSocket={createSocket}
         storage={storage.session}
+        log={storage.local}
         reload={reload}
         notes={notes}
         onNotesSeen={notesSeen}
