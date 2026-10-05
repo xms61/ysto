@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { mkdtempSync, rmSync } from 'node:fs';
+import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { test } from 'node:test';
@@ -42,4 +42,20 @@ test('only logs reports without a state folder', () => {
   const { lines, log } = capture();
   openReports(null, log).add(REPORT);
   assert.match(lines.join(), /clip\.reported.*"themeId":42/);
+});
+
+test('runs on, logging reports, when the state folder cannot be opened', () => {
+  const dir = mkdtempSync(join(tmpdir(), 'ysto-reports-'));
+  try {
+    const notAFolder = join(dir, 'file');
+    writeFileSync(notAFolder, '');
+    const { lines, log } = capture();
+    const reports = openReports(notAFolder, log);
+    reports.add(REPORT);
+    reports.close();
+    assert.match(lines.join(), /reports\.unavailable/);
+    assert.match(lines.join(), /clip\.reported/);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
 });
