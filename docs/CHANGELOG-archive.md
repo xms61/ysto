@@ -2,6 +2,11 @@
 
 Releases moved out of `CHANGELOG.md` (which keeps about the latest 5). Newest first.
 
+## [0.19.1] - 2026-10-05
+
+### Changed
+- Hanami's dango skewer runs the width of the row, with nine dumplings, like Model Kit's runner.
+
 ## [0.19.0] - 2026-10-05
 
 ### Added

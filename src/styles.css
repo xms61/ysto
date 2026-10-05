@@ -2,11 +2,12 @@
 @import '@fontsource/zen-kaku-gothic-new/latin-700.css';
 @import '@fontsource/zen-antique/latin-400.css';
 @import '@fontsource/bangers/latin-400.css';
-@import '@fontsource/saira-stencil-one/latin-400.css';
+@import '@fontsource/barlow-condensed/latin-600.css';
+@import '@fontsource/barlow-condensed/latin-700.css';
 @import '@fontsource/mochiy-pop-one/latin-400.css';
-@import '@fontsource/press-start-2p/latin-400.css';
+@import '@fontsource/cinzel/latin-700.css';
+@import '@fontsource/im-fell-english/latin-400.css';
 @import '@fontsource/vt323/latin-400.css';
-@import '@fontsource/pixelify-sans/latin-500.css';
 
 /*
  * Seven themes, one card anatomy (docs/DESIGN.md). Every round deals four identical cards, and each theme
@@ -184,7 +185,7 @@
   /* Model Kit (id mecha): a plastic model kit on the workbench. The page is the cutting mat; the round is a step
      of the kit's manual, its options four armor parts on one grey runner, cut with a nipper as the round runs. */
   [data-theme='mecha'] {
-    --display-adjust: 0.55;
+    --display-adjust: 0.52;
     color-scheme: dark;
     --page: #142a22;
     --plate: url('./assets/plates/mecha.webp');
@@ -210,15 +211,15 @@
     --card-alert: #a3221b;
     --card-back: #f2c230;
     --card-back-ink: #141414;
-    --display-font: 'Saira Stencil One', 'Arial Narrow', sans-serif;
-    --display-weight: 400;
+    --display-font: 'Barlow Condensed', 'Arial Narrow', sans-serif;
+    --display-weight: 700;
     --display-case: uppercase;
-    --display-tracking: 0.05em;
-    --title-font: ui-sans-serif, system-ui, sans-serif;
-    --title-weight: 700;
+    --display-tracking: 0.04em;
+    --title-font: 'Barlow Condensed', 'Arial Narrow', sans-serif;
+    --title-weight: 600;
     --title-case: uppercase;
-    --title-tracking: 0.06em;
-    --title-adjust: none;
+    --title-tracking: 0.04em;
+    --title-adjust: 0.52;
     --panel-shadow: 0 1rem 2rem -1.25rem rgb(0 0 0 / 0.85);
     --page-texture:
       linear-gradient(rgb(170 214 190 / 0.12) 1px, transparent 1px) 0 0 / 5rem 5rem,
@@ -301,7 +302,7 @@
   /* Quest Board (id isekai): the adventurers' guild notice board at night. The round is the board: a carved plank
      with the round on it, a candle burning down, and four notices pinned to the wood. */
   [data-theme='isekai'] {
-    --display-adjust: 0.46;
+    --display-adjust: 0.5;
     color-scheme: dark;
     --page: #17100b;
     --plate: url('./assets/plates/isekai.webp');
@@ -335,15 +336,15 @@
     --pin: #c0392b;
     --wax: #efe3c8;
     --flame: #ffb43a;
-    --display-font: 'Press Start 2P', ui-monospace, monospace;
-    --display-weight: 400;
+    --display-font: 'Cinzel', 'Palatino Linotype', Georgia, serif;
+    --display-weight: 700;
     --display-case: none;
-    --display-tracking: 0;
-    --title-font: 'Pixelify Sans', ui-monospace, monospace;
-    --title-weight: 500;
+    --display-tracking: 0.02em;
+    --title-font: 'IM Fell English', 'Palatino Linotype', Georgia, serif;
+    --title-weight: 400;
     --title-case: none;
-    --title-tracking: 0.01em;
-    --title-adjust: none;
+    --title-tracking: 0;
+    --title-adjust: 0.5;
     --panel-shadow: 0 1rem 2rem -1rem rgb(0 0 0 / 0.8);
     --page-texture: repeating-linear-gradient(to bottom, rgb(255 230 200 / 0.025) 0 2px, transparent 2px 2.75rem);
     --radius-lg: 0.25rem;
@@ -787,7 +788,7 @@
 
 @layer components {
   /* The theme's display face. font-size-adjust evens out the faces' very different x-heights, so a heading
-     keeps its size from Tokyo Rain's gothic to Isekai's pixels. */
+     keeps its size from Tokyo Rain's gothic to Quest Board's old printer's face. */
   .display {
     font-family: var(--display-font);
     font-weight: var(--display-weight);
@@ -2362,7 +2363,8 @@
       inset 0 0 0 7px var(--card-mark);
     color: var(--card-mark);
     font-family: var(--display-font);
-    font-size: 0.4375rem;
+    font-size: 0.75rem;
+    letter-spacing: 0.04em;
     text-transform: uppercase;
     opacity: 0.5;
     rotate: -14deg;
