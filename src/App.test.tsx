@@ -242,6 +242,19 @@ test('answers with the number keys, then shows the reveal with words as well as 
   expect(options[1]?.textContent).not.toContain('Picked by');
 });
 
+test('reports a broken clip from the reveal once, with a fixed reason', () => {
+  const { socket } = renderSeated(lobbyState({ game: PLAYING }));
+  act(() => {
+    socket.receive({ type: 'round:prepare', roundId: 'g.1', clipToken: 'c1', number: 1, rounds: 5 });
+    socket.receive(revealOf('g.1'));
+  });
+  fireEvent.click(screen.getByText('Report this clip'));
+  fireEvent.click(screen.getByRole('button', { name: 'Cut badly' }));
+  expect(socket.sentOfType('clip:report')).toEqual([{ type: 'clip:report', number: 1, reason: 'bad-cut' }]);
+  expect(screen.getByText('Reported. Thanks.')).toBeTruthy();
+  expect(screen.queryByText('Report this clip')).toBeNull();
+});
+
 test("greets a missed opening with the game's own line, with the penalty when there is one", async () => {
   const { socket } = renderSeated(lobbyState({ game: PLAYING }));
   act(() => {

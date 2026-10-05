@@ -125,6 +125,34 @@ test('with answer changes on, sends a switch to the others and runs the overtime
   });
 });
 
+test('keeps one report per player for each revealed clip, and none for a round not yet revealed', async () => {
+  await withServer(async (server) => {
+    const { annClient, benClient } = await twoPlayerLobby(server);
+    annClient.send({ type: 'game:start' });
+    const prepare = await nextOf(annClient, 'round:prepare');
+    for (const client of [annClient, benClient])
+      client.send({ type: 'round:ready', roundId: prepare.roundId, loaded: true });
+    const start = await nextOf(annClient, 'round:start');
+    server.scheduler.advance(start.startsAt - server.scheduler.now() + 1000);
+    annClient.send({ type: 'clip:report', number: 1, reason: 'silent' });
+    for (const client of [annClient, benClient]) client.send({ type: 'answer', roundId: start.roundId, option: 0 });
+    await nextOf(annClient, 'round:reveal');
+    annClient.send({ type: 'clip:report', number: 1, reason: 'bad-cut' });
+    annClient.send({ type: 'clip:report', number: 1, reason: 'other' });
+    annClient.send({ type: 'clip:report', number: 2, reason: 'silent' });
+    benClient.send({ type: 'clip:report', number: 1, reason: 'wrong-song' });
+    for (const client of [annClient, benClient]) {
+      client.send({ type: 'time:ping', clientTime: 1 });
+      await nextOf(client, 'time:pong');
+    }
+    assert.deepEqual(
+      server.reports.map((report) => report.reason),
+      ['bad-cut', 'wrong-song'],
+    );
+    assert.ok(server.reports.every((report) => report.themeId > 0 && report.startMs >= 0));
+  });
+});
+
 test('refuses settings changes and a second start while a game runs, and lets a late joiner watch first', async () => {
   await withServer(async (server) => {
     const { ann, annClient, benClient } = await twoPlayerLobby(server);

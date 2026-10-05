@@ -6,6 +6,7 @@
 import type { CSSProperties } from 'react';
 import type { LobbyState, PlayedSong, ResultView } from '../../shared/protocol.ts';
 import { Burst } from '../components/Burst.tsx';
+import { ReportClip } from '../components/ReportClip.tsx';
 import { Button, Panel } from '../components/ui.tsx';
 import { aired, animeTitle, credits, place, score, seconds, sharedPlaces } from '../format.ts';
 import type { TitleLanguages } from '../format.ts';
@@ -18,6 +19,7 @@ interface ResultsProps {
   lobby: LobbyState;
   isHost: boolean;
   titles: TitleLanguages;
+  reported: number[]; // the rounds whose clip this player reported
 }
 
 // Each act waits for the one billed below it; the headliner holds a beat longer.
@@ -112,7 +114,15 @@ function Bill({ lobby, results, rounds }: { lobby: LobbyState; results: ResultVi
 
 const ANIMETHEMES = 'https://animethemes.moe/anime/';
 
-function SongRow({ song, titles }: { song: PlayedSong; titles: TitleLanguages }) {
+interface SongListProps {
+  store: GameStore;
+  songs: PlayedSong[];
+  titles: TitleLanguages;
+  reported: number[];
+}
+
+function SongRow({ song, ...list }: { song: PlayedSong } & Omit<SongListProps, 'songs'>) {
+  const { titles } = list;
   const title = animeTitle(song.anime, titles.first);
   const second = titles.second ? animeTitle(song.anime, titles.second) : null;
   const details = [
@@ -137,6 +147,7 @@ function SongRow({ song, titles }: { song: PlayedSong; titles: TitleLanguages })
           </span>
         )}
         <span className="block text-sm text-muted">{details.join(' · ')}</span>
+        <ReportClip store={list.store} number={song.number} reported={list.reported.includes(song.number)} />
       </span>
       <a className="song-link" href={`${ANIMETHEMES}${encodeURIComponent(song.slug)}`} target="_blank" rel="noreferrer">
         AnimeThemes<span className="sr-only">: {title.text}, opens in a new tab</span>
@@ -145,20 +156,20 @@ function SongRow({ song, titles }: { song: PlayedSong; titles: TitleLanguages })
   );
 }
 
-function SongList({ songs, titles }: { songs: PlayedSong[]; titles: TitleLanguages }) {
+function SongList({ songs, ...list }: SongListProps) {
   return (
     <details className="adjust song-list">
       <summary className="adjust-summary">Songs this game ({songs.length})</summary>
       <ol aria-label="Songs this game" className="mt-3 flex flex-col">
         {songs.map((song) => (
-          <SongRow key={song.number} song={song} titles={titles} />
+          <SongRow key={song.number} song={song} {...list} />
         ))}
       </ol>
     </details>
   );
 }
 
-export function Results({ store, lobby, isHost, titles }: ResultsProps) {
+export function Results({ store, lobby, isHost, titles, reported }: ResultsProps) {
   usePagePhase('results');
   const results = lobby.game?.results ?? [];
   const rounds = lobby.game?.rounds ?? 0;
@@ -173,7 +184,7 @@ export function Results({ store, lobby, isHost, titles }: ResultsProps) {
           <Bill lobby={lobby} results={results} rounds={rounds} />
         </div>
       )}
-      {songs.length > 0 && <SongList songs={songs} titles={titles} />}
+      {songs.length > 0 && <SongList store={store} songs={songs} titles={titles} reported={reported} />}
       <div className="mt-auto flex flex-wrap items-center gap-3 border-t border-line pt-4">
         {isHost ? (
           <Button onClick={() => store.startGame()}>Play again</Button>

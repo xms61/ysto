@@ -5759,6 +5759,30 @@
     list-style: disc;
   }
 
+  /* Report this clip (ReportClip.tsx): a quiet underlined fold that opens on the four reasons. */
+  .report-summary {
+    width: fit-content;
+    cursor: pointer;
+    color: var(--muted);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+    list-style: none;
+  }
+
+  .report-summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .report-summary:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .song-row .report-clip,
+  .song-row .report-done {
+    margin-top: 0.25rem;
+  }
+
   /* The results' list of the game's songs: numbered rows split by hairlines, each with its link out. */
   .song-list {
     margin-bottom: 1rem;

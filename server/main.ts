@@ -19,6 +19,7 @@ import { createLogger } from './log.ts';
 import type { Logger } from './log.ts';
 import { Realtime } from './realtime/hub.ts';
 import { systemScheduler } from './scheduler.ts';
+import { openReports } from './reports.ts';
 
 const CLIENT_DIR = fileURLToPath(new URL('../dist/', import.meta.url));
 // Sockets and requests get this long to finish before the process exits anyway.
@@ -68,6 +69,7 @@ const config = loadConfigOrExit();
 const log = createLogger(config.logLevel);
 const catalog = loadCatalogOrNull(config.catalogDir, log);
 const clips = await clipServiceOrNull(config, log);
+const reports = openReports(config.stateDir, log);
 const registry =
   catalog && new LobbyRegistry({ catalog, maxLobbies: config.maxLobbies, maxPlayers: config.maxPlayers, log });
 const games =
@@ -81,6 +83,7 @@ const games =
     scheduler: systemScheduler,
     random: secureRandom,
     log,
+    reports,
   });
 const clipRoute = registry &&
   clips && { tokens: clips.tokens, lobbyOfSession: (token: string) => registry.seatOf(token)?.code };
@@ -108,7 +111,10 @@ const realtime =
 function shutDown(signal: string): void {
   log.info('server.closing', { signal });
   realtime?.close();
-  server.close(() => process.exit(0));
+  server.close(() => {
+    reports.close();
+    process.exit(0);
+  });
   setTimeout(() => process.exit(0), SHUTDOWN_GRACE_MS).unref();
 }
 

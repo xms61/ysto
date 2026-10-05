@@ -9,6 +9,7 @@ import { POINTS } from '../../shared/scoring.ts';
 import { answersCanChange } from '../../shared/settings.ts';
 import type { LobbySettings } from '../../shared/settings.ts';
 import { Listening } from '../components/Listening.tsx';
+import { ReportClip } from '../components/ReportClip.tsx';
 import { FaceDownCards, OptionCard } from '../components/OptionCard.tsx';
 import type { CardState } from '../components/OptionCard.tsx';
 import { MODE_LABELS } from '../components/SettingsForm.tsx';
@@ -49,6 +50,7 @@ interface RoundProps {
   lobby: LobbyState;
   round: ClientRound | null;
   titles: TitleLanguages;
+  reported: number[]; // the rounds whose clip this player reported
   isHost: boolean;
   clip: ClipStatus | null; // this player's clip for the round in progress
 }
@@ -410,7 +412,7 @@ function LyricHeading({ number, rounds, store, start, revealed }: RoundHeadingPr
   );
 }
 
-function RoundView({ store, lobby, round, titles, isHost, clip }: RoundProps & { round: ClientRound }) {
+function RoundView({ store, lobby, round, titles, reported, isHost, clip }: RoundProps & { round: ClientRound }) {
   const { start, reveal } = round;
   const started = useReached(store.serverNow, start?.startsAt ?? null);
   const solo = lobby.players.length === 1;
@@ -435,7 +437,13 @@ function RoundView({ store, lobby, round, titles, isHost, clip }: RoundProps & {
       </div>
       <p className="mt-1 text-sm text-muted">{scoringLine(lobby.settings)}</p>
       {reveal ? (
-        <Reveal round={round} reveal={reveal} lobby={lobby} titles={titles} />
+        <Reveal
+          round={round}
+          reveal={reveal}
+          lobby={lobby}
+          titles={titles}
+          report={<ReportClip store={store} number={round.number} reported={reported.includes(round.number)} />}
+        />
       ) : !start ? (
         <Stage
           slot={

@@ -11,7 +11,7 @@ How the game gets onto its VPS and stays current. Why it is built this way: [hos
 Deployed. The owner's Hetzner VPS has served the game on its domain since 0.13.0 (2026-09-30), set up by this runbook ([v1 plan](exec-plans/completed/2026-09-25-ysto-v1.md), M8). On 2026-10-05 it answered `/readyz`, sent every security header, redirected HTTP to HTTPS, and refused socket upgrades from another origin or none. Two of the [checks after setup](#checks-after-setup) still wait for the owner, under [Open checks](#open-checks). Updates follow [Release and update](#release-and-update).
 
 ## What runs where
-- **The VPS** runs `deploy/compose.yml`: Caddy on ports 80 and 443 with the Let's Encrypt certificate for `YSTO_DOMAIN`, and the game's image from GHCR, which publishes no port. The exported library and the catalog are mounted read-only.
+- **The VPS** runs `deploy/compose.yml`: Caddy on ports 80 and 443 with the Let's Encrypt certificate for `YSTO_DOMAIN`, and the game's image from GHCR, which publishes no port. The exported library and the catalog are mounted read-only. The one writable mount is the `ysto_state` volume at `/data/state`, where the game keeps the players' clip reports.
 - **GitHub** builds and publishes the image when the owner starts the release workflow. It holds no credentials for the VPS.
 - **The owner machine** builds the catalog and exports the library, then sends both with `rsync`.
 
@@ -112,9 +112,16 @@ To roll back, set `YSTO_VERSION=<older version>` in `/opt/ysto/.env` and run `do
 Rebuild on the owner machine ([CATALOG.md](../scripts/catalog/CATALOG.md)), rerun step 4, then `docker compose restart ysto`. The server reads the catalog only at startup.
 
 ### Deploy files
-When `deploy/compose.yml` or `deploy/Caddyfile` changes in a release, copy it over again (step 3) before `docker compose up -d`.
+When `deploy/compose.yml` or `deploy/Caddyfile` changes in a release, copy it over again (step 3) before `docker compose up -d`. 1.6.0 changes `compose.yml`: it adds the `ysto_state` volume for clip reports. Docker creates the volume on the first `up`.
+
+### Clip reports
+Players can report a round's clip from the reveal or the results' song list, with a fixed reason. The reports go into `reports.sqlite` in the `ysto_state` volume: the theme, where its clip started, the reason and the time, and nothing about the player. To list them, most reported first, with each clip's anime and file:
+```bash
+cd /opt/ysto && docker compose run --rm --no-deps ysto node scripts/clip-reports/list.ts
+```
+On the owner machine the same list is `npm run reports`, with `YSTO_STATE_DIR` set.
 
 ### Logs and disk
 - `docker compose logs -f ysto`: the game's JSON log lines ([RELIABILITY.md](RELIABILITY.md#logging)). Docker keeps 3 files of 10 MB per service.
 - `docker image prune -f` after updates removes old images.
-- Nothing on the VPS needs a backup: the library and the catalog come from the owner machine, and Caddy gets a new certificate if its volume is lost.
+- Nothing on the VPS needs a backup: the library and the catalog come from the owner machine, Caddy gets a new certificate if its volume is lost, and losing `ysto_state` loses only the clip reports not yet read.

@@ -2,6 +2,11 @@
 
 Releases moved out of `CHANGELOG.md` (which keeps about the latest 5). Newest first.
 
+## [1.2.0] - 2026-10-05
+
+### Added
+- Answer changes: a lobby setting, off by default, lets players pick another option until the round closes. Once everyone has answered, an overtime of 3 to 10 s (the host picks, 5 s by default) gives a last chance to switch before the reveal: "Overtime" is called above the time left, and each world's timer counts it down. The others see who switched, never to what. A switch scores from the moment it is made, and First correct keeps the first answer as before.
+
 ## [1.1.0] - 2026-10-05
 
 ### Added

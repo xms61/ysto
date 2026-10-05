@@ -17,6 +17,8 @@ import { buildGame, replacementQuestion } from './questions.ts';
 import type { Question } from './questions.ts';
 import type { Random } from './random.ts';
 import type { LobbyRegistry, RegistryEvent, Seat } from './registry.ts';
+import type { ReportReason } from '../../shared/protocol.ts';
+import type { Reports } from '../reports.ts';
 
 // A clip token whose reveal never comes (the game ended early) still expires after this long.
 const CLIP_TOKEN_MAX_MS = 10 * 60_000;
@@ -26,6 +28,7 @@ interface Run {
   game: Game;
   timers: Map<string, () => void>; // cancel functions, by timer name and round
   known: Map<string, boolean>; // the lobby's players as the game last saw them, and whether connected
+  reported: Set<string>; // player and round number of each clip report, so a player reports a clip once
 }
 
 export type GamesEvent =
@@ -40,6 +43,7 @@ export interface GamesOptions {
   scheduler: Scheduler;
   random: Random;
   log: Logger;
+  reports: Reports;
 }
 
 function connectionsOf(lobby: Lobby): Map<string, boolean> {
@@ -98,7 +102,7 @@ export class Games {
     const away = players.filter((id) => !known.get(id));
     const started = startGame({ id: newToken().slice(0, 8), settings: lobby.settings, questions, players, away });
     this.#runs.get(lobby.code)?.timers.forEach((cancel) => cancel());
-    const run: Run = { code: lobby.code, game: started.game, timers: new Map(), known };
+    const run: Run = { code: lobby.code, game: started.game, timers: new Map(), known, reported: new Set() };
     this.#runs.set(lobby.code, run);
     log.info('game.started', { code: lobby.code, rounds: questions.length });
     this.#listener({ type: 'lobby-changed', code: lobby.code });
@@ -112,6 +116,21 @@ export class Games {
 
   answer(seat: Seat, roundId: string, option: number, rttMs: number): void {
     this.#step(seat.code, { type: 'answer', playerId: seat.playerId, roundId, option, rttMs });
+  }
+
+  // A report of a round the lobby's current or last game has revealed. Each player reports a clip once; a
+  // second report, or one of a round not yet revealed, is dropped without a word.
+  report(seat: Seat, number: number, reason: ReportReason): void {
+    const run = this.#runs.get(seat.code);
+    const key = `${seat.playerId}:${number}`;
+    if (!run || run.reported.has(key)) return;
+    const index = run.game.songs.findIndex((song) => song.number === number);
+    const themeId = run.game.playedThemeIds[index];
+    const question = run.game.questions.find((candidate) => candidate.themeId === themeId);
+    if (index < 0 || !question) return;
+    run.reported.add(key);
+    const at = this.#options.scheduler.now();
+    this.#options.reports.add({ at, themeId: question.themeId, startMs: question.clip.startMs, reason });
   }
 
   skip(seat: Seat): ErrorCode | null {

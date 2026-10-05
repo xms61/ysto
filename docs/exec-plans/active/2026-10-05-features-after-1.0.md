@@ -52,7 +52,7 @@ Each milestone is one PR on a `feat/…` branch (two where noted), with a versio
 
 #### M3 Report a broken clip (S)
 - **Behavior:** at the reveal and in the song list, "Report this clip" with fixed reasons: silent or too quiet, wrong song, bad cut, other. No free text, so nothing needs moderating. One report per player per song per lobby; the button then reads "Reported".
-- **Build:** the first writable volume: `ysto_state` mounted at `/data/state` (`YSTO_STATE_DIR`), never renamed once released. Reports go into `reports.sqlite` there: time, theme id, clip offset, reason. No names, addresses or lobby codes. A rate limit per session. `npm run reports` lists them grouped by theme for the owner. DEPLOY.md gets the volume and the command, and the owner copies the new `compose.yml` to the VPS.
+- **Build:** the first writable volume: `ysto_state` mounted at `/data/state` (`YSTO_STATE_DIR`), never renamed once released. Reports go into `reports.sqlite` there: time, theme id, clip offset, reason. No names, addresses or lobby codes. One report per player and round in each game, on top of the socket's message limit (built that way instead of a separate rate limit). `npm run reports` lists them grouped by theme for the owner. DEPLOY.md gets the volume and the command, and the owner copies the new `compose.yml` to the VPS.
 - **Tests:** the route's validation, limits and deduplication on a temp directory; the store; the image check writes a report into its volume.
 - **Later, not here:** an exclusion list the catalog gate reads, built from reports the owner confirms.
 
@@ -125,7 +125,7 @@ Each milestone is one PR on a `feat/…` branch (two where noted), with a versio
 - [x] 2026-10-05 M1 Stale tabs reload (1.3.0)
 - [x] 2026-10-05 M15 What's new (1.5.0)
 - [x] 2026-10-05 M2 The game's songs at the results (1.4.0)
-- [ ] M3 Report a broken clip
+- [x] 2026-10-05 M3 Report a broken clip (1.6.0)
 - [ ] M4 The lobby's tally
 - [ ] M5 Reactions
 - [ ] M6 Saved settings

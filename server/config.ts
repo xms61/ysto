@@ -18,6 +18,7 @@ export interface Config {
   maxLobbies: number;
   maxPlayers: number;
   maxGames: number;
+  stateDir: string | null; // where the server keeps what it writes, such as clip reports; null keeps nothing
 }
 
 // Where the catalog scripts read and write. Relative paths resolve against the working directory,
@@ -103,6 +104,7 @@ export function loadConfig(env: Env = process.env, cwd: string = process.cwd()):
     maxLobbies: integerIn(env, 'YSTO_MAX_LOBBIES', 1, 10_000, 100),
     maxPlayers: integerIn(env, 'YSTO_MAX_PLAYERS', 1, 50, 12),
     maxGames: integerIn(env, 'YSTO_MAX_GAMES', 1, 1000, 30),
+    stateDir: optionalPath(env, 'YSTO_STATE_DIR', cwd),
   };
 }
 

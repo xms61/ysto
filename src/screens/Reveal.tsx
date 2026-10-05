@@ -3,6 +3,7 @@
 // picked it, then the answer in every language with its song, and the standings as a scoreboard with who
 // moved. Right and wrong show with an icon and words, never color alone. The verdict lands like a stamp, and the right card with its theme's hit, which
 // grows with this player's streak.
+import type { ReactNode } from 'react';
 import type { LobbyState, RoundReveal, StandingView } from '../../shared/protocol.ts';
 import { OptionCard, SecondTitle } from '../components/OptionCard.tsx';
 import type { CardState } from '../components/OptionCard.tsx';
@@ -17,6 +18,7 @@ interface RevealProps {
   reveal: RoundReveal;
   lobby: LobbyState;
   titles: TitleLanguages;
+  report: ReactNode; // the way to report this round's clip
 }
 
 interface Verdict {
@@ -205,7 +207,7 @@ function VerdictLine({ verdict, standing, streak }: { verdict: Verdict; standing
   );
 }
 
-export function Reveal({ round, reveal, lobby, titles }: RevealProps) {
+export function Reveal({ round, reveal, lobby, titles, report }: RevealProps) {
   const title = animeTitle(reveal.anime, titles.first);
   const when = aired(reveal.season, reveal.year);
   const options = round.start?.options;
@@ -291,6 +293,7 @@ export function Reveal({ round, reveal, lobby, titles }: RevealProps) {
         </div>
       </div>
       <Lineup reveal={reveal} lobby={lobby} />
+      {report}
       <p className="text-sm text-muted">
         {round.number === round.rounds ? 'The results come next.' : 'The next round starts in a few seconds.'}
       </p>

@@ -26,9 +26,10 @@ export interface GameState {
   lobby: LobbyState | null;
   round: ClientRound | null; // the round of the running game, while there is one
   resultsClosed: boolean; // the player went back to the lobby from the last game's results
+  reported: number[]; // the rounds of this game whose clip the player reported
 }
 
-export const INITIAL_GAME: GameState = { lobby: null, round: null, resultsClosed: false };
+export const INITIAL_GAME: GameState = { lobby: null, round: null, resultsClosed: false, reported: [] };
 
 type RoundMessage = Extract<ServerMessage, { roundId: string }>;
 
@@ -39,6 +40,7 @@ function onLobby(state: GameState, lobby: LobbyState): GameState {
     lobby,
     round: playing ? state.round : null,
     resultsClosed: newGame ? false : state.resultsClosed,
+    reported: newGame ? [] : state.reported,
   };
 }
 

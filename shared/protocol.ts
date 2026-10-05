@@ -1,8 +1,8 @@
 // The protocol (docs/design-docs/system-design.md#decision): the HTTP bodies, the messages each side sends
 // over the socket, the error and close codes, and one validator per message the server receives.
-import { validateSettings } from './settings.ts';
+import { LIMITS, validateSettings } from './settings.ts';
 import type { LobbySettings, SettingsBounds, ThemeKind, TitleLanguage } from './settings.ts';
-import { hasKeys, isIntegerIn, isRecord } from './validate.ts';
+import { hasKeys, isIntegerIn, isOneOf, isRecord } from './validate.ts';
 
 // A raw name longer than this can't clean down to a valid one worth keeping.
 const RAW_NAME_MAX = 200;
@@ -76,7 +76,12 @@ export type ClientMessage =
   | { type: 'game:start' }
   | { type: 'round:ready'; roundId: string; loaded: boolean }
   | { type: 'answer'; roundId: string; option: number }
-  | { type: 'round:skip' };
+  | { type: 'round:skip' }
+  | { type: 'clip:report'; number: number; reason: ReportReason };
+
+// Why a player reports a round's clip: fixed reasons, no free text, so nothing needs moderating.
+export const REPORT_REASONS = ['silent', 'wrong-song', 'bad-cut', 'other'] as const;
+export type ReportReason = (typeof REPORT_REASONS)[number];
 
 function parseRecord(text: string): Record<string, unknown> | null {
   try {
@@ -117,6 +122,11 @@ export function parseClientMessage(text: string, bounds: SettingsBounds): Client
   }
   if (type === 'round:ready' && hasKeys(value, ['type', 'roundId', 'loaded']) && isRoundId(value.roundId)) {
     return typeof value.loaded === 'boolean' ? { type, roundId: value.roundId, loaded: value.loaded } : null;
+  }
+  if (type === 'clip:report' && hasKeys(value, ['type', 'number', 'reason'])) {
+    const { number, reason } = value;
+    const valid = isIntegerIn(number, 1, LIMITS.songsPerGame.max) && isOneOf(reason, REPORT_REASONS);
+    return valid ? { type, number, reason } : null;
   }
   if (type === 'answer' && hasKeys(value, ['type', 'roundId', 'option']) && isRoundId(value.roundId)) {
     return isIntegerIn(value.option, 0, 3) ? { type, roundId: value.roundId, option: value.option } : null;

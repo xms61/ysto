@@ -11,6 +11,7 @@ import type { ConnectionStatus, ExitReason, SocketLike } from './connection.ts';
 import { INITIAL_GAME, choose, receive } from './game-state.ts';
 import type { ClientRound, GameState } from './game-state.ts';
 import type { Session } from './session.ts';
+import type { ReportReason } from '../../shared/protocol.ts';
 
 export type NoticeCode = ErrorCode | 'server-closing';
 
@@ -150,6 +151,13 @@ export class GameStore {
     this.#connection.send({ type: 'lobby:leave' });
     this.disconnect();
     this.#onExit('left');
+  }
+
+  // A clip reported as broken: once per round, and only a round already revealed.
+  reportClip(number: number, reason: ReportReason): void {
+    if (this.#game.reported.includes(number)) return;
+    if (!this.#connection.send({ type: 'clip:report', number, reason })) return;
+    this.#setGame({ ...this.#game, reported: [...this.#game.reported, number] });
   }
 
   closeResults(): void {

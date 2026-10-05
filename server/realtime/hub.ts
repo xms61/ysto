@@ -226,6 +226,8 @@ export class Realtime {
         return this.#games.answer(seat, message.roundId, message.option, median(connection.roundTrips));
       case 'round:skip':
         return this.#report(connection, this.#games.skip(seat));
+      case 'clip:report':
+        return this.#games.report(seat, message.number, message.reason);
     }
   }
 
