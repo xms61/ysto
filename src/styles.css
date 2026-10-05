@@ -20,6 +20,8 @@
 @import '@fontsource/kaisei-tokumin/latin-700.css';
 @import '@fontsource/reggae-one/latin-400.css';
 @import '@fontsource/comic-neue/latin-700.css';
+@import '@fontsource/shojumaru/latin-400.css';
+@import '@fontsource/patrick-hand-sc/latin-400.css';
 
 /*
  * Seven themes, one card anatomy (docs/DESIGN.md). Every round deals four identical cards, and each theme
@@ -732,9 +734,11 @@
     --radius-2xl: 2px;
   }
 
-  /* Night Arc: the all-black pages of a manga's darkest chapter, white ink and one rare red. */
+  /* Night Arc: the all-black pages of a manga's darkest chapter, white ink and one rare red. The round's heading is
+     the chapter's header in white brush capitals, the time left white focus lines closing in, and the options four
+     black panels in white frames, their titles in white-ink balloons and their numbers in the gutters. */
   [data-theme='night-arc'] {
-    --display-adjust: 0.76;
+    --display-adjust: 0.5;
     color-scheme: dark;
     --page: #0a0a0a;
     --plate: url('./assets/plates/night-arc.webp');
@@ -755,20 +759,20 @@
     --card-dim: #161616;
     --card-mark: #f4f4f0;
     --card-mark-ink: #0a0a0a;
-    --card-chosen: #f4f4f0;
-    --card-chosen-ink: #0a0a0a;
+    --card-chosen: #0a0a0a;
+    --card-chosen-ink: #f4f4f0;
     --card-alert: #ff6b6b;
     --card-back: #f4f4f0;
     --card-back-ink: #0a0a0a;
-    --display-font: 'Bangers', 'Arial Narrow', sans-serif;
+    --display-font: 'Shojumaru', 'Arial Black', sans-serif;
     --display-weight: 400;
     --display-case: uppercase;
     --display-tracking: 0.04em;
-    --title-font: var(--display-font);
+    --title-font: 'Patrick Hand SC', 'Comic Sans MS', sans-serif;
     --title-weight: 400;
-    --title-case: uppercase;
-    --title-tracking: 0.04em;
-    --title-adjust: 0.76;
+    --title-case: none;
+    --title-tracking: 0.02em;
+    --title-adjust: 0.52;
     --field-rim: 2px;
     --panel-shadow: none;
     --page-texture: none;
@@ -3746,6 +3750,108 @@
     fill: var(--ink);
   }
 
+  /* ---- Night Arc: the all-black pages of a manga's darkest chapter. The round's heading is the chapter's header
+     in white brush capitals between two white rules; the time left is white focus lines closing in on a black
+     panel; the options are four black panels in white frames, their titles in white-ink balloons and their numbers
+     set in the gutters at the panels' corners. A pick doubles its panel's frame; at the reveal the right panel bursts
+     to white. Red is spent only on a wrong verdict. ---- */
+  :root[data-theme='night-arc'] .panel {
+    border: 2px solid var(--ink);
+  }
+
+  /* The chapter header: white brush capitals centered between two white rules. */
+  :root[data-theme='night-arc'] .round-head {
+    justify-content: center;
+    margin-bottom: 1rem;
+    padding-block: 0.75rem;
+    border-block: 2px solid var(--ink);
+    text-align: center;
+  }
+
+  /* The listening light is a white-ringed disc of black ink. */
+  :root[data-theme='night-arc'] .sonar-core {
+    background: var(--page);
+  }
+
+  /* A panel: solid black in a white frame. Its number sits in the gutter on its top corner, so the face lets it out. */
+  :root[data-theme='night-arc'] .options {
+    padding: 0.5rem;
+  }
+
+  :root[data-theme='night-arc'] .card-front {
+    justify-content: flex-end;
+    overflow: visible;
+    border: 3px solid var(--ink);
+    border-radius: 0;
+  }
+
+  :root[data-theme='night-arc'] .card-index {
+    position: absolute;
+    top: -0.75rem;
+    left: -0.75rem;
+    z-index: 1;
+    min-width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 0;
+    background: var(--page);
+    color: var(--ink);
+    box-shadow: none;
+  }
+
+  /* The title in a white-ink balloon: a white outline round black, its tail pointing down into the panel. */
+  :root[data-theme='night-arc'] .card-title {
+    padding: 0.25rem 0.75rem;
+    border: 2px solid var(--ink);
+    border-radius: 1.5rem / 1.25rem;
+    background: var(--card);
+  }
+
+  /* Picked: the frame doubled, a black rule inside the white. */
+  :root[data-theme='night-arc'] .card[data-state='chosen'] .card-front {
+    box-shadow:
+      inset 0 0 0 3px var(--card),
+      inset 0 0 0 5px var(--ink);
+  }
+
+  /* Out of the running: the frame goes grey. */
+  :root[data-theme='night-arc'] .card:is([data-state='muted'], [data-state='missed']) .card-front,
+  :root[data-theme='night-arc'] .card:is([data-state='muted'], [data-state='missed']) .card-title {
+    border-color: var(--muted);
+  }
+
+  :root[data-theme='night-arc'] .card:is([data-state='muted'], [data-state='missed']) .card-index {
+    color: var(--muted);
+    box-shadow: none;
+  }
+
+  /* The right panel bursts to white: black focus lines from its edges, its words on white. */
+  :root[data-theme='night-arc'] .card-back:not(.card-printed) {
+    border: 3px solid var(--ink);
+    border-radius: 0;
+    background:
+      radial-gradient(ellipse 34% 30% at 50% 50%, var(--card-back) 0 96%, transparent 100%),
+      repeating-conic-gradient(from 2deg at 50% 50%, var(--card-back-ink) 0 1.2deg, transparent 1.2deg 9deg),
+      var(--card-back);
+  }
+
+  :root[data-theme='night-arc'] .card-back:not(.card-printed) > span {
+    padding-inline: 0.25rem;
+    background: var(--card-back);
+  }
+
+  /* Face down, a black panel in its white frame with a white "?!". */
+  :root[data-theme='night-arc'] .card-printed {
+    border: 3px solid var(--ink);
+    border-radius: 0;
+    background: var(--card);
+    color: var(--ink);
+  }
+
+  :root[data-theme='night-arc'] .button-quiet {
+    border: 2px solid var(--ink);
+    background: var(--page);
+  }
+
   /* ---- The reveal's answer box (.reveal-band) and the names under each card (.picker), in each rebuilt world's
      material. Text keeps a tested pair; the cover's wash is cut back on light paper. ---- */
   /* Tokyo Rain: the machine's lit display panel; the pickers' names on ticket stubs. */
@@ -4067,6 +4173,32 @@
   :root[data-theme='splash-page'] .picker[data-you] {
     background: var(--accent);
     color: var(--accent-ink);
+  }
+
+  /* Night Arc: another black panel in a white frame, its kind on a white caption; names in white-ink balloons, this
+     player's filled white. */
+  :root[data-theme='night-arc'] .reveal-band {
+    border: 3px solid var(--ink);
+    border-radius: 0;
+    background: var(--page);
+  }
+
+  :root[data-theme='night-arc'] .reveal-kind {
+    border-radius: 0;
+    background: var(--ink);
+    color: var(--page);
+  }
+
+  :root[data-theme='night-arc'] .picker {
+    border: 2px solid var(--ink);
+    border-radius: 1rem / 0.875rem;
+    background: var(--page);
+    color: var(--ink);
+  }
+
+  :root[data-theme='night-arc'] .picker[data-you] {
+    background: var(--ink);
+    color: var(--page);
   }
 
   /* On light paper the cover's wash is cut back, so the dark ink keeps its contrast. */
@@ -4923,6 +5055,14 @@
     rotate: -8deg;
   }
 
+  /* Night Arc's winner is the panel burst to white, framed in white on the black page. */
+  :root[data-theme='night-arc'] .bill-lead {
+    border-radius: 0;
+    box-shadow:
+      0 0 0 3px var(--page),
+      0 0 0 5px var(--ink);
+  }
+
   /* ---- The theme picker (ThemeSheet.tsx): a full-screen sheet over the page, which tries on the selected world
      behind it. Each tile nests its own theme, so its tokens draw the world's object and colors. ---- */
   .theme-row {
@@ -5226,6 +5366,11 @@
     background-size:
       5px 5px,
       auto;
+  }
+
+  /* Night Arc: the black page's foot under a white panel rule. */
+  :root[data-theme='night-arc'] .start-bar {
+    border-top: 3px solid var(--ink);
   }
 
   /* Fighter Select: the cabinet's control deck, edged in the player's red slant. */
@@ -6736,6 +6881,38 @@
   from {
     opacity: 0;
     scale: 2.2;
+  }
+}
+
+/* Night Arc: a picked panel's frame doubles as it is drawn in; at the reveal the right panel bursts to white, its
+   light flaring out past its frame. */
+:root[data-motion='full'][data-theme='night-arc'] .card[data-state='chosen'] .card-front {
+  animation: frame-double 260ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+:root[data-motion='full'][data-theme='night-arc'] .card[data-turned] .card-back {
+  animation: white-burst 700ms cubic-bezier(0.16, 1, 0.3, 1) 620ms both;
+}
+
+@keyframes frame-double {
+  from {
+    box-shadow:
+      inset 0 0 0 3px var(--card),
+      inset 0 0 0 3px var(--ink);
+  }
+}
+
+@keyframes white-burst {
+  0% {
+    box-shadow: 0 0 0 0 var(--ink);
+  }
+
+  35% {
+    box-shadow: 0 0 0 1.25rem var(--ink);
+  }
+
+  100% {
+    box-shadow: 0 0 0 2.5rem transparent;
   }
 }
 

@@ -42,6 +42,7 @@ const STAGES: Partial<Record<Theme, Partial<ThemeStage>>> = {
   'blossom-map': { readout: 'route' },
   'tournament-arc': { readout: 'pennants' },
   'splash-page': { readout: 'focus' },
+  'night-arc': { readout: 'focus' },
   sakura: { readout: 'dango' },
   shonen: { readout: 'digits', scoreBars: true },
   mecha: { readout: 'nipper', wrongMark: 'Spare' },
