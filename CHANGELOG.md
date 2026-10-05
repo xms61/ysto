@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.28.0] - 2026-10-05
+
+### Added
+- Tournament Arc is its own world: a semifinal bracket on the tournament board. The round's heading is a black banner brushed ragged at its ends; the time left is the referee's strip of red and white pennants, taken down one by one; the options are four hinoki entrant plates, each row a semifinal joined by a VS medallion on the bracket's spine, with the final's emblem at its center. A pick turns the plate black and advances it toward the spine; at the reveal the final lights gold and the right entrant takes it. The answer box is the board's result notice, the pickers' names little wooden plates, and the champion's gold plate hangs from its cord. Type is Dela Gothic One and Kaisei Tokumin.
+
+### Changed
+- Tournament Arc's type: Dela Gothic One and Kaisei Tokumin, in place of Fighter Select's Bangers.
+
 ## [0.27.0] - 2026-10-05
 
 ### Added

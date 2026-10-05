@@ -16,6 +16,8 @@
 @import '@fontsource/yuji-syuku/latin-400.css';
 @import '@fontsource/shippori-mincho/latin-600.css';
 @import '@fontsource/zen-maru-gothic/latin-700.css';
+@import '@fontsource/dela-gothic-one/latin-400.css';
+@import '@fontsource/kaisei-tokumin/latin-700.css';
 
 /*
  * Seven themes, one card anatomy (docs/DESIGN.md). Every round deals four identical cards, and each theme
@@ -628,9 +630,11 @@
     --radius-2xl: 1.5rem;
   }
 
-  /* Tournament Arc: a semifinal bracket brushed on the tournament board. */
+  /* Tournament Arc: a semifinal bracket on the tournament board. The round's heading is a black brushed banner,
+     the time left the referee's pennants, and the options four wooden entrant plates, two matches joined on the
+     bracket's spine with the final at its middle. */
   [data-theme='tournament-arc'] {
-    --display-adjust: 0.76;
+    --display-adjust: 0.56;
     color-scheme: light;
     --page: #ecebe6;
     --plate: url('./assets/plates/tournament-arc.webp');
@@ -645,7 +649,7 @@
     --accent-ink: #ffffff;
     --good: #1f6e3c;
     --bad: #a3140a;
-    --card: #fbfaf6;
+    --card: #f3e6c8;
     --card-ink: #141414;
     --card-muted: #55534c;
     --card-dim: #e3e1da;
@@ -656,15 +660,20 @@
     --card-alert: #a3140a;
     --card-back: #c9a227;
     --card-back-ink: #141414;
-    --display-font: 'Bangers', 'Arial Narrow', sans-serif;
+    /* The board: the black banner and its text, and the final's gold. The pennants are the accent's red and the
+       panel's white. */
+    --banner: #141414;
+    --banner-ink: #fbfaf6;
+    --gold: #c9a227;
+    --display-font: 'Dela Gothic One', 'Arial Black', sans-serif;
     --display-weight: 400;
-    --display-case: uppercase;
-    --display-tracking: 0.04em;
-    --title-font: var(--display-font);
-    --title-weight: 400;
-    --title-case: uppercase;
-    --title-tracking: 0.04em;
-    --title-adjust: 0.76;
+    --display-case: none;
+    --display-tracking: 0.02em;
+    --title-font: 'Kaisei Tokumin', 'Hiragino Mincho ProN', 'Yu Mincho', serif;
+    --title-weight: 700;
+    --title-case: none;
+    --title-tracking: 0.01em;
+    --title-adjust: 0.52;
     --field-rim: 2px;
     --panel-shadow: none;
     --page-texture: none;
@@ -3355,6 +3364,215 @@
     stroke-width: 2;
   }
 
+  /* ---- Tournament Arc: a semifinal bracket on the tournament board. The round's heading is a black banner
+     brushed ragged at its ends; the time left is the referee's pennants, taken down one by one; the options are four
+     wooden entrant plates hung with a hard shadow, two matches each joined by a VS medallion on the bracket's
+     spine, with the final's emblem at its middle. A pick turns its plate black and advances it toward the spine,
+     its medallion red; at the reveal the right entrant takes the final in gold. ---- */
+  :root[data-theme='tournament-arc'] .panel {
+    border: 2px solid var(--ink);
+  }
+
+  /* The banner: black cloth across the panel's top, its ends brushed ragged. */
+  :root[data-theme='tournament-arc'] .round-head {
+    margin: -1rem -1rem 1rem;
+    padding: 0.875rem 1.5rem;
+    background: var(--banner);
+    color: var(--banner-ink);
+    clip-path: polygon(
+      0 8%,
+      2% 0,
+      98% 4%,
+      100% 0,
+      99% 30%,
+      100% 55%,
+      98.5% 80%,
+      100% 100%,
+      3% 96%,
+      0 100%,
+      1.5% 70%,
+      0 45%,
+      1% 22%
+    );
+  }
+
+  @media (min-width: 40rem) {
+    :root[data-theme='tournament-arc'] .round-head {
+      margin: -1.5rem -1.5rem 1.25rem;
+      padding: 1rem 2rem;
+    }
+  }
+
+  :root[data-theme='tournament-arc'] .round-head .button-quiet {
+    border: 2px solid var(--banner-ink);
+    background: transparent;
+    color: var(--banner-ink);
+  }
+
+  /* The listening light is the ring's bronze gong, its rings hammered in. */
+  :root[data-theme='tournament-arc'] .sonar-core {
+    background:
+      repeating-radial-gradient(circle, rgb(60 40 10 / 0.25) 0 1px, transparent 1px 5px),
+      radial-gradient(circle at 35% 30%, #f0d27a, #a8801f);
+  }
+
+  /* The bracket: a spine down the middle that joins the two matches to the final at its center. */
+  :root[data-theme='tournament-arc'] .options {
+    position: relative;
+    padding: 0.25rem 0;
+  }
+
+  :root[data-theme='tournament-arc'] .options::before {
+    content: '';
+    position: absolute;
+    top: 1rem;
+    bottom: 1rem;
+    left: 50%;
+    width: 3px;
+    margin-left: -1.5px;
+    background: var(--ink);
+  }
+
+  :root[data-theme='tournament-arc'] .options::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 1.25rem;
+    height: 1.25rem;
+    margin: -0.625rem 0 0 -0.625rem;
+    border: 3px solid var(--ink);
+    background: var(--panel);
+    rotate: 45deg;
+  }
+
+  :root[data-theme='tournament-arc'][data-phase='reveal'] .options::after {
+    background: var(--gold);
+  }
+
+  /* An entrant plate: hinoki hung on the board with a hard shadow, two nails at its top corners. */
+  :root[data-theme='tournament-arc'] .card-front {
+    border: 2px solid var(--ink);
+    background-image:
+      radial-gradient(circle at 0.625rem 0.5rem, var(--edge) 0 2px, transparent 2.5px),
+      radial-gradient(circle at calc(100% - 0.625rem) 0.5rem, var(--edge) 0 2px, transparent 2.5px);
+    box-shadow: 3px 3px 0 var(--ink);
+  }
+
+  :root[data-theme='tournament-arc'] .card-index {
+    margin-top: 0.25rem;
+  }
+
+  /* Each match's VS medallion sits on the spine between its two plates, hidden from screen readers. */
+  :root[data-theme='tournament-arc'] .options > li:nth-child(odd) .card::after {
+    content: 'VS' / '';
+    position: absolute;
+    top: 50%;
+    right: -1.125rem;
+    z-index: 2;
+    display: grid;
+    place-items: center;
+    width: 1.5rem;
+    height: 1.5rem;
+    margin-top: -0.75rem;
+    border-radius: 50%;
+    background: var(--ink);
+    color: var(--panel);
+    font-family: var(--display-font);
+    font-size: 0.5625rem;
+    line-height: 1;
+  }
+
+  /* Picked: the plate turns black and advances toward the spine, its match's medallion red. */
+  :root[data-theme='tournament-arc'] .card[data-state='chosen'] .card-index {
+    background: var(--accent);
+    color: var(--accent-ink);
+  }
+
+  :root[data-theme='tournament-arc'] .options > li:nth-child(odd):has(.card[data-state='chosen']) {
+    translate: 0.25rem 0;
+  }
+
+  :root[data-theme='tournament-arc'] .options > li:nth-child(even):has(.card[data-state='chosen']) {
+    translate: -0.25rem 0;
+  }
+
+  :root[data-theme='tournament-arc'] .options > li:nth-child(odd):has(.card[data-state='chosen']) .card::after,
+  :root[data-theme='tournament-arc'] .options > li:nth-child(odd):has(+ li .card[data-state='chosen']) .card::after {
+    background: var(--accent);
+    color: var(--accent-ink);
+  }
+
+  :root[data-theme='tournament-arc'] .card:is([data-state='muted'], [data-state='missed']) .card-front {
+    box-shadow: 1px 1px 0 var(--edge);
+  }
+
+  /* The final: the right entrant's plate in gold, framed in ink. */
+  :root[data-theme='tournament-arc'] .card-back:not(.card-printed) {
+    border: 2px solid var(--ink);
+    box-shadow: 3px 3px 0 var(--ink);
+  }
+
+  /* Face down, a blank black plate with a white "?!". */
+  :root[data-theme='tournament-arc'] .card-printed {
+    border: 2px solid var(--ink);
+    background: var(--ink);
+    color: var(--panel);
+  }
+
+  :root[data-theme='tournament-arc'] .button-quiet {
+    border: 2px solid var(--ink);
+  }
+
+  /* Dela Gothic runs too wide for a phone's header, so the buttons take the plates' face. */
+  :root[data-theme='tournament-arc'] .button {
+    font-family: var(--title-font);
+    font-weight: var(--title-weight);
+    letter-spacing: var(--title-tracking);
+  }
+
+  /* The names under each plate stand clear of the bracket's spine and the final's emblem. */
+  :root[data-theme='tournament-arc'] .pickers {
+    padding-inline: 0.875rem;
+  }
+
+  :root[data-theme='tournament-arc'] .button-quiet:hover:not(:disabled) {
+    border-color: var(--accent);
+  }
+
+  /* Tournament Arc's pennants (Pennants.tsx): red and white flags on a black cord. */
+  .pennants {
+    flex: 1;
+    min-width: 0;
+    height: auto;
+    overflow: visible;
+  }
+
+  .pennant-cord {
+    fill: none;
+    stroke: var(--ink);
+    stroke-width: 1.5;
+  }
+
+  .pennant-red,
+  .pennant-white {
+    stroke: var(--ink);
+    stroke-width: 1;
+    stroke-linejoin: round;
+  }
+
+  .pennant-red {
+    fill: var(--accent);
+  }
+
+  .pennant-white {
+    fill: var(--panel);
+  }
+
+  .pennants [data-gone] {
+    opacity: 0;
+  }
+
   /* ---- The reveal's answer box (.reveal-band) and the names under each card (.picker), in each rebuilt world's
      material. Text keeps a tested pair; the cover's wash is cut back on light paper. ---- */
   /* Tokyo Rain: the machine's lit display panel; the pickers' names on ticket stubs. */
@@ -3625,6 +3843,32 @@
     color: var(--accent-ink);
   }
 
+  /* Tournament Arc: the board's result notice in a double ink rule, its kind on a black tag; names on little
+     wooden plates, this player's in red. */
+  :root[data-theme='tournament-arc'] .reveal-band {
+    border: 4px double var(--ink);
+    border-radius: 0;
+    background: var(--panel);
+  }
+
+  :root[data-theme='tournament-arc'] .reveal-kind {
+    border-radius: 0;
+    background: var(--ink);
+    color: var(--panel);
+  }
+
+  :root[data-theme='tournament-arc'] .picker {
+    border: 1px solid var(--ink);
+    border-radius: 0;
+    background: var(--card);
+    color: var(--card-ink);
+  }
+
+  :root[data-theme='tournament-arc'] .picker[data-you] {
+    background: var(--accent);
+    color: var(--accent-ink);
+  }
+
   /* On light paper the cover's wash is cut back, so the dark ink keeps its contrast. */
   :root:is(
       [data-theme='mecha'],
@@ -3632,7 +3876,8 @@
       [data-theme='retro-vhs'],
       [data-theme='konbini'],
       [data-theme='omikuji'],
-      [data-theme='blossom-map']
+      [data-theme='blossom-map'],
+      [data-theme='tournament-arc']
     )
     .reveal-wash {
     opacity: 0.12;
@@ -4431,6 +4676,29 @@
       radial-gradient(circle at 23% 41%, var(--blossom) 0 22%, transparent 23%);
   }
 
+  /* Tournament Arc's champion: the gold plate framed in ink, hung from a nail by its cord. */
+  :root[data-theme='tournament-arc'] .bill-lead {
+    margin-top: 1.5rem;
+    border: 2px solid var(--ink);
+    border-radius: 0;
+    box-shadow: 4px 4px 0 var(--ink);
+  }
+
+  :root[data-theme='tournament-arc'] .bill-lead::before {
+    content: '';
+    position: absolute;
+    bottom: 100%;
+    left: 30%;
+    width: 40%;
+    height: 1.25rem;
+    background:
+      radial-gradient(circle at 50% 3px, var(--edge) 0 3px, transparent 3.5px),
+      linear-gradient(to bottom right, transparent calc(50% - 1px), var(--ink) 0 calc(50% + 1px), transparent 0) left /
+        50% 100% no-repeat,
+      linear-gradient(to bottom left, transparent calc(50% - 1px), var(--ink) 0 calc(50% + 1px), transparent 0) right /
+        50% 100% no-repeat;
+  }
+
   /* ---- The theme picker (ThemeSheet.tsx): a full-screen sheet over the page, which tries on the selected world
      behind it. Each tile nests its own theme, so its tokens draw the world's object and colors. ---- */
   .theme-row {
@@ -4712,6 +4980,15 @@
     background:
       repeating-linear-gradient(90deg, var(--card-mark) 0 1.5rem, var(--panel) 1.5rem 3rem) 0 0 / 100% 0.3125rem
         no-repeat,
+      var(--panel);
+  }
+
+  /* Tournament Arc: the ring's edge, the referee's red pennants strung along the top under an ink rule. */
+  :root[data-theme='tournament-arc'] .start-bar {
+    border-top: 2px solid var(--ink);
+    padding-top: 1.375rem;
+    background:
+      conic-gradient(from 135deg at 50% 0, var(--accent) 90deg, transparent 0) 0 0 / 1.25rem 0.625rem repeat-x,
       var(--panel);
   }
 
@@ -6126,6 +6403,58 @@
   from {
     scale: 0;
     rotate: -72deg;
+  }
+}
+
+/* Tournament Arc: each pennant drops as it is taken down; a pick advances its plate toward the spine; at the reveal
+   the final's emblem lights gold as the right entrant takes it; at the results the champion's plate swings on its
+   cord. */
+:root[data-motion='full'] .pennant-red,
+:root[data-motion='full'] .pennant-white {
+  transform-box: fill-box;
+  transform-origin: top;
+  transition:
+    transform 320ms cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 320ms ease-out;
+}
+
+:root[data-motion='full'] .pennants [data-gone] {
+  transform: translateY(60%) scaleY(0.4);
+}
+
+:root[data-motion='full'][data-theme='tournament-arc'] .options > li {
+  transition: translate 260ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+:root[data-motion='full'][data-theme='tournament-arc'][data-phase='reveal'] .options::after {
+  animation: final-light 480ms cubic-bezier(0.16, 1, 0.3, 1) 800ms both;
+}
+
+:root[data-motion='full'][data-theme='tournament-arc'] .bill-lead.bill-act {
+  transform-origin: 50% -1.25rem;
+  animation-name: plate-swing;
+}
+
+@keyframes final-light {
+  from {
+    background: var(--panel);
+    scale: 1.8;
+  }
+}
+
+@keyframes plate-swing {
+  0% {
+    opacity: 0;
+    transform: rotate(-8deg);
+  }
+
+  50% {
+    opacity: 1;
+    transform: rotate(4deg);
+  }
+
+  100% {
+    transform: none;
   }
 }
 
