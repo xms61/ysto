@@ -10,8 +10,8 @@ export interface ThemeStage {
   // How the time left reads: the shared bar; a seven-segment display; a dango skewer eaten down; the seconds as
   // huge arcade digits; a nipper cutting along a runner; a gachapon's coin dial turning; a candle burning down; a
   // printer's ruler; the round's heading sung like a lyric line; a shrine rope's paper streamers taken one by one;
-  // a walk on a park map toward a blossom tree; the referee's pennants taken down one by one; or a manga panel's
-  // focus lines closing in on its center.
+  // a walk on a park map toward a blossom tree; the referee's pennants taken down one by one; a manga panel's focus
+  // lines closing in on its center; or a cassette's tape winding from one reel to the other.
   readout:
     | 'bar'
     | 'segments'
@@ -25,11 +25,12 @@ export interface ThemeStage {
     | 'shide'
     | 'route'
     | 'pennants'
-    | 'focus';
+    | 'focus'
+    | 'reels';
   wrongMark: string | null; // printed on each option that was not the answer, at the reveal
   scoreBars: boolean; // each final score also drawn as a bar against the winner's, like a health bar
   masthead: boolean; // the round's heading set as a magazine's issue number, "No. 03 / 15"
-  rows: boolean; // the four options in one column, like the songs on a karaoke remote, instead of 2x2
+  rows: boolean; // the four options in one column, like songs on a karaoke remote or a tape's insert, not 2x2
 }
 
 const SHARED_STAGE: ThemeStage = { readout: 'bar', wrongMark: null, scoreBars: false, masthead: false, rows: false };
@@ -43,6 +44,7 @@ const STAGES: Partial<Record<Theme, Partial<ThemeStage>>> = {
   'tournament-arc': { readout: 'pennants' },
   'splash-page': { readout: 'focus' },
   'night-arc': { readout: 'focus' },
+  'side-a': { readout: 'reels', rows: true },
   sakura: { readout: 'dango' },
   shonen: { readout: 'digits', scoreBars: true },
   mecha: { readout: 'nipper', wrongMark: 'Spare' },

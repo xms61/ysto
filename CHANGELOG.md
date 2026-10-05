@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.31.0] - 2026-10-05
+
+### Added
+- Side A is its own world: a friend's mixtape. The round's heading is written on the cassette's label; the time left is the cassette, its tape winding from one reel to the other; the options are four tracks handwritten in ballpoint down the lined insert, numbered A1 to A4 in the margin. A pick circles its number; at the reveal a highlighter stroke goes over the right track. The answer box is the insert's flap, the pickers' names little tape labels, and the winner's name is highlighted. Type is Caveat Brush and Caveat. With it, all fifteen themes are their own worlds.
+
+### Changed
+- Side A's insert is white with blue rules and its tracks stand in one column, in place of blue cards in a grid.
+
 ## [0.30.0] - 2026-10-05
 
 ### Added

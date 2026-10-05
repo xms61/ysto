@@ -82,19 +82,11 @@ Each milestone is one or more PRs on `feat/…` branches with a version bump, a 
 - [x] 2026-10-05 Tournament Arc: the banner, the referee's pennants as the timer, the bracket of plates, the final in gold (v0.28.0)
 - [x] 2026-10-05 Splash Page: slanted panels read right to left, focus lines as the timer, the splash (v0.29.0)
 - [x] 2026-10-05 Night Arc: the chapter header, white focus lines, black panels in white frames, the burst to white (v0.30.0)
-- [ ] Side A
+- [x] 2026-10-05 Side A: the cassette's label, the reels as the timer, tracks on the lined insert, the highlighter (v0.31.0)
 - [x] 2026-10-01 Plates in place for all fifteen
 
 ## Where to pick up
-State on 2026-10-05: the seven reshaped themes are all rebuilt as worlds with their motion, answer boxes, pick chips and type: Tokyo Rain, Hanami, Fighter Select, Model Kit, Gachapon, Quest Board (with the owner's monster sprites) and Back Issue (v0.22.0). The picker is built (v0.23.0). Of the eight new themes, Konbini 2 a.m. (v0.24.0), Karaoke Box (v0.25.0), Omikuji (v0.26.0), Blossom Map (v0.27.0), Tournament Arc (v0.28.0), Splash Page (v0.29.0) and Night Arc (v0.30.0) are built; Side A still runs on the shared card layout with its own tokens and plate.
-
-Do next: the last new theme, Side A, following the rules under Owner review findings, its picker icon in step with its world.
-
-Working notes for a new session:
-- Check a theme by eye with `npm run build`, then the "start" preview (production server on :5173), a solo lobby, and `localStorage.ysto_prefs` set to the theme with `motion: 'full'` to see motion or `'reduced'` for steady screenshots. A solo answer ends the round at once; set Songs per game to 5 to reach the results quickly.
-- Run `npx playwright test --project=chromium --project=firefox` locally; WebKit can't decode audio on the owner's Windows machine, so CI covers it.
-- Date `last-verified` by `date -u +%F`; CI rejects a date ahead of UTC.
-- Each world: tokens in its `[data-theme]` block (contrast in `src/themes.test.ts`, world-only pairs in `WORLD_TEXT_PAIRS`), its stock section in `src/styles.css`, its stage fields in `src/themes/stage.ts`, its motion in the theme-worlds motion section, its plate opacity from the plate check, and its rows and paragraph in DESIGN.md.
+Finished on 2026-10-05 (v0.31.0): all fifteen themes are worlds. See Outcome.
 
 ## Owner review findings
 What the owner found playing the built worlds on 2026-10-02, and where each stands. A finding that is fixed stays here with its version, so the next world avoids it from the start.
@@ -157,3 +149,17 @@ What the owner found playing the built worlds on 2026-10-02, and where each stan
 - By eye: each theme at 390 px and 1280 px through countdown, options, locked in, reveal and results.
 
 ## Outcome
+All fifteen themes are their own worlds (v0.15.0 to v0.31.0), each with its round, reveal, answer box, pick chips, results, lobby start bar, type and motion, and the picker shows each as an icon in its colors (v0.23.0). The seven reshaped themes were shaped and reviewed with the owner round by round; the eight new ones were built from their rows in the worlds table after the owner said to continue, each checked by eye in a muted solo game with motion on and off.
+
+What shipped beyond the table:
+- Stage fields grew with the worlds: `readout` (fourteen timers), `wrongMark`, `scoreBars`, `masthead`, and `rows` for the one-column worlds (Karaoke Box, Side A).
+- Splash Page reads right to left on screen while keys and focus stay 1 to 4.
+- The browser tests run Chromium and Firefox muted (v0.27.0).
+
+What did not ship as written:
+- Karaoke Box's verdict stays the shared one under the lyric screen, not set on the screen.
+- Tokyo Rain's ticket carries the title, kind and year, not the answer time (Surprises).
+
+Follow-ups:
+- The owner has not yet played the eight new worlds; their findings go in a new plan or the tech-debt tracker.
+- A pick's feedback (Karaoke's pulse, Blossom Map's chip, Tournament Arc's advance, Splash Page's jolt) only shows between a pick and the reveal, which a solo game skips, so it was checked by setting the state by hand rather than in play.

@@ -5,7 +5,7 @@ last-verified: 2026-10-05
 
 # Backdrop plate prompts
 
-Image prompts for the backdrop plate behind each of the fifteen theme worlds ([plan](exec-plans/active/2026-10-01-theme-worlds.md)). The owner generates the images; the rules they must meet are in [DESIGN.md](DESIGN.md) under The backdrop plates.
+Image prompts for the backdrop plate behind each of the fifteen theme worlds ([plan](exec-plans/completed/2026-10-01-theme-worlds.md)). The owner generates the images; the rules they must meet are in [DESIGN.md](DESIGN.md) under The backdrop plates.
 
 ## How to use them
 - Paste the theme's prompt followed by the shared ending below, as one prompt.

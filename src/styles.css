@@ -22,6 +22,8 @@
 @import '@fontsource/comic-neue/latin-700.css';
 @import '@fontsource/shojumaru/latin-400.css';
 @import '@fontsource/patrick-hand-sc/latin-400.css';
+@import '@fontsource/caveat/latin-600.css';
+@import '@fontsource/caveat-brush/latin-400.css';
 
 /*
  * Seven themes, one card anatomy (docs/DESIGN.md). Every round deals four identical cards, and each theme
@@ -781,9 +783,10 @@
     --radius-2xl: 2px;
   }
 
-  /* Side A: a friend's mixtape, a lined blue insert, ballpoint and highlighter. */
+  /* Side A: a friend's mixtape. The round's heading is written on the cassette's label, the time left is the
+     tape winding between its reels, and the options four tracks handwritten in ballpoint on the lined insert. */
   [data-theme='side-a'] {
-    --display-adjust: 0.52;
+    --display-adjust: 0.5;
     color-scheme: dark;
     --page: #15161c;
     --plate: url('./assets/plates/side-a.webp');
@@ -798,30 +801,39 @@
     --accent-ink: #1a1a00;
     --good: #6fe3a1;
     --bad: #ff7b7b;
-    --card: #e6efff;
+    --card: #f6f8ff;
     --card-ink: #1b2a6b;
     --card-muted: #45507a;
-    --card-dim: #cdd6ea;
+    --card-dim: #e3e8f5;
     --card-mark: #1b2a6b;
     --card-mark-ink: #ffffff;
-    --card-chosen: #fff8a8;
+    --card-chosen: #f6f8ff;
     --card-chosen-ink: #1b2a6b;
     --card-alert: #c0262d;
-    --card-back: #1b2a6b;
-    --card-back-ink: #fff35c;
-    --display-font: 'Zen Kaku Gothic New', ui-sans-serif, system-ui, sans-serif;
-    --display-weight: 700;
+    --card-back: #f6f8ff;
+    --card-back-ink: #1b2a6b;
+    /* The tape: the cassette's smoky shell, its label and the label's stripes, the brown tape, the insert's blue
+       rules and red margin, and the highlighter (the accent). Only the label and the insert carry text. */
+    --shell: #2b2e3a;
+    --label: #fdfbf3;
+    --label-ink: #1b2a6b;
+    --stripe-warm: #ff7a59;
+    --tape: #5a3a22;
+    --rule: #9db4e8;
+    --margin: #e57373;
+    --display-font: 'Caveat Brush', 'Comic Sans MS', cursive;
+    --display-weight: 400;
     --display-case: none;
     --display-tracking: 0.01em;
-    --title-font: var(--display-font);
-    --title-weight: 700;
+    --title-font: 'Caveat', 'Comic Sans MS', cursive;
+    --title-weight: 600;
     --title-case: none;
-    --title-tracking: 0.01em;
-    --title-adjust: 0.52;
+    --title-tracking: 0;
+    --title-adjust: 0.48;
     --panel-shadow: 0 1rem 2.25rem -1.25rem rgb(0 0 0 / 0.85);
     --page-texture: none;
     --radius-lg: 0.25rem;
-    --radius-xl: 0.375rem;
+    --radius-xl: 0.25rem;
     --radius-2xl: 0.5rem;
   }
 
@@ -3852,6 +3864,190 @@
     background: var(--page);
   }
 
+  /* ---- Side A: a friend's mixtape. The round's heading is written in marker on the cassette's label, under its
+     two printed stripes and beside a printed "A"; the time left is the tape winding off the left reel onto the right;
+     the options are four tracks handwritten in ballpoint down the lined insert, one under the other, numbered A1 to
+     A4 in the margin. A pick circles its number in ballpoint; at the reveal a highlighter stroke goes over the right
+     track and its details are written in. ---- */
+  /* The label: cream paper with two printed stripes along its top and a printed "A" before the heading. */
+  :root[data-theme='side-a'] .round-head {
+    margin-bottom: 1rem;
+    padding: 1.125rem 1rem 0.625rem;
+    border-radius: 0.375rem;
+    background:
+      linear-gradient(var(--stripe-warm), var(--stripe-warm)) 0 0.25rem / 100% 0.25rem no-repeat,
+      linear-gradient(var(--accent), var(--accent)) 0 0.5rem / 100% 0.25rem no-repeat,
+      var(--label);
+    color: var(--label-ink);
+    box-shadow: 0 0 0 0.375rem var(--shell);
+  }
+
+  :root[data-theme='side-a'] .round-head h2 {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+  }
+
+  :root[data-theme='side-a'] .round-head h2::before {
+    content: 'A' / '';
+    display: grid;
+    place-items: center;
+    width: 1.75rem;
+    height: 1.75rem;
+    border-radius: 0.125rem;
+    background: var(--label-ink);
+    color: var(--label);
+    font-family: ui-sans-serif, system-ui, sans-serif;
+    font-size: 1.125rem;
+    font-weight: 800;
+  }
+
+  :root[data-theme='side-a'] .round-head .button-quiet {
+    border: 2px solid var(--label-ink);
+    background: transparent;
+    color: var(--label-ink);
+  }
+
+  /* The listening light is a reel's hub: white teeth round a dark spindle. */
+  :root[data-theme='side-a'] .sonar-core {
+    background:
+      radial-gradient(circle, var(--shell) 0 30%, transparent 31%),
+      repeating-conic-gradient(var(--label) 0 20deg, var(--shell) 20deg 60deg);
+  }
+
+  /* The insert: lined paper with its red margin, the four tracks written one under the other. */
+  :root[data-theme='side-a'] .options {
+    padding: 0.5rem 0.75rem 0.75rem;
+    border-radius: 0.25rem;
+    background:
+      linear-gradient(var(--margin), var(--margin)) 3.5rem 0 / 1px 100% no-repeat,
+      var(--card);
+  }
+
+  :root[data-theme='side-a'] .card-turn {
+    min-height: 3.25rem;
+  }
+
+  /* A track: one ruled line of the insert, its number in the margin and its title in ballpoint. */
+  :root[data-theme='side-a'] .card-face {
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 1rem;
+    padding: 0.375rem 0.25rem;
+    border-radius: 0;
+  }
+
+  :root[data-theme='side-a'] .card-front {
+    border: 0;
+    border-bottom: 1px solid var(--rule);
+    background-image: linear-gradient(var(--margin), var(--margin));
+    background-position: 2.75rem 0;
+    background-size: 1px 100%;
+    background-repeat: no-repeat;
+    font-size: 1.375rem;
+  }
+
+  :root[data-theme='side-a'] .card-index {
+    display: flex;
+    justify-content: center;
+    min-width: 2.25rem;
+    flex-shrink: 0;
+    background: transparent;
+    color: var(--card-mark);
+  }
+
+  :root[data-theme='side-a'] .card-index::before {
+    content: 'A';
+  }
+
+  /* Picked: the number circled in ballpoint. */
+  :root[data-theme='side-a'] .card[data-state='chosen'] .card-index {
+    border-radius: 50%;
+    box-shadow: 0 0 0 2px var(--card-mark);
+  }
+
+  :root[data-theme='side-a'] .card:is([data-state='muted'], [data-state='missed']) .card-index {
+    background: transparent;
+    box-shadow: none;
+  }
+
+  :root[data-theme='side-a'] .card:is([data-state='muted'], [data-state='missed']) .card-front {
+    background-color: var(--card);
+  }
+
+  /* The right track: a highlighter stroke over its title, its details written in beside it. */
+  :root[data-theme='side-a'] .card-back:not(.card-printed) {
+    flex-wrap: wrap;
+    column-gap: 0.75rem;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  :root[data-theme='side-a'] .card-back:not(.card-printed) .card-back-title {
+    padding-inline: 0.25rem;
+    background: linear-gradient(var(--accent), var(--accent)) left / 100% 100% no-repeat;
+    font-size: 1.375rem;
+  }
+
+  /* Face down, a blank ruled line with a faint "?!". */
+  :root[data-theme='side-a'] .card-printed {
+    align-items: center;
+    border-bottom: 1px solid var(--rule);
+    background: var(--card);
+    color: var(--rule);
+  }
+
+  :root[data-theme='side-a'] .card-emblem {
+    font-size: 1.5rem;
+  }
+
+  :root[data-theme='side-a'] .button-quiet:hover:not(:disabled) {
+    border-color: var(--accent);
+  }
+
+  /* Side A's cassette (Cassette.tsx): a smoky shell, the label and its stripe, the window, brown tape on two reels. */
+  .cassette {
+    width: 6rem;
+    height: auto;
+    flex-shrink: 0;
+  }
+
+  .cassette-shell {
+    fill: var(--shell);
+    stroke: var(--edge);
+    stroke-width: 1;
+  }
+
+  .cassette-label {
+    fill: var(--label);
+  }
+
+  .cassette-stripe {
+    fill: var(--stripe-warm);
+  }
+
+  .cassette-window {
+    fill: #0d0e12;
+  }
+
+  .cassette-tape {
+    fill: var(--tape);
+  }
+
+  .cassette-hub-ring {
+    fill: var(--label);
+  }
+
+  .cassette-hub rect {
+    fill: var(--shell);
+  }
+
+  .cassette-foot {
+    fill: none;
+    stroke: var(--edge);
+    stroke-width: 1;
+  }
+
   /* ---- The reveal's answer box (.reveal-band) and the names under each card (.picker), in each rebuilt world's
      material. Text keeps a tested pair; the cover's wash is cut back on light paper. ---- */
   /* Tokyo Rain: the machine's lit display panel; the pickers' names on ticket stubs. */
@@ -4201,6 +4397,36 @@
     color: var(--page);
   }
 
+  /* Side A: the insert's inside flap, lined paper, the kind under a highlighter stroke; names written on little
+     tape labels, this player's highlighted. */
+  :root[data-theme='side-a'] .reveal-band {
+    --ink: var(--card-ink);
+    --muted: var(--card-muted);
+    --line: var(--rule);
+    border: 0;
+    border-radius: 0.25rem;
+    background: var(--card);
+    color: var(--card-ink);
+  }
+
+  :root[data-theme='side-a'] .reveal-kind {
+    border-radius: 0;
+    background: var(--accent);
+    color: var(--card-ink);
+  }
+
+  :root[data-theme='side-a'] .picker {
+    border: 0;
+    border-radius: 0.125rem;
+    background: var(--label);
+    color: var(--label-ink);
+  }
+
+  :root[data-theme='side-a'] .picker[data-you] {
+    background: var(--accent);
+    color: var(--card-ink);
+  }
+
   /* On light paper the cover's wash is cut back, so the dark ink keeps its contrast. */
   :root:is(
       [data-theme='mecha'],
@@ -4210,7 +4436,8 @@
       [data-theme='omikuji'],
       [data-theme='blossom-map'],
       [data-theme='tournament-arc'],
-      [data-theme='splash-page']
+      [data-theme='splash-page'],
+      [data-theme='side-a']
     )
     .reveal-wash {
     opacity: 0.12;
@@ -5063,6 +5290,16 @@
       0 0 0 5px var(--ink);
   }
 
+  /* Side A's winner is written on the insert with a highlighter stroke over their name. */
+  :root[data-theme='side-a'] .bill-lead {
+    box-shadow: var(--panel-shadow);
+  }
+
+  :root[data-theme='side-a'] .bill-lead .bill-name {
+    padding-inline: 0.25rem;
+    background: linear-gradient(var(--accent), var(--accent)) left / 100% 100% no-repeat;
+  }
+
   /* ---- The theme picker (ThemeSheet.tsx): a full-screen sheet over the page, which tries on the selected world
      behind it. Each tile nests its own theme, so its tokens draw the world's object and colors. ---- */
   .theme-row {
@@ -5371,6 +5608,16 @@
   /* Night Arc: the black page's foot under a white panel rule. */
   :root[data-theme='night-arc'] .start-bar {
     border-top: 3px solid var(--ink);
+  }
+
+  /* Side A: the cassette's smoky shell along the foot, its label's stripes along the top edge. */
+  :root[data-theme='side-a'] .start-bar {
+    border-top: 0;
+    padding-top: 1.125rem;
+    background:
+      linear-gradient(var(--stripe-warm), var(--stripe-warm)) 0 0 / 100% 0.25rem no-repeat,
+      linear-gradient(var(--accent), var(--accent)) 0 0.25rem / 100% 0.25rem no-repeat,
+      var(--shell);
   }
 
   /* Fighter Select: the cabinet's control deck, edged in the player's red slant. */
@@ -6913,6 +7160,42 @@
 
   100% {
     box-shadow: 0 0 0 2.5rem transparent;
+  }
+}
+
+/* Side A: the reels turn while the clip plays; a picked track's number is circled in ballpoint; at the reveal the
+   highlighter stroke sweeps over the right track's title, and over the winner's name at the results. */
+:root[data-motion='full'][data-phase='playing'] .cassette-hub {
+  animation: reel-turn 1.6s linear infinite;
+}
+
+:root[data-motion='full'][data-theme='side-a'] .card[data-state='chosen'] .card-index {
+  animation: pen-circle 300ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+:root[data-motion='full'][data-theme='side-a'] .card[data-turned] .card-back-title {
+  animation: highlight-sweep 520ms cubic-bezier(0.3, 0, 0.2, 1) 820ms both;
+}
+
+:root[data-motion='full'][data-theme='side-a'] .bill-lead.bill-act .bill-name {
+  animation: highlight-sweep 520ms cubic-bezier(0.3, 0, 0.2, 1) calc(var(--act-delay) + 400ms) both;
+}
+
+@keyframes reel-turn {
+  to {
+    rotate: -360deg;
+  }
+}
+
+@keyframes pen-circle {
+  from {
+    box-shadow: 0 0 0 0.5rem transparent;
+  }
+}
+
+@keyframes highlight-sweep {
+  from {
+    background-size: 0 100%;
   }
 }
 
