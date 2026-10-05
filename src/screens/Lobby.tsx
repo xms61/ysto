@@ -65,7 +65,7 @@ function StartBar({ store, lobby, settings, isHost }: LobbyProps) {
   const tooFew = pool.anime < settings.songsPerGame;
   const matching = `${pool.themes.toLocaleString('en')} songs from ${pool.anime.toLocaleString('en')} anime match.`;
   return (
-    <div className="start-bar sticky bottom-0 z-10 -mx-4 flex flex-wrap items-center gap-3 border-t border-line bg-page px-4 py-3">
+    <div className="start-bar sticky bottom-0 z-10 -mx-4 flex flex-wrap items-center gap-3">
       <p className="flex-1 text-sm" aria-live="polite">
         {matching}
         {tooFew && isHost && ` Play at most ${pool.anime} songs, or widen the filters.`}
