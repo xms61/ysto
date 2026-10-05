@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.23.0] - 2026-10-05
+
+### Added
+- The theme picker is its own full-screen sheet, "Choose a world": all fifteen themes in a grid, each tile its world's object as an icon in the world's colors (a capsule machine for Gachapon, a sword for Quest Board), with its name in its own type. Selecting a tile tries the world on across the whole page; "Use this world" keeps it, and Back or Escape puts the old one back. "Surprise me" spins a highlight across the grid and lands on a random other world.
+
+### Changed
+- Preferences shows the current theme as one row that opens the picker, in place of the list of fifteen.
+
 ## [0.22.0] - 2026-10-05
 
 ### Added
@@ -28,17 +36,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Quest Board's bounty notices carry the owner's monster sketches, a slime, a tusked beast, a wyvern and a stone golem, in faint sepia ink behind each title, in place of the simple line drawings.
-
-## [0.21.1] - 2026-10-05
-
-### Changed
-- The answer box below the cards and the names of who picked each option take each rebuilt world's material: Tokyo Rain's lit display panel and ticket stubs, Hanami's lacquer box and rice-paper slips, Fighter Select's profile panel and slanted name plates, Model Kit's manual page and gate tags, Gachapon's open capsule and little capsules.
-
-## [0.21.0] - 2026-10-05
-
-### Added
-- Quest Board is its own world: the adventurers' guild notice board at night. The round's heading is carved into a plank; the options are four bounty notices pinned to the board, each with a ruled frame, a red heading and lines in a made-up script, a monster drawn faintly behind the title, and a red rank stamp for its key; the time left is a candle burning down. A pick is taken down to the counter in candlelight; at the reveal the right notice gets a big round "Completed" seal; the answer box below the cards is one more pinned bounty, and the pickers' names sit on paper slips; the winner's notice is pinned up at the results. With motion on, the flame flickers, a picked notice lifts and the seal thunks on.
-- Image prompts for Quest Board's monster sprites, which will replace the line drawings.
-
-### Removed
-- Quest Board's pixel stars and blinking menu cursor.

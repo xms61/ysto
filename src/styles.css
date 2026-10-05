@@ -3512,6 +3512,214 @@
     box-shadow: 0.25rem 0.25rem 0 var(--cyan);
   }
 
+  /* ---- The theme picker (ThemeSheet.tsx): a full-screen sheet over the page, which tries on the selected world
+     behind it. Each tile nests its own theme, so its tokens draw the world's object and colors. ---- */
+  .theme-row {
+    justify-content: flex-start;
+    gap: 0.625rem;
+  }
+
+  .theme-swatch {
+    width: 1.25rem;
+    height: 1.5rem;
+    flex-shrink: 0;
+    border: 2px solid var(--card-mark);
+    border-radius: 0.25rem;
+    background:
+      linear-gradient(var(--accent), var(--accent)) top / 100% 30% no-repeat,
+      var(--card);
+  }
+
+  .theme-sheet {
+    width: 100%;
+    max-width: none;
+    height: 100%;
+    max-height: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter: blur(10px);
+    color: var(--ink);
+  }
+
+  /* The head and foot stay put; only the grid scrolls. */
+  .theme-sheet[open] {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .theme-sheet::backdrop {
+    background: rgb(0 0 0 / 0.35);
+  }
+
+  .theme-sheet-head,
+  .theme-sheet-foot {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    background: var(--panel);
+    box-shadow: 0 0 0 1px var(--line);
+  }
+
+  .theme-sheet-foot {
+    justify-content: flex-end;
+    padding-bottom: calc(0.75rem + env(safe-area-inset-bottom));
+  }
+
+  /* A fieldset won't shrink as a flex child, so a plain box does the scrolling round it. */
+  .theme-scroll {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .theme-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+    min-width: 0;
+    margin: 0;
+    padding: 1rem;
+    border: 0;
+  }
+
+  @media (min-width: 40rem) {
+    .theme-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .theme-grid {
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+  }
+
+  /* A tile is a scrap of its world's page, its name in its own face. It holds its own hidden radio, so focusing
+     one scrolls only the grid, never the sheet. */
+  .theme-tile {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+    padding: 0.5rem;
+    border-radius: min(var(--radius-xl), 0.75rem);
+    background: var(--page);
+    color: var(--ink);
+    cursor: pointer;
+    box-shadow: 0 0 0 1px var(--line);
+    transition: box-shadow 150ms ease-out;
+  }
+
+  .theme-tile:has(:checked),
+  .theme-tile[data-lit] {
+    box-shadow:
+      0 0 0 3px var(--accent),
+      0 0 0 5px var(--page);
+  }
+
+  .theme-tile:has(:focus-visible) {
+    outline: 3px solid var(--accent);
+    outline-offset: 4px;
+  }
+
+  .theme-tile-name {
+    font-size: 1rem;
+    line-height: 1.15;
+  }
+
+  .theme-tile-world {
+    font-size: 0.75rem;
+    line-height: 1.3;
+    color: var(--muted);
+  }
+
+  /* The tile's art: the world's object on its panel, and a strip of the world's colors under it. */
+  .theme-tile-art {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 0.5rem 0.5rem;
+    border-radius: min(var(--radius-lg), 0.5rem);
+    background: var(--panel);
+    box-shadow: inset 0 0 0 1px var(--line);
+  }
+
+  .theme-icon {
+    width: 4rem;
+    height: 4rem;
+  }
+
+  .theme-icon :is(path, rect, circle) {
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .theme-icon .ti-out {
+    stroke: var(--edge);
+    stroke-width: 2;
+  }
+
+  .theme-icon .ti-thick {
+    stroke-width: 3.5;
+  }
+
+  .theme-icon .ti-paper {
+    fill: var(--card);
+  }
+
+  .theme-icon .ti-accent {
+    fill: var(--accent);
+  }
+
+  .theme-icon .ti-mark {
+    fill: var(--card-mark);
+  }
+
+  .theme-icon .ti-mark-line {
+    stroke: var(--card-mark);
+    stroke-width: 2;
+  }
+
+  .theme-icon .ti-accent-line {
+    stroke: var(--accent);
+    stroke-width: 3.5;
+  }
+
+  .theme-tile-colors {
+    display: flex;
+    gap: 0.25rem;
+  }
+
+  .theme-tile-colors > span {
+    width: 0.75rem;
+    height: 0.75rem;
+    border-radius: 50%;
+    box-shadow: 0 0 0 1px var(--edge);
+  }
+
+  .theme-tile-colors > span:nth-child(1) {
+    background: var(--page);
+  }
+
+  .theme-tile-colors > span:nth-child(2) {
+    background: var(--accent);
+  }
+
+  .theme-tile-colors > span:nth-child(3) {
+    background: var(--card);
+  }
+
+  .theme-tile-colors > span:nth-child(4) {
+    background: var(--card-mark);
+  }
+
   /* ---- The lobby. ---- */
   /* The start bar (Lobby.tsx) stands on the viewport's foot: it reaches through the page column's bottom padding,
      so at the end of the scroll no backdrop shows under it, and pads its own foot clear of a phone's home bar. */

@@ -44,7 +44,13 @@ Chosen by the owner on 2026-10-01, one theme at a time, through the Impeccable s
 Each milestone is one or more PRs on `feat/…` branches with a version bump, a CHANGELOG entry and updated docs ([release process](../../../.github/RELEASE_PROCESS.md)).
 
 1. **Theme stage.** Let a theme supply its own round, reveal and results layouts while the game logic, the server protocol and the accessibility contract stay shared: one theme registry (id, name, light or dark, fonts, layout set) replacing the bare `THEMES` list, and the current card layout as the fallback set. Rename the display names in the table; ids unchanged. Tests: every theme renders all phases, four equal options, keys 1 to 4, AA pairs.
-2. **The picker.** Fifteen themes, no groups. Each theme shows as a live miniature of its own round (four tiny options in its own stock, which nested `data-theme` already allows), laid out as a strip the player flicks through, with a "Surprise me" that rolls a random theme. Shaped with the owner before it is built.
+2. **The picker.** Shaped with the owner on 2026-10-05:
+   - Preferences shows the current theme as one row, its name and a small swatch; tapping it opens a full-screen sheet, "Choose a world", closed by Back or Escape.
+   - The sheet is a grid of all fifteen themes, no groups. Each tile shows its world's object as an icon in the world's own colors (Gachapon a capsule machine, Quest Board a sword with a spark of magic), with a strip of its colors; the nested `data-theme` gives each tile its tokens.
+   - Each tile carries its name in its own display face; the selected tile also says its world in one line ("A guild's notice board at night").
+   - Selecting a tile tries the world on: the page behind the sheet takes its colors, type and plate. "Use this world" keeps it; Back restores the one the player had.
+   - "Surprise me" spins a highlight across the grid, slowing to a stop on a random world other than the current one, and tries it on; the player still keeps it with "Use this world". With motion reduced it lands at once.
+   - The eight themes not yet built as worlds show like the rest, on the shared card layout in their own colors.
 3. **The reshaped seven**, one PR each, each with its direction contract in its own surface brief: Tokyo Rain, Hanami, Fighter Select, Model Kit, Gachapon, Quest Board, Back Issue.
 4. **The eight new themes**, one PR each: Konbini 2 a.m., Karaoke Box, Omikuji, Blossom Map, Tournament Arc, Splash Page, Night Arc, Side A.
 5. **Plates.** As the owner supplies images from [PLATE_PROMPTS.md](../../PLATE_PROMPTS.md): scale, encode, set the opacity, pass the plate contrast check, record each origin in DESIGN.md. Until then a theme runs without a plate or with the reused one named there.
@@ -55,7 +61,7 @@ Each milestone is one or more PRs on `feat/…` branches with a version bump, a 
 - [x] 2026-10-01 Plate prompts written for the owner
 - [x] 2026-10-01 Fifteen theme ids, the new names, provisional tokens for the eight new themes, and all fifteen plates (v0.14.0)
 - [x] 2026-10-01 Theme stage (`src/themes/stage.ts`: readout and wrong mark), with Tokyo Rain (v0.15.0)
-- [ ] The picker
+- [x] 2026-10-05 The picker: a full-screen grid of tiny rounds, try-on, "Surprise me" (v0.23.0)
 - [x] 2026-10-01 Tokyo Rain: the ramen ticket machine (v0.15.0); the cabinet and motion (v0.18.0)
 - [x] 2026-10-05 Tokyo Rain: the noren as cloth (v0.18.4)
 - [x] 2026-10-05 The listening ring centered on the headphones in every phase (v0.18.2)
@@ -82,7 +88,7 @@ Each milestone is one or more PRs on `feat/…` branches with a version bump, a 
 ## Where to pick up
 State on 2026-10-05: the seven reshaped themes are all rebuilt as worlds with their motion, answer boxes, pick chips and type: Tokyo Rain, Hanami, Fighter Select, Model Kit, Gachapon, Quest Board (with the owner's monster sprites) and Back Issue (v0.22.0). The eight new themes still run on the shared card layout with their own tokens and plates.
 
-Do next: the picker (milestone 2, shaped with the owner first), then the eight new themes, starting with Konbini 2 a.m., following the rules under Owner review findings.
+Do next: the eight new themes, one PR each, starting with Konbini 2 a.m., following the rules under Owner review findings; each keeps its picker icon in step with its world.
 
 Working notes for a new session:
 - Check a theme by eye with `npm run build`, then the "start" preview (production server on :5173), a solo lobby, and `localStorage.ysto_prefs` set to the theme with `motion: 'full'` to see motion or `'reduced'` for steady screenshots. A solo answer ends the round at once; set Songs per game to 5 to reach the results quickly.
@@ -114,6 +120,7 @@ What the owner found playing the built worlds on 2026-10-02, and where each stan
 - 2026-10-01: Where the owner took several cards in one round, the card the owner chose on the decision page keeps the theme's id and the rest become new themes; Tokyo Rain kept its name and got its own round.
 - 2026-10-01: Display names follow the worlds (Model Kit, Gachapon, Quest Board, Back Issue, Hanami, Fighter Select); ids stay, because renaming an id resets players' saved theme.
 - 2026-10-01: The picker is one ungrouped strip of live miniatures, because the owner asked for something creative rather than groups.
+- 2026-10-05: The picker is a grid on its own full-screen sheet rather than one strip: the owner chose to see all fifteen at once. Selecting a world tries it on across the whole page, kept only by "Use this world", so browsing never loses the player's theme. Rejected: staying in the Preferences dropdown (too small), a carousel, plate-only tiles, and a random world every game. The tiles first drew a tiny round in each world; the owner asked for the world's object as an icon in its colors instead, which reads faster at tile size.
 - 2026-10-01: Overlaps between worlds (three rainy nights, two machines, three battle themes) are accepted for now; each keeps its own palette and type, and any clash is fixed later.
 - 2026-10-01: The owner supplies the plate images, since this project has no image generation.
 

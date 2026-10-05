@@ -33,7 +33,11 @@ function renderSeated(lobby = lobbyState()) {
   return { ...app, socket };
 }
 
+// jsdom has no modal dialogs; the stand-in opens the dialog in place, which is all these tests need.
 beforeEach(() => {
+  HTMLDialogElement.prototype.showModal = function showModal(this: HTMLDialogElement) {
+    this.setAttribute('open', '');
+  };
   localStorage.clear();
   sessionStorage.clear();
   window.history.replaceState(null, '', '/');
@@ -176,15 +180,44 @@ test("greets a missed opening with the game's own line, with the penalty when th
   expect(screen.getByText('You skipped the OP?! −250')).toBeTruthy();
 });
 
-test('applies the theme and motion picked in the preferences at once', () => {
+test('applies the motion picked in the preferences at once', () => {
+  renderApp();
+  expect(document.documentElement.dataset.motion).toBe('full');
+  fireEvent.change(screen.getByLabelText('Motion'), { target: { value: 'reduced' } });
+  expect(document.documentElement.dataset.motion).toBe('reduced');
+  expect(JSON.parse(localStorage.getItem('ysto_prefs') ?? '{}')).toMatchObject({ motion: 'reduced' });
+});
+
+function openThemeSheet() {
+  fireEvent.click(screen.getByRole('button', { name: /^Tokyo Rain, choose a world$/ }));
+  return screen.getByRole('dialog', { name: 'Choose a world' });
+}
+
+test('tries a world on from the picker, and keeps it only when the player uses it', () => {
   renderApp();
   expect(document.documentElement.dataset.theme).toBe('tokyo-rain');
-  expect(document.documentElement.dataset.motion).toBe('full');
-  fireEvent.click(screen.getByLabelText('Hanami'));
-  fireEvent.change(screen.getByLabelText('Motion'), { target: { value: 'reduced' } });
+  let sheet = openThemeSheet();
+  fireEvent.click(within(sheet).getByLabelText(/^Hanami/));
   expect(document.documentElement.dataset.theme).toBe('sakura');
-  expect(document.documentElement.dataset.motion).toBe('reduced');
-  expect(JSON.parse(localStorage.getItem('ysto_prefs') ?? '{}')).toMatchObject({ theme: 'sakura', motion: 'reduced' });
+  expect(within(sheet).getByText('A lacquer bento on the blue picnic tarp')).toBeTruthy();
+  fireEvent.click(within(sheet).getByRole('button', { name: 'Back' }));
+  expect(screen.queryByRole('dialog')).toBeNull();
+  expect(document.documentElement.dataset.theme).toBe('tokyo-rain');
+  expect(JSON.parse(localStorage.getItem('ysto_prefs') ?? '{}')).toMatchObject({ theme: 'tokyo-rain' });
+
+  sheet = openThemeSheet();
+  fireEvent.click(within(sheet).getByLabelText(/^Quest Board/));
+  fireEvent.click(within(sheet).getByRole('button', { name: 'Use this world' }));
+  expect(document.documentElement.dataset.theme).toBe('isekai');
+  expect(JSON.parse(localStorage.getItem('ysto_prefs') ?? '{}')).toMatchObject({ theme: 'isekai' });
+});
+
+test('surprises the player with another world, at once when motion is reduced', () => {
+  localStorage.setItem('ysto_prefs', JSON.stringify({ volume: 15, theme: 'tokyo-rain', motion: 'reduced' }));
+  renderApp();
+  const sheet = openThemeSheet();
+  fireEvent.click(within(sheet).getByRole('button', { name: 'Surprise me' }));
+  expect(document.documentElement.dataset.theme).not.toBe('tokyo-rain');
 });
 
 test('shows the titles in the language the player picked', async () => {

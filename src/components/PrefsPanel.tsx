@@ -1,29 +1,13 @@
 // This device's settings: volume, theme, title language and motion (docs/product-specs/settings.md). They
 // apply at once and stay on this device. PreferencesMenu puts them behind a button on every screen.
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { TITLE_LANGUAGES } from '../../shared/settings.ts';
 import type { TitleLanguage } from '../../shared/settings.ts';
-import { MOTIONS, THEMES } from '../prefs/prefs.ts';
+import { MOTIONS } from '../prefs/prefs.ts';
 import type { Motion, Prefs, Theme } from '../prefs/prefs.ts';
+import { THEME_NAMES } from '../themes/names.ts';
+import { ThemeSheet } from './ThemeSheet.tsx';
 import { INPUT, buttonClass } from './ui.tsx';
-
-const THEME_LABELS: Record<Theme, string> = {
-  'tokyo-rain': 'Tokyo Rain',
-  konbini: 'Konbini 2 a.m.',
-  karaoke: 'Karaoke Box',
-  sakura: 'Hanami',
-  omikuji: 'Omikuji',
-  'blossom-map': 'Blossom Map',
-  shonen: 'Fighter Select',
-  'tournament-arc': 'Tournament Arc',
-  'splash-page': 'Splash Page',
-  'night-arc': 'Night Arc',
-  mecha: 'Model Kit',
-  'magical-girl': 'Gachapon',
-  isekai: 'Quest Board',
-  'retro-vhs': 'Back Issue',
-  'side-a': 'Side A',
-};
 
 const LANGUAGE_LABELS: Record<TitleLanguage, string> = {
   english: 'English',
@@ -55,49 +39,36 @@ export function VolumeSlider({ volume, onChange }: { volume: number; onChange: (
   );
 }
 
-// Each choice previews its theme's card stock in its own colors and type, since a theme block also applies
-// inside another.
-function ThemePicker({ theme, onChange }: { theme: Theme; onChange: (theme: Theme) => void }) {
+// The current theme as one row: its swatch in its own colors and its name; it opens the picker.
+function ThemeRow({ theme, onChoose }: { theme: Theme; onChoose: () => void }) {
   return (
-    <fieldset>
-      <legend className="mb-1.5">Theme</legend>
-      <div className="grid grid-cols-2 gap-2">
-        {THEMES.map((option) => (
-          <label
-            key={option}
-            data-theme={option}
-            className={
-              'page-texture flex cursor-pointer items-center gap-2 rounded-xl border-2 p-2 text-ink ' +
-              'outline-offset-2 has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-accent ' +
-              (option === theme ? 'border-accent' : 'border-line')
-            }
-          >
-            <input
-              type="radio"
-              name="theme"
-              className="sr-only"
-              checked={option === theme}
-              onChange={() => onChange(option)}
-            />
-            <span
-              aria-hidden="true"
-              className="grid h-9 w-7 shrink-0 place-items-start rounded-lg border-2 border-[var(--card-mark)] bg-[var(--card)] p-0.5"
-            >
-              <span className="size-2.5 rounded-sm bg-[var(--card-mark)]" />
-            </span>
-            <span className="display text-sm leading-tight">{THEME_LABELS[option]}</span>
-          </label>
-        ))}
-      </div>
-    </fieldset>
+    <div className="flex items-center gap-3">
+      <span className="shrink-0">Theme</span>
+      <button
+        type="button"
+        data-theme={theme}
+        className={`${buttonClass('quiet')} theme-row flex-1`}
+        onClick={onChoose}
+      >
+        <span aria-hidden="true" className="theme-swatch" />
+        <span className="display">{THEME_NAMES[theme]}</span>
+        <span className="sr-only">, choose a world</span>
+      </button>
+    </div>
   );
 }
 
-export function PrefsPanel({ prefs, onChange }: { prefs: Prefs; onChange: (change: Partial<Prefs>) => void }) {
+interface PrefsPanelProps {
+  prefs: Prefs;
+  onChange: (change: Partial<Prefs>) => void;
+  onChooseTheme: () => void;
+}
+
+export function PrefsPanel({ prefs, onChange, onChooseTheme }: PrefsPanelProps) {
   return (
     <div className="flex flex-col gap-4">
       <VolumeSlider volume={prefs.volume} onChange={(volume) => onChange({ volume })} />
-      <ThemePicker theme={prefs.theme} onChange={(theme) => onChange({ theme })} />
+      <ThemeRow theme={prefs.theme} onChoose={onChooseTheme} />
       <label className="flex flex-col gap-1.5">
         Anime titles in
         <select
@@ -140,6 +111,11 @@ export function PrefsPanel({ prefs, onChange }: { prefs: Prefs; onChange: (chang
 // closes it, so it never sits over the options for a whole round.
 export function PreferencesMenu({ prefs, onChange }: { prefs: Prefs; onChange: (change: Partial<Prefs>) => void }) {
   const menu = useRef<HTMLDetailsElement>(null);
+  const [choosing, setChoosing] = useState(false);
+  const chooseTheme = () => {
+    if (menu.current) menu.current.open = false;
+    setChoosing(true);
+  };
   useEffect(() => {
     const close = (event: Event) => {
       const details = menu.current;
@@ -162,8 +138,11 @@ export function PreferencesMenu({ prefs, onChange }: { prefs: Prefs; onChange: (
         Preferences
       </summary>
       <div className="panel absolute top-full right-0 z-30 mt-2 w-80 max-w-full p-4">
-        <PrefsPanel prefs={prefs} onChange={onChange} />
+        <PrefsPanel prefs={prefs} onChange={onChange} onChooseTheme={chooseTheme} />
       </div>
+      {choosing && (
+        <ThemeSheet current={prefs.theme} onUse={(theme) => onChange({ theme })} onClose={() => setChoosing(false)} />
+      )}
     </details>
   );
 }

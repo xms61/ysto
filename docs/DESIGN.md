@@ -642,7 +642,13 @@ The final standings billed like a festival lineup (`.bill-*`), announced from th
 The name's "?!" is printed in the accent and stamped on after the name, with a jolt every few seconds. Below the forms, "How to play" folds three lines on how a round works.
 
 ### The theme picker
-In the Preferences panel, each choice previews its own stock inside the page's theme: its page texture, a small card in its `card` and `card-mark`, and its name in its display face, framed in `line`, or `accent` when chosen. The previews use only variables, so they work inside another theme.
+The Preferences panel shows the current theme as one row, a small swatch in its `card`, `card-mark` and `accent` and its name in its display face; the row opens the picker (`ThemeSheet.tsx`), a full-screen sheet, "Choose a world", over the page.
+- The sheet is a grid of all fifteen themes, two columns on a phone, three from 40rem and five from 64rem; its head and foot stay put while the grid scrolls. The sheet is the page's color at 88% over a blur, so the world behind it shows through softly.
+- Each tile is a scrap of its world's page with the world's object as an icon on its panel (`ThemeIcon.tsx`), and a strip of four dots in its page, accent, card and card-mark colors under it. A tile nests its theme, so the icon draws from that theme's tokens: outlines in `edge`, paper in `card`, marks in `card-mark`, and the hero color in `accent`. The objects: a ramen bowl (Tokyo Rain), a corner shop (Konbini 2 a.m.), a microphone (Karaoke Box), a bento with a blossom (Hanami), a knotted fortune slip (Omikuji), a park map and pin (Blossom Map), an arcade stick (Fighter Select), a bracket (Tournament Arc), an impact balloon (Splash Page), a crescent moon (Night Arc), a robot head (Model Kit), a capsule machine (Gachapon), a sword with a spark of magic (Quest Board), a magazine (Back Issue) and a cassette (Side A). All are original shapes.
+- Each tile carries its name in its display face; the selected tile also gives its world in one line in `muted`, and wears a 3px `accent` ring.
+- Selecting a tile tries the world on across the whole page, the sheet included. "Use this world" keeps it; Back or Escape puts back the theme the player had, and nothing is saved.
+- "Surprise me" hops a highlight across the tiles twelve times, each hop slower than the last, and lands on a random world other than the current one, which the page tries on; with motion reduced it lands at once.
+- Tile corners are capped at 0.75rem, so a soft theme's pill radius stays a tile.
 
 ### Motion
 Motion is decoration. It never carries information, and it runs only when the page's `data-motion` is `full`: the player's motion setting, or else the device's `prefers-reduced-motion`. Reduced motion stops every animation and every transition.

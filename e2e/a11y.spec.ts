@@ -64,7 +64,10 @@ test('every screen passes axe in every theme', async ({ page, browserName }) => 
   await audit(page, 'lobby', found);
   await page.getByText('Preferences', { exact: true }).click();
   await audit(page, 'preferences', found);
-  await page.getByText('Preferences', { exact: true }).click();
+  await page.getByRole('button', { name: /choose a world$/ }).click();
+  await expect(page.getByRole('dialog', { name: 'Choose a world' })).toBeVisible();
+  await audit(page, 'theme picker', found);
+  await page.getByRole('dialog').getByRole('button', { name: 'Back' }).click();
 
   await page.getByLabel('Songs per game').fill(String(ROUNDS));
   await page.getByLabel('Songs per game').press('Enter');
