@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.24.0] - 2026-10-05
+
+### Added
+- Konbini 2 a.m. is its own world: the one bright shop on a wet street. The round's heading is the shop's lit fascia sign over its two-color stripe; the time left reads on the register's teal display; the options are four marker-lettered price cards on a bright shelf, keyed by saffron price stars. A pick turns its star plum; at the reveal the scanner's red line passes down the right card as it prints a thermal receipt, and the others take a red "Sold out" label. The answer box is the receipt, the pickers' names are price-gun labels, and the results are the night's last receipt with the standings as line items. Type is DotGothic16 for the receipts and headings and Yusei Magic for the price cards.
+
+### Changed
+- Konbini 2 a.m.'s colors: saffron and plum from its shop stripe, in place of orange and teal.
+
 ## [0.23.0] - 2026-10-05
 
 ### Added

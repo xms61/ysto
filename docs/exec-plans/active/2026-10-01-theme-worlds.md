@@ -61,7 +61,7 @@ Each milestone is one or more PRs on `feat/…` branches with a version bump, a 
 - [x] 2026-10-01 Plate prompts written for the owner
 - [x] 2026-10-01 Fifteen theme ids, the new names, provisional tokens for the eight new themes, and all fifteen plates (v0.14.0)
 - [x] 2026-10-01 Theme stage (`src/themes/stage.ts`: readout and wrong mark), with Tokyo Rain (v0.15.0)
-- [x] 2026-10-05 The picker: a full-screen grid of tiny rounds, try-on, "Surprise me" (v0.23.0)
+- [x] 2026-10-05 The picker: a full-screen grid of world icons, try-on, "Surprise me" (v0.23.0)
 - [x] 2026-10-01 Tokyo Rain: the ramen ticket machine (v0.15.0); the cabinet and motion (v0.18.0)
 - [x] 2026-10-05 Tokyo Rain: the noren as cloth (v0.18.4)
 - [x] 2026-10-05 The listening ring centered on the headphones in every phase (v0.18.2)
@@ -75,7 +75,7 @@ Each milestone is one or more PRs on `feat/…` branches with a version bump, a 
 - [x] 2026-10-05 The answer box and pick chips in the world's material for Tokyo Rain, Hanami, Fighter Select, Model Kit and Gachapon (v0.21.1)
 - [x] 2026-10-05 Quest Board: the owner's monster sprites in place of the line drawings (v0.21.2)
 - [x] 2026-10-05 Back Issue: the eighties magazine, its masthead, the ruler, the readers' poll (v0.22.0)
-- [ ] Konbini 2 a.m.
+- [x] 2026-10-05 Konbini 2 a.m.: the register under the lit sign, price cards on the shelf, the receipt (v0.24.0)
 - [ ] Karaoke Box
 - [ ] Omikuji
 - [ ] Blossom Map
@@ -86,9 +86,9 @@ Each milestone is one or more PRs on `feat/…` branches with a version bump, a 
 - [x] 2026-10-01 Plates in place for all fifteen
 
 ## Where to pick up
-State on 2026-10-05: the seven reshaped themes are all rebuilt as worlds with their motion, answer boxes, pick chips and type: Tokyo Rain, Hanami, Fighter Select, Model Kit, Gachapon, Quest Board (with the owner's monster sprites) and Back Issue (v0.22.0). The eight new themes still run on the shared card layout with their own tokens and plates.
+State on 2026-10-05: the seven reshaped themes are all rebuilt as worlds with their motion, answer boxes, pick chips and type: Tokyo Rain, Hanami, Fighter Select, Model Kit, Gachapon, Quest Board (with the owner's monster sprites) and Back Issue (v0.22.0). The picker is built (v0.23.0). Of the eight new themes, Konbini 2 a.m. is built (v0.24.0); the other seven still run on the shared card layout with their own tokens and plates.
 
-Do next: the eight new themes, one PR each, starting with Konbini 2 a.m., following the rules under Owner review findings; each keeps its picker icon in step with its world.
+Do next: the seven remaining new themes, one PR each, starting with Karaoke Box, following the rules under Owner review findings; each keeps its picker icon in step with its world.
 
 Working notes for a new session:
 - Check a theme by eye with `npm run build`, then the "start" preview (production server on :5173), a solo lobby, and `localStorage.ysto_prefs` set to the theme with `motion: 'full'` to see motion or `'reduced'` for steady screenshots. A solo answer ends the round at once; set Songs per game to 5 to reach the results quickly.

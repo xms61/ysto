@@ -63,9 +63,11 @@ const GRAPHIC_PAIRS: [graphic: string, background: string][] = [
 ];
 
 // Pairs only a theme's own world draws: Tokyo Rain's heading on its noren and the round's text on the machine's
-// cabinet, Fighter Select's titles on their plates, Model Kit's step header on the manual and the round's text on
-// the cutting mat, Gachapon's heading on the machine's head and its titles on their slips, Quest Board's heading on its plank, the round's text on the board and the rank and
-// completed stamps in red ink, Back Issue's ink on its yellow slab and screened text over its halftone.
+// cabinet, Konbini's heading on its sign and its receipt's grey and inverse print, Fighter Select's titles on their
+// plates, Model Kit's step header on the manual and the round's text on the cutting mat, Gachapon's heading on the
+// machine's head and its titles on their slips, Quest Board's heading on its plank, the round's text on the board
+// and the rank and completed stamps in red ink, Back Issue's ink on its yellow slab and screened text over its
+// halftone.
 const WORLD_TEXT_PAIRS: Partial<Record<(typeof THEMES)[number], [text: string, background: string][]>> = {
   'tokyo-rain': [
     ['noren-ink', 'noren'],
@@ -73,6 +75,11 @@ const WORLD_TEXT_PAIRS: Partial<Record<(typeof THEMES)[number], [text: string, b
     ['muted', 'machine'],
     ['bad', 'machine'],
     ['good', 'machine'],
+  ],
+  konbini: [
+    ['sign-ink', 'sign'],
+    ['receipt-muted', 'card-back'],
+    ['card-back', 'card-back-ink'],
   ],
   shonen: [['card-ink', 'nameplate']],
   'magical-girl': [
