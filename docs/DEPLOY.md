@@ -1,6 +1,6 @@
 ---
 status: draft
-last-verified: 2026-09-30
+last-verified: 2026-10-05
 ---
 
 # Deploy
@@ -8,7 +8,7 @@ last-verified: 2026-09-30
 How the game gets onto its VPS and stays current. Why it is built this way: [hosting and deploy](design-docs/hosting-and-deploy.md). Commands marked *owner machine* run in the repo on the development machine; the others run on the VPS over SSH. Real hostnames, addresses and folders go in `.env` files, never in this doc.
 
 ## Status
-Nothing is deployed yet. The image, the compose stack and the release workflow are built and tested (M8 in the [v1 plan](exec-plans/active/2026-09-25-ysto-v1.md)), and the VPS waits until a Hetzner CX23 or CAX11 is available. When it is, work through [Next steps](#next-steps) in order.
+Deployed. The owner's Hetzner VPS has served the game on its domain since 0.13.0 (2026-09-30), set up by this runbook ([v1 plan](exec-plans/completed/2026-09-25-ysto-v1.md), M8). On 2026-10-05 it answered `/readyz`, sent every security header, redirected HTTP to HTTPS, and refused socket upgrades from another origin or none. Two of the [checks after setup](#checks-after-setup) still wait for the owner, under [Open checks](#open-checks). Updates follow [Release and update](#release-and-update).
 
 ## What runs where
 - **The VPS** runs `deploy/compose.yml`: Caddy on ports 80 and 443 with the Let's Encrypt certificate for `YSTO_DOMAIN`, and the game's image from GHCR, which publishes no port. The exported library and the catalog are mounted read-only.
@@ -94,16 +94,11 @@ These are M8's "Done when" checks:
   nmap -Pn -p- <domain>
   ```
 
-## Next steps
-The open items of M8, in order. Each one is a box in the v1 plan's Progress; tick it there when done.
-1. Choose the domain ([The domain](#the-domain)).
-2. Add `docker` to the required checks of the `main` ruleset (repo settings), next to the four existing jobs.
-3. Release 0.11.0 or later: `gh workflow run release.yml -f version=<version>`, then set the GHCR package to public (step 5).
-4. Once a CX23 or CAX11 is available, work through the one-time setup, steps 1 to 6.
-5. Run the [checks after setup](#checks-after-setup): a whole game over HTTPS, the clip bench on the VPS, and the port scan.
-6. Verify [RELIABILITY.md](RELIABILITY.md) and [SECURITY.md](SECURITY.md) against the running VPS, set them to `verified`, and set this doc to `verified` too. Then tick M8 in the plan.
-
-The catalog and its covers are ready for the first upload: the covers are WebP, and the catalog was rebuilt from the live AnimeThemes API on 2026-09-30. After a later `catalog:covers` or `catalog:build`, rerun step 4 to send the changes.
+## Open checks
+Not yet done on the running VPS; each is a row in the [tech-debt tracker](exec-plans/tech-debt-tracker.md) until it is:
+1. Time the clips on the VPS ([checks after setup](#checks-after-setup)). The load test passed on the development machine, not on the VPS.
+2. Scan the ports from outside the VPS's network ([checks after setup](#checks-after-setup)).
+3. Add `docker` to the required checks of the `main` ruleset (repo settings), next to `guard`, `docs`, `app` and `e2e`.
 
 ## Routines
 ### Release and update

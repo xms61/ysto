@@ -1,6 +1,6 @@
 ---
 status: verified
-last-verified: 2026-10-01
+last-verified: 2026-10-05
 ---
 
 # Product
@@ -44,7 +44,7 @@ Four things set it apart from other anime music quizzes, such as Anime Music Qui
 - The repo is public. Audio, catalog data, secrets and details of the owner's machine are never committed, and public text describes the audio library only in general terms, without counts or sizes.
 - Metadata comes from AnimeThemes and AniList, under their terms. The running server calls no third-party service.
 - The audio and artwork are copyrighted, so the site stays low-profile: short clips, no downloads, no search indexing, and credit to the sources.
-- Undecided: the domain, the VPS provider and its CPU architecture (decided in milestone M8 of the [v1 plan](docs/exec-plans/active/2026-09-25-ysto-v1.md)).
+- Hosting: a Hetzner Cloud VPS behind Caddy, on a domain the owner keeps in the VPS's `.env` (decided in M8 of the [v1 plan](docs/exec-plans/completed/2026-09-25-ysto-v1.md)).
 
 ## Brand Commitments
 - The name, You Skipped The OP?!, sets the voice: playful and anime-literate, never mean. A missed song earns the line "You skipped the OP?!".

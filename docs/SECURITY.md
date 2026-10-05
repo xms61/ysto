@@ -1,6 +1,6 @@
 ---
 status: draft
-last-verified: 2026-09-30
+last-verified: 2026-10-05
 ---
 
 # Security
@@ -44,6 +44,13 @@ Every external input is validated once, at the boundary ([CODE_STYLE.md](CODE_ST
 
 ## User data
 Nothing about players is stored on disk. Names and session tokens live in memory for as long as the lobby lasts. Logs never contain session tokens, clip tokens or player names, and IP addresses stay in memory for rate limiting only. There are no accounts, cookies or analytics.
+
+## Review
+The 1.0 review (2026-10-05), against this doc and the running VPS. No high or critical findings.
+- Headers: the VPS sends the CSP above, HSTS (a year), `nosniff`, `no-referrer`, the `Permissions-Policy` and `noindex`, and redirects HTTP to HTTPS with a 308.
+- WebSocket origins: an upgrade from another origin, or with none, gets 403; the page's own origin gets 101.
+- Limits and lifetimes, in code: session and clip tokens are 256-bit; a refused clip request is always a 404, so neither token can be probed; a clip token lives 10 s past its reveal (10 minutes at most); a session lives as long as its lobby (4 hours at most). `X-Forwarded-For` counts only Caddy's own entry, so a client can't pick its address for the per-IP limits; the load test's bots can only do so against a server that trusts them, like the fixture server.
+- Open: the external port scan ([DEPLOY.md](DEPLOY.md#open-checks)).
 
 ## Copyright
 The audio and the cover art are copyrighted. Lobby creation is open, so anyone who finds the URL can play clips. The site stays low-profile: short clips, no downloads, no public lobby list, noindex, and attribution. If strangers start using it, a passphrase for creating lobbies is a small change. The themes use only original art and type ([DESIGN.md](DESIGN.md)). None of this is legal advice.
