@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.21.1] - 2026-10-05
+
+### Changed
+- The answer box below the cards and the names of who picked each option take each rebuilt world's material: Tokyo Rain's lit display panel and ticket stubs, Hanami's lacquer box and rice-paper slips, Fighter Select's profile panel and slanted name plates, Model Kit's manual page and gate tags, Gachapon's open capsule and little capsules.
+
 ## [0.21.0] - 2026-10-05
 
 ### Added
@@ -36,8 +41,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 - The hangar's scanner sweep and status beacons behind the old Mecha theme; Model Kit's workbench keeps still.
-
-## [0.18.4] - 2026-10-05
-
-### Changed
-- Tokyo Rain's noren is cloth: it hangs from a wooden pole across the machine's top, and below the heading its hem splits into four panels with the cabinet between them, printed with a white band and a crest the middle slit cuts in two, ending a little unevenly. With motion on, the hem sways slowly while the clip plays.
