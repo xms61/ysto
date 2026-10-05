@@ -8,13 +8,20 @@ test('a new device plays at 15% in Tokyo Rain with English titles, and follows i
     volume: 15,
     theme: 'tokyo-rain',
     titleLanguage: 'english',
+    secondTitleLanguage: null,
     motion: 'system',
   });
   expect(readPrefs(null)).toEqual(DEFAULT_PREFS);
 });
 
 test('keeps the settings across a reload', () => {
-  const prefs = { volume: 40, theme: 'sakura', titleLanguage: 'japanese', motion: 'reduced' } as const;
+  const prefs = {
+    volume: 40,
+    theme: 'sakura',
+    titleLanguage: 'japanese',
+    secondTitleLanguage: 'romaji',
+    motion: 'reduced',
+  } as const;
   writePrefs(localStorage, prefs);
   expect(readPrefs(localStorage)).toEqual(prefs);
 });
@@ -22,6 +29,10 @@ test('keeps the settings across a reload', () => {
 test('falls back field by field when a stored value is bad or missing', () => {
   localStorage.setItem('ysto_prefs', JSON.stringify({ volume: 150, theme: 'neon', titleLanguage: 'romaji' }));
   expect(readPrefs(localStorage)).toEqual({ ...DEFAULT_PREFS, titleLanguage: 'romaji' });
+  localStorage.setItem('ysto_prefs', JSON.stringify({ titleLanguage: 'romaji', secondTitleLanguage: 'romaji' }));
+  expect(readPrefs(localStorage)).toEqual({ ...DEFAULT_PREFS, titleLanguage: 'romaji' });
+  localStorage.setItem('ysto_prefs', JSON.stringify({ secondTitleLanguage: 'klingon' }));
+  expect(readPrefs(localStorage)).toEqual(DEFAULT_PREFS);
   localStorage.setItem('ysto_prefs', '{not json');
   expect(readPrefs(localStorage)).toEqual(DEFAULT_PREFS);
 });

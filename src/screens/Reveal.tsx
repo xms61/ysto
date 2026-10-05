@@ -4,12 +4,11 @@
 // moved. Right and wrong show with an icon and words, never color alone. The verdict lands like a stamp, and the right card with its theme's hit, which
 // grows with this player's streak.
 import type { LobbyState, RoundReveal, StandingView } from '../../shared/protocol.ts';
-import type { TitleLanguage } from '../../shared/settings.ts';
-import { OptionCard } from '../components/OptionCard.tsx';
+import { OptionCard, SecondTitle } from '../components/OptionCard.tsx';
 import type { CardState } from '../components/OptionCard.tsx';
 import { CheckIcon, CrossIcon } from '../components/ui.tsx';
-import { aired, animeTitle, credits, langOf, otherTitles, place, points, score, sharedPlaces } from '../format.ts';
-import type { Title } from '../format.ts';
+import { aired, animeTitle, credits, optionTitle, otherTitles, place, points, score, sharedPlaces } from '../format.ts';
+import type { Title, TitleLanguages } from '../format.ts';
 import type { ClientRound } from '../realtime/game-state.ts';
 import { useOptionColumns, useStage } from '../themes/stage.ts';
 
@@ -17,7 +16,7 @@ interface RevealProps {
   round: ClientRound;
   reveal: RoundReveal;
   lobby: LobbyState;
-  titleLanguage: TitleLanguage;
+  titles: TitleLanguages;
 }
 
 interface Verdict {
@@ -206,10 +205,12 @@ function VerdictLine({ verdict, standing, streak }: { verdict: Verdict; standing
   );
 }
 
-export function Reveal({ round, reveal, lobby, titleLanguage }: RevealProps) {
-  const title = animeTitle(reveal.anime, titleLanguage);
+export function Reveal({ round, reveal, lobby, titles }: RevealProps) {
+  const title = animeTitle(reveal.anime, titles.first);
   const when = aired(reveal.season, reveal.year);
-  const options = round.start?.options[titleLanguage] ?? [];
+  const options = round.start?.options;
+  const optionTitles = options ? [0, 1, 2, 3].map((index) => optionTitle(options, index, titles)) : [];
+  const right = optionTitles[reveal.correct];
   const mine = reveal.picks.find((pick) => pick.playerId === lobby.you)?.option ?? round.choice;
   const verdict = verdictOf(reveal, lobby.you);
   const standing = standingLine(reveal, lobby.you);
@@ -229,8 +230,9 @@ export function Reveal({ round, reveal, lobby, titleLanguage }: RevealProps) {
         <CheckIcon />
         {mine === reveal.correct ? 'Right answer, your pick' : 'Right answer'}
       </span>
-      <span className="card-back-title" lang={title.lang}>
-        {options[reveal.correct] ?? title.text}
+      <span className="card-back-title" lang={right?.lang ?? title.lang}>
+        {right?.text ?? title.text}
+        {right?.second && <SecondTitle title={right.second} />}
       </span>
       <span className="card-back-meta">
         {[`${reveal.theme.kind} ${reveal.theme.sequence}`, reveal.year].filter(Boolean).join(' · ')}
@@ -239,12 +241,11 @@ export function Reveal({ round, reveal, lobby, titleLanguage }: RevealProps) {
   );
   const cards = (
     <ol aria-label="Options" className={`options options-picked grid ${columns} gap-3`}>
-      {options.map((optionTitle, index) => (
+      {optionTitles.map((option, index) => (
         <li key={index}>
           <OptionCard
             index={index}
-            title={optionTitle}
-            lang={langOf(titleLanguage)}
+            title={option}
             state={cardStateOf(index, reveal, mine)}
             tag={
               index === mine && index !== reveal.correct ? (
@@ -274,7 +275,7 @@ export function Reveal({ round, reveal, lobby, titleLanguage }: RevealProps) {
           <p lang={title.lang} className="display reveal-title" data-length={titleLength(title)}>
             {title.text}
           </p>
-          {otherTitles(reveal.anime, title).map((other) => (
+          {otherTitles(reveal.anime, title, titles.second).map((other) => (
             <p key={other.text} lang={other.lang} className="text-muted [overflow-wrap:anywhere]">
               {other.text}
             </p>

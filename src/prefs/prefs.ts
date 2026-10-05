@@ -1,4 +1,4 @@
-// A player's device settings (docs/product-specs/settings.md): volume, theme, title language and motion.
+// A player's device settings (docs/product-specs/settings.md): volume, theme, title languages and motion.
 // They live in this browser's localStorage and never reach the server or the other players.
 import { useEffect, useLayoutEffect, useState, useSyncExternalStore } from 'react';
 import { TITLE_LANGUAGES } from '../../shared/settings.ts';
@@ -34,10 +34,21 @@ export interface Prefs {
   volume: number; // percent, 0–100
   theme: Theme;
   titleLanguage: TitleLanguage;
+  secondTitleLanguage: TitleLanguage | null; // shown under the first, smaller; never the same language
   motion: Motion;
 }
 
-export const DEFAULT_PREFS: Prefs = { volume: 15, theme: 'tokyo-rain', titleLanguage: 'english', motion: 'system' };
+export const DEFAULT_PREFS: Prefs = {
+  volume: 15,
+  theme: 'tokyo-rain',
+  titleLanguage: 'english',
+  secondTitleLanguage: null,
+  motion: 'system',
+};
+
+function secondLanguageOf(value: unknown, first: TitleLanguage): TitleLanguage | null {
+  return isOneOf(value, TITLE_LANGUAGES) && value !== first ? value : null;
+}
 
 // Released storage keys are permanent: renaming one resets every player's settings.
 const PREFS_KEY = 'ysto_prefs';
@@ -47,10 +58,14 @@ const PREFS_KEY = 'ysto_prefs';
 export function readPrefs(storage: Storage | null): Prefs {
   const stored = readJson(storage, PREFS_KEY);
   const value = isRecord(stored) ? stored : {};
+  const titleLanguage = isOneOf(value.titleLanguage, TITLE_LANGUAGES)
+    ? value.titleLanguage
+    : DEFAULT_PREFS.titleLanguage;
   return {
     volume: isIntegerIn(value.volume, 0, 100) ? value.volume : DEFAULT_PREFS.volume,
     theme: isOneOf(value.theme, THEMES) ? value.theme : DEFAULT_PREFS.theme,
-    titleLanguage: isOneOf(value.titleLanguage, TITLE_LANGUAGES) ? value.titleLanguage : DEFAULT_PREFS.titleLanguage,
+    titleLanguage,
+    secondTitleLanguage: secondLanguageOf(value.secondTitleLanguage, titleLanguage),
     motion: isOneOf(value.motion, MOTIONS) ? value.motion : DEFAULT_PREFS.motion,
   };
 }

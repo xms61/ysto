@@ -1,4 +1,4 @@
-// This device's settings: volume, theme, title language and motion (docs/product-specs/settings.md). They
+// This device's settings: volume, theme, title languages and motion (docs/product-specs/settings.md). They
 // apply at once and stay on this device. PreferencesMenu puts them behind a button on every screen.
 import { useEffect, useRef, useState } from 'react';
 import { TITLE_LANGUAGES } from '../../shared/settings.ts';
@@ -14,6 +14,56 @@ const LANGUAGE_LABELS: Record<TitleLanguage, string> = {
   romaji: 'Romaji',
   japanese: 'Japanese',
 };
+
+const NO_SECOND_LANGUAGE = 'none';
+
+function languageOf(value: string): TitleLanguage | undefined {
+  return TITLE_LANGUAGES.find((candidate) => candidate === value);
+}
+
+// The first language heads every title, and an optional second one sits under it. Picking the second
+// language as the first swaps the two, so a player who reads two keeps both.
+function TitleLanguageFields({ prefs, onChange }: { prefs: Prefs; onChange: (change: Partial<Prefs>) => void }) {
+  const { titleLanguage: first, secondTitleLanguage: second } = prefs;
+  const chooseFirst = (language: TitleLanguage) =>
+    onChange({ titleLanguage: language, secondTitleLanguage: language === second ? first : second });
+  return (
+    <>
+      <label className="flex flex-col gap-1.5">
+        Anime titles in
+        <select
+          className={INPUT}
+          value={first}
+          onChange={(event) => {
+            const language = languageOf(event.target.value);
+            if (language) chooseFirst(language);
+          }}
+        >
+          {TITLE_LANGUAGES.map((language) => (
+            <option key={language} value={language}>
+              {LANGUAGE_LABELS[language]}
+            </option>
+          ))}
+        </select>
+      </label>
+      <label className="flex flex-col gap-1.5">
+        And under them, smaller
+        <select
+          className={INPUT}
+          value={second ?? NO_SECOND_LANGUAGE}
+          onChange={(event) => onChange({ secondTitleLanguage: languageOf(event.target.value) ?? null })}
+        >
+          <option value={NO_SECOND_LANGUAGE}>Nothing</option>
+          {TITLE_LANGUAGES.filter((language) => language !== first).map((language) => (
+            <option key={language} value={language}>
+              {LANGUAGE_LABELS[language]}
+            </option>
+          ))}
+        </select>
+      </label>
+    </>
+  );
+}
 
 const MOTION_LABELS: Record<Motion, string> = {
   system: 'As the device is set',
@@ -69,23 +119,7 @@ export function PrefsPanel({ prefs, onChange, onChooseTheme }: PrefsPanelProps) 
     <div className="flex flex-col gap-4">
       <VolumeSlider volume={prefs.volume} onChange={(volume) => onChange({ volume })} />
       <ThemeRow theme={prefs.theme} onChoose={onChooseTheme} />
-      <label className="flex flex-col gap-1.5">
-        Anime titles in
-        <select
-          className={INPUT}
-          value={prefs.titleLanguage}
-          onChange={(event) => {
-            const titleLanguage = TITLE_LANGUAGES.find((candidate) => candidate === event.target.value);
-            if (titleLanguage) onChange({ titleLanguage });
-          }}
-        >
-          {TITLE_LANGUAGES.map((language) => (
-            <option key={language} value={language}>
-              {LANGUAGE_LABELS[language]}
-            </option>
-          ))}
-        </select>
-      </label>
+      <TitleLanguageFields prefs={prefs} onChange={onChange} />
       <label className="flex flex-col gap-1.5">
         Motion
         <select

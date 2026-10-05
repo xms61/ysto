@@ -204,6 +204,16 @@ test('applies the motion picked in the preferences at once', () => {
   expect(JSON.parse(localStorage.getItem('ysto_prefs') ?? '{}')).toMatchObject({ motion: 'reduced' });
 });
 
+test('keeps both title languages when the second becomes the first', () => {
+  renderApp();
+  fireEvent.change(screen.getByLabelText('And under them, smaller'), { target: { value: 'japanese' } });
+  fireEvent.change(screen.getByLabelText('Anime titles in'), { target: { value: 'japanese' } });
+  expect(JSON.parse(localStorage.getItem('ysto_prefs') ?? '{}')).toMatchObject({
+    titleLanguage: 'japanese',
+    secondTitleLanguage: 'english',
+  });
+});
+
 function openThemeSheet() {
   fireEvent.click(screen.getByRole('button', { name: /^Tokyo Rain, choose a world$/ }));
   return screen.getByRole('dialog', { name: 'Choose a world' });
@@ -245,6 +255,19 @@ test('shows the titles in the language the player picked', async () => {
     socket.receive({ type: 'round:start', roundId: 'g.1', startsAt, endsAt: startsAt + 20_000, options: OPTIONS });
   });
   expect((await screen.findByText('雨の歌')).getAttribute('lang')).toBe('ja');
+});
+
+test('shows a second title language under the first', async () => {
+  const prefs = { volume: 15, theme: 'tokyo-rain', titleLanguage: 'english', secondTitleLanguage: 'japanese' };
+  localStorage.setItem('ysto_prefs', JSON.stringify(prefs));
+  const { socket } = renderSeated(lobbyState({ game: PLAYING }));
+  act(() => {
+    socket.receive({ type: 'round:prepare', roundId: 'g.1', clipToken: 'c1', number: 1, rounds: 5 });
+    const startsAt = Date.now() - 100;
+    socket.receive({ type: 'round:start', roundId: 'g.1', startsAt, endsAt: startsAt + 20_000, options: OPTIONS });
+  });
+  expect((await screen.findByText('雨の歌')).getAttribute('lang')).toBe('ja');
+  expect(screen.getByRole('button', { name: /^Rain Song,\s?雨の歌$/ })).toBeTruthy();
 });
 
 function spokenText(element: Element): string {

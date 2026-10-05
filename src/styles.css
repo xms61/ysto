@@ -1154,6 +1154,24 @@
     overflow-wrap: anywhere;
   }
 
+  /* The title in the player's second language, under the first: smaller, in the body face, in the title's
+     own ink, so it passes wherever the title does. */
+  .card-second {
+    display: block;
+    margin-top: 0.125rem;
+    font-family: var(--font-sans);
+    font-weight: 500;
+    font-size: 0.8125em;
+    font-size-adjust: none;
+    line-height: 1.25;
+    text-transform: none;
+    letter-spacing: normal;
+  }
+
+  .card-second:lang(ja) {
+    font-family: var(--ja-font);
+  }
+
   /* The pick's stamp sits on the card's top edge, over the card rather than in it, so a picked card keeps
      its height and its row stays even. */
   .card-tag {

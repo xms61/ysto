@@ -804,7 +804,7 @@ Signature silhouettes:
 ### The card
 The card is the system. `OptionCard.tsx` renders it; `.card` and its faces in `src/styles.css` style it.
 
-- **Anatomy:** a front face with the index mark (the option's number, 1 to 4) in the top corner and the title at the foot; a back face printed only on the right card at the reveal. Padding 0.75rem 0.875rem 1rem, corners at the theme's `xl` radius, a 2px `card-mark` frame by default, titles in the title face.
+- **Anatomy:** a front face with the index mark (the option's number, 1 to 4) in the top corner and the title at the foot; a back face printed only on the right card at the reveal. Padding 0.75rem 0.875rem 1rem, corners at the theme's `xl` radius, a 2px `card-mark` frame by default, titles in the title face. A player's second title language (`.card-second`) sits under the title inside the same element, at 0.8125em in the body face and weight 500, without the title's case or tracking, in the title's own ink, so it passes wherever the title does and stays inside a world's balloon or nameplate; the back repeats it, so a turned card keeps its height.
 - **Focus:** a 3px accent outline, offset 4px.
 - **Hover:** only an open card, only where the pointer can hover: it rises 2px in 150ms.
 

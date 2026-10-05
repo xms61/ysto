@@ -101,7 +101,7 @@ export function LobbySession({ session, audio, prefs, onPrefs, onExit, createSoc
           store={store}
           lobby={lobby}
           round={game.round}
-          titleLanguage={prefs.titleLanguage}
+          titles={{ first: prefs.titleLanguage, second: prefs.secondTitleLanguage }}
           isHost={host}
           clip={clip && clip.roundId === game.round?.id ? clip.status : null}
         />
