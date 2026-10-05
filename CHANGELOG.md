@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.20.0] - 2026-10-05
+
+### Added
+- Gachapon is its own world, and a light one: a capsule toy machine on a sunny shopping street. The round's heading is the machine's red head under a row of bulbs; the options are four alike capsules in the clear dome, each title on a paper slip; the time left is the coin dial turning. A pick drops its capsule toward the tray; at the reveal the others drop out in grey and the right capsule opens on a gold charm; the results bring the winner out in an open capsule. With motion on, the dial turns smoothly, the capsules drop and open, and the standings tumble out one at a time.
+
+### Removed
+- Gachapon's twinkling night stars; its sunny street keeps still.
+
 ## [0.19.1] - 2026-10-05
 
 ### Changed
@@ -32,21 +40,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Tokyo Rain, Hanami and Fighter Select print the start bar on their own material: the ticket machine's steel foot, the bento's lacquer lid edge rimmed in vermilion, and the arcade's control deck with its red slant.
-
-## [0.18.2] - 2026-10-05
-
-### Fixed
-- The listening rings start on the headphones at round start: they followed the headphones only when the whole round panel resized, so when the countdown gave way to a world's timer, or a web font landed, they kept their old center. A browser test plays a game on a phone across five worlds and checks the center in every phase.
-
-## [0.18.1] - 2026-10-01
-
-### Changed
-- The theme worlds plan says where to pick up: the three open review findings in order, with the causes found so far, and notes for checking a world locally.
-
-## [0.18.0] - 2026-10-02
-
-### Added
-- The rebuilt worlds move in their own way, with motion on: Tokyo Rain's ticket feeds out of the machine line by line and its "Sold out" lamps flicker on; Hanami's dumplings pop off the skewer as they are eaten and the lids slide down over the other compartments; Fighter Select's chosen slot flashes as the select is confirmed, its digits tick each second, and the health bars fill as each player is billed.
-
-### Changed
-- Tokyo Rain's whole round panel is the ticket machine: a steel cabinet with the noren over its top, the listening light as a speaker grille, a recessed button bank, and a ticket outlet and coin slot along its foot.

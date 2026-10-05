@@ -59,7 +59,7 @@ const SKIES: Record<Theme, Sky> = {
   'splash-page': { calm: null, surge: { kind: 'speed-lines', count: 1 } },
   'night-arc': { calm: null, surge: { kind: 'speed-lines', count: 1 } },
   mecha: { calm: null, surge: null },
-  'magical-girl': { calm: { kind: 'twinkle', count: 22 }, surge: { kind: 'twinkle', count: 18 } },
+  'magical-girl': { calm: null, surge: null },
   isekai: { calm: { kind: 'pixel-star', count: 26 }, surge: { kind: 'pixel-star', count: 22 } },
   'retro-vhs': { calm: { kind: 'tracking', count: 1 }, surge: { kind: 'tracking', count: 1 } },
   'side-a': { calm: { kind: 'tracking', count: 1 }, surge: { kind: 'tracking', count: 1 } },
