@@ -31,12 +31,13 @@ server                                              clients
 - "Play again" is the host starting the next game from the results.
 - The sample plays for the whole answer window, which equals the sample length.
 - **Answer changes** (a lobby setting, off by default; never in First correct): a player can pick another option until the round closes, and the cards stay open after a pick. When every connected player has answered, the round doesn't close: an overtime of 3 to 10 s (the host's choice, 5 s by default) starts, with the theme's call "Overtime" and its time readout counting the overtime down. Anyone can still switch; a switch doesn't restart it. It never runs past the clip's end. Each switch shows the others "Mio switched", never the option. A player who reconnects gets their own pick back.
+- The cards stay where they are from the deal to the reveal; the verdict takes the timer's place. On a wide screen the scores sit beside the cards for the whole round (who has answered, then each player's pick and points), with the answer above them at the reveal, so nothing needs a scroll; on a phone they follow the cards.
 - The reveal shows:
   - the right option, and the anime in English, romaji and Japanese
   - OP or ED and its number
   - the song title and artists, and the year and season
   - the cover
-  - who picked each option, under its card, shown only once the round has closed for everyone
+  - who picked each option, on its card's edge, and on the scoreboard as the number of the card each player picked, shown only once the round has closed for everyone
   - each player's pick and points, and for a player who missed the song, with a wrong answer or none, "You skipped the OP?!" (or the ED)
 - A player whose clip fails to load can still answer. The reveal marks them "no audio", with no penalty.
 - The results bill the standings like a festival lineup, announced from the bottom up, the winner's full name largest, with each player's correct answers, average time and best streak. Players on the same score share a place, at the reveal and in the results. The lobby state keeps them until the next game, so a player who reloads on the results sees them again.

@@ -1,7 +1,7 @@
 # Features after 1.0
 
 ## Purpose
-Thirteen features the owner picked on 2026-10-05, and two more added the same day (M15, What's new; M16, large screens), from the list after 1.0, built one milestone at a time. When they are done, a group can react to a reveal, look back at the game's songs and play on in the same lobby with a running tally. A host can save their favorite setups and pick from new ways to play: hints, elimination, teams, song title and artist rounds, and typed answers. A solo player can come back every day for the daily challenge and keep a streak going. A living room can put the audio on one TV while phones only answer. Each milestone says how to see it working.
+Thirteen features the owner picked on 2026-10-05, and more added the same day (M15 What's new, M16 large screens, M17 a reveal that fits the screen, M18 the anime log, M19 player icons as stamps), from the list after 1.0, built one milestone at a time. When they are done, a group can react to a reveal, look back at the game's songs and play on in the same lobby with a running tally. A host can save their favorite setups and pick from new ways to play: hints, elimination, teams, song title and artist rounds, and typed answers. A solo player can come back every day for the daily challenge and keep a streak going. A living room can put the audio on one TV while phones only answer. Each milestone says how to see it working.
 
 Not in this plan, by the owner's choice: importing AniList or MyAnimeList lists, and translations of the interface.
 
@@ -50,6 +50,24 @@ Each milestone is one PR on a `feat/…` branch (two where noted), with a versio
 - **Behavior:** past 1920 x 1080 the page scales with the window, to twice the size on a 4K screen; up to 1080p nothing changes. Phones and the breakpoints are untouched.
 - **Build:** one rule on `html`, scaling the root font size by the smaller of width and height; rem media queries keep the browser's size.
 - **Tests:** screenshots at 375 x 812, 1920 x 1080, 2560 x 1440 and 3840 x 2160 (root 16, 16, 21.3 and 32 px).
+
+#### M17 A reveal that fits the screen (M, added 2026-10-05)
+- **Why (owner):** the points sat below the cards, so players scrolled; the picks were hard to see; the cards jumped when the round ended.
+- **Behavior:** the cards never move between the countdown, the round, the overtime and the reveal: the space above them keeps the height of the timer, and the verdict takes the timer's place. From 64rem wide the round gets a side column beside the cards, there for the whole round: the scores with who has answered, then at the reveal the answer, the scoreboard with each player's pick and points, the reactions and the report. Below 64rem the same parts follow the cards, as now. Who picked what sits on each card's bottom edge as larger name chips, the player's own in the accent, and each scoreboard row names the option the player picked.
+- **Build:** `Stage` lays a hidden copy of the round's timer (with the overtime call when answers can change) under whatever fills the space above the cards, so it always takes the timer's height. A `RoundBody` puts the main column and the side column side by side from 64rem, and the page widens to 72rem for a round there. The pickers overlay the card's bottom edge instead of adding a row.
+- **Tests:** client tests for the side scores and the pick column; the first card's position measured in every world at the countdown, the round and the reveal (equal on a 375 x 812 phone and a 1280 x 800 laptop), and the reveal's bottom edge on the laptop (inside the window).
+- **Built differently:** on a phone the cards no longer sit at the foot of the first screen. Pinned there, a card that grew (a wrapped title, the turned card) moved the whole row up; now they hang under the timer like on a desktop. From 40rem the cards' height follows the window's, so a 1280 x 800 laptop shows both rows.
+
+#### M19 Player icons as stamps (M, added 2026-10-05)
+- **Why (owner):** names under the cards are still easy to miss; a picture reads at a glance.
+- **Behavior:** in the lobby each player picks an icon from a set of animals (fox, cat, owl, frog, panda, rabbit, bear, penguin, tanuki, octopus, crane, koi and so on), drawn for this game and the same in every world. A player who joins gets a free one at random, and two players in a lobby never share one. At the reveal each pick lands on its card as that player's stamp, tilted a little, over the card's corner, the player's own ringed in the accent, with the name for screen readers and on hover. The icon also marks the player in the lobby's list, the scores beside the round, the bill at the results and their reactions.
+- **Build:** `PlayerView.icon`; `player:icon { icon }` from the player, refused when taken (`icon-taken`); the registry hands out a free icon on join. The stamps replace the name chips, in the same place on the card's edge, so the cards still keep still. Original SVGs in one ink, filled with the world's card-mark and mark-ink colors.
+- **Tests:** registry (a free icon on join, refused when taken, freed on leave), protocol, client (the picker in the lobby, stamps at the reveal), screenshots in every world.
+
+#### M18 The anime log (M, added 2026-10-05)
+- **Behavior:** a "Your games" screen from the home screen: each game this device played, newest first, with its date, the player's place and score, and the songs. A second view, "Anime log", lists every anime the player has heard, how often, and how often they got it right, with links to AnimeThemes, so a player can look up the shows they missed. "Clear the log" empties it.
+- **Build:** device storage only (`ysto_history`), written from the results' songs and standings when a game ends, capped at the last 100 games. No accounts and nothing on the server, like the daily streak.
+- **Tests:** writing, the cap, blocked storage, the anime counts, clearing.
 
 #### M2 The game's songs at the results (S)
 - **Behavior:** below the standings, a "Songs this game" list: round number, the anime in the player's title languages, OP or ED and its number, song title and artists, and a link to the anime on AnimeThemes (`https://animethemes.moe/anime/<slug>`, new tab, `rel="noreferrer"`). A player who reconnects to the results sees it too.
@@ -131,6 +149,9 @@ Each milestone is one PR on a `feat/…` branch (two where noted), with a versio
 - [x] 2026-10-05 M1 Stale tabs reload (1.3.0)
 - [x] 2026-10-05 M15 What's new (1.5.0)
 - [x] 2026-10-05 M16 Large screens (1.9.0)
+- [x] 2026-10-05 M17 A reveal that fits the screen (1.10.0)
+- [ ] M18 The anime log
+- [ ] M19 Player icons as stamps
 - [x] 2026-10-05 M2 The game's songs at the results (1.4.0)
 - [x] 2026-10-05 M3 Report a broken clip (1.6.0)
 - [x] 2026-10-05 M4 The lobby's tally (1.7.0)

@@ -4,6 +4,7 @@
 import { readItem, writeItem } from './storage.ts';
 
 const NOTES: { version: string; lines: string[] }[] = [
+  { version: '1.10.0', lines: ['The cards stay put at the reveal, and the scores sit beside them on a wide screen.'] },
   { version: '1.9.0', lines: ['Big screens, such as 4K monitors and TVs, show the game larger.'] },
   { version: '1.8.0', lines: ['React to a reveal: six reactions rise from your name for everyone to see.'] },
   { version: '1.7.0', lines: ['Play again in the same lobby: it keeps count of who has won.'] },

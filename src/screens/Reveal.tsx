@@ -1,11 +1,12 @@
-// The reveal (docs/product-specs/game-flow.md): this player's verdict and standing first, under the round's
-// heading, then the four cards in their order, the right one turned over to its printed back and each with who
-// picked it, then the answer in every language with its song, and the standings as a scoreboard with who
-// moved. Right and wrong show with an icon and words, never color alone. The verdict lands like a stamp, and the right card with its theme's hit, which
+// The reveal (docs/product-specs/game-flow.md): this player's verdict and standing where the timer was, the
+// four cards where they were, the right one turned over to its printed back and each with who picked it on its
+// edge; then, in the side column, the answer in every language with its song, and the standings as a
+// scoreboard with each player's pick and who moved. Right and wrong show with an icon and words, never color alone. The verdict lands like a stamp, and the right card with its theme's hit, which
 // grows with this player's streak.
 import type { ReactNode } from 'react';
 import type { LobbyState, RoundReveal, StandingView } from '../../shared/protocol.ts';
 import { OptionCard, SecondTitle } from '../components/OptionCard.tsx';
+import { RoundBody, Stage } from '../components/Stage.tsx';
 import type { CardState } from '../components/OptionCard.tsx';
 import { CheckIcon, CrossIcon } from '../components/ui.tsx';
 import { aired, animeTitle, credits, optionTitle, otherTitles, place, points, score, sharedPlaces } from '../format.ts';
@@ -19,6 +20,7 @@ interface RevealProps {
   lobby: LobbyState;
   titles: TitleLanguages;
   actions: ReactNode; // reactions, and the way to report this round's clip
+  ghost: ReactNode; // the round's timer, for the stage to keep its height
 }
 
 interface Verdict {
@@ -149,6 +151,16 @@ function Pickers({ reveal, lobby, option }: { reveal: RoundReveal; lobby: LobbyS
   );
 }
 
+// Which card the player picked, as the card's own number, so the board says who fell for which.
+function PickMark({ option }: { option: number | null }) {
+  return (
+    <span className="board-pick" data-none={option === null || undefined}>
+      <span aria-hidden="true">{option === null ? '–' : option + 1}</span>
+      <span className="sr-only">{option === null ? 'no pick' : `picked ${option + 1}`}</span>
+    </span>
+  );
+}
+
 // The round's standings as a scoreboard: place, who moved, the name, what this round earned, and the total.
 function Lineup({ reveal, lobby }: { reveal: RoundReveal; lobby: LobbyState }) {
   const order = ranked(reveal.standings);
@@ -169,6 +181,7 @@ function Lineup({ reveal, lobby }: { reveal: RoundReveal; lobby: LobbyState }) {
           >
             <span className="board-place">{place(places[rank] ?? rank + 1)}</span>
             <MoveMark from={before.get(standing.playerId) ?? rank} to={rank} />
+            <PickMark option={pick?.option ?? null} />
             <span className="board-name">
               {nameOf(lobby, standing.playerId)}
               {standing.playerId === lobby.you && <span className="ml-2 text-xs text-muted">you</span>}
@@ -217,7 +230,7 @@ function VerdictLine({ verdict, standing, streak }: { verdict: Verdict; standing
   );
 }
 
-export function Reveal({ round, reveal, lobby, titles, actions }: RevealProps) {
+export function Reveal({ round, reveal, lobby, titles, actions, ghost }: RevealProps) {
   const title = animeTitle(reveal.anime, titles.first);
   const when = aired(reveal.season, reveal.year);
   const options = round.start?.options;
@@ -276,7 +289,7 @@ export function Reveal({ round, reveal, lobby, titles, actions }: RevealProps) {
     </ol>
   );
   const below = (
-    <section aria-labelledby="reveal-heading" className="motion-rise reveal-answer mt-5 flex flex-col gap-5">
+    <section aria-labelledby="reveal-heading" className="motion-rise reveal-answer flex flex-col gap-5">
       <h3 id="reveal-heading" className="sr-only">
         The answer
       </h3>
@@ -309,13 +322,5 @@ export function Reveal({ round, reveal, lobby, titles, actions }: RevealProps) {
       </p>
     </section>
   );
-  return (
-    <>
-      <div className="flex flex-col gap-4 pt-4">
-        {slot}
-        {cards}
-      </div>
-      {below}
-    </>
-  );
+  return <RoundBody main={<Stage slot={slot} ghost={ghost} cards={cards} />} side={below} />;
 }

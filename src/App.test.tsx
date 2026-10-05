@@ -182,8 +182,10 @@ test('with answer changes on, lets the player switch, runs the overtime and name
     socket.receive({ type: 'round:overtime', roundId: 'g.1', startsAt: Date.now(), endsAt: Date.now() + 5000 });
   });
   expect(screen.getByText('Ben switched')).toBeTruthy();
-  expect(screen.getByText('Overtime')).toBeTruthy();
-  expect(screen.getByText('Last chance to switch')).toBeTruthy();
+  // The stage's hidden timer copy holds the call too; only the shown one counts.
+  const shown = { ignore: '[aria-hidden="true"] *' };
+  expect(screen.getByText('Overtime', shown)).toBeTruthy();
+  expect(screen.getByText('Last chance to switch', shown)).toBeTruthy();
 });
 
 test('sets the round as a masthead number in Back Issue, still named as the round', () => {
@@ -240,6 +242,24 @@ test('answers with the number keys, then shows the reveal with words as well as 
   expect(options[2]?.textContent).toContain('Picked by Ann');
   expect(options[0]?.textContent).toContain('Picked by Ben');
   expect(options[1]?.textContent).not.toContain('Picked by');
+});
+
+test('keeps the scores beside the round, with who has answered, and each pick on the board at the reveal', async () => {
+  const { socket } = renderSeated(lobbyState({ game: PLAYING }));
+  act(() => {
+    socket.receive({ type: 'round:prepare', roundId: 'g.1', clipToken: 'c1', number: 1, rounds: 5 });
+    const startsAt = Date.now() - 100;
+    socket.receive({ type: 'round:start', roundId: 'g.1', startsAt, endsAt: startsAt + 20_000, options: OPTIONS });
+    socket.receive({ type: 'round:answered', roundId: 'g.1', playerIds: ['p2'] });
+  });
+  await screen.findByText('Rain Song');
+  const live = within(screen.getByRole('complementary', { name: 'Scores and answer' }));
+  expect(live.getByText('answered')).toBeTruthy();
+  expect(live.getByText('thinking')).toBeTruthy();
+  act(() => socket.receive(revealOf('g.1')));
+  const board = within(screen.getByRole('list', { name: 'Scores' }));
+  expect(board.getByText('picked 3')).toBeTruthy();
+  expect(board.getByText('picked 1')).toBeTruthy();
 });
 
 test('reports a broken clip from the reveal once, with a fixed reason', () => {

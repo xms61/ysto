@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.10.0] - 2026-10-05
+
+### Changed
+- The cards never move from the deal to the reveal, on a phone or a desktop: the space above them keeps the height of the world's countdown and timer, and the verdict takes the timer's place.
+- From 64rem a side column sits beside the cards for the whole round: the scores and who has answered, then at the reveal the answer, the scoreboard, the reactions and the report, so the reveal needs no scroll. The cards' height follows the window, so a laptop shows both rows.
+- Who picked each card shows on the card's edge in larger name chips, and the scoreboard shows the card each player picked.
+
 ## [1.9.0] - 2026-10-05
 
 ### Changed
@@ -27,8 +34,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Clip reports: at the reveal and in the results' song list, "Report this clip" with four fixed reasons. The server keeps each report (theme, clip start, reason, time; nothing about the player) in `reports.sqlite` in `YSTO_STATE_DIR`, once per player and round. `npm run reports` lists them, most reported first.
 - The image's first writable volume, `ysto_state` at `/data/state`. Copy the new `deploy/compose.yml` to the VPS before updating (DEPLOY.md).
-
-## [1.5.0] - 2026-10-05
-
-### Added
-- What's new: the first time a device opens a newer version, a small dialog says what changed for players in up to three lines, on the home screen or in the lobby. The notes live in `src/whats-new.ts`, written for players; a first visit shows nothing.

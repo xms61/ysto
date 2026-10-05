@@ -101,7 +101,10 @@ export function LobbySession(props: LobbySessionProps) {
   useFocusOnScreenChange(lobby && settings ? screen : 'connecting', page);
 
   return (
-    <div ref={page} className="mx-auto flex min-h-dvh w-full max-w-3xl flex-col gap-4 px-4 py-4">
+    <div
+      ref={page}
+      className={`mx-auto flex min-h-dvh w-full max-w-3xl flex-col gap-4 px-4 py-4 ${screen === 'round' ? 'lg:max-w-6xl' : ''}`}
+    >
       <header className="relative flex flex-wrap items-center gap-3">
         <h1 className="display text-lg">
           <span className="sr-only sm:not-sr-only">Lobby </span>
