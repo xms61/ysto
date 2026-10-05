@@ -112,7 +112,7 @@ To roll back, set `YSTO_VERSION=<older version>` in `/opt/ysto/.env` and run `do
 Rebuild on the owner machine ([CATALOG.md](../scripts/catalog/CATALOG.md)), rerun step 4, then `docker compose restart ysto`. The server reads the catalog only at startup.
 
 ### Deploy files
-When `deploy/compose.yml` or `deploy/Caddyfile` changes in a release, copy it over again (step 3) before `docker compose up -d`. 1.6.0 changes `compose.yml`: it adds the `ysto_state` volume for clip reports. Docker creates the volume on the first `up`.
+When `deploy/compose.yml` or `deploy/Caddyfile` changes in a release, copy it over again (step 3) before `docker compose up -d`. 1.6.0 changes `compose.yml`: it adds the `ysto_state` volume for clip reports. Docker creates the volume on the first `up`. A server started without it (the old compose file) runs as before, logs `reports.unavailable`, and keeps reports only in its log.
 
 ### Clip reports
 Players can report a round's clip from the reveal or the results' song list, with a fixed reason. The reports go into `reports.sqlite` in the `ysto_state` volume: the theme, where its clip started, the reason and the time, and nothing about the player. To list them, most reported first, with each clip's anime and file:
