@@ -77,7 +77,7 @@ Each milestone is one or more PRs on `feat/…` branches with a version bump, a 
 - [x] 2026-10-05 Back Issue: the eighties magazine, its masthead, the ruler, the readers' poll (v0.22.0)
 - [x] 2026-10-05 Konbini 2 a.m.: the register under the lit sign, price cards on the shelf, the receipt (v0.24.0)
 - [x] 2026-10-05 Karaoke Box: the lyric line as the timer, song rows on the remote, the score screen (v0.25.0)
-- [ ] Omikuji
+- [x] 2026-10-05 Omikuji: the torii beam, the rope's streamers as the timer, folded slips, the great blessing (v0.26.0)
 - [ ] Blossom Map
 - [ ] Tournament Arc
 - [ ] Splash Page
@@ -86,9 +86,9 @@ Each milestone is one or more PRs on `feat/…` branches with a version bump, a 
 - [x] 2026-10-01 Plates in place for all fifteen
 
 ## Where to pick up
-State on 2026-10-05: the seven reshaped themes are all rebuilt as worlds with their motion, answer boxes, pick chips and type: Tokyo Rain, Hanami, Fighter Select, Model Kit, Gachapon, Quest Board (with the owner's monster sprites) and Back Issue (v0.22.0). The picker is built (v0.23.0). Of the eight new themes, Konbini 2 a.m. (v0.24.0) and Karaoke Box (v0.25.0) are built; the other six still run on the shared card layout with their own tokens and plates.
+State on 2026-10-05: the seven reshaped themes are all rebuilt as worlds with their motion, answer boxes, pick chips and type: Tokyo Rain, Hanami, Fighter Select, Model Kit, Gachapon, Quest Board (with the owner's monster sprites) and Back Issue (v0.22.0). The picker is built (v0.23.0). Of the eight new themes, Konbini 2 a.m. (v0.24.0), Karaoke Box (v0.25.0) and Omikuji (v0.26.0) are built; the other five still run on the shared card layout with their own tokens and plates.
 
-Do next: the six remaining new themes, one PR each, starting with Omikuji, following the rules under Owner review findings; each keeps its picker icon in step with its world.
+Do next: the five remaining new themes, one PR each, starting with Blossom Map, following the rules under Owner review findings; each keeps its picker icon in step with its world.
 
 Working notes for a new session:
 - Check a theme by eye with `npm run build`, then the "start" preview (production server on :5173), a solo lobby, and `localStorage.ysto_prefs` set to the theme with `motion: 'full'` to see motion or `'reduced'` for steady screenshots. A solo answer ends the round at once; set Songs per game to 5 to reach the results quickly.

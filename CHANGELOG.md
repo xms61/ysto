@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.26.0] - 2026-10-05
+
+### Added
+- Omikuji is its own world: a shrine's fortune slips in spring. The round's heading hangs on a torii's vermilion beam; the time left is a straw rope's paper streamers, taken one by one; the options are four folded slips with brushed vermilion numerals. A pick draws its slip; at the reveal the right slip unfolds as the great blessing and the others are tied to the branch with a paper knot. The answer box is the unfolded fortune, the pickers' names little paper slips, and the winner holds the great blessing. Type is Yuji Syuku, a brush face, and Shippori Mincho.
+
+### Changed
+- Omikuji's right answer unfolds on washi framed in vermilion, in place of a solid vermilion back.
+
 ## [0.25.0] - 2026-10-05
 
 ### Added

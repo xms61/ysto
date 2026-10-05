@@ -13,6 +13,8 @@
 @import '@fontsource/yusei-magic/latin-400.css';
 @import '@fontsource/m-plus-rounded-1c/latin-700.css';
 @import '@fontsource/m-plus-rounded-1c/latin-800.css';
+@import '@fontsource/yuji-syuku/latin-400.css';
+@import '@fontsource/shippori-mincho/latin-600.css';
 
 /*
  * Seven themes, one card anatomy (docs/DESIGN.md). Every round deals four identical cards, and each theme
@@ -521,7 +523,8 @@
     --radius-2xl: 1rem;
   }
 
-  /* Omikuji: shrine fortune slips in spring, brushed numerals and a vermilion seal. */
+  /* Omikuji: a shrine's fortune slips in spring. The round hangs under a torii's vermilion beam, a straw rope's
+     paper streamers are the timer, and the options are four folded slips with brushed numerals. */
   [data-theme='omikuji'] {
     --display-adjust: 0.5;
     color-scheme: light;
@@ -538,7 +541,7 @@
     --accent-ink: #ffffff;
     --good: #1f6e46;
     --bad: #9e1f3a;
-    --card: #ffffff;
+    --card: #fbf8f1;
     --card-ink: #1f1a17;
     --card-muted: #5e5249;
     --card-dim: #ece6de;
@@ -547,14 +550,22 @@
     --card-chosen: #fbe7ea;
     --card-chosen-ink: #1f1a17;
     --card-alert: #9e1f3a;
-    --card-back: #b3261e;
-    --card-back-ink: #ffffff;
-    --display-font: 'Zen Antique', 'Hiragino Mincho ProN', 'Yu Mincho', serif;
+    --card-back: #fffdf6;
+    --card-back-ink: #1f1a17;
+    /* The shrine: the torii's vermilion beam under its black cap, the straw rope, the fold of a slip, and the
+       brass of the bell. Only the beam carries text. */
+    --beam: #c0301f;
+    --beam-ink: #ffffff;
+    --lintel: #1d1a19;
+    --rope: #c9a66b;
+    --fold: #e4dccf;
+    --brass: #d4a43a;
+    --display-font: 'Yuji Syuku', 'Hiragino Mincho ProN', 'Yu Mincho', serif;
     --display-weight: 400;
     --display-case: none;
-    --display-tracking: 0.01em;
-    --title-font: var(--display-font);
-    --title-weight: 400;
+    --display-tracking: 0.02em;
+    --title-font: 'Shippori Mincho', 'Hiragino Mincho ProN', 'Yu Mincho', serif;
+    --title-weight: 600;
     --title-case: none;
     --title-tracking: 0.01em;
     --title-adjust: 0.5;
@@ -3008,6 +3019,174 @@
     border-color: var(--accent);
   }
 
+  /* ---- Omikuji: a shrine's fortune slips in spring. The round's heading hangs on a torii's vermilion beam under
+     its black cap; the time left is a straw rope's paper streamers, taken one by one; the options are four folded
+     slips of washi, each with a brushed numeral and a folded corner. A pick draws its slip with a vermilion rim; at
+     the reveal the right slip unfolds as the great blessing, and the others are tied to the branch with a paper
+     knot. ---- */
+  /* The torii: the heading on the vermilion beam, the black cap above it rising at both ends. */
+  :root[data-theme='omikuji'] .round-head {
+    position: relative;
+    margin: 0.5rem -0.5rem 1rem;
+    padding: 0.75rem 1rem;
+    background: var(--beam);
+    color: var(--beam-ink);
+  }
+
+  :root[data-theme='omikuji'] .round-head::before {
+    content: '';
+    position: absolute;
+    left: -0.75rem;
+    right: -0.75rem;
+    top: -0.875rem;
+    height: 0.875rem;
+    background: var(--lintel);
+    clip-path: polygon(0 0, 4% 45%, 96% 45%, 100% 0, 100% 100%, 0 100%);
+  }
+
+  @media (min-width: 40rem) {
+    :root[data-theme='omikuji'] .round-head {
+      margin: 0.5rem -1rem 1.25rem;
+      padding: 1rem 1.5rem;
+    }
+  }
+
+  :root[data-theme='omikuji'] .round-head .button-quiet {
+    border: 2px solid var(--beam-ink);
+    background: transparent;
+    color: var(--beam-ink);
+  }
+
+  :root[data-theme='omikuji'] .round-head .button-quiet:hover:not(:disabled) {
+    background: rgb(255 255 255 / 0.12);
+  }
+
+  /* The listening light is the shrine's brass bell, its slit across the middle. */
+  :root[data-theme='omikuji'] .sonar-core {
+    background:
+      radial-gradient(circle at 35% 30%, rgb(255 255 255 / 0.55) 0 12%, transparent 30%),
+      linear-gradient(transparent 60%, rgb(80 50 10 / 0.6) 60% 66%, transparent 66%), var(--brass);
+  }
+
+  /* A folded slip: washi with one corner folded down, its numeral brushed in vermilion. */
+  :root[data-theme='omikuji'] .card-front {
+    border: 0;
+    background-image: linear-gradient(
+      225deg,
+      var(--fold) 0 0.75rem,
+      rgb(0 0 0 / 0.12) 0.75rem 0.8125rem,
+      transparent 0
+    );
+    box-shadow:
+      inset 0 0 0 1px var(--line),
+      0 0.25rem 0.5rem -0.25rem rgb(90 40 20 / 0.3);
+  }
+
+  :root[data-theme='omikuji'] .card-index {
+    min-width: 0;
+    height: auto;
+    padding: 0;
+    background: transparent;
+    color: var(--card-mark);
+    font-size: 1.75rem;
+  }
+
+  /* Drawn: a vermilion rim round the slip. */
+  :root[data-theme='omikuji'] .card[data-state='chosen'] .card-front {
+    box-shadow:
+      inset 0 0 0 2px var(--card-mark),
+      0 0.5rem 0.75rem -0.375rem rgb(90 40 20 / 0.35);
+  }
+
+  /* Tied to the branch: a twist of paper knotted round the slip's top, its numeral faded. */
+  :root[data-theme='omikuji'] .card:is([data-state='muted'], [data-state='missed']) .card-index {
+    background: transparent;
+    color: var(--card-muted);
+    box-shadow: none;
+  }
+
+  :root[data-theme='omikuji'] .card:is([data-state='muted'], [data-state='missed']) .card-front::after {
+    content: '';
+    position: absolute;
+    top: 0.25rem;
+    left: 0;
+    right: 0;
+    height: 0.625rem;
+    background:
+      radial-gradient(ellipse 0.5rem 0.375rem at 50% 50%, #ffffff 0 92%, transparent 100%),
+      linear-gradient(#ffffff, #ffffff) center / 100% 0.375rem no-repeat;
+    filter: drop-shadow(0 1px 1px rgb(90 40 20 / 0.35));
+  }
+
+  /* The great blessing: the slip unfolded, framed twice in vermilion, its fortune brushed large down one side. */
+  :root[data-theme='omikuji'] .card-back:not(.card-printed) {
+    box-shadow:
+      inset 0 0 0 2px var(--card-mark),
+      inset 0 0 0 5px var(--card-back),
+      inset 0 0 0 6px var(--card-mark);
+  }
+
+  :root[data-theme='omikuji'] .card-back:not(.card-printed)::after {
+    content: '大吉' / '';
+    position: absolute;
+    top: 0.625rem;
+    right: 0.75rem;
+    z-index: -1;
+    font-family: var(--ja-font);
+    font-size: 1.75rem;
+    font-weight: 700;
+    line-height: 1;
+    writing-mode: vertical-rl;
+    color: var(--card-mark);
+    opacity: 0.2;
+  }
+
+  :root[data-theme='omikuji'] .card-back:not(.card-printed) {
+    isolation: isolate;
+  }
+
+  /* Face down, the folded slip's plain outside with a vermilion "?!". */
+  :root[data-theme='omikuji'] .card-printed {
+    border: 0;
+    background: var(--card);
+    color: var(--card-mark);
+    box-shadow: inset 0 0 0 1px var(--line);
+  }
+
+  :root[data-theme='omikuji'] .button-quiet:hover:not(:disabled) {
+    border-color: var(--accent);
+  }
+
+  /* Omikuji's rope (Shide.tsx): straw twisted with a darker lay, and white paper streamers. */
+  .shide {
+    flex: 1;
+    min-width: 0;
+    height: auto;
+    overflow: visible;
+  }
+
+  .shide-rope {
+    stroke: var(--rope, #c9a66b);
+    stroke-width: 6;
+    stroke-linecap: round;
+  }
+
+  .shide-twist {
+    stroke: rgb(80 50 10 / 0.35);
+    stroke-width: 6;
+    stroke-dasharray: 2 5;
+  }
+
+  .shide-paper {
+    fill: #ffffff;
+    stroke: var(--edge);
+    stroke-width: 0.75;
+  }
+
+  .shide [data-gone] {
+    opacity: 0;
+  }
+
   /* ---- The reveal's answer box (.reveal-band) and the names under each card (.picker), in each rebuilt world's
      material. Text keeps a tested pair; the cover's wash is cut back on light paper. ---- */
   /* Tokyo Rain: the machine's lit display panel; the pickers' names on ticket stubs. */
@@ -3224,8 +3403,44 @@
     color: var(--accent-ink);
   }
 
+  /* Omikuji: the fortune unfolded, washi framed twice in vermilion, its kind in a vermilion seal; the names on
+     little knotted slips, this player's in vermilion. */
+  :root[data-theme='omikuji'] .reveal-band {
+    border: 2px solid var(--card-mark);
+    border-radius: 0;
+    background: var(--card-back);
+    box-shadow:
+      inset 0 0 0 4px var(--card-back),
+      inset 0 0 0 5px var(--card-mark);
+  }
+
+  :root[data-theme='omikuji'] .reveal-kind {
+    border-radius: 0;
+    background: var(--card-mark);
+    color: var(--card-mark-ink);
+  }
+
+  :root[data-theme='omikuji'] .picker {
+    border: 1px solid var(--edge);
+    border-radius: 0.125rem;
+    background: var(--card);
+    color: var(--card-ink);
+  }
+
+  :root[data-theme='omikuji'] .picker[data-you] {
+    border-color: var(--card-mark);
+    background: var(--card-mark);
+    color: var(--card-mark-ink);
+  }
+
   /* On light paper the cover's wash is cut back, so the dark ink keeps its contrast. */
-  :root:is([data-theme='mecha'], [data-theme='magical-girl'], [data-theme='retro-vhs'], [data-theme='konbini'])
+  :root:is(
+      [data-theme='mecha'],
+      [data-theme='magical-girl'],
+      [data-theme='retro-vhs'],
+      [data-theme='konbini'],
+      [data-theme='omikuji']
+    )
     .reveal-wash {
     opacity: 0.12;
   }
@@ -3973,6 +4188,32 @@
     paint-order: stroke fill;
   }
 
+  /* Omikuji's winner holds the great blessing: the unfolded slip framed twice in vermilion, its seal in the foot's
+     corner. */
+  :root[data-theme='omikuji'] .bill-lead {
+    border-radius: 0;
+    box-shadow:
+      inset 0 0 0 2px var(--card-mark),
+      inset 0 0 0 5px var(--card-back),
+      inset 0 0 0 6px var(--card-mark),
+      var(--panel-shadow);
+  }
+
+  :root[data-theme='omikuji'] .bill-lead::after {
+    content: '大吉' / '';
+    position: absolute;
+    right: 0.75rem;
+    bottom: 0.75rem;
+    padding: 0.25rem;
+    background: var(--card-mark);
+    color: var(--card-mark-ink);
+    font-family: var(--ja-font);
+    font-size: 0.875rem;
+    font-weight: 700;
+    line-height: 1;
+    writing-mode: vertical-rl;
+  }
+
   /* ---- The theme picker (ThemeSheet.tsx): a full-screen sheet over the page, which tries on the selected world
      behind it. Each tile nests its own theme, so its tokens draw the world's object and colors. ---- */
   .theme-row {
@@ -4236,6 +4477,16 @@
   :root[data-theme='karaoke'] .start-bar {
     border-top: 2px solid var(--remote-rim);
     background: var(--remote);
+  }
+
+  /* Omikuji: the torii's beam along the foot, its black cap above it. */
+  :root[data-theme='omikuji'] .start-bar {
+    border-top: 0;
+    padding-top: 1.25rem;
+    background:
+      linear-gradient(var(--lintel), var(--lintel)) 0 0 / 100% 0.3125rem no-repeat,
+      linear-gradient(var(--beam), var(--beam)) 0 0.3125rem / 100% 0.375rem no-repeat,
+      var(--panel);
   }
 
   /* Fighter Select: the cabinet's control deck, edged in the player's red slant. */
@@ -5533,6 +5784,88 @@
   from {
     opacity: 0;
     scale: 1.8;
+  }
+}
+
+/* Omikuji: the rope's streamers sway while the clip plays and each falls as it goes; a picked slip is drawn up out
+   of the box; at the reveal the right slip unfolds as the great blessing and the others are tied on; the results'
+   slips flutter in. */
+:root[data-motion='full'] .shide-paper {
+  transform-box: fill-box;
+  transform-origin: top;
+  transition:
+    transform 360ms cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 360ms ease-out;
+}
+
+:root[data-motion='full'][data-phase='playing'] .shide-paper:not([data-gone]) {
+  animation: shide-sway 2.4s ease-in-out infinite alternate;
+}
+
+:root[data-motion='full'] .shide g:nth-child(even) .shide-paper {
+  animation-delay: -1.2s;
+}
+
+:root[data-motion='full'] .shide [data-gone] {
+  transform: translateY(40%) rotate(12deg);
+}
+
+:root[data-motion='full'][data-theme='omikuji'] .card[data-state='chosen'] .card-front {
+  animation: slip-draw 380ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+:root[data-motion='full'][data-theme='omikuji'] .card[data-turned] .card-back {
+  animation: slip-unfold 560ms cubic-bezier(0.16, 1, 0.3, 1) 760ms both;
+}
+
+:root[data-motion='full'][data-theme='omikuji']
+  .card:is([data-state='muted'], [data-state='missed'])
+  .card-front::after {
+  animation: knot-tie 300ms cubic-bezier(0.16, 1, 0.3, 1) 900ms both;
+}
+
+:root[data-motion='full'][data-theme='omikuji'] .bill-act {
+  animation-name: slip-flutter;
+}
+
+@keyframes shide-sway {
+  from {
+    rotate: -4deg;
+  }
+
+  to {
+    rotate: 4deg;
+  }
+}
+
+@keyframes slip-draw {
+  from {
+    translate: 0 -0.625rem;
+  }
+}
+
+@keyframes slip-unfold {
+  from {
+    scale: 1 0.45;
+    transform-origin: top;
+  }
+}
+
+@keyframes knot-tie {
+  from {
+    scale: 0 1;
+  }
+}
+
+@keyframes slip-flutter {
+  from {
+    opacity: 0;
+    transform: translateY(-1rem) rotate(-3deg);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
   }
 }
 
