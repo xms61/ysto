@@ -2607,12 +2607,12 @@
     color: var(--card-mark-ink);
   }
 
-  /* Model Kit: a page of the manual, its step bar and rule; names on gate tags, this player's in yellow. */
+  /* Model Kit: a framed box on a page of the manual; names on gate tags, this player's in yellow. */
   :root[data-theme='mecha'] .reveal-band {
     --ink: var(--manual-ink);
     --muted: var(--manual-muted);
-    border: 0;
-    border-top: 0.625rem solid var(--manual-ink);
+    border: 2px solid var(--manual-ink);
+    border-radius: 0;
     background: var(--manual);
     color: var(--manual-ink);
   }
