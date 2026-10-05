@@ -99,6 +99,11 @@ export function Lobby({ store, lobby, settings, isHost }: LobbyProps) {
           onKick={isHost ? (playerId) => store.kick(playerId) : null}
           showScores={lobby.game !== null}
         />
+        {lobby.tally && (
+          <p className="mt-2 text-sm text-muted">
+            {lobby.tally.games === 1 ? '1 game' : `${lobby.tally.games} games`} played in this lobby
+          </p>
+        )}
         {isHost ? (
           <label className="mt-3 flex items-center gap-2">
             <input

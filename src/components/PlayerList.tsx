@@ -1,6 +1,7 @@
-// The lobby's players: who is host, who is you, who is away, and for the host a way to remove someone.
+// The lobby's players: who is host, who is you, who is away, their wins in this lobby's games, and for the
+// host a way to remove someone.
 import type { LobbyState } from '../../shared/protocol.ts';
-import { score } from '../format.ts';
+import { score, wins } from '../format.ts';
 
 interface PlayerListProps {
   lobby: LobbyState;
@@ -13,6 +14,7 @@ function Tag({ children }: { children: string }) {
 }
 
 export function PlayerList({ lobby, onKick, showScores }: PlayerListProps) {
+  const winsOf = (playerId: string) => lobby.tally?.players.find((line) => line.playerId === playerId)?.wins ?? 0;
   return (
     <ul aria-label="Players" className="flex flex-col divide-y divide-line">
       {lobby.players.map((player) => (
@@ -22,6 +24,7 @@ export function PlayerList({ lobby, onKick, showScores }: PlayerListProps) {
           {player.id === lobby.hostId && <Tag>host</Tag>}
           {!player.connected && <Tag>away</Tag>}
           {player.spectating && <Tag>joins next round</Tag>}
+          {winsOf(player.id) > 0 && <Tag>{wins(winsOf(player.id))}</Tag>}
           <span className="ml-auto flex items-center gap-3">
             {showScores && <span className="tabular-nums">{score(player.score)}</span>}
             {onKick && player.id !== lobby.you && (

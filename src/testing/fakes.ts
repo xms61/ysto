@@ -222,6 +222,7 @@ export function lobbyState(overrides: Partial<LobbyState> = {}): LobbyState {
     pool: { themes: 300, anime: 120 },
     bounds: BOUNDS,
     game: null,
+    tally: null,
     ...overrides,
   };
 }

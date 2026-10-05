@@ -362,6 +362,29 @@ const SONG = {
   slug: 'speed_line',
 };
 
+const TALLY = {
+  games: 3,
+  players: [
+    { playerId: 'p1', wins: 2, points: 6100 },
+    { playerId: 'p2', wins: 1, points: 4800 },
+  ],
+};
+
+test("keeps the lobby's tally across games, in the lobby and on the results", () => {
+  const { socket } = renderSeated(lobbyState({ tally: TALLY }));
+  const players = screen.getByRole('list', { name: 'Players' });
+  expect(within(players).getByText('2 wins')).toBeTruthy();
+  expect(within(players).getByText('1 win')).toBeTruthy();
+  expect(screen.getByText('3 games played in this lobby')).toBeTruthy();
+  const results = [{ playerId: 'p1', score: 900, correct: 1, averageMs: null, bestStreak: 1 }];
+  act(() =>
+    socket.receive(
+      lobbyState({ tally: TALLY, game: { phase: 'results', number: 1, rounds: 1, results, songs: [SONG] } }),
+    ),
+  );
+  expect(screen.getByText('Game 3 in this lobby. Ann has won 2.')).toBeTruthy();
+});
+
 test('shows the final results, also to a player who reconnects after the game', () => {
   renderSeated(
     lobbyState({

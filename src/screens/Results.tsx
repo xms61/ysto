@@ -169,6 +169,21 @@ function SongList({ songs, ...list }: SongListProps) {
   );
 }
 
+// The lead across this lobby's games, once it has played more than one: "Game 3 here. Ann has won 2."
+function tallyLine(lobby: LobbyState): string | null {
+  const tally = lobby.tally;
+  if (!tally || tally.games < 2) return null;
+  const most = Math.max(0, ...tally.players.map((line) => line.wins));
+  const leaders = tally.players.filter((line) => line.wins === most).map((line) => nameOf(lobby, line.playerId));
+  const lead =
+    most === 0
+      ? 'Nobody has won one yet.'
+      : leaders.length === 1
+        ? `${leaders[0]} has won ${most}.`
+        : `${leaders.join(' and ')} have won ${most} each.`;
+  return `Game ${tally.games} in this lobby. ${lead}`;
+}
+
 export function Results({ store, lobby, isHost, titles, reported }: ResultsProps) {
   usePagePhase('results');
   const results = lobby.game?.results ?? [];
@@ -177,6 +192,7 @@ export function Results({ store, lobby, isHost, titles, reported }: ResultsProps
   return (
     <Panel className="results flex flex-1 flex-col">
       <h2 className="display mb-4 text-3xl">Final results</h2>
+      {tallyLine(lobby) && <p className="-mt-2 mb-4 text-sm text-muted">{tallyLine(lobby)}</p>}
       {rounds === 0 ? (
         <p>No round could be played, because none of the clips loaded. Try another game.</p>
       ) : (

@@ -175,6 +175,13 @@ export interface GameView {
   songs: PlayedSong[] | null; // with the results: the songs in the order they played
 }
 
+// The lobby's tally across its games: how many were played, and each player's wins (a shared first place
+// counts for each) and points. Players who left are not in it.
+export interface TallyView {
+  games: number;
+  players: { playerId: string; wins: number; points: number }[];
+}
+
 // Sent to each player whenever the lobby changes. `you` is the receiving player.
 export interface LobbyState {
   type: 'lobby:state';
@@ -188,6 +195,7 @@ export interface LobbyState {
   pool: { themes: number; anime: number };
   bounds: SettingsBounds;
   game: GameView | null;
+  tally: TallyView | null; // null until the lobby finishes a game
 }
 
 export interface Pick {

@@ -58,7 +58,7 @@ Each milestone is one PR on a `feat/…` branch (two where noted), with a versio
 
 #### M4 The lobby's tally (S)
 - **Behavior:** a lobby that plays several games keeps a tally: games played, wins per player (a shared first place counts for everyone in it), and total points. It shows in the lobby and on the results ("Ann has won 2 of 3"). It lasts as long as the lobby. A player who drops keeps their line, and one who leaves takes it with them.
-- **Build:** the registry keeps the tally per lobby and updates it when a game finishes; `lobby:state` carries it.
+- **Build:** `Games` keeps the tally per lobby, next to the themes it has played, and updates it when a game finishes; `lobby:state` carries it for the players still in the lobby. Everyone on the top score wins, if it is above zero.
 - **Tests:** registry (wins, ties, leave, drop), client.
 
 #### M5 Reactions (S)
@@ -126,7 +126,7 @@ Each milestone is one PR on a `feat/…` branch (two where noted), with a versio
 - [x] 2026-10-05 M15 What's new (1.5.0)
 - [x] 2026-10-05 M2 The game's songs at the results (1.4.0)
 - [x] 2026-10-05 M3 Report a broken clip (1.6.0)
-- [ ] M4 The lobby's tally
+- [x] 2026-10-05 M4 The lobby's tally (1.7.0)
 - [ ] M5 Reactions
 - [ ] M6 Saved settings
 - [ ] M7 Sound effects per world

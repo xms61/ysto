@@ -306,6 +306,10 @@ export class Realtime {
       pool: this.#registry.pool(lobby),
       bounds: this.#registry.bounds,
       game: this.#games.view(code),
+      tally: this.#games.tally(
+        code,
+        lobby.players.map((player) => player.id),
+      ),
     };
     for (const connection of connections) {
       send(connection, { type: 'lobby:state', ...shared, you: connection.seat?.playerId ?? '' });

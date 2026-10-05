@@ -87,6 +87,21 @@ test('plays a whole game over the sockets, from the host start to the results', 
       results.standings.map((standing) => standing.score).sort(),
     );
     assert.deepEqual(over.game?.results, results.standings, 'the lobby state carries the results for reconnects');
+    const top = Math.max(...results.standings.map((standing) => standing.score));
+    assert.deepEqual(over.tally, {
+      games: 1,
+      players: over.players.map((player) => {
+        const points = results.standings.find((standing) => standing.playerId === player.id)?.score ?? 0;
+        return { playerId: player.id, wins: points === top && top > 0 ? 1 : 0, points };
+      }),
+    });
+    benClient.send({ type: 'lobby:leave' });
+    const without = await annClient.state((state) => state.players.length === 1);
+    assert.deepEqual(
+      without.tally?.players.map((line) => line.playerId),
+      [ann.playerId],
+      'a player who leaves takes their line',
+    );
   });
 });
 
