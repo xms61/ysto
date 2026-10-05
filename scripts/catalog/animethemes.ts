@@ -1,11 +1,12 @@
-// AnimeThemes metadata: pages from api.animethemes.moe or an existing dump, cached raw under
-// <cacheDir>/animethemes/, and parsed into the fields the catalog uses. A complete.json marker is
+// AnimeThemes metadata: pages from AnimeThemes' GraphQL API or an existing dump, cached raw under
+// <cacheDir>/animethemes/, and parsed into the fields the catalog uses. The cache keeps the record shape
+// of AnimeThemes' retired JSON:API, which dumps still use, so both parse alike. A complete.json marker is
 // written last, so a build never starts from a half-finished sync.
 import { existsSync, readdirSync, rmSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import { isPresent, isRecord, numberOrNull, recordsIn, stringOrNull, stringsIn } from './fields.ts';
 import type { JsonRecord } from './fields.ts';
-import { getJson } from './http.ts';
+import { postJson } from './http.ts';
 import type { HttpClient } from './http.ts';
 import { readJsonFile, writeJsonFile } from './json-files.ts';
 
@@ -63,15 +64,26 @@ interface SyncOptions {
   log: (line: string) => void;
 }
 
-const API_URL = 'https://api.animethemes.moe/anime';
-const INCLUDES = [
-  'animethemes.song.artists',
-  'animethemes.animethemeentries.videos',
-  'resources',
-  'series',
-  'animesynonyms',
-  'images',
-].join(',');
+const API_URL = 'https://graphql.animethemes.moe/';
+// Every field the catalog uses. The *Localized fields carry the strings the JSON:API sent ("Spring",
+// "AniList", "Large Cover"), and the nested limits sit well above the most any anime has (79 themes).
+export const PAGE_QUERY = `query AnimePage($page: Int!, $size: Int!) {
+  animePagination(first: $size, page: $page, sort: [ID]) {
+    data {
+      id slug year seasonLocalized formatLocalized
+      title { romaji }
+      synonyms { text }
+      series(first: 50) { nodes { id name } }
+      resources(first: 50) { nodes { siteLocalized externalId } }
+      images(first: 20) { nodes { facetLocalized link } }
+      animethemes(first: 300) {
+        id type sequence slug
+        song { id title { romaji } performances(first: 50) { as artist { id name { main } } } }
+        animethemeentries(first: 50) { version videos(first: 50) { nodes { basename } } }
+      }
+    }
+  }
+}`;
 // Reveals show the large cover; the small one stands in when an anime has no large one.
 const COVER_FACETS = ['Large Cover', 'Small Cover'];
 export const PAGE_SIZE = 100;
@@ -87,18 +99,78 @@ function pageFile(dir: string, page: number): string {
   return join(dir, `page-${String(page).padStart(4, '0')}.json`);
 }
 
-export function pageUrl(page: number): string {
-  const params = new URLSearchParams({
-    include: INCLUDES,
-    'page[size]': String(PAGE_SIZE),
-    'page[number]': String(page),
-  });
-  return `${API_URL}?${params}`;
+export function pageRequest(page: number): { query: string; variables: { page: number; size: number } } {
+  return { query: PAGE_QUERY, variables: { page, size: PAGE_SIZE } };
 }
 
 function rawAnimeIn(body: unknown, where: string): JsonRecord[] {
   if (!isRecord(body) || !Array.isArray(body.anime)) throw new Error(`${where} has no "anime" list`);
   return recordsIn(body.anime);
+}
+
+function graphqlAnimeIn(body: unknown, where: string): JsonRecord[] {
+  if (isRecord(body) && Array.isArray(body.errors)) {
+    throw new Error(
+      `${where}: ${recordsIn(body.errors)
+        .map((error) => stringOrNull(error.message))
+        .join('; ')}`,
+    );
+  }
+  const pageData = isRecord(body) && isRecord(body.data) ? body.data.animePagination : null;
+  if (!isRecord(pageData) || !Array.isArray(pageData.data)) throw new Error(`${where} has no "anime" list`);
+  return recordsIn(pageData.data);
+}
+
+// A connection's nodes, as in `images { nodes { … } }`.
+function nodesIn(connection: unknown): JsonRecord[] {
+  return isRecord(connection) ? recordsIn(connection.nodes) : [];
+}
+
+function nameIn(value: unknown, key: string): unknown {
+  return isRecord(value) ? value[key] : null;
+}
+
+// A song's artists from its performances. A group's members each perform under the group's credit, so the
+// group appears once per member; it is credited once, as the JSON:API did.
+function songRecord(song: unknown): JsonRecord | null {
+  if (!isRecord(song)) return null;
+  const artists = new Map<unknown, JsonRecord>();
+  for (const performance of recordsIn(song.performances)) {
+    const artist = performance.artist;
+    if (!isRecord(artist) || artists.has(artist.id)) continue;
+    artists.set(artist.id, { id: artist.id, name: nameIn(artist.name, 'main'), artistsong: { as: performance.as } });
+  }
+  return { id: song.id, title: nameIn(song.title, 'romaji'), artists: [...artists.values()] };
+}
+
+// One anime from the GraphQL API as the JSON:API record the cache and dumps share.
+export function recordOfGraphqlAnime(anime: JsonRecord): JsonRecord {
+  return {
+    id: anime.id,
+    name: nameIn(anime.title, 'romaji'),
+    slug: anime.slug,
+    year: anime.year,
+    season: anime.seasonLocalized,
+    media_format: anime.formatLocalized,
+    resources: nodesIn(anime.resources).map((resource) => ({
+      site: resource.siteLocalized,
+      external_id: resource.externalId,
+    })),
+    series: nodesIn(anime.series).map((series) => ({ id: series.id, name: series.name })),
+    animesynonyms: recordsIn(anime.synonyms).map((synonym) => ({ text: synonym.text })),
+    images: nodesIn(anime.images).map((image) => ({ facet: image.facetLocalized, link: image.link })),
+    animethemes: recordsIn(anime.animethemes).map((theme) => ({
+      id: theme.id,
+      type: theme.type,
+      sequence: theme.sequence,
+      slug: theme.slug,
+      song: songRecord(theme.song),
+      animethemeentries: recordsIn(theme.animethemeentries).map((entry) => ({
+        version: entry.version,
+        videos: nodesIn(entry.videos).map((video) => ({ basename: video.basename })),
+      })),
+    })),
+  };
 }
 
 function parseArtist(raw: JsonRecord): AtArtist | null {
@@ -182,8 +254,9 @@ export function parseAnime(raw: JsonRecord): AtAnime | null {
 async function ensurePage(dir: string, page: number, options: SyncOptions): Promise<number> {
   const file = pageFile(dir, page);
   if (existsSync(file)) return rawAnimeIn(readJsonFile(file), file).length;
-  const url = pageUrl(page);
-  const anime = rawAnimeIn(await getJson(options.http, url), url);
+  const anime = graphqlAnimeIn(await postJson(options.http, API_URL, pageRequest(page)), `page ${page}`).map(
+    recordOfGraphqlAnime,
+  );
   writeJsonFile(file, { anime });
   options.log(`page ${page}: ${anime.length} anime`);
   await options.http.sleep(REQUEST_INTERVAL_MS);
