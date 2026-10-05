@@ -8,7 +8,7 @@ import type { Page } from '@playwright/test';
 //   script, so a layout change that moves the headphones inside a panel that keeps its size, such as the
 //   countdown giving way to a world's timer, must move the rings' center with them. Each round is checked
 //   before it starts and while answering.
-const THEMES = ['tokyo-rain', 'sakura', 'shonen', 'mecha', 'magical-girl', 'isekai'];
+const THEMES = ['tokyo-rain', 'sakura', 'shonen', 'mecha', 'karaoke', 'isekai'];
 const WAIT = { timeout: 20_000 };
 
 test.use({ viewport: { width: 375, height: 812 } });

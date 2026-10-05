@@ -11,7 +11,7 @@ import { CheckIcon, CrossIcon } from '../components/ui.tsx';
 import { aired, animeTitle, credits, langOf, otherTitles, place, points, score, sharedPlaces } from '../format.ts';
 import type { Title } from '../format.ts';
 import type { ClientRound } from '../realtime/game-state.ts';
-import { useStage } from '../themes/stage.ts';
+import { useOptionColumns, useStage } from '../themes/stage.ts';
 
 interface RevealProps {
   round: ClientRound;
@@ -216,6 +216,7 @@ export function Reveal({ round, reveal, lobby, titleLanguage }: RevealProps) {
   const streak = streakOf(reveal, lobby.you);
   const heat = mine === reveal.correct ? heatOf(streak) : 1;
   const { wrongMark } = useStage();
+  const columns = useOptionColumns();
 
   const slot = verdict ? (
     <VerdictLine verdict={verdict} standing={standing} streak={streak} />
@@ -237,7 +238,7 @@ export function Reveal({ round, reveal, lobby, titleLanguage }: RevealProps) {
     </>
   );
   const cards = (
-    <ol aria-label="Options" className="options options-picked grid grid-cols-2 gap-3">
+    <ol aria-label="Options" className={`options options-picked grid ${columns} gap-3`}>
       {options.map((optionTitle, index) => (
         <li key={index}>
           <OptionCard

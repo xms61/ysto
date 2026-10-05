@@ -1,23 +1,26 @@
 // What a theme's world changes in the round beyond its stock (docs/DESIGN.md#theme-worlds): how the time left
 // reads, the mark printed on an option that was not the answer, whether the results draw each score as a
-// bar, and whether the round's heading is set as a masthead. A theme that sets nothing plays the shared round. The stage never changes what the four options are or when they show, only how they are drawn.
+// bar, whether the round's heading is set as a masthead, and whether the options stand in one column of rows. A theme that sets nothing plays the shared round. The stage never changes what the four options are or when they show, only how they are drawn.
 import { createContext, useContext } from 'react';
 import type { Theme } from '../prefs/prefs.ts';
 
 export interface ThemeStage {
   // The shared bar, a seven-segment display, a dango skewer eaten down, the seconds as huge arcade digits, a
-  // nipper cutting along a runner, a gachapon's coin dial turning, a candle burning down, or a printer's ruler.
-  readout: 'bar' | 'segments' | 'dango' | 'digits' | 'nipper' | 'dial' | 'candle' | 'ruler';
+  // nipper cutting along a runner, a gachapon's coin dial turning, a candle burning down, a printer's ruler, or
+  // the round's heading sung like a lyric line, its color wiping across as the time runs.
+  readout: 'bar' | 'segments' | 'dango' | 'digits' | 'nipper' | 'dial' | 'candle' | 'ruler' | 'lyric';
   wrongMark: string | null; // printed on each option that was not the answer, at the reveal
   scoreBars: boolean; // each final score also drawn as a bar against the winner's, like a health bar
   masthead: boolean; // the round's heading set as a magazine's issue number, "No. 03 / 15"
+  rows: boolean; // the four options in one column, like the songs on a karaoke remote, instead of 2x2
 }
 
-const SHARED_STAGE: ThemeStage = { readout: 'bar', wrongMark: null, scoreBars: false, masthead: false };
+const SHARED_STAGE: ThemeStage = { readout: 'bar', wrongMark: null, scoreBars: false, masthead: false, rows: false };
 
 const STAGES: Partial<Record<Theme, Partial<ThemeStage>>> = {
   'tokyo-rain': { readout: 'segments', wrongMark: 'Sold out' },
   konbini: { readout: 'segments', wrongMark: 'Sold out' },
+  karaoke: { readout: 'lyric', rows: true },
   sakura: { readout: 'dango' },
   shonen: { readout: 'digits', scoreBars: true },
   mecha: { readout: 'nipper', wrongMark: 'Spare' },
@@ -35,4 +38,9 @@ export const ThemeContext = createContext<Theme>('tokyo-rain');
 
 export function useStage(): ThemeStage {
   return stageOf(useContext(ThemeContext));
+}
+
+// The options' grid columns for the player's theme: one column of rows, or 2x2.
+export function useOptionColumns(): string {
+  return useStage().rows ? 'grid-cols-1' : 'grid-cols-2';
 }

@@ -2,6 +2,7 @@
 // loads and the countdown runs, turned face up together exactly when the clip starts, then the reveal. Keys 1
 // to 4 answer too.
 import { useEffect } from 'react';
+import type { CSSProperties } from 'react';
 import type { LobbyState } from '../../shared/protocol.ts';
 import { POINTS } from '../../shared/scoring.ts';
 import type { ScoringRules } from '../../shared/scoring.ts';
@@ -22,7 +23,7 @@ import { langOf } from '../format.ts';
 import { motionAllowed, usePagePhase, useReached, useTicker } from '../hooks.ts';
 import type { ClientRound, RoundStart } from '../realtime/game-state.ts';
 import type { ClipStatus, GameStore } from '../realtime/store.ts';
-import { useStage } from '../themes/stage.ts';
+import { useOptionColumns, useStage } from '../themes/stage.ts';
 import { Reveal } from './Reveal.tsx';
 
 const TICK_MS = 250;
@@ -118,7 +119,8 @@ function Countdown({ store, startsAt }: { store: GameStore; startsAt: number }) 
 
 // The time left: the shared bar draining with the seconds beside it, or the theme's own: a seven-segment
 // display of the seconds, a dango skewer eaten down, a nipper cutting along a runner, a coin dial turning, a
-// candle burning down or a printer's ruler, with the seconds beside it, or huge arcade digits.
+// candle burning down or a printer's ruler, with the seconds beside it, or huge arcade digits. Where the heading
+// is sung as a lyric line, that line is the timer and only the seconds show here.
 function TimeLeft({ elapsed, secondsLeft }: { elapsed: number; secondsLeft: number }) {
   const { readout } = useStage();
   if (readout === 'segments') {
@@ -147,6 +149,9 @@ function TimeLeft({ elapsed, secondsLeft }: { elapsed: number; secondsLeft: numb
         <p className="ml-auto tabular-nums">{secondsLeft} s left</p>
       </div>
     );
+  }
+  if (readout === 'lyric') {
+    return <p className="lyric-left tabular-nums">{secondsLeft} s left</p>;
   }
   if (readout === 'ruler') {
     return (
@@ -217,9 +222,10 @@ function Answering({ store, lobby, round, start, titleLanguage, clip }: Answerin
   const elapsed = Math.min(1, Math.max(0, (now - start.startsAt) / (start.endsAt - start.startsAt)));
   const players = lobby.players.filter((player) => !player.spectating).length;
 
+  const columns = useOptionColumns();
   const timer = <TimeLeft elapsed={elapsed} secondsLeft={Math.max(0, Math.ceil((start.endsAt - now) / 1000))} />;
   const cards = (
-    <ol aria-label="Options" className="options grid grid-cols-2 gap-3">
+    <ol aria-label="Options" className={`options grid ${columns} gap-3`}>
       {start.options[titleLanguage].map((title, index) => (
         <li key={index}>
           <OptionCard
@@ -269,10 +275,20 @@ function Answering({ store, lobby, round, start, titleLanguage, clip }: Answerin
   return <Stage slot={slot} cards={cards} below={below} />;
 }
 
-// The round's heading: "Round 3 of 15", or a magazine's masthead number, "No. 03 / 15", which screen readers
-// still hear as the round.
-function RoundHeading({ number, rounds }: { number: number; rounds: number }) {
-  const { masthead } = useStage();
+interface RoundHeadingProps {
+  number: number;
+  rounds: number;
+  store: GameStore;
+  start: RoundStart | null;
+  revealed: boolean;
+}
+
+// The round's heading: "Round 3 of 15", a magazine's masthead number, "No. 03 / 15", which screen readers
+// still hear as the round, or a lyric line sung as the round runs.
+function RoundHeading(props: RoundHeadingProps) {
+  const { number, rounds } = props;
+  const { masthead, readout } = useStage();
+  if (readout === 'lyric') return <LyricHeading {...props} />;
   if (!masthead) {
     return (
       <h2 className="display text-[1.375rem] sm:text-2xl">
@@ -295,6 +311,23 @@ function RoundHeading({ number, rounds }: { number: number; rounds: number }) {
   );
 }
 
+// Karaoke Box's heading, sung like a lyric line on the booth's screen: the words fill with color from the left as
+// the round runs, empty before it starts and full at the reveal. The filled copy is decoration.
+function LyricHeading({ number, rounds, store, start, revealed }: RoundHeadingProps) {
+  const now = useTicker(store.serverNow, TICK_MS);
+  const running = start ? (now - start.startsAt) / (start.endsAt - start.startsAt) : 0;
+  const sung = revealed ? 1 : Math.min(1, Math.max(0, running));
+  const words = `Round ${number} of ${rounds}`;
+  return (
+    <h2 className="display lyric" style={{ '--sung': sung } as CSSProperties}>
+      {words}
+      <span aria-hidden="true" className="lyric-sung">
+        {words}
+      </span>
+    </h2>
+  );
+}
+
 function RoundView({ store, lobby, round, titleLanguage, isHost, clip }: RoundProps & { round: ClientRound }) {
   const { start, reveal } = round;
   const started = useReached(store.serverNow, start?.startsAt ?? null);
@@ -303,7 +336,13 @@ function RoundView({ store, lobby, round, titleLanguage, isHost, clip }: RoundPr
   return (
     <Panel className="round-panel">
       <div className="round-head flex flex-wrap items-center justify-between gap-x-3 gap-y-2">
-        <RoundHeading number={round.number} rounds={round.rounds} />
+        <RoundHeading
+          number={round.number}
+          rounds={round.rounds}
+          store={store}
+          start={start}
+          revealed={reveal !== null}
+        />
         {isHost && !reveal && (
           <ConfirmButton
             label="Skip round"

@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.25.0] - 2026-10-05
+
+### Added
+- Karaoke Box is its own world: the booth's lyric screen and song remote. The round's heading is a lyric line on the screen, "Round 1 of 5" in white with a periwinkle outline, filling with pink from the left as the time runs; the options are four song rows on the remote, in one column, each keyed by its song number. A pick lights its row pink; at the reveal the right row wipes to "now playing" in cyan. The answer box is the lyric screen, the pickers' names the remote's keys, and the results the end-of-song score screen with the winner's score huge in pink. Type is M PLUS Rounded 1c.
+- A theme can stand its four options in one column of rows instead of 2x2.
+
+### Changed
+- Karaoke Box's song rows are pale with dark titles, in place of navy cards.
+
 ## [0.24.0] - 2026-10-05
 
 ### Added

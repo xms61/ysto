@@ -11,6 +11,8 @@
 @import '@fontsource/archivo-narrow/latin-700.css';
 @import '@fontsource/dotgothic16/latin-400.css';
 @import '@fontsource/yusei-magic/latin-400.css';
+@import '@fontsource/m-plus-rounded-1c/latin-700.css';
+@import '@fontsource/m-plus-rounded-1c/latin-800.css';
 
 /*
  * Seven themes, one card anatomy (docs/DESIGN.md). Every round deals four identical cards, and each theme
@@ -464,7 +466,8 @@
     --radius-2xl: 0.375rem;
   }
 
-  /* Karaoke Box: the booth's lyric screen and its song remote. */
+  /* Karaoke Box: a booth at night. The round's heading is a lyric line on the booth's screen, sung from white to
+     pink as the time runs; the options are four song rows on the remote. */
   [data-theme='karaoke'] {
     --display-adjust: 0.52;
     color-scheme: dark;
@@ -481,23 +484,33 @@
     --accent-ink: #1a0612;
     --good: #5ef0c8;
     --bad: #ff8aa8;
-    --card: #0d2a6b;
-    --card-ink: #ffffff;
-    --card-muted: #c2d2f5;
-    --card-dim: #0a1f4f;
-    --card-mark: #3ee0f0;
-    --card-mark-ink: #06202a;
-    --card-chosen: #ff4fa3;
-    --card-chosen-ink: #1a0612;
-    --card-alert: #ffb3c8;
+    --card: #f3f4ff;
+    --card-ink: #17123a;
+    --card-muted: #4a4570;
+    --card-dim: #d6d8ec;
+    --card-mark: #2b1f7a;
+    --card-mark-ink: #ffffff;
+    --card-chosen: #ffd0e6;
+    --card-chosen-ink: #17123a;
+    --card-alert: #c2185b;
     --card-back: #3ee0f0;
     --card-back-ink: #06202a;
-    --display-font: 'Mochiy Pop One', 'Hiragino Maru Gothic ProN', ui-rounded, system-ui, sans-serif;
-    --display-weight: 400;
+    /* The booth: its lyric screen in a black bezel (white words that turn pink as they are sung, both outlined in
+       periwinkle) and the remote's dark body. The screen carries text; the remote carries none of its own. */
+    --screen: #0b1a56;
+    --screen-ink: #ffffff;
+    --screen-muted: #b8c4f2;
+    --lyric-sung: #ff6fb8;
+    --lyric-edge: #7290ff;
+    --bezel: #05081f;
+    --remote: #262838;
+    --remote-rim: #4a4d62;
+    --display-font: 'M PLUS Rounded 1c', 'Hiragino Maru Gothic ProN', ui-rounded, system-ui, sans-serif;
+    --display-weight: 800;
     --display-case: none;
     --display-tracking: 0.01em;
     --title-font: var(--display-font);
-    --title-weight: 400;
+    --title-weight: 700;
     --title-case: none;
     --title-tracking: 0;
     --title-adjust: 0.52;
@@ -2873,6 +2886,128 @@
     border-color: var(--accent);
   }
 
+  /* ---- Karaoke Box: a booth at night. The round's heading is a lyric line on the booth's screen, its words
+     filling from white to pink as the round runs; the options are four song rows on the remote, one column, each
+     keyed by its song number. A pick lights its row pink; at the reveal the right row turns to "now playing" in
+     cyan and the verdict is set like a lyric. The results are the end-of-song score screen. ---- */
+  /* The lyric screen: deep blue glass in a black bezel across the panel's top. */
+  :root[data-theme='karaoke'] .round-head {
+    margin: -1rem -1rem 1rem;
+    padding: 1.25rem 1rem;
+    border: 0.375rem solid var(--bezel);
+    border-radius: var(--radius-2xl) var(--radius-2xl) 0.375rem 0.375rem;
+    background: radial-gradient(ellipse at 50% 0, rgb(120 150 255 / 0.25), transparent 70%), var(--screen);
+    color: var(--screen-ink);
+  }
+
+  @media (min-width: 40rem) {
+    :root[data-theme='karaoke'] .round-head {
+      margin: -1.5rem -1.5rem 1.25rem;
+      padding: 1.5rem;
+    }
+  }
+
+  :root[data-theme='karaoke'] .round-head .button-quiet {
+    border: 2px solid var(--screen-muted);
+    background: transparent;
+    color: var(--screen-ink);
+  }
+
+  /* A lyric line (Round.tsx): white words in a blue outline, a pink copy over them cut back to the share sung. */
+  .lyric {
+    position: relative;
+    font-size: 1.75rem;
+    line-height: 1.2;
+    white-space: nowrap;
+    color: var(--screen-ink);
+    -webkit-text-stroke: 0.2em var(--lyric-edge);
+    paint-order: stroke fill;
+  }
+
+  @media (min-width: 40rem) {
+    .lyric {
+      font-size: 2.25rem;
+    }
+  }
+
+  .lyric-sung {
+    position: absolute;
+    inset: 0;
+    color: var(--lyric-sung);
+    clip-path: inset(0 calc((1 - var(--sung, 0)) * 100%) 0 0);
+  }
+
+  .lyric-left {
+    align-self: flex-end;
+    color: var(--muted);
+  }
+
+  /* The listening light is the microphone's head: a silver grille. */
+  :root[data-theme='karaoke'] .sonar-core {
+    background:
+      radial-gradient(circle, #3a3c4a 1px, transparent 1.4px) 0 0 / 5px 5px,
+      #cfd2dc;
+  }
+
+  /* The remote: dark plastic round the song list. */
+  :root[data-theme='karaoke'] .options {
+    padding: 0.75rem;
+    border-radius: 1.25rem;
+    background: var(--remote);
+    box-shadow:
+      inset 0 0 0 2px var(--remote-rim),
+      inset 0 0.375rem 0 rgb(255 255 255 / 0.05),
+      var(--panel-shadow);
+  }
+
+  /* A song row: the number in a dark box, the title beside it. */
+  :root[data-theme='karaoke'] .card-turn {
+    min-height: 3.75rem;
+  }
+
+  :root[data-theme='karaoke'] .card-front {
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 0.75rem;
+    padding: 0.625rem 0.875rem;
+    border: 0;
+  }
+
+  :root[data-theme='karaoke'] .card-index {
+    min-width: 2.25rem;
+    flex-shrink: 0;
+  }
+
+  :root[data-theme='karaoke'] .card[data-state='chosen'] .card-index {
+    background: var(--accent);
+    color: var(--accent-ink);
+  }
+
+  /* Now playing: the right row in cyan, its label, title and details on one line where they fit. */
+  :root[data-theme='karaoke'] .card-back:not(.card-printed) {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-start;
+    column-gap: 0.75rem;
+    padding: 0.625rem 0.875rem;
+  }
+
+  /* Face down, a blank row of the remote's screen with a pink "?!". */
+  :root[data-theme='karaoke'] .card-printed {
+    background: var(--card-mark);
+    color: var(--accent);
+  }
+
+  :root[data-theme='karaoke'] .card-emblem {
+    font-size: 1.5rem;
+  }
+
+  :root[data-theme='karaoke'] .button-quiet:hover:not(:disabled) {
+    border-color: var(--accent);
+  }
+
   /* ---- The reveal's answer box (.reveal-band) and the names under each card (.picker), in each rebuilt world's
      material. Text keeps a tested pair; the cover's wash is cut back on light paper. ---- */
   /* Tokyo Rain: the machine's lit display panel; the pickers' names on ticket stubs. */
@@ -3057,6 +3192,34 @@
   }
 
   :root[data-theme='konbini'] .picker[data-you] {
+    background: var(--accent);
+    color: var(--accent-ink);
+  }
+
+  /* Karaoke Box: the lyric screen again, the title outlined like a lyric and the kind on a pink tag; names on the
+     remote's dark keys, this player's in pink. */
+  :root[data-theme='karaoke'] .reveal-band {
+    --ink: var(--screen-ink);
+    --muted: var(--screen-muted);
+    --line: var(--screen-muted);
+    border: 0.375rem solid var(--bezel);
+    background: var(--screen);
+    color: var(--screen-ink);
+  }
+
+  :root[data-theme='karaoke'] .reveal-title {
+    -webkit-text-stroke: 0.14em var(--lyric-edge);
+    paint-order: stroke fill;
+  }
+
+  :root[data-theme='karaoke'] .picker {
+    border: 1px solid var(--remote-rim);
+    background: var(--remote);
+    color: var(--ink);
+  }
+
+  :root[data-theme='karaoke'] .picker[data-you] {
+    border-color: var(--accent);
     background: var(--accent);
     color: var(--accent-ink);
   }
@@ -3794,6 +3957,22 @@
     box-shadow: none;
   }
 
+  /* Karaoke Box's end-of-song score screen: the winner on the lyric screen, the score huge in outlined pink. */
+  :root[data-theme='karaoke'] .bill-lead {
+    border: 0.375rem solid var(--bezel);
+    background: var(--screen);
+    color: var(--screen-ink);
+    box-shadow: var(--panel-shadow);
+  }
+
+  :root[data-theme='karaoke'] .bill-lead .bill-score {
+    font-size: 3rem;
+    line-height: 1;
+    color: var(--lyric-sung);
+    -webkit-text-stroke: 0.14em var(--lyric-edge);
+    paint-order: stroke fill;
+  }
+
   /* ---- The theme picker (ThemeSheet.tsx): a full-screen sheet over the page, which tries on the selected world
      behind it. Each tile nests its own theme, so its tokens draw the world's object and colors. ---- */
   .theme-row {
@@ -4051,6 +4230,12 @@
       linear-gradient(var(--stripe), var(--stripe)) 0 0.3125rem / 100% 0.1875rem no-repeat,
       var(--register);
     padding-top: 1.25rem;
+  }
+
+  /* Karaoke Box: the remote's dark body, its top edge lit. */
+  :root[data-theme='karaoke'] .start-bar {
+    border-top: 2px solid var(--remote-rim);
+    background: var(--remote);
   }
 
   /* Fighter Select: the cabinet's control deck, edged in the player's red slant. */
@@ -5301,6 +5486,53 @@
 
   to {
     clip-path: inset(0);
+  }
+}
+
+/* Karaoke Box: the lyric line's color follows the time smoothly; a picked row's song number sends with a pink
+   pulse, like the remote's key; at the reveal the right row wipes to "now playing" from the left, as a lyric is
+   sung; at the results the winner's score lands on the screen. */
+:root[data-motion='full'] .lyric-sung {
+  transition: clip-path 300ms linear;
+}
+
+:root[data-motion='full'][data-theme='karaoke'] .card[data-state='chosen'] .card-index {
+  animation: remote-send 420ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+:root[data-motion='full'][data-theme='karaoke'] .card[data-turned] .card-back {
+  animation: lyric-wipe 640ms linear 620ms both;
+}
+
+:root[data-motion='full'][data-theme='karaoke'] .bill-lead.bill-act .bill-score {
+  display: inline-block;
+  animation: score-land 560ms cubic-bezier(0.16, 1, 0.3, 1) calc(var(--act-delay) + 240ms) both;
+}
+
+@keyframes remote-send {
+  from {
+    box-shadow: 0 0 0 0 var(--accent);
+  }
+
+  to {
+    box-shadow: 0 0 0 0.625rem transparent;
+  }
+}
+
+@keyframes lyric-wipe {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+
+  to {
+    clip-path: inset(0);
+  }
+}
+
+@keyframes score-land {
+  from {
+    opacity: 0;
+    scale: 1.8;
   }
 }
 
