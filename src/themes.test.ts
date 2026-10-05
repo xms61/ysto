@@ -90,6 +90,7 @@ const WORLD_TEXT_PAIRS: Partial<Record<(typeof THEMES)[number], [text: string, b
   ],
   mecha: [
     ['manual-ink', 'manual'],
+    ['manual-muted', 'manual'],
     ['ink', 'mat'],
     ['muted', 'mat'],
     ['good', 'mat'],

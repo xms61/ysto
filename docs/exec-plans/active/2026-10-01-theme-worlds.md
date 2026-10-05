@@ -66,7 +66,7 @@ Each milestone is one or more PRs on `feat/…` branches with a version bump, a 
 - [x] 2026-10-05 Model Kit: a manual step on the cutting mat, the parts on a runner, the nipper timer (v0.19.0)
 - [x] 2026-10-05 Gachapon: the capsule machine, light, with the coin dial (v0.20.0)
 - [x] 2026-10-05 Quest Board: the guild's notice board, bounty notices, the candle (v0.21.0)
-- [ ] The answer box and pick chips in the world's material for Tokyo Rain, Hanami, Fighter Select, Model Kit and Gachapon (Quest Board has them)
+- [x] 2026-10-05 The answer box and pick chips in the world's material for Tokyo Rain, Hanami, Fighter Select, Model Kit and Gachapon (v0.21.1)
 - [ ] Quest Board: the owner's monster sprites in place of the line drawings ([prompts](../../PLATE_PROMPTS.md#quest-board-monster-sprites))
 - [ ] Back Issue
 - [ ] Konbini 2 a.m.
@@ -82,7 +82,7 @@ Each milestone is one or more PRs on `feat/…` branches with a version bump, a 
 ## Where to pick up
 State on 2026-10-05: v0.18.4 closed the three open review findings (the listening ring, the lobby's start bar, Tokyo Rain's noren), v0.19.0 built Model Kit, v0.20.0 Gachapon and v0.21.0 Quest Board. Tokyo Rain, Hanami, Fighter Select, Model Kit, Gachapon and Quest Board are rebuilt with their motion; the other nine themes run on the shared card layout with their own tokens and plates.
 
-Do next: give the five earlier worlds their answer box and pick chips, drop in the owner's Quest Board sprites when they arrive (encode each PNG to a faded WebP, check the title's contrast over it), then Back Issue, following the rules under Owner review findings.
+Do next: drop in the owner's Quest Board sprites when they arrive (encode each PNG to a faded WebP, check the title's contrast over it), then Back Issue, following the rules under Owner review findings.
 
 Working notes for a new session:
 - Check a theme by eye with `npm run build`, then the "start" preview (production server on :5173), a solo lobby, and `localStorage.ysto_prefs` set to the theme with `motion: 'full'` to see motion or `'reduced'` for steady screenshots. A solo answer ends the round at once; set Songs per game to 5 to reach the results quickly.
