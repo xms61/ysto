@@ -374,6 +374,7 @@ function spokenText(element: Element): string {
 const SONG = {
   number: 1,
   skipped: false,
+  right: ['p1'],
   anime: { english: 'Speed Line', romaji: 'Supiido Rain', japanese: 'スピードライン' },
   theme: { kind: 'OP' as const, sequence: 2 },
   song: { title: 'Full Throttle', artists: [{ name: 'Singer', as: 'Heroine' }] },
@@ -484,6 +485,34 @@ test("lists the game's songs at the results, each linking to its anime on AnimeT
   const link = within(list).getByRole('link', { name: 'AnimeThemes: Speed Line, opens in a new tab' });
   expect(link.getAttribute('href')).toBe('https://animethemes.moe/anime/speed_line');
   expect(link.getAttribute('rel')).toBe('noreferrer');
+});
+
+test('logs a finished game once, and shows it from the home screen with the anime heard', () => {
+  const results = [
+    { playerId: 'p2', score: 2400, correct: 1, averageMs: 4200, bestStreak: 1 },
+    { playerId: 'p1', score: 900, correct: 1, averageMs: null, bestStreak: 1 },
+  ];
+  const finished = lobbyState({ game: { phase: 'results', number: 1, rounds: 1, results, songs: [SONG] } });
+  const { socket } = renderSeated(finished);
+  act(() => socket.receive(finished));
+  cleanup();
+  sessionStorage.clear();
+  window.history.replaceState(null, '', '/');
+  renderApp();
+  fireEvent.click(screen.getByRole('button', { name: 'Your games' }));
+  const games = within(screen.getByRole('list', { name: 'Games' })).getAllByRole('listitem', { hidden: true });
+  expect(games.filter((item) => item.classList.contains('log-game'))).toHaveLength(1);
+  expect(screen.getByText('2nd of 2 · 900 points · 1 of 1 right')).toBeTruthy();
+  fireEvent.click(screen.getByRole('button', { name: 'Anime log (1)' }));
+  const anime = screen.getByRole('list', { name: 'Anime log' });
+  expect(within(anime).getByText('Heard once, right once')).toBeTruthy();
+  expect(within(anime).getByRole('link', { name: 'AnimeThemes: Speed Line, opens in a new tab' })).toBeTruthy();
+  fireEvent.click(screen.getByRole('button', { name: 'Clear the log' }));
+  fireEvent.click(screen.getByRole('button', { name: 'Yes' }));
+  expect(screen.getByText(/show up here/)).toBeTruthy();
+  expect(localStorage.getItem('ysto_history')).toBeNull();
+  fireEvent.click(screen.getByRole('button', { name: 'Back' }));
+  expect(screen.getByRole('button', { name: 'Create a lobby' })).toBeTruthy();
 });
 
 test('goes home with the reason when the host removes this player', () => {

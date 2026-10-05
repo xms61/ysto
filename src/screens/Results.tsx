@@ -5,12 +5,13 @@
 // the songs the game played, each with a link to its anime on AnimeThemes.
 import type { CSSProperties } from 'react';
 import type { LobbyState, PlayedSong, PlayerIcon, ResultView } from '../../shared/protocol.ts';
+import { AnimeName } from '../components/AnimeName.tsx';
 import { Burst } from '../components/Burst.tsx';
 import { PlayerBadge } from '../components/PlayerIcon.tsx';
 import { ReactionBar } from '../components/Reactions.tsx';
 import { ReportClip } from '../components/ReportClip.tsx';
 import { Button, Panel } from '../components/ui.tsx';
-import { aired, animeTitle, credits, place, score, seconds, sharedPlaces } from '../format.ts';
+import { aired, animeThemesUrl, animeTitle, credits, place, score, seconds, sharedPlaces } from '../format.ts';
 import type { TitleLanguages } from '../format.ts';
 import { useCountUp, usePagePhase } from '../hooks.ts';
 import type { GameStore } from '../realtime/store.ts';
@@ -123,8 +124,6 @@ function Bill({ lobby, results, rounds }: { lobby: LobbyState; results: ResultVi
   );
 }
 
-const ANIMETHEMES = 'https://animethemes.moe/anime/';
-
 interface SongListProps {
   store: GameStore;
   songs: PlayedSong[];
@@ -135,7 +134,6 @@ interface SongListProps {
 function SongRow({ song, ...list }: { song: PlayedSong } & Omit<SongListProps, 'songs'>) {
   const { titles } = list;
   const title = animeTitle(song.anime, titles.first);
-  const second = titles.second ? animeTitle(song.anime, titles.second) : null;
   const details = [
     `${song.theme.kind} ${song.theme.sequence}`,
     song.song.title,
@@ -149,18 +147,11 @@ function SongRow({ song, ...list }: { song: PlayedSong } & Omit<SongListProps, '
         {song.number}
       </span>
       <span className="min-w-0 flex-1">
-        <span className="block font-semibold [overflow-wrap:anywhere]" lang={title.lang}>
-          {title.text}
-        </span>
-        {second && second.text !== title.text && (
-          <span className="block text-sm [overflow-wrap:anywhere]" lang={second.lang ?? 'en'}>
-            {second.text}
-          </span>
-        )}
+        <AnimeName anime={song.anime} titles={titles} />
         <span className="block text-sm text-muted">{details.join(' · ')}</span>
         <ReportClip store={list.store} number={song.number} reported={list.reported.includes(song.number)} />
       </span>
-      <a className="song-link" href={`${ANIMETHEMES}${encodeURIComponent(song.slug)}`} target="_blank" rel="noreferrer">
+      <a className="song-link" href={animeThemesUrl(song.slug)} target="_blank" rel="noreferrer">
         AnimeThemes<span className="sr-only">: {title.text}, opens in a new tab</span>
       </a>
     </li>

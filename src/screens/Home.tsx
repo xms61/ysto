@@ -19,6 +19,7 @@ interface HomeProps {
   onPrefs: (change: Partial<Prefs>) => void;
   unlockAudio: () => void;
   onSeated: (session: Session) => void;
+  onShowLog: () => void;
 }
 
 const CODE_MESSAGE = `Lobby codes have ${CODE_LENGTH} letters and digits.`;
@@ -37,7 +38,7 @@ function HowToPlay() {
   );
 }
 
-export function Home({ joinCode, notice, prefs, onPrefs, unlockAudio, onSeated }: HomeProps) {
+export function Home({ joinCode, notice, prefs, onPrefs, unlockAudio, onSeated, onShowLog }: HomeProps) {
   const [name, setName] = useState('');
   const [code, setCode] = useState(joinCode ?? '');
   const [linked, setLinked] = useState(joinCode !== null);
@@ -149,6 +150,9 @@ export function Home({ joinCode, notice, prefs, onPrefs, unlockAudio, onSeated }
         </p>
       )}
       <HowToPlay />
+      <Button variant="quiet" className="self-center" onClick={onShowLog}>
+        Your games
+      </Button>
       <footer className="mt-auto text-center text-sm text-muted">Song data from AnimeThemes and AniList.</footer>
     </main>
   );
