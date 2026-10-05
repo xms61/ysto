@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.18.3] - 2026-10-05
+
+### Fixed
+- The lobby's start bar stands on the screen's foot: at the end of the scroll it rose with the page's bottom padding and the backdrop showed under it. It also pads its foot clear of a phone's home bar.
+
+### Changed
+- Tokyo Rain, Hanami and Fighter Select print the start bar on their own material: the ticket machine's steel foot, the bento's lacquer lid edge rimmed in vermilion, and the arcade's control deck with its red slant.
+
 ## [0.18.2] - 2026-10-05
 
 ### Fixed

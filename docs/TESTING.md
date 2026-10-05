@@ -10,7 +10,7 @@ last-verified: 2026-10-05
 | `npm test` | Server, shared and catalog tests (`node:test`) | `tests/**/*.test.ts` |
 | `npm run test:coverage` | The same tests with coverage thresholds over `server/`, `shared/` and `scripts/catalog/`: lines and functions ≥ 85 %, branches ≥ 75 %. `server/main.ts` and `scripts/catalog/bin/` only wire things together and are left out. | Node's built-in coverage; the flags are in `package.json` |
 | `npm run test:web` | Client tests (Vitest, jsdom, Testing Library): the reducer, clock, socket, store and audio engine against fakes, whole flows through `App`, and the themes' contrast | `src/**/*.test.{ts,tsx}`, `vitest.config.ts` |
-| `npm run test:e2e` | Browser tests against the production build, in Chromium, Firefox and WebKit: the smoke test, the clip decode test, a whole game with two players, the listening rings centered on the headphones on a phone, and axe on every screen in every theme (Chromium only). Run `npm run build` first. | `e2e/`, `playwright.config.ts` |
+| `npm run test:e2e` | Browser tests against the production build, in Chromium, Firefox and WebKit: the smoke test, the clip decode test, a whole game with two players, on a phone the lobby's start bar on the viewport's foot and the listening rings centered on the headphones, and axe on every screen in every theme (Chromium only). Run `npm run build` first. | `e2e/`, `playwright.config.ts` |
 | `npm run test:ci` | Lint, format check, typecheck, coverage and client tests: everything CI runs except the build, the smoke test and the repo checks | `.github/workflows/ci.yml` |
 | `node --test scripts/*.test.mjs` | Tests of the doc and tracked-files checks | `scripts/` |
 

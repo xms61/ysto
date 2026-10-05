@@ -59,6 +59,7 @@ Each milestone is one or more PRs on `feat/…` branches with a version bump, a 
 - [x] 2026-10-01 Tokyo Rain: the ramen ticket machine (v0.15.0); the cabinet and motion (v0.18.0)
 - [ ] Tokyo Rain: the noren as cloth (Owner review findings)
 - [x] 2026-10-05 The listening ring centered on the headphones in every phase (v0.18.2)
+- [x] 2026-10-05 The lobby's start bar on the viewport's foot, in the rebuilt worlds' material (v0.18.3)
 - [x] 2026-10-01 Who picked each option, shown at the reveal in every theme (v0.15.0)
 - [x] 2026-10-02 Hanami: the lacquer bento on the blue tarp, with the dango timer (v0.16.0)
 - [x] 2026-10-02 Fighter Select: the arcade character select, with arcade digits and health bars (v0.17.0)
@@ -81,7 +82,7 @@ State at the end of the session on 2026-10-02: `main` is v0.18.0 (Tokyo Rain, Ha
 
 Do next, in this order, then continue with Model Kit:
 1. ~~The listening ring off-center at round start~~: fixed in v0.18.2.
-2. **The lobby's start bar rising on scroll** ([tech-debt tracker](../tech-debt-tracker.md)). `StartBar` in `src/screens/Lobby.tsx` is `sticky bottom-0` inside the page column of `src/screens/LobbySession.tsx`, which has `py-4`; at the end of the scroll the column's bottom padding shows the backdrop under the bar. Let the bar reach the viewport's foot (cancel the column's bottom padding under it, or pad the bar's own foot), then print it on each rebuilt world's material.
+2. ~~The lobby's start bar rising on scroll~~: fixed in v0.18.3.
 3. **Tokyo Rain's noren as cloth** (Owner review findings above). The heading row is `.round-head` in `src/styles.css` (Tokyo Rain stock section). Keep the heading on solid `--noren`; draw the pole as a pseudo-element across its top, and the panels, splits, crest band and uneven hem in a hem strip below the heading row, where the sway can run without moving text.
 
 Working notes for a new session:
@@ -98,8 +99,8 @@ What the owner found playing the built worlds on 2026-10-02, and where each stan
 | The rebuilt worlds read blander than the stocks they replaced: the shared motion still ran, but no world had moves of its own, and Tokyo Rain had lost its letter flap | Tokyo Rain, Hanami, Fighter Select | Fixed in v0.18.0: each world's own motion. Rule for every later world below |
 | Only Tokyo Rain's buttons read as a ticket machine; the panel around them was a generic dark box | Tokyo Rain | Fixed in v0.18.0: the round panel is the cabinet, with a grille, a recessed bank, an outlet and a coin slot |
 | The noren at the top is a flat indigo band with two hairline slits; it reads as a header bar, not as cloth hanging over a shop's door | Tokyo Rain | Open: make it cloth. Full-height splits into three or four panels with a gap of the cabinet between them, a pole along its top edge, the hem slightly uneven, a printed white crest band in the dye (no letters, no shop name), and with motion on a slow sway as the clip plays. Keep the heading on a solid indigo panel for AA |
-| The lobby's start bar is sticky inside the lobby panel, so scrolling to the end lifts it with the panel's foot and the backdrop shows below; it is also outside every theme's world | Every theme | Open: [tech-debt tracker](../tech-debt-tracker.md) |
-| At round start the listening ring sits off-center from the headphones | Every theme | Fixed in v0.18.2: the ring field also watches the headphones' sonar box and remeasures once web fonts land; `e2e/listening.spec.ts` checks the center on a phone in five worlds |
+| The lobby's start bar is sticky inside the lobby panel, so scrolling to the end lifts it with the panel's foot and the backdrop shows below; it is also outside every theme's world | Every theme | Fixed in v0.18.3: the bar reaches through the page column's bottom padding to the viewport's foot, and the three rebuilt worlds print it on their own material; `e2e/phone.spec.ts` checks the foot in five worlds |
+| At round start the listening ring sits off-center from the headphones | Every theme | Fixed in v0.18.2: the ring field also watches the headphones' sonar box and remeasures once web fonts land; `e2e/phone.spec.ts` checks the center on a phone in five worlds |
 
 ### Rules every later world follows
 - **The world fills the round's panel, not only the options.** The heading, the readout, the listening light and the panel's own frame belong to the world, the way the whole cabinet is Tokyo Rain's machine. Check the full panel at 375 px, not the cards alone.

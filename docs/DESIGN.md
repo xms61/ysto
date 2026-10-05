@@ -1,6 +1,6 @@
 ---
 status: verified
-last-verified: 2026-10-01
+last-verified: 2026-10-05
 name: "You Skipped The OP?!"
 description: "One card anatomy, printed on seven genre card stocks, for a multiplayer anime music quiz."
 colors:
@@ -606,7 +606,7 @@ The final standings billed like a festival lineup (`.bill-*`), announced from th
 - The lobby code is in the display face, tracked wide, in the header and the invite.
 - A player who joins takes a seat in the list with a short slide.
 - The host's settings show the songs, the sample length, the difficulty and the scoring presets with a line on what the mode means; the song pool and the scoring rules fold under "Adjust the song pool and scoring rules", a summary row with a chevron in the display face.
-- The start bar at the foot is the solid page color. A waiting guest sees three small accent bars idle beside "Waiting for the host to start."
+- The start bar stands on the viewport's foot, also at the end of the scroll, and pads its own foot clear of a phone's home bar. It is the solid page color with a line on top, except in the rebuilt worlds, which print it on their own material: Tokyo Rain's machine foot, a steel kick plate under a lit lip; Hanami's lacquer lid edge, rimmed twice in vermilion; Fighter Select's control deck, edged in the red slant. A waiting guest sees three small accent bars idle beside "Waiting for the host to start."
 
 ### The home screen
 The name's "?!" is printed in the accent and stamped on after the name, with a jolt every few seconds. Below the forms, "How to play" folds three lines on how a round works.
