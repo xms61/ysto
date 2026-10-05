@@ -120,6 +120,17 @@ test('keeps the options hidden until the clip starts', () => {
   expect(screen.queryByText('Rain Song')).toBeNull();
 });
 
+test('sets the round as a masthead number in Back Issue, still named as the round', () => {
+  localStorage.setItem('ysto_prefs', JSON.stringify({ volume: 15, theme: 'retro-vhs' }));
+  const { socket } = renderSeated(lobbyState({ game: PLAYING }));
+  act(() => {
+    socket.receive({ type: 'round:prepare', roundId: 'g.1', clipToken: 'c1', number: 1, rounds: 5 });
+  });
+  const heading = screen.getByRole('heading', { name: 'Round 1 of 5' });
+  expect(within(heading).getByText('01')).toBeTruthy();
+  expect(within(heading).getByText('/ 05')).toBeTruthy();
+});
+
 test('answers with the number keys, then shows the reveal with words as well as icons', async () => {
   const { socket } = renderSeated(lobbyState({ game: PLAYING }));
   act(() => {

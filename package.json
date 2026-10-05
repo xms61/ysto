@@ -1,6 +1,6 @@
 {
   "name": "ysto",
-  "version": "0.21.3",
+  "version": "0.22.0",
   "private": true,
   "description": "You Skipped The OP?! A multiplayer anime opening and ending quiz for the browser.",
   "license": "Apache-2.0",
@@ -31,6 +31,8 @@
     "catalog:export": "node --env-file-if-exists=.env scripts/catalog/bin/export.ts"
   },
   "dependencies": {
+    "@fontsource/anton": "^5.3.0",
+    "@fontsource/archivo-narrow": "^5.3.0",
     "@fontsource/barlow-condensed": "^5.3.0",
     "@fontsource/cinzel": "^5.3.0",
     "@fontsource/im-fell-english": "^5.3.0",
@@ -42,7 +44,6 @@
     "@eslint/js": "^10.0.1",
     "@fontsource/bangers": "^5.3.0",
     "@fontsource/mochiy-pop-one": "^5.3.0",
-    "@fontsource/vt323": "^5.3.0",
     "@fontsource/zen-antique": "^5.3.0",
     "@fontsource/zen-kaku-gothic-new": "^5.3.0",
     "@playwright/test": "^1.63.0",

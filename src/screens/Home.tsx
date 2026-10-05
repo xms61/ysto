@@ -86,7 +86,7 @@ export function Home({ joinCode, notice, prefs, onPrefs, unlockAudio, onSeated }
         <PreferencesMenu prefs={prefs} onChange={onPrefs} />
       </div>
       <header className="text-center">
-        <h1 className="display motion-neon text-5xl sm:text-6xl">
+        <h1 className="display text-5xl sm:text-6xl">
           You Skipped The OP<span className="title-bang">?!</span>
         </h1>
         <p className="mt-3 text-muted">Hear a few seconds of an opening or ending, then pick the anime.</p>

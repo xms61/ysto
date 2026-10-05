@@ -2,6 +2,14 @@
 
 Releases moved out of `CHANGELOG.md` (which keeps about the latest 5). Newest first.
 
+## [0.20.0] - 2026-10-05
+
+### Added
+- Gachapon is its own world, and a light one: a capsule toy machine on a sunny shopping street. The round's heading is the machine's red head under a row of bulbs; the options are four alike capsules in the clear dome, each title on a paper slip; the time left is the coin dial turning. A pick drops its capsule toward the tray; at the reveal the others drop out in grey and the right capsule opens on a gold charm; the results bring the winner out in an open capsule. With motion on, the dial turns smoothly, the capsules drop and open, and the standings tumble out one at a time.
+
+### Removed
+- Gachapon's twinkling night stars; its sunny street keeps still.
+
 ## [0.19.1] - 2026-10-05
 
 ### Changed
