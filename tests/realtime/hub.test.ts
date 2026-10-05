@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 import { once } from 'node:events';
 import type { ClientRequest, IncomingMessage } from 'node:http';
 import { test } from 'node:test';
@@ -9,6 +10,12 @@ import { newToken } from '../../server/tokens.ts';
 import { CLOSE_CODES } from '../../shared/protocol.ts';
 import { createLobby, joinLobby, startServer, TestClient } from '../server/harness.ts';
 import type { TestServer } from '../server/harness.ts';
+
+const { version: packageVersion } = JSON.parse(
+  readFileSync(new URL('../../package.json', import.meta.url), 'utf8'),
+) as {
+  version: string;
+};
 
 async function withServer(run: (server: TestServer) => Promise<void>, options = {}): Promise<void> {
   const server = await startServer(options);
@@ -37,6 +44,7 @@ test('seats players with hello and sends each of them the lobby state', async ()
     annClient.send({ type: 'hello', sessionToken: ann.sessionToken });
     const first = await annClient.state();
     assert.equal(first.code, ann.code);
+    assert.equal(first.version, packageVersion, "the server's build, for stale pages to reload");
     assert.equal(first.you, ann.playerId);
     assert.equal(first.hostId, ann.playerId);
     assert.deepEqual(first.players, [{ id: ann.playerId, name: 'Ann', connected: true, spectating: false, score: 0 }]);

@@ -117,7 +117,7 @@ Each milestone is one PR on a `feat/…` branch (two where noted), with a versio
 
 ## Progress
 - [x] 2026-10-05 Features picked and shaped with the owner; plan written
-- [ ] M1 Stale tabs reload
+- [x] 2026-10-05 M1 Stale tabs reload (1.3.0)
 - [ ] M2 The game's songs at the results
 - [ ] M3 Report a broken clip
 - [ ] M4 The lobby's tally

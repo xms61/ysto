@@ -1,6 +1,6 @@
 ---
 status: draft
-last-verified: 2026-09-29
+last-verified: 2026-10-05
 ---
 
 # Lobby
@@ -19,6 +19,7 @@ Friends get into a game within seconds and without accounts: a code or a link, a
   - The host changes the [settings](settings.md) between games.
 - **Late joins:** a player who joins during a game watches and hears the round in progress, then plays from the next round, starting at 0 points.
 - **Reconnects:** a player who drops keeps their seat and score for 60 s, and the client reconnects on its own. A player who leaves on purpose gives up the seat at once. A second tab with the same seat takes it over from the first, which offers to take it back.
+- **New versions:** every lobby update carries the server's version. A page built from another version reloads itself in the lobby or on the results, never during a round, and keeps its seat. It tries once per server version, so a cached old page can't reload forever.
 - **Expiry:** a lobby closes after 15 minutes with no connected player, and after 4 hours in any case.
 - **Lobby creation** is open to anyone who has the URL. Limits keep it from being abused ([SECURITY.md](../SECURITY.md)).
 

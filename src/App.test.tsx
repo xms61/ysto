@@ -7,7 +7,7 @@ import { FakeAudioContext, OPTIONS, SESSION, lobbyState, revealOf, socketFactory
 
 const PLAYING = { phase: 'playing', number: 1, rounds: 5, results: null } as const;
 
-function renderApp() {
+function renderApp(reload = () => {}) {
   const context = new FakeAudioContext();
   const audio = new AudioEngine({
     createContext: () => context,
@@ -16,7 +16,12 @@ function renderApp() {
   });
   const sockets = socketFactory();
   render(
-    <App audio={audio} storage={{ local: localStorage, session: sessionStorage }} createSocket={sockets.create} />,
+    <App
+      audio={audio}
+      storage={{ local: localStorage, session: sessionStorage }}
+      createSocket={sockets.create}
+      reload={reload}
+    />,
   );
   return { sockets, context };
 }
@@ -111,6 +116,22 @@ test('sends a settings change the host makes', () => {
   fireEvent.change(songs, { target: { value: '8' } });
   fireEvent.keyDown(songs, { key: 'Enter' });
   expect(socket.sentOfType('settings:update').at(-1)?.settings).toMatchObject({ songsPerGame: 8 });
+});
+
+test('reloads to a new server version once, and never during a round', () => {
+  writeSession(sessionStorage, SESSION);
+  const reload = vi.fn();
+  const socket = renderApp(reload).sockets.latest();
+  const RESULTS = { phase: 'results' as const, number: 5, rounds: 5, results: [] };
+  act(() => {
+    socket.open();
+    socket.receive(lobbyState({ version: '9.9.9', game: PLAYING }));
+  });
+  expect(reload).not.toHaveBeenCalled();
+  act(() => socket.receive(lobbyState({ version: '9.9.9', game: RESULTS })));
+  expect(reload).toHaveBeenCalledTimes(1);
+  act(() => socket.receive(lobbyState({ version: '9.9.9', game: null })));
+  expect(reload).toHaveBeenCalledTimes(1);
 });
 
 test('keeps the options hidden until the clip starts', () => {

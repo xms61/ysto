@@ -163,6 +163,7 @@ export interface GameView {
 // Sent to each player whenever the lobby changes. `you` is the receiving player.
 export interface LobbyState {
   type: 'lobby:state';
+  version: string; // the server's build; a page of another build reloads
   code: string;
   you: string;
   hostId: string | null;

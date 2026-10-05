@@ -15,6 +15,7 @@ import type { Lobby } from '../game/lobby.ts';
 import type { LobbyRegistry, RegistryEvent, Seat } from '../game/registry.ts';
 import type { Logger } from '../log.ts';
 import { RateLimit } from '../rate-limit.ts';
+import { SERVER_VERSION } from '../version.ts';
 
 export const SOCKET_PATH = '/ws';
 export const REALTIME_LIMITS = {
@@ -294,6 +295,7 @@ export class Realtime {
     if (connections.length === 0) return;
     const { code, hostId, locked, settings } = lobby;
     const shared = {
+      version: SERVER_VERSION,
       code,
       hostId,
       locked,

@@ -22,6 +22,7 @@ export interface AppProps {
   audio: AudioEngine;
   storage: AppStorage;
   createSocket?: (url: string) => SocketLike;
+  reload?: () => void; // reloads the page when the server runs another version
 }
 
 const EXIT_NOTICES: Record<Exclude<ExitReason, 'left' | 'replaced'>, string> = {
@@ -37,7 +38,7 @@ function codeFromPath(pathname: string): string | null {
   return match?.[1] ? normalizeCode(match[1]) : null;
 }
 
-export function App({ audio, storage, createSocket }: AppProps) {
+export function App({ audio, storage, createSocket, reload }: AppProps) {
   const { prefs, update: updatePrefs, reducedMotion } = usePrefs(storage.local);
   const [session, setSession] = useState(() => readSession(storage.session));
   const [joinCode, setJoinCode] = useState(() => codeFromPath(window.location.pathname));
@@ -105,6 +106,8 @@ export function App({ audio, storage, createSocket }: AppProps) {
         onPrefs={updatePrefs}
         onExit={exited}
         createSocket={createSocket}
+        storage={storage.session}
+        reload={reload}
       />
     );
   }

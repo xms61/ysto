@@ -14,6 +14,7 @@ import type {
 } from '../audio/engine.ts';
 import type { SocketLike } from '../realtime/connection.ts';
 import type { Session } from '../realtime/session.ts';
+import { CLIENT_VERSION } from '../version.ts';
 
 export class FakeSocket implements SocketLike {
   readonly url: string;
@@ -208,6 +209,7 @@ export const SESSION: Session = { code: 'ABC234', playerId: 'p1', sessionToken: 
 export function lobbyState(overrides: Partial<LobbyState> = {}): LobbyState {
   return {
     type: 'lobby:state',
+    version: CLIENT_VERSION,
     code: 'ABC234',
     you: 'p1',
     hostId: 'p1',
