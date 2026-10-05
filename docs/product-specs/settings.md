@@ -1,6 +1,6 @@
 ---
 status: draft
-last-verified: 2026-10-01
+last-verified: 2026-10-05
 ---
 
 # Settings
@@ -29,7 +29,7 @@ The host shapes the game (pool, length, difficulty, scoring). Each player sets w
 
 - While the host edits the settings, the lobby shows how many songs and anime match. An anime plays at most once per game, so the host can't start a game with fewer matching anime than the songs-per-game setting.
 - A custom difficulty starts at popularity ranks 1–1,000 (every rank, when the catalog has fewer anime), where rank 1 is the most popular playable anime.
-- Player settings are saved on the device (the `ysto_prefs` key in `localStorage`) and apply straight away. The Preferences button on every screen opens them, and the theme picker shows each theme in its own colors. A stored value that is missing or out of range falls back to its default, alone.
+- Player settings are saved on the device (the `ysto_prefs` key in `localStorage`) and apply straight away. The Preferences button on every screen opens them, and the theme row opens the picker: a full-screen grid of every theme as its world's object in its own colors, where selecting one tries it on across the page, "Use this world" keeps it, Back or Escape keeps the theme the player had, and "Surprise me" lands on a random other world. A stored value that is missing or out of range falls back to its default, alone.
 - Volume goes through a gain node, so the 15% default also applies on iPhones ([audio clips](../design-docs/audio-clips.md)).
 - The interface is in English. Anime titles follow each player's title-language setting.
 
@@ -37,6 +37,7 @@ The host shapes the game (pool, length, difficulty, scoring). Each player sets w
 - The server rejects settings outside these ranges, and genres outside the catalog's list.
 - A new device plays at 15% volume in the Tokyo Rain theme with English titles.
 - A player's settings survive a reload and never reach other players.
+- Trying a world on in the picker never saves it; only "Use this world" does.
 
 ## Out of scope
 - UI translations.

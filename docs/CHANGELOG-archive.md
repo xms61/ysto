@@ -2,6 +2,20 @@
 
 Releases moved out of `CHANGELOG.md` (which keeps about the latest 5). Newest first.
 
+## [0.21.1] - 2026-10-05
+
+### Changed
+- The answer box below the cards and the names of who picked each option take each rebuilt world's material: Tokyo Rain's lit display panel and ticket stubs, Hanami's lacquer box and rice-paper slips, Fighter Select's profile panel and slanted name plates, Model Kit's manual page and gate tags, Gachapon's open capsule and little capsules.
+
+## [0.21.0] - 2026-10-05
+
+### Added
+- Quest Board is its own world: the adventurers' guild notice board at night. The round's heading is carved into a plank; the options are four bounty notices pinned to the board, each with a ruled frame, a red heading and lines in a made-up script, a monster drawn faintly behind the title, and a red rank stamp for its key; the time left is a candle burning down. A pick is taken down to the counter in candlelight; at the reveal the right notice gets a big round "Completed" seal; the answer box below the cards is one more pinned bounty, and the pickers' names sit on paper slips; the winner's notice is pinned up at the results. With motion on, the flame flickers, a picked notice lifts and the seal thunks on.
+- Image prompts for Quest Board's monster sprites, which will replace the line drawings.
+
+### Removed
+- Quest Board's pixel stars and blinking menu cursor.
+
 ## [0.20.0] - 2026-10-05
 
 ### Added
