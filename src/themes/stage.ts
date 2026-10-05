@@ -17,6 +17,7 @@ const SHARED_STAGE: ThemeStage = { readout: 'bar', wrongMark: null, scoreBars: f
 
 const STAGES: Partial<Record<Theme, Partial<ThemeStage>>> = {
   'tokyo-rain': { readout: 'segments', wrongMark: 'Sold out' },
+  konbini: { readout: 'segments', wrongMark: 'Sold out' },
   sakura: { readout: 'dango' },
   shonen: { readout: 'digits', scoreBars: true },
   mecha: { readout: 'nipper', wrongMark: 'Spare' },

@@ -194,6 +194,38 @@ colors:
   retro-vhs-slab: "#ffd400"
   retro-vhs-cyan: "#00a3dc"
   retro-vhs-halftone: "#d6d0c4"
+  konbini-page: "#0f141b"
+  konbini-panel: "#161d27"
+  konbini-raised: "#1f2835"
+  konbini-line: "#2f3b4c"
+  konbini-edge: "#7d8ea3"
+  konbini-ink: "#eef2f6"
+  konbini-muted: "#a9b5c4"
+  konbini-accent: "#ffc22e"
+  konbini-accent-ink: "#1a1200"
+  konbini-good: "#3fd6a8"
+  konbini-bad: "#ff7a8a"
+  konbini-card: "#fdfdf8"
+  konbini-card-ink: "#1b1d22"
+  konbini-card-muted: "#4f5560"
+  konbini-card-dim: "#d8dad5"
+  konbini-card-mark: "#5b2a86"
+  konbini-card-mark-ink: "#ffffff"
+  konbini-card-chosen: "#fff1bf"
+  konbini-card-chosen-ink: "#1b1d22"
+  konbini-card-alert: "#c8102e"
+  konbini-card-back: "#f6f5ef"
+  konbini-card-back-ink: "#222222"
+  konbini-stripe: "#5b2a86"
+  konbini-sign: "#f3f6f9"
+  konbini-sign-ink: "#14181f"
+  konbini-shelf: "#e6e9ed"
+  konbini-shelf-lip: "#aab2bd"
+  konbini-register: "#232931"
+  konbini-register-rim: "#48515d"
+  konbini-vfd: "#46f0c4"
+  konbini-receipt-muted: "#555555"
+  konbini-laser: "#ff2a3c"
 rounded:
   tokyo-rain-lg: "0.375rem"
   tokyo-rain-xl: "0.375rem"
@@ -216,6 +248,9 @@ rounded:
   retro-vhs-lg: "0px"
   retro-vhs-xl: "0px"
   retro-vhs-2xl: "0px"
+  konbini-lg: "0.1875rem"
+  konbini-xl: "0.25rem"
+  konbini-2xl: "0.375rem"
 typography:
   tokyo-rain-display:
     fontFamily: "'Zen Kaku Gothic New', ui-sans-serif, system-ui, sans-serif"
@@ -272,6 +307,14 @@ typography:
   retro-vhs-title:
     fontFamily: "'Archivo Narrow', 'Arial Narrow', sans-serif"
     fontWeight: 700
+    letterSpacing: "0"
+  konbini-display:
+    fontFamily: "'DotGothic16', ui-monospace, monospace"
+    fontWeight: 400
+    letterSpacing: "0.02em"
+  konbini-title:
+    fontFamily: "'Yusei Magic', 'Comic Sans MS', ui-rounded, sans-serif"
+    fontWeight: 400
     letterSpacing: "0"
   home-title:
     fontSize: "3rem"
@@ -396,7 +439,7 @@ The themes are being rebuilt as fifteen worlds, each laying out the round, the r
 Each theme is one block of variables on any element with `data-theme`, in two families: the chrome around the cards and the card stock itself.
 
 ### Primary
-- **Accent** (`accent`, with `accent-ink` on it): the primary button, the timer's fill, the lit sonar in the listening panel, focus outlines, the selected theme in the picker, the caret and text selection. Tokyo Rain's is signal amber, Hanami's blossom pink, Fighter Select's arcade yellow, Model Kit's yellow part plastic, Gachapon's candy red, Quest Board's candle amber, Back Issue's process magenta, kept to what can be tapped.
+- **Accent** (`accent`, with `accent-ink` on it): the primary button, the timer's fill, the lit sonar in the listening panel, focus outlines, the selected theme in the picker, the caret and text selection. Tokyo Rain's is signal amber, Hanami's blossom pink, Fighter Select's arcade yellow, Model Kit's yellow part plastic, Gachapon's candy red, Quest Board's candle amber, Back Issue's process magenta, kept to what can be tapped, Konbini 2 a.m.'s saffron from its shop stripe.
 
 ### Secondary
 - **Card stock** (`card`, `card-ink`): the face of an open card.
@@ -408,7 +451,7 @@ Each theme is one block of variables on any element with `data-theme`, in two fa
 
 ### Tertiary
 - **Right and wrong** (`good`, `bad`): verdict and error colors on the panels. They never carry meaning alone; an icon and words always go with them.
-- **Material colors**, only where a theme's stock needs them: Hanami's `blossom` and gold `foil`, Gachapon's gold `foil` and its `--foil-sheen` gradient for the charm, Back Issue's process-yellow `slab`, process `cyan` and `halftone`.
+- **Material colors**, only where a theme's stock needs them: Hanami's `blossom` and gold `foil`, Gachapon's gold `foil` and its `--foil-sheen` gradient for the charm, Back Issue's process-yellow `slab`, process `cyan` and `halftone`, Konbini 2 a.m.'s shop (see Theme worlds).
 
 ### Neutral
 - **Page** (`page`): behind everything, under the theme's texture. Also the fill of fields.
@@ -517,7 +560,7 @@ States, from `data-state`:
 ### The pick stamp
 A small tag across the card's top edge, 0.5rem from the right, outside the faces so the card keeps its height. The index mark's colors, the title face at 0.75rem, the theme's `lg` radius, and a 0.875rem icon when it carries one. On a missed pick it inverts to the card stock with `card-alert` text inside a 2px `card-alert` ring. Fighter Select letters a chosen pick's stamp as its red player cursor with a white ring, slanted 12 degrees.
 
-### The seven stocks
+### The rebuilt worlds' stocks
 
 | Theme | Stock and frame | Index mark | Chosen | Printed back |
 | :-- | :-- | :-- | :-- | :-- |
@@ -528,6 +571,7 @@ A small tag across the card's top edge, 0.5rem from the right, outside the faces
 | Gachapon (`magical-girl`) | A capsule in the dome (see Theme worlds): a sky-blue half on top over a seam, and a clear half with the title on a white paper slip | A round blue sticker with a white numeral and rim, on the colored half | The machine's red half over pale lemon, dropped 0.25rem toward the tray; muted capsules turn chrome grey | An open lemon capsule, its blue lid lifted to a strip along the top, a gold charm in the corner; face down, a closed capsule with a blue "?!" |
 | Quest Board (`isekai`) | A bounty notice pinned to the board (see Theme worlds): parchment in a double-ruled frame with corner marks, a red heading and lines in a made-up script, its monster drawn faintly behind the title | A red rank stamp, a double rule pressed askew | Lit by the candle: an amber rim and glow, its pin pulled; dimmed notices drop their drawings | Aged parchment with a large round "Completed" seal in half-strength red ink behind the text; face down, blank parchment |
 | Back Issue (`retro-vhs`) | A feature box on the slab (see Theme worlds): white paper in a 2px ink rule, its cyan shadow off register, a reader's ballot square top right | A magenta box with a white numeral, the one color kept for what can be tapped | The ballot marked with an X over pale yellow; muted boxes screened back under halftone dots | The answer page in process cyan with black type; face down, white paper with an ink "?!" |
+| Konbini 2 a.m. (`konbini`) | A price card on the shelf (see Theme worlds): white card under a plum header band, the title in marker, standing on a clear price rail | A saffron price star with a dark numeral | Pale saffron, its star turned plum; muted cards drop their band and star, the number left on grey card | A thermal receipt in dot type, torn off along a jagged foot; face down, the plum stock with a saffron "?!" |
 
 ### The reveal's hit
 After the right card turns over, its stock prints a hit round it (`.card-impact`) and a burst of its own material flies out from the middle (`Burst.tsx`). With a streak of 3 or more right answers the hit lands harder, and harder again from 5: more motes, a wider ring, a bigger shake (`data-heat`, 1 to 3).
@@ -541,6 +585,7 @@ After the right card turns over, its stock prints a hit round it (`.card-impact`
 | Gachapon (`magical-girl`) | A foil ring opens round the capsule; a sheen passes over the back | Foil sparkles, a few in candy red |
 | Quest Board (`isekai`) | An amber rim opens round the notice in a candle glow; the completed seal thunks on | Amber and parchment scraps |
 | Back Issue (`retro-vhs`) | A cyan frame printed off register round the answer page; the page settles into register | Trimmed paper in cyan, yellow and ink |
+| Konbini 2 a.m. (`konbini`) | The scanner's red line passes down the receipt | The shared burst in the theme's colors |
 
 ### Themes beyond the card
 
@@ -553,6 +598,7 @@ After the right card turns over, its stock prints a hit round it (`.card-impact`
 | Gachapon (`magical-girl`) | Mochiy Pop One | The same | Capsule machines on a sunny shopping street behind a cream page with faint red dots; nothing falls, and a foil ring opens at the reveal | Pill buttons; panels with a 2px rim; sparkle radio dots; 1px field rim |
 | Quest Board (`isekai`) | Cinzel, inscriptional capitals as carved on the guild's plank, with lining figures so a 1 never reads as an I | IM Fell English, an old printer's face | The guild's common room by candlelight behind faint plank lines; nothing moves, and the room flashes at the reveal | Panels take a 2px rim; quiet buttons are dark oak with a 2px rim; 1px field rim |
 | Back Issue (`retro-vhs`) | Anton, in capitals | Archivo Narrow, bold | Process-color shapes and halftone on glossy paper; nothing moves, and a pass of halftone at the reveal | Panels take a 2px ink rule and a cyan shadow off register; quiet buttons a 2px ink rule; the lobby's start bar is the page's foot under an ink rule |
+| Konbini 2 a.m. (`konbini`) | DotGothic16, the dot type of a register's receipt | Yusei Magic, a marker pen's lettering, as on a shop's handwritten price cards | A wet street at night lit by the shop; slanted rain with motion on | The round's heading is the shop's lit fascia sign; quiet buttons light a saffron rim under the pointer; the lobby's start bar is the counter's front under the shop's stripe |
 
 ### Theme worlds
 The fifteen themes are becoming worlds that each lay out the round, the reveal and the results in their own way ([plan](exec-plans/active/2026-10-01-theme-worlds.md)). What a world changes beyond its stock lives in `src/themes/stage.ts`, read through `useStage()`: how the time left reads (`readout`: the shared bar, or a seven-segment display of the seconds), and the mark printed on each option that was not the answer (`wrongMark`). A theme that sets nothing plays the shared round. The stage never changes what the four options are, their sizes, or when they show.
@@ -570,6 +616,8 @@ The fifteen themes are becoming worlds that each lay out the round, the reveal a
 **Quest Board (`isekai`): the adventurers' guild notice board at night.** The page is the guild's common room in candlelight. The round's panel is the board (`--board`): dark oak in a frame of lighter wood (`--plank`) with nails at its corners. The round's heading is carved into a plank across the top (`--plank`, its text `--plank-ink`). The listening light is a lantern's lens. The time left is a candle (`readout: 'candle'`, `Candle.tsx`): its wax (`--wax`) burns down past four hour marks in a brass dish and the flame (`--flame`) goes out at the end, the seconds beside it. The options are four bounty notices pinned to the board with red pins (`--pin`), all in one design: parchment in a double-ruled frame with corner marks, a red heading and lines in a made-up script at the top right, and a monster drawn faintly in ink behind the title (a slime, a tusked beast, a wyvern, a stone golem; `src/assets/notices/`). The monsters were generated by the owner with Gemini Flash 3.8 and its image generation from the prompts in [PLATE_PROMPTS.md](PLATE_PROMPTS.md#quest-board-monster-sprites) and turned into sepia ink layers with ffmpeg, as described there. The script and the drawings are images, so screen readers hear only the title, and the drawings are faint enough that the title keeps 7:1 over them; dimmed notices drop them. Each key is a red rank stamp. A pick is taken down to the counter, lit amber by the candle, its pin pulled. At the reveal the right notice turns to aged parchment with a large round "Completed" seal in half-strength red ink behind its text, where the text still keeps 4.5:1. The answer box below the cards is one more bounty pinned to the board, parchment in the same frame with the cover pasted on like a portrait, its kind in a red stamp and the cover's wash a faint sepia; the names of who picked each notice are on small paper slips, this player's in candle amber. The results pin the winner's notice to the board. With motion on, the flame flickers, a picked notice lifts as it is taken down (300ms), and the completed seal thunks on (340ms). The backdrop keeps still.
 
 **Back Issue (`retro-vhs`): an eighties monthly anime magazine.** A light world: glossy paper with fine halftone over the plate's process-color shapes. The round's panel is the magazine's page, white with crop marks at its corners. The round's heading is the issue's masthead (`masthead`): the round as the issue number at monumental size, "No. 03 / 15", over a double rule; screen readers still hear "Round 3 of 15". The listening light is a registration mark, lit in ink. The time left is a printer's steel ruler across the row (`readout: 'ruler'`, `Ruler.tsx`), ticked in millimetres, with a process-cyan bar (`--cyan`) that shortens from the right. The options are four feature boxes on one process-yellow slab (`--slab`), each white in an ink rule with its cyan shadow a little off register, its key in a magenta box and a reader's ballot square at its top right. Magenta is kept for what can be tapped: the keys, the primary button and focus; the title's "?!" is ink on a swipe of the slab's yellow. A pick marks its ballot with an X. At the reveal the other boxes are screened back under halftone dots (`--halftone`, with the screened text at 4.5:1), and the right one turns to the answer page in process cyan. Below the cards, the answer box is the article page, ruled in ink with its cyan shadow, its kind on a black caption tag; the pickers' names are black caption tags, this player's in the answer page's cyan. The results are the readers' poll, the winner printed on the slab's yellow. With motion on, the X is drawn into the ballot (260ms), the ruler's bar shortens smoothly, and the answer page settles into register as it lands (520ms). The backdrop keeps still.
+
+**Konbini 2 a.m. (`konbini`): the one bright shop on a wet street.** The page is the street at night in the rain. The round's panel is the register's dark body (`--register`, its rim `--register-rim`). The round's heading is the shop's fascia sign: a lit face (`--sign`, its text `--sign-ink`) in a dark metal frame, glowing a little, with the shop's two-color stripe along its foot, saffron (`accent`) over plum (`--stripe`); the pair belongs to no real chain. The listening light is the scanner's window, dark glass with its red line across (`--laser`). The time left reads on the register's display (`readout: 'segments'`, the same `Segments.tsx` as Tokyo Rain's LED), its figures in teal (`--vfd`). The options are four price cards on a bright shelf (`--shelf`), each a white card under a plum header band, its title lettered in marker, standing on a clear price rail (`--shelf-lip`), its key on a saffron price star. A pick turns the card pale saffron and its star plum. At the reveal the right card turns over to a thermal receipt in dot type, torn off along a jagged foot, and every other card takes a red "Sold out" label from the price gun (`wrongMark`), its star peeled off. Below the cards, the answer box is the receipt itself (`--card-back`, its grey print `--receipt-muted`), the kind in the printer's inverse type and the cover's wash cut back; the names of who picked each card sit on price-gun labels, this player's in saffron. The results are the night's last receipt: a printed head with the time, the standings as its line items in dot type and the winner in inverse type, torn off at the foot. The lobby's start bar is the counter's front under the stripe. With motion on, a picked card's star turns plum with a quick spin (320ms), at the reveal the scanner's line passes down the receipt (560ms) and the "Sold out" labels slap on one after another (260ms), and at the results each line of the receipt prints in six steps (420ms). The rain keeps falling in the backdrop.
 
 ### The backdrop plates
 Each theme sets a painted scene behind its page: `--plate` names the image in `src/assets/plates/` and `--plate-opacity` how strongly it shows over the page color. The opacity is the highest that keeps the page pairs passing over every pixel (Contrast the tests enforce), so Hanami's bright tarp shows least and Blossom Map's flat park most. With motion on the plate drifts slowly (Motion).

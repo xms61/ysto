@@ -9,6 +9,8 @@
 @import '@fontsource/im-fell-english/latin-400.css';
 @import '@fontsource/anton/latin-400.css';
 @import '@fontsource/archivo-narrow/latin-700.css';
+@import '@fontsource/dotgothic16/latin-400.css';
+@import '@fontsource/yusei-magic/latin-400.css';
 
 /*
  * Seven themes, one card anatomy (docs/DESIGN.md). Every round deals four identical cards, and each theme
@@ -404,9 +406,10 @@
     --radius-2xl: 0;
   }
 
-  /* Konbini 2 a.m.: the one bright shop on a wet street, marker price cards and a thermal receipt. */
+  /* Konbini 2 a.m.: the one bright shop on a wet street. The round is its register under a lit fascia sign, the
+     options marker-lettered price cards on a bright shelf; the answer prints as a thermal receipt. */
   [data-theme='konbini'] {
-    --display-adjust: 0.52;
+    --display-adjust: 0.5;
     color-scheme: dark;
     --page: #0f141b;
     --plate: url('./assets/plates/konbini.webp');
@@ -417,35 +420,48 @@
     --edge: #7d8ea3;
     --ink: #eef2f6;
     --muted: #a9b5c4;
-    --accent: #ff7a1a;
-    --accent-ink: #1a0d00;
+    --accent: #ffc22e;
+    --accent-ink: #1a1200;
     --good: #3fd6a8;
     --bad: #ff7a8a;
-    --card: #f7f7f2;
+    --card: #fdfdf8;
     --card-ink: #1b1d22;
     --card-muted: #4f5560;
-    --card-dim: #d4d6d2;
-    --card-mark: #00796f;
+    --card-dim: #d8dad5;
+    --card-mark: #5b2a86;
     --card-mark-ink: #ffffff;
-    --card-chosen: #fff1df;
+    --card-chosen: #fff1bf;
     --card-chosen-ink: #1b1d22;
     --card-alert: #c8102e;
-    --card-back: #fbfbf7;
-    --card-back-ink: #2b2b2b;
-    --display-font: 'Zen Kaku Gothic New', ui-sans-serif, system-ui, sans-serif;
-    --display-weight: 700;
+    --card-back: #f6f5ef;
+    --card-back-ink: #222222;
+    /* The shop: its two-color stripe (plum and saffron, no real chain's), the fascia sign's lit face, the bright
+       shelf, the register's body and its teal display, the receipt's grey print and the scanner's red line. The
+       sign and the receipt carry text; the rest do not. */
+    --stripe: #5b2a86;
+    --sign: #f3f6f9;
+    --sign-ink: #14181f;
+    --shelf: #e6e9ed;
+    --shelf-lip: #aab2bd;
+    --register: #232931;
+    --register-rim: #48515d;
+    --vfd: #46f0c4;
+    --receipt-muted: #555555;
+    --laser: #ff2a3c;
+    --display-font: 'DotGothic16', ui-monospace, monospace;
+    --display-weight: 400;
     --display-case: none;
-    --display-tracking: 0.01em;
-    --title-font: var(--display-font);
-    --title-weight: 700;
+    --display-tracking: 0.02em;
+    --title-font: 'Yusei Magic', 'Comic Sans MS', ui-rounded, sans-serif;
+    --title-weight: 400;
     --title-case: none;
-    --title-tracking: 0.01em;
-    --title-adjust: 0.52;
+    --title-tracking: 0;
+    --title-adjust: 0.5;
     --panel-shadow: 0 1.25rem 2.5rem -1.5rem rgb(0 0 0 / 0.8);
     --page-texture: none;
-    --radius-lg: 0.25rem;
-    --radius-xl: 0.375rem;
-    --radius-2xl: 0.5rem;
+    --radius-lg: 0.1875rem;
+    --radius-xl: 0.25rem;
+    --radius-2xl: 0.375rem;
   }
 
   /* Karaoke Box: the booth's lyric screen and its song remote. */
@@ -2672,6 +2688,191 @@
     transform-origin: left;
   }
 
+  /* ---- Konbini 2 a.m.: the one bright shop on a wet street. The round's heading is the shop's lit fascia sign
+     over its two-color stripe; the panel is the register, the time on its teal display; the options are four
+     marker-lettered price cards on a bright shelf, keyed by saffron price stars. A pick turns its star plum; at
+     the reveal the scanner's line passes over the right card and it prints as a thermal receipt, while the
+     others take a red "Sold out" label. ---- */
+  /* The round's panel is the register's body, its edges lit and shaded like the cabinet under the counter. */
+  :root[data-theme='konbini'] .round-panel {
+    border: 0;
+    background: var(--register);
+    box-shadow:
+      inset 0 0 0 2px var(--register-rim),
+      inset 0 0.375rem 0 rgb(255 255 255 / 0.04),
+      var(--panel-shadow);
+  }
+
+  /* The fascia sign: a lit face in a dark metal frame, its text in solid ink, the shop's stripe printed along its
+     foot under a fluorescent glow. */
+  :root[data-theme='konbini'] .round-head {
+    margin: -1rem -1rem 1rem;
+    padding: 0.875rem 1rem 1.625rem;
+    border-block: 0.3125rem solid #0b0e12;
+    background:
+      linear-gradient(var(--stripe), var(--stripe)) 0 calc(100% - 0.25rem) / 100% 0.3125rem no-repeat,
+      linear-gradient(var(--accent), var(--accent)) 0 calc(100% - 0.5625rem) / 100% 0.4375rem no-repeat,
+      var(--sign);
+    color: var(--sign-ink);
+    box-shadow: 0 0.5rem 1.75rem -0.5rem rgb(243 246 249 / 0.35);
+  }
+
+  @media (min-width: 40rem) {
+    :root[data-theme='konbini'] .round-head {
+      margin: -1.5rem -1.5rem 1.25rem;
+      padding: 1rem 1.5rem 1.75rem;
+    }
+  }
+
+  :root[data-theme='konbini'] .round-head .button-quiet {
+    border: 2px solid var(--sign-ink);
+    background: transparent;
+    color: var(--sign-ink);
+  }
+
+  :root[data-theme='konbini'] .round-head .button-quiet:hover:not(:disabled) {
+    background: rgb(20 24 31 / 0.08);
+  }
+
+  /* The register's display: teal figures behind dark glass. */
+  :root[data-theme='konbini'] .readout {
+    border-radius: 0.125rem;
+    box-shadow:
+      inset 0 0 0 2px var(--register-rim),
+      inset 0 0.25rem 0.5rem rgb(0 0 0 / 0.8);
+    color: var(--vfd);
+  }
+
+  /* The listening light is the scanner's window: dark glass with its red line across. */
+  :root[data-theme='konbini'] .sonar-core {
+    background:
+      linear-gradient(var(--laser), var(--laser)) center / 70% 1px no-repeat,
+      #0b0d10;
+  }
+
+  /* The shelf: bright under the shop's lights, each card standing on a clear price rail. */
+  :root[data-theme='konbini'] .options {
+    padding: 0.75rem 0.75rem 1rem;
+    row-gap: 1.25rem;
+    border-radius: 0.25rem;
+    background: var(--shelf);
+    box-shadow:
+      inset 0 0.5rem 0.75rem -0.5rem rgb(0 0 0 / 0.35),
+      0 0 2.5rem -0.75rem rgb(243 246 249 / 0.3);
+  }
+
+  :root[data-theme='konbini'] .card::after {
+    content: '';
+    position: absolute;
+    left: -0.375rem;
+    right: -0.375rem;
+    bottom: -0.5rem;
+    height: 0.375rem;
+    border-radius: 1px;
+    background: linear-gradient(rgb(255 255 255 / 0.7), transparent), var(--shelf-lip);
+    pointer-events: none;
+  }
+
+  /* A price card: white card under a plum header band, the title in marker. */
+  :root[data-theme='konbini'] .card-front {
+    border: 0;
+    background-image: linear-gradient(var(--card-mark), var(--card-mark));
+    background-size: 100% 0.4375rem;
+    background-repeat: no-repeat;
+    box-shadow:
+      inset 0 0 0 1px rgb(27 29 34 / 0.18),
+      0 0.25rem 0.375rem -0.25rem rgb(0 0 0 / 0.35);
+  }
+
+  :root[data-theme='konbini'] .card-face {
+    padding-top: 1rem;
+  }
+
+  /* The key: a saffron price star. */
+  :root[data-theme='konbini'] .card-index {
+    min-width: 2.375rem;
+    height: 2.375rem;
+    margin: -0.25rem 0 0 -0.25rem;
+    border-radius: 0;
+    background: var(--accent);
+    color: var(--accent-ink);
+    clip-path: polygon(
+      50% 0,
+      59% 15%,
+      75% 7%,
+      77% 25%,
+      95% 25%,
+      87% 41%,
+      100% 52%,
+      85% 62%,
+      91% 80%,
+      73% 79%,
+      67% 96%,
+      53% 86%,
+      38% 99%,
+      31% 81%,
+      13% 84%,
+      16% 66%,
+      0 57%,
+      12% 44%,
+      4% 28%,
+      22% 25%,
+      22% 7%,
+      39% 14%
+    );
+  }
+
+  :root[data-theme='konbini'] .card[data-state='chosen'] .card-index {
+    background: var(--card-mark);
+    color: var(--card-mark-ink);
+  }
+
+  /* Out of the running: the star is peeled off, the number left on the card. */
+  :root[data-theme='konbini'] .card:is([data-state='muted'], [data-state='missed']) .card-index {
+    background: transparent;
+    color: var(--card-muted);
+    box-shadow: none;
+  }
+
+  :root[data-theme='konbini'] .card:is([data-state='muted'], [data-state='missed']) .card-front {
+    background-image: none;
+  }
+
+  /* "Sold out": a red label from the price gun, slapped across the card's corner. */
+  :root[data-theme='konbini'] .card-mark-plate {
+    top: 1.375rem;
+    border-radius: 0.125rem;
+    font-size: 0.8125rem;
+    font-weight: 400;
+    box-shadow: 0 1px 2px rgb(0 0 0 / 0.35);
+  }
+
+  /* The right card's receipt: thermal paper torn off along a jagged foot, printed in dot type. */
+  :root[data-theme='konbini'] .card-back:not(.card-printed) {
+    border: 0;
+    font-family: var(--display-font);
+    mask: conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) 50% / 0.625rem 100%;
+  }
+
+  :root[data-theme='konbini'] .card-back:not(.card-printed) .card-back-title {
+    font-family: var(--display-font);
+  }
+
+  :root[data-theme='konbini'] .card-back:not(.card-printed) .card-back-label {
+    font-weight: 400;
+  }
+
+  /* Face down, the shop's own card: the plum stock with its saffron "?!". */
+  :root[data-theme='konbini'] .card-printed {
+    border: 0;
+    background: var(--card-mark);
+    color: var(--accent);
+  }
+
+  :root[data-theme='konbini'] .button-quiet:hover:not(:disabled) {
+    border-color: var(--accent);
+  }
+
   /* ---- The reveal's answer box (.reveal-band) and the names under each card (.picker), in each rebuilt world's
      material. Text keeps a tested pair; the cover's wash is cut back on light paper. ---- */
   /* Tokyo Rain: the machine's lit display panel; the pickers' names on ticket stubs. */
@@ -2818,8 +3019,51 @@
     color: var(--card-back-ink);
   }
 
+  /* Konbini 2 a.m.: the answer printed on a receipt in dot type, torn off along a jagged foot, its kind in the
+     printer's inverse type; names on price-gun labels, this player's in saffron. */
+  :root[data-theme='konbini'] .reveal-band {
+    --ink: var(--card-back-ink);
+    --muted: var(--receipt-muted);
+    --line: var(--receipt-muted);
+    padding-bottom: 1.75rem;
+    border: 0;
+    border-radius: 0;
+    background: var(--card-back);
+    color: var(--card-back-ink);
+    font-family: var(--display-font);
+    mask: conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) 50% / 0.75rem 100%;
+  }
+
+  :root[data-theme='konbini'] .reveal-song {
+    border-top-style: dashed;
+  }
+
+  :root[data-theme='konbini'] .reveal-kind {
+    border-radius: 0;
+    background: var(--card-back-ink);
+    color: var(--card-back);
+    font-weight: 400;
+  }
+
+  :root[data-theme='konbini'] .pickers {
+    padding-top: 0.375rem;
+  }
+
+  :root[data-theme='konbini'] .picker {
+    border: 0;
+    border-radius: 0.125rem;
+    background: var(--card-back);
+    color: var(--card-back-ink);
+  }
+
+  :root[data-theme='konbini'] .picker[data-you] {
+    background: var(--accent);
+    color: var(--accent-ink);
+  }
+
   /* On light paper the cover's wash is cut back, so the dark ink keeps its contrast. */
-  :root:is([data-theme='mecha'], [data-theme='magical-girl'], [data-theme='retro-vhs']) .reveal-wash {
+  :root:is([data-theme='mecha'], [data-theme='magical-girl'], [data-theme='retro-vhs'], [data-theme='konbini'])
+    .reveal-wash {
     opacity: 0.12;
   }
 
@@ -3512,6 +3756,44 @@
     box-shadow: 0.25rem 0.25rem 0 var(--cyan);
   }
 
+  /* Konbini 2 a.m.: the night's last receipt, the standings as its line items in dot type and the winner in the
+     printer's inverse type, torn off along a jagged foot. */
+  :root[data-theme='konbini'] .bill {
+    --line: var(--receipt-muted);
+    --muted: var(--receipt-muted);
+    padding: 1rem 1rem 1.75rem;
+    background: var(--card-back);
+    color: var(--card-back-ink);
+    font-family: var(--display-font);
+    mask: conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) 50% / 0.75rem 100%;
+  }
+
+  /* The receipt's printed head: the time of night, over a dashed rule. Decoration, so it has no spoken text. */
+  :root[data-theme='konbini'] .bill::before {
+    content: 'Receipt  ·  02:00' / '';
+    display: block;
+    margin-bottom: 0.875rem;
+    padding-bottom: 0.625rem;
+    border-bottom: 1px dashed var(--receipt-muted);
+    text-align: center;
+    letter-spacing: 0.08em;
+  }
+
+  :root[data-theme='konbini'] .bill-row + .bill-row {
+    border-top-style: dashed;
+  }
+
+  :root[data-theme='konbini'] .bill-name {
+    font-weight: 400;
+  }
+
+  :root[data-theme='konbini'] .bill-lead {
+    border-radius: 0;
+    background: var(--card-back-ink);
+    color: var(--card-back);
+    box-shadow: none;
+  }
+
   /* ---- The theme picker (ThemeSheet.tsx): a full-screen sheet over the page, which tries on the selected world
      behind it. Each tile nests its own theme, so its tokens draw the world's object and colors. ---- */
   .theme-row {
@@ -3759,6 +4041,16 @@
   :root[data-theme='retro-vhs'] .start-bar {
     border-top: 2px solid var(--ink);
     background: var(--panel);
+  }
+
+  /* Konbini 2 a.m.: the counter's front, the shop's stripe along its top edge. */
+  :root[data-theme='konbini'] .start-bar {
+    border-top: 0;
+    background:
+      linear-gradient(var(--accent), var(--accent)) 0 0 / 100% 0.3125rem no-repeat,
+      linear-gradient(var(--stripe), var(--stripe)) 0 0.3125rem / 100% 0.1875rem no-repeat,
+      var(--register);
+    padding-top: 1.25rem;
   }
 
   /* Fighter Select: the cabinet's control deck, edged in the player's red slant. */
@@ -4942,6 +5234,73 @@
     background-size:
       0 100%,
       auto;
+  }
+}
+
+/* Konbini 2 a.m.: a picked card's price star turns plum with a quick spin; at the reveal the scanner's red line
+   passes down the right card's receipt, the "Sold out" labels slap onto the others in turn, and at the results
+   each line of the receipt prints in steps. */
+:root[data-motion='full'][data-theme='konbini'] .card[data-state='chosen'] .card-index {
+  animation: star-spin 320ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+:root[data-motion='full'][data-theme='konbini'] .card[data-turned] .card-back::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 2px;
+  background: var(--laser);
+  box-shadow: 0 0 0.5rem 0.125rem var(--laser);
+  animation: scan-line 560ms ease-in-out 680ms both;
+}
+
+:root[data-motion='full'][data-theme='konbini'] .card-mark-plate {
+  animation: label-slap 260ms cubic-bezier(0.16, 1, 0.3, 1) 900ms both;
+}
+
+:root[data-motion='full'][data-theme='konbini'] .bill-act {
+  animation: receipt-print 420ms steps(6, end) var(--act-delay) both;
+}
+
+@keyframes star-spin {
+  from {
+    rotate: -72deg;
+    scale: 1.25;
+  }
+}
+
+@keyframes scan-line {
+  from {
+    top: 0;
+    opacity: 1;
+  }
+
+  85% {
+    opacity: 1;
+  }
+
+  to {
+    top: calc(100% - 2px);
+    opacity: 0;
+  }
+}
+
+@keyframes label-slap {
+  from {
+    opacity: 0;
+    scale: 1.6;
+  }
+}
+
+@keyframes receipt-print {
+  from {
+    clip-path: inset(0 0 100% 0);
+  }
+
+  to {
+    clip-path: inset(0);
   }
 }
 
