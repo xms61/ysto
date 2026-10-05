@@ -65,3 +65,6 @@ Thumbs.db
 
 # The owner's full-size plate originals; the build ships the WebP made from each.
 src/assets/plates/*.jpg
+
+# The owner's full-size Quest Board monster sprites; the build ships the faded WebP made from each.
+src/assets/notices/*.png

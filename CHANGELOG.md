@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.21.0] - 2026-10-05
+
+### Added
+- Quest Board is its own world: the adventurers' guild notice board at night. The round's heading is carved into a plank; the options are four bounty notices pinned to the board, each with a ruled frame, a red heading and lines in a made-up script, a monster drawn faintly behind the title, and a red rank stamp for its key; the time left is a candle burning down. A pick is taken down to the counter in candlelight; at the reveal the right notice gets a big round "Completed" seal; the answer box below the cards is one more pinned bounty, and the pickers' names sit on paper slips; the winner's notice is pinned up at the results. With motion on, the flame flickers, a picked notice lifts and the seal thunks on.
+- Image prompts for Quest Board's monster sprites, which will replace the line drawings.
+
+### Removed
+- Quest Board's pixel stars and blinking menu cursor.
+
 ## [0.20.0] - 2026-10-05
 
 ### Added
@@ -32,11 +41,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Tokyo Rain's noren is cloth: it hangs from a wooden pole across the machine's top, and below the heading its hem splits into four panels with the cabinet between them, printed with a white band and a crest the middle slit cuts in two, ending a little unevenly. With motion on, the hem sways slowly while the clip plays.
-
-## [0.18.3] - 2026-10-05
-
-### Fixed
-- The lobby's start bar stands on the screen's foot: at the end of the scroll it rose with the page's bottom padding and the backdrop showed under it. It also pads its foot clear of a phone's home bar.
-
-### Changed
-- Tokyo Rain, Hanami and Fighter Select print the start bar on their own material: the ticket machine's steel foot, the bento's lacquer lid edge rimmed in vermilion, and the arcade's control deck with its red slant.

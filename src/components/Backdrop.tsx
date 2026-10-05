@@ -1,6 +1,6 @@
 // The theme's backdrop behind every screen: its texture, and when motion is on, its weather: rain over Tokyo,
-// falling petals for Sakura, twinkling stars for Magical Girl,
-// blinking pixel stars for Isekai, a tracking band on the tape, speed lines on Shonen's page. The weather
+// falling petals for Hanami, twinkling lights in the karaoke box, a tracking band on the tape, speed lines on
+// Fighter Select's page; the worlds indoors or in the sun keep still. The weather
 // follows the game's phase (data-phase on the page, set by usePagePhase): a second layer of it surges in while
 // the clip plays, and a flash marks the reveal and the results. It never follows the audio, so it can't give a
 // song away. Decoration only: hidden from assistive technology, never in the way of a tap.
@@ -31,7 +31,7 @@ function motes(count: number, duration: [number, number], size: [number, number]
 }
 
 type Falling = 'rain' | 'petal';
-type Staying = 'twinkle' | 'pixel-star';
+type Staying = 'twinkle';
 type Sweeping = 'tracking' | 'speed-lines';
 type Weather = Falling | Staying | Sweeping;
 
@@ -39,7 +39,6 @@ const TIMING: Record<Falling | Staying, { duration: [number, number]; size: [num
   rain: { duration: [0.6, 1.3], size: [48, 120] },
   petal: { duration: [9, 16], size: [11, 22] },
   twinkle: { duration: [2.4, 4.8], size: [8, 20] },
-  'pixel-star': { duration: [0.9, 2.2], size: [3, 6] },
 };
 
 interface Sky {
@@ -60,7 +59,7 @@ const SKIES: Record<Theme, Sky> = {
   'night-arc': { calm: null, surge: { kind: 'speed-lines', count: 1 } },
   mecha: { calm: null, surge: null },
   'magical-girl': { calm: null, surge: null },
-  isekai: { calm: { kind: 'pixel-star', count: 26 }, surge: { kind: 'pixel-star', count: 22 } },
+  isekai: { calm: null, surge: null },
   'retro-vhs': { calm: { kind: 'tracking', count: 1 }, surge: { kind: 'tracking', count: 1 } },
   'side-a': { calm: { kind: 'tracking', count: 1 }, surge: { kind: 'tracking', count: 1 } },
 };

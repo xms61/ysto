@@ -297,34 +297,43 @@
     --radius-2xl: 1.5rem;
   }
 
-  /* Isekai: a JRPG menu, blue windows with white rims and a blinking cursor. */
+  /* Quest Board (id isekai): the adventurers' guild notice board at night. The round is the board: a carved plank
+     with the round on it, a candle burning down, and four notices pinned to the wood. */
   [data-theme='isekai'] {
     --display-adjust: 0.46;
     color-scheme: dark;
-    --page: #0b0e1c;
+    --page: #17100b;
     --plate: url('./assets/plates/isekai.webp');
-    --plate-opacity: 0.24;
-    --panel: #1d2f94;
-    --raised: #2a3fb0;
-    --line: #6f7fd6;
-    --edge: #ffffff;
-    --ink: #ffffff;
-    --muted: #c9d2ff;
-    --accent: #ffd84a;
-    --accent-ink: #16162a;
-    --good: #6ff29a;
-    --bad: #ffb0b0;
-    --card: #1f3399;
-    --card-ink: #ffffff;
-    --card-muted: #b9c3f7;
-    --card-dim: #16246c;
-    --card-mark: #ffd84a;
-    --card-mark-ink: #16162a;
-    --card-chosen: #ffffff;
-    --card-chosen-ink: #1f3399;
-    --card-alert: #ffb3b3;
-    --card-back: #ffd84a;
-    --card-back-ink: #16162a;
+    --plate-opacity: 0.18;
+    --panel: #2a1d14;
+    --raised: #3a2a1e;
+    --line: #5e4532;
+    --edge: #b08a5e;
+    --ink: #f5e9d6;
+    --muted: #cdb89a;
+    --accent: #eaa53a;
+    --accent-ink: #1a120c;
+    --good: #93d77d;
+    --bad: #ff9a85;
+    --card: #efe2c4;
+    --card-ink: #2b1d12;
+    --card-muted: #5e4a36;
+    --card-dim: #cfc0a0;
+    --card-mark: #9e2a20;
+    --card-mark-ink: #fff4e6;
+    --card-chosen: #fff1c4;
+    --card-chosen-ink: #2b1d12;
+    --card-alert: #9e2a20;
+    --card-back: #e8d3a2;
+    --card-back-ink: #2b1d12;
+    /* The board's wood under the round, the carved plank with its heading, the pins, and the candle's wax and
+       flame. Only the board and the plank carry text. */
+    --board: #3b2919;
+    --plank: #5a3b22;
+    --plank-ink: #fbeedb;
+    --pin: #c0392b;
+    --wax: #efe3c8;
+    --flame: #ffb43a;
     --display-font: 'Press Start 2P', ui-monospace, monospace;
     --display-weight: 400;
     --display-case: none;
@@ -334,17 +343,10 @@
     --title-case: none;
     --title-tracking: 0.01em;
     --title-adjust: none;
-    --field-rim: 3px;
-    --panel-shadow: 0 0 0 2px #05060f;
-    --page-texture: conic-gradient(
-        rgb(255 255 255 / 0.035) 25%,
-        transparent 0 50%,
-        rgb(255 255 255 / 0.035) 0 75%,
-        transparent 0
-      )
-      0 0 / 4px 4px;
+    --panel-shadow: 0 1rem 2rem -1rem rgb(0 0 0 / 0.8);
+    --page-texture: repeating-linear-gradient(to bottom, rgb(255 230 200 / 0.025) 0 2px, transparent 2px 2.75rem);
     --radius-lg: 0.25rem;
-    --radius-xl: 0.375rem;
+    --radius-xl: 0.25rem;
     --radius-2xl: 0.5rem;
   }
 
@@ -2190,71 +2192,294 @@
     background: linear-gradient(var(--dome) 0 50%, var(--panel) 50%);
   }
 
-  /* ---- Isekai: menu windows with white rims, numbered slots, a pixel cursor on the chosen item. ---- */
+  /* ---- Quest Board: the guild's notice board. The round's heading is carved into a plank across the top; the
+     options are four parchment notices pinned to the wood, each keyed by a red rank stamp. A pick takes the
+     notice down to the counter; at the reveal the right notice gets the completed stamp. ---- */
   :root[data-theme='isekai'] .panel {
-    border: 3px solid var(--edge);
+    border: 2px solid var(--line);
   }
 
-  :root[data-theme='isekai'] .card-front {
-    border: 3px solid var(--edge);
-    box-shadow: 0 0 0 2px #05060f;
+  /* The round's panel is the board: dark oak, a frame of lighter wood, and nails at its corners. */
+  :root[data-theme='isekai'] .round-panel {
+    border: 0;
+    background:
+      radial-gradient(circle at 0.625rem 0.625rem, var(--edge) 0 2px, transparent 2.5px),
+      radial-gradient(circle at calc(100% - 0.625rem) 0.625rem, var(--edge) 0 2px, transparent 2.5px),
+      radial-gradient(circle at 0.625rem calc(100% - 0.625rem), var(--edge) 0 2px, transparent 2.5px),
+      radial-gradient(circle at calc(100% - 0.625rem) calc(100% - 0.625rem), var(--edge) 0 2px, transparent 2.5px),
+      var(--board);
+    box-shadow:
+      inset 0 0 0 0.375rem var(--plank),
+      inset 0 0 0 calc(0.375rem + 1px) var(--page),
+      var(--panel-shadow);
   }
 
-  /* Every item keeps a gutter for the cursor, so choosing one moves nothing. */
-  :root[data-theme='isekai'] .card-index {
-    margin-left: 1.25rem;
-    min-width: 2rem;
-    height: 2rem;
-    background: var(--page);
-    color: var(--card-mark);
-    box-shadow: inset 0 0 0 2px var(--edge);
-    font-size: 1.125rem;
+  /* The plank: solid wood under the heading, its grain only in the strips above and below the text. */
+  :root[data-theme='isekai'] .round-head {
+    margin: -0.25rem -0.25rem 0.75rem;
+    padding: 0.875rem 0.875rem;
+    border-radius: var(--radius-lg);
+    background: var(--plank);
+    color: var(--plank-ink);
+    box-shadow:
+      inset 0 3px 0 rgb(255 230 200 / 0.12),
+      inset 0 -3px 0 rgb(0 0 0 / 0.35),
+      0 0.375rem 0.75rem -0.375rem rgb(0 0 0 / 0.8);
   }
 
-  :root[data-theme='isekai'] .card[data-state='muted'] .card-index {
+  :root[data-theme='isekai'] .round-head .button-quiet {
+    border: 2px solid var(--plank-ink);
     background: transparent;
+    color: var(--plank-ink);
+  }
+
+  /* Each notice is pinned at its top edge. */
+  :root[data-theme='isekai'] .options > li {
+    position: relative;
+  }
+
+  :root[data-theme='isekai'] .options > li::before {
+    content: '';
+    position: absolute;
+    top: -0.3125rem;
+    left: 50%;
+    z-index: 3;
+    width: 0.875rem;
+    height: 0.875rem;
+    margin-left: -0.4375rem;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, rgb(255 255 255 / 0.5) 0 18%, transparent 24%), var(--pin);
+    box-shadow: 0 2px 2px rgb(0 0 0 / 0.5);
+    pointer-events: none;
+  }
+
+  :root[data-theme='isekai'] :is(.card-front, .card-back) {
+    border: 0;
+    box-shadow:
+      inset 0 0 0 1px rgb(43 29 18 / 0.18),
+      0 0.25rem 0.5rem rgb(0 0 0 / 0.45);
+  }
+
+  /* Every notice is a guild bounty: a double-ruled frame with marks at its corners, a red heading and a few lines
+     in a made-up script beside the rank stamp, and its monster drawn faintly in ink behind the title (a slime, a
+     tusked beast, a wyvern, a stone golem; no skulls). All of it is image, never text, so a screen reader hears
+     only the title. The drawings are faint enough that the title keeps 7:1 over them; a dimmed notice drops them,
+     so its muted text keeps its contrast. */
+  :root[data-theme='isekai'] .card-front {
+    background-position:
+      right 0.625rem top 0.625rem,
+      right 0.5rem bottom 0.375rem;
+    background-size:
+      auto 2.75rem,
+      auto 78%;
+    background-repeat: no-repeat;
+  }
+
+  :root[data-theme='isekai'] .options > li:nth-child(1) .card-front {
+    background-image: url('./assets/notices/script-1.svg'), url('./assets/notices/slime.svg');
+  }
+
+  :root[data-theme='isekai'] .options > li:nth-child(2) .card-front {
+    background-image: url('./assets/notices/script-2.svg'), url('./assets/notices/beast.svg');
+  }
+
+  :root[data-theme='isekai'] .options > li:nth-child(3) .card-front {
+    background-image: url('./assets/notices/script-3.svg'), url('./assets/notices/wyvern.svg');
+  }
+
+  :root[data-theme='isekai'] .options > li:nth-child(4) .card-front {
+    background-image: url('./assets/notices/script-4.svg'), url('./assets/notices/golem.svg');
+  }
+
+  :root[data-theme='isekai'] .options > li .card:is([data-state='muted'], [data-state='missed']) .card-front {
+    background-image: none;
+  }
+
+  :root[data-theme='isekai'] .card-front::after {
+    content: '';
+    position: absolute;
+    inset: 0.3125rem;
+    border: 3px double rgb(43 29 18 / 0.45);
+    background:
+      radial-gradient(circle, rgb(43 29 18 / 0.5) 0 2px, transparent 2.5px) top left / 0.625rem 0.625rem,
+      radial-gradient(circle, rgb(43 29 18 / 0.5) 0 2px, transparent 2.5px) top right / 0.625rem 0.625rem,
+      radial-gradient(circle, rgb(43 29 18 / 0.5) 0 2px, transparent 2.5px) bottom left / 0.625rem 0.625rem,
+      radial-gradient(circle, rgb(43 29 18 / 0.5) 0 2px, transparent 2.5px) bottom right / 0.625rem 0.625rem;
+    background-repeat: no-repeat;
+    pointer-events: none;
+  }
+
+  /* The key is the notice's rank stamp: red ink in a double rule, pressed a little askew. */
+  :root[data-theme='isekai'] .card-index {
+    background: transparent;
+    color: var(--card-mark);
+    box-shadow:
+      inset 0 0 0 2px var(--card-mark),
+      inset 0 0 0 3px var(--card),
+      inset 0 0 0 4px var(--card-mark);
+    font-size: 0.875rem;
+    rotate: -6deg;
+  }
+
+  :root[data-theme='isekai'] .card:is([data-state='muted'], [data-state='missed']) .card-index {
+    color: var(--card-muted);
     box-shadow: inset 0 0 0 2px var(--card-muted);
   }
 
-  :root[data-theme='isekai'] .card[data-state='chosen'] .card-front::before {
-    content: '';
+  /* The pick is taken down to the counter: lit by the candle, its pin pulled. */
+  :root[data-theme='isekai'] .card[data-state='chosen'] .card-front {
+    box-shadow:
+      inset 0 0 0 2px var(--accent),
+      0 0 1.25rem -0.25rem var(--accent);
+  }
+
+  :root[data-theme='isekai'] .options > li:has(.card[data-state='chosen'])::before {
+    visibility: hidden;
+  }
+
+  /* The completed stamp: a big round seal in half-strength red ink, pressed across the right notice behind its
+     text, so the text keeps 4.5:1 even where it crosses the ring. */
+  :root[data-theme='isekai'] .card-back:not(.card-printed) {
+    isolation: isolate;
+  }
+
+  :root[data-theme='isekai'] .card-back:not(.card-printed)::after {
+    content: 'Completed';
     position: absolute;
-    top: 1.25rem;
-    left: 0.875rem;
-    width: 0.75rem;
-    height: 1rem;
-    background: var(--card-chosen-ink);
-    clip-path: polygon(0 0, 100% 50%, 0 100%);
+    top: 50%;
+    right: 0.25rem;
+    z-index: -1;
+    display: grid;
+    place-items: center;
+    width: 5.5rem;
+    height: 5.5rem;
+    margin-top: -2.75rem;
+    border: 4px double var(--card-mark);
+    border-radius: 50%;
+    box-shadow:
+      inset 0 0 0 5px transparent,
+      inset 0 0 0 7px var(--card-mark);
+    color: var(--card-mark);
+    font-family: var(--display-font);
+    font-size: 0.4375rem;
+    text-transform: uppercase;
+    opacity: 0.5;
+    rotate: -14deg;
   }
 
-  :root[data-theme='isekai'] .card-back {
-    border: 3px solid var(--edge);
-    box-shadow: 0 0 0 2px #05060f;
-  }
-
-  :root[data-theme='isekai'] .button {
-    border: 3px solid var(--edge);
-    box-shadow: 0 0 0 2px #05060f;
+  /* Face down, the back of a notice: blank parchment with the board's mark. */
+  :root[data-theme='isekai'] .card-printed {
+    background: var(--card-dim);
+    color: var(--card-muted);
   }
 
   :root[data-theme='isekai'] .button-quiet {
-    background: var(--panel);
+    border: 2px solid var(--line);
+    background: var(--raised);
   }
 
   :root[data-theme='isekai'] .button-quiet:hover:not(:disabled) {
     border-color: var(--edge);
-    background: var(--raised);
   }
 
-  :root[data-theme='isekai'] .choice[type='radio'] {
-    border-radius: 0;
+  /* The revealed answer is one more bounty pinned to the board: parchment in the notices' ruled frame and inks,
+     the cover pasted on like a portrait, its kind in a red stamp, and the cover's wash a faint sepia so the ink
+     keeps its contrast. */
+  :root[data-theme='isekai'] .reveal-band {
+    --ink: var(--card-ink);
+    --muted: var(--card-muted);
+    overflow: visible;
+    border: 0;
+    border-radius: var(--radius-lg);
+    background: var(--card);
+    color: var(--card-ink);
+    box-shadow:
+      inset 0 0 0 0.3125rem var(--card),
+      inset 0 0 0 calc(0.3125rem + 3px) rgb(43 29 18 / 0.45),
+      0 0.25rem 0.5rem rgb(0 0 0 / 0.45);
   }
 
-  :root[data-theme='isekai'] .choice[type='radio']::before {
-    width: 0.5rem;
-    height: 0.625rem;
+  :root[data-theme='isekai'] .reveal-band::before {
+    content: '';
+    position: absolute;
+    top: -0.375rem;
+    left: 50%;
+    width: 1rem;
+    height: 1rem;
+    margin-left: -0.5rem;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, rgb(255 255 255 / 0.5) 0 18%, transparent 24%), var(--pin);
+    box-shadow: 0 2px 2px rgb(0 0 0 / 0.5);
+  }
+
+  :root[data-theme='isekai'] .reveal-wash {
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    filter: blur(24px) sepia(1);
+    opacity: 0.12;
+  }
+
+  :root[data-theme='isekai'] .reveal-cover {
     border-radius: 0;
-    clip-path: polygon(0 0, 100% 50%, 0 100%);
+    box-shadow:
+      0 0 0 3px var(--card),
+      0 0 0 4px rgb(43 29 18 / 0.45),
+      0 0.375rem 0.75rem -0.25rem rgb(0 0 0 / 0.5);
+  }
+
+  :root[data-theme='isekai'] .reveal-kind {
+    border-radius: 0;
+    background: var(--card-mark);
+    color: var(--card-mark-ink);
+  }
+
+  /* Who picked a notice: their names on small paper slips, this player's lit by the candle. */
+  :root[data-theme='isekai'] .picker {
+    border: 0;
+    border-radius: 0.125rem;
+    background: var(--card);
+    color: var(--card-ink);
+    box-shadow: 0 1px 2px rgb(0 0 0 / 0.5);
+  }
+
+  :root[data-theme='isekai'] .picker[data-you] {
+    background: var(--accent);
+    color: var(--accent-ink);
+  }
+
+  /* The listening light is a lantern's lens, warm at its heart. */
+  :root[data-theme='isekai'] .sonar-core {
+    background: radial-gradient(circle, rgb(234 165 58 / 0.35), transparent 70%), var(--panel);
+  }
+
+  /* The candle (Candle.tsx): wax burning down in a brass holder, its flame on top. */
+  .candle {
+    width: 1.75rem;
+    height: 4.5rem;
+    flex-shrink: 0;
+  }
+
+  .candle-wax {
+    fill: var(--wax);
+  }
+
+  .candle-mark {
+    stroke: var(--edge);
+    stroke-width: 1;
+  }
+
+  .candle-holder {
+    fill: var(--edge);
+  }
+
+  .candle-flame {
+    fill: var(--flame);
+  }
+
+  .candle-wick {
+    stroke: var(--panel);
+    stroke-width: 1.5;
   }
 
   /* ---- Retro VHS: tape labels with sunset stripes, a channel counter, an on-screen-display outline. ---- */
@@ -2412,14 +2637,6 @@
     background: #fff4fb;
     clip-path: polygon(50% 0, 58% 42%, 100% 50%, 58% 58%, 50% 100%, 42% 58%, 0 50%, 42% 42%);
     animation: twinkle ease-in-out infinite;
-  }
-
-  .pixel-star {
-    position: absolute;
-    width: 3px;
-    height: 3px;
-    background: #ffffff;
-    animation: pixel-blink steps(2, jump-none) infinite;
   }
 
   .tracking {
@@ -2857,10 +3074,11 @@
     mask-composite: exclude;
   }
 
+  /* Quest Board's right notice glows in the candle's light. */
   :root[data-theme='isekai'] .card-impact::before {
-    border: 3px solid var(--edge);
-    border-radius: 0;
-    box-shadow: 0 0 0 2px #05060f;
+    border: 3px solid var(--accent);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 0 1.5rem 0.25rem rgb(234 165 58 / 0.45);
   }
 
   :root[data-theme='retro-vhs'] .card-impact::before {
@@ -2892,13 +3110,6 @@
     width: auto;
     height: 2px;
     background: var(--card-back-ink);
-    transform: none;
-  }
-
-  :root[data-theme='isekai'] .card[data-turned] .card-back::before {
-    inset: 0;
-    width: auto;
-    background: var(--ink);
     transform: none;
   }
 
@@ -2991,24 +3202,24 @@
   }
 
   /* A menu window, its cursor on the winner. */
+  /* Quest Board's winner is the notice pinned up as the guild's champion. */
   :root[data-theme='isekai'] .bill-lead {
-    padding-left: 2.25rem;
-    border: 3px solid var(--card-back-ink);
-    border-radius: 0;
     box-shadow:
-      0 0 0 3px var(--page),
+      inset 0 0 0 1px rgb(43 29 18 / 0.18),
       var(--panel-shadow);
   }
 
   :root[data-theme='isekai'] .bill-lead::before {
     content: '';
     position: absolute;
-    top: 1.6rem;
-    left: 0.75rem;
-    width: 0.75rem;
+    top: -0.375rem;
+    left: 50%;
+    width: 1rem;
     height: 1rem;
-    background: var(--card-back-ink);
-    clip-path: polygon(0 0, 100% 50%, 0 100%);
+    margin-left: -0.5rem;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, rgb(255 255 255 / 0.5) 0 18%, transparent 24%), var(--pin);
+    box-shadow: 0 2px 2px rgb(0 0 0 / 0.5);
   }
 
   :root[data-theme='retro-vhs'] .bill-lead {
@@ -3261,15 +3472,6 @@
   }
 }
 
-@keyframes pixel-blink {
-  from {
-    opacity: 0.2;
-  }
-  to {
-    opacity: 0.9;
-  }
-}
-
 @keyframes tracking {
   from {
     transform: translateY(-10vh);
@@ -3333,12 +3535,6 @@
   }
 }
 
-@keyframes cursor-blink {
-  50% {
-    opacity: 0;
-  }
-}
-
 @keyframes flicker {
   0%,
   91%,
@@ -3382,10 +3578,6 @@
 
 :root[data-motion='full'] .motion-tick {
   animation: tick 300ms cubic-bezier(0.16, 1, 0.3, 1) both;
-}
-
-:root[data-motion='full'][data-theme='isekai'] .card[data-state='chosen'] .card-front::before {
-  animation: cursor-blink 1s steps(1) infinite;
 }
 
 :root[data-motion='full'][data-theme='retro-vhs'] .motion-neon {
@@ -3865,14 +4057,6 @@
   animation: scan-pass 700ms linear 880ms both;
 }
 
-:root[data-motion='full'][data-theme='isekai'] .card[data-turned] .card-back::before {
-  animation: window-flash 360ms steps(1) 880ms both;
-}
-
-:root[data-motion='full'][data-theme='isekai'] .burst-mote {
-  animation-timing-function: steps(6);
-}
-
 :root[data-motion='full'][data-theme='shonen'] .card[data-turned] .card-impact::before {
   animation: starburst 900ms cubic-bezier(0.16, 1, 0.3, 1) 820ms both;
 }
@@ -3904,10 +4088,6 @@
   display: inline-block;
   animation: headliner-drop 720ms cubic-bezier(0.2, 0.9, 0.3, 1) calc(var(--act-delay) + 160ms) both;
   transform-origin: left bottom;
-}
-
-:root[data-motion='full'][data-theme='isekai'] .bill-lead::before {
-  animation: cursor-blink 1s steps(1) infinite;
 }
 
 /* The round's board: the points pop in, and a player who moved slides in from where they were. */
@@ -4161,6 +4341,57 @@
   to {
     opacity: 1;
     transform: none;
+  }
+}
+
+/* Quest Board: the candle's flame flickers; a notice taken down lifts off the board; at the reveal the completed
+   stamp thunks onto the right notice. */
+:root[data-motion='full'] .candle-flame {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: flame-flicker 1.6s ease-in-out infinite alternate;
+}
+
+:root[data-motion='full'][data-theme='isekai'] .card[data-state='chosen'] .card-front {
+  animation: notice-lift 300ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+:root[data-motion='full'][data-theme='isekai'] .card[data-turned] .card-back::after {
+  animation: stamp-thunk 340ms cubic-bezier(0.16, 1, 0.3, 1) 940ms both;
+}
+
+@keyframes flame-flicker {
+  0% {
+    transform: scale(1, 1);
+  }
+
+  40% {
+    transform: scale(0.92, 1.08) skewX(-3deg);
+  }
+
+  70% {
+    transform: scale(1.04, 0.95) skewX(2deg);
+  }
+
+  100% {
+    transform: scale(0.97, 1.04);
+  }
+}
+
+@keyframes notice-lift {
+  from {
+    transform: translateY(-0.375rem) rotate(-1.5deg);
+  }
+}
+
+@keyframes stamp-thunk {
+  from {
+    opacity: 0;
+    scale: 1.8;
+  }
+
+  to {
+    opacity: 0.5;
   }
 }
 

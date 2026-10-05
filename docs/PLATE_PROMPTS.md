@@ -1,6 +1,6 @@
 ---
 status: draft
-last-verified: 2026-10-01
+last-verified: 2026-10-05
 ---
 
 # Backdrop plate prompts
@@ -38,3 +38,21 @@ Light plates sit behind the light themes, dark plates behind the dark ones. "Reu
 | `isekai` | Quest Board | Dark | The empty common room of a fantasy adventurers' guild at night: heavy oak beams, a long wooden counter, a cold hearth, candle and lantern light pooling warm on dark wood, a large blank notice board on the far wall. Painterly, warm browns and deep shadow. |
 | `retro-vhs` | Back Issue | Light | A bold abstract composition from eighties offset printing: overlapping flat shapes in process magenta, cyan and yellow, slightly misregistered, coarse halftone dots in the overlaps, on glossy white paper. Purely geometric, no letters. |
 | `side-a` | Side A | Dark | Reuse `retro-vhs.webp` (an eighties coastal highway at dusk with palm silhouettes and a striped sunset). To make a new one: a teenager's desk at night in the late eighties, a cassette deck and a loose tangle of tape, a desk lamp's warm pool of light, a window with a blue night sky beyond, softly out of focus. |
+
+## Quest Board monster sprites
+Each of Quest Board's four notices carries a monster drawn faintly in ink behind its title, like the creature on a guild bounty poster. Until these sprites exist, the notices use simple line drawings (`src/assets/notices/*.svg`).
+
+- Paste the monster's prompt followed by the sprite ending below, as one prompt.
+- Save the result as `src/assets/notices/<name>.png`, square, at least 1024 px, with a transparent background. Git ignores the PNG; the build scales it down, fades it to the strength that keeps the title at 7:1 over it, and encodes it as WebP.
+- Reject an image with any text, runes, signature, frame, ground shadow, skull or bones, or a creature from an existing game, anime or film, and generate again.
+
+Sprite ending, added to every prompt:
+
+> A bestiary illustration for a fantasy guild's bounty notice: monochrome dark sepia ink linework with light graphite shading, like a careful pencil-and-ink sketch on old paper, no color. One full-body creature, centered, filling about 80% of a square frame, three-quarter view. Isolated on a fully transparent background: no paper texture, no ground, no cast shadow, no border or frame. An original creature, not from any game, anime or film. No text, letters, numbers, runes, signatures or watermarks anywhere. No skulls, no bones, no blood.
+
+| Name | Notice | Prompt |
+| :-- | :-- | :-- |
+| `slime` | 1 | A large round slime monster, a glossy dome of jelly with two small dark eyes and a wide wobbly smile, a few drips running off its sides, a small sword stuck in its back, mischievous rather than scary. |
+| `beast` | 2 | A hulking tusked boar beast standing on two legs, heavy shoulders and a thick hide, two long curved tusks and a pair of ram-like horns, a short ragged mane, small fierce eyes, a crude belt of rope. |
+| `wyvern` | 3 | A young wyvern with wide bat-like wings half spread, a long neck and a horned head, two clawed legs gripping a rock, a barbed tail curling round, scales sketched along its back. |
+| `golem` | 4 | A stone golem built from rough stacked boulders, a small square head with two glowing slit eyes drawn as empty ink outlines, massive arms reaching the ground, moss and small flowers growing in its cracks, cracks running across its chest. |
