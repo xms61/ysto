@@ -6,6 +6,7 @@ import type { LobbySettings } from '../../shared/settings.ts';
 import { PlayerList } from '../components/PlayerList.tsx';
 import { IconPicker } from '../components/IconPicker.tsx';
 import { ReactionBar } from '../components/Reactions.tsx';
+import { SavedSetups } from '../components/SavedSetups.tsx';
 import { QrCode } from '../components/QrCode.tsx';
 import { SettingsForm } from '../components/SettingsForm.tsx';
 import { SettingsSummary } from '../components/SettingsSummary.tsx';
@@ -124,7 +125,10 @@ export function Lobby({ store, lobby, settings, isHost }: LobbyProps) {
       </Panel>
       <Panel title="Game settings">
         {isHost ? (
-          <SettingsForm settings={settings} bounds={lobby.bounds} onChange={(next) => store.updateSettings(next)} />
+          <>
+            <SettingsForm settings={settings} bounds={lobby.bounds} onChange={(next) => store.updateSettings(next)} />
+            <SavedSetups settings={settings} bounds={lobby.bounds} onLoad={(next) => store.updateSettings(next)} />
+          </>
         ) : (
           <SettingsSummary settings={settings} bounds={lobby.bounds} />
         )}

@@ -156,7 +156,7 @@ Each milestone is one PR on a `feat/…` branch (two where noted), with a versio
 - [x] 2026-10-05 M3 Report a broken clip (1.6.0)
 - [x] 2026-10-05 M4 The lobby's tally (1.7.0)
 - [x] 2026-10-05 M5 Reactions (1.8.0)
-- [ ] M6 Saved settings
+- [x] 2026-10-05 M6 Saved settings (1.12.0)
 - [ ] M7 Sound effects per world
 - [ ] M8 Hints
 - [ ] M9 Elimination

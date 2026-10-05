@@ -390,6 +390,20 @@ const TALLY = {
   ],
 };
 
+test('saves the lobby settings as a setup, and loads it into a lobby', () => {
+  const { socket } = renderSeated();
+  fireEvent.click(screen.getByText('Saved setups'));
+  fireEvent.change(screen.getByLabelText('Save these settings as'), { target: { value: 'Short games' } });
+  fireEvent.click(screen.getByRole('button', { name: 'Save' }));
+  expect(screen.getByText('Saved "Short games".')).toBeTruthy();
+  const saved = JSON.parse(localStorage.getItem('ysto_saved_settings') ?? '[]') as { name: string }[];
+  expect(saved.map((setup) => setup.name)).toEqual(['Short games']);
+  // The fold stays closed in jsdom, which doesn't open a details element on a click.
+  fireEvent.click(screen.getByRole('button', { name: /^Load\s?Short games$/, hidden: true }));
+  expect(socket.sentOfType('settings:update').at(-1)?.settings).toMatchObject({ songsPerGame: 15 });
+  expect(screen.getByText('Loaded "Short games".')).toBeTruthy();
+});
+
 test("picks the player's animal in the lobby, never one another player has", () => {
   const { socket } = renderSeated();
   fireEvent.click(screen.getByText('Your animal: Fox'));

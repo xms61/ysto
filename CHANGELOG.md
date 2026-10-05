@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.12.0] - 2026-10-05
+
+### Added
+- Saved setups: the host saves the lobby's settings under a name, up to eight on the device, and loads one in any lobby they host. Loading fits it to the lobby's catalog and says what changed.
+
 ## [1.11.0] - 2026-10-05
 
 ### Added
@@ -34,8 +39,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Reactions: in the lobby, at the reveal and on the results, six reactions (hype, laugh, shock, facepalm, heart, clap) drawn as the game's own icons. Each rises from its sender's name on screen, or from the corner with the name. Never while a round takes answers; one a second per player.
-
-## [1.7.0] - 2026-10-05
-
-### Added
-- The lobby's tally: games played, and each player's wins and points across them. The player list shows wins, and from the second game the results say who leads. A player who leaves takes their line with them.
