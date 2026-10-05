@@ -1,8 +1,8 @@
-// The time left as a hanami dango skewer: six dumplings in pink, white and green, eaten one at a time from the
+// The time left as a long hanami dango skewer across the row: nine dumplings in pink, white and green, eaten one at a time from the
 // tip as the round runs down, so the bare stick shows what is gone; with motion on, each pops off as it goes.
 // Decoration only; the caller gives screen readers the seconds in words.
 
-const DUMPLINGS = 6;
+const DUMPLINGS = 9;
 const COLORS = ['dango-pink', 'dango-white', 'dango-green'];
 const SPACING = 22;
 const RADIUS = 10;

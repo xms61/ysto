@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.19.1] - 2026-10-05
+
+### Changed
+- Hanami's dango skewer runs the width of the row, with nine dumplings, like Model Kit's runner.
+
 ## [0.19.0] - 2026-10-05
 
 ### Added
