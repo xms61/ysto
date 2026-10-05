@@ -4,8 +4,9 @@
 // winner's score counts up, the name drops in, and the theme's material bursts round it. Below, folded away,
 // the songs the game played, each with a link to its anime on AnimeThemes.
 import type { CSSProperties } from 'react';
-import type { LobbyState, PlayedSong, ResultView } from '../../shared/protocol.ts';
+import type { LobbyState, PlayedSong, PlayerIcon, ResultView } from '../../shared/protocol.ts';
 import { Burst } from '../components/Burst.tsx';
+import { PlayerBadge } from '../components/PlayerIcon.tsx';
 import { ReactionBar } from '../components/Reactions.tsx';
 import { ReportClip } from '../components/ReportClip.tsx';
 import { Button, Panel } from '../components/ui.tsx';
@@ -29,6 +30,10 @@ const HEADLINER_HOLD_MS = 420;
 
 function nameOf(lobby: LobbyState, playerId: string): string {
   return lobby.players.find((player) => player.id === playerId)?.name ?? 'A player who left';
+}
+
+function iconOf(lobby: LobbyState, playerId: string): PlayerIcon | undefined {
+  return lobby.players.find((player) => player.id === playerId)?.icon;
 }
 
 function statsOf(result: ResultView, rounds: number): string {
@@ -76,6 +81,7 @@ function Bill({ lobby, results, rounds }: { lobby: LobbyState; results: ResultVi
     <ol aria-label="Final standings" className="bill">
       {results.map((result, rank) => {
         const delayMs = entranceOf(rank, results.length);
+        const icon = iconOf(lobby, result.playerId);
         return (
           <li
             key={result.playerId}
@@ -85,7 +91,10 @@ function Bill({ lobby, results, rounds }: { lobby: LobbyState; results: ResultVi
           >
             <span className="bill-place">{place(places[rank] ?? rank + 1)}</span>
             <span className="bill-who">
-              <span className="bill-name">{nameOf(lobby, result.playerId)}</span>
+              <span className="bill-name">
+                {icon && <PlayerBadge icon={icon} />}
+                {nameOf(lobby, result.playerId)}
+              </span>
               {result.playerId === lobby.you && (
                 <span className="bill-you ml-2 rounded-lg border px-2 align-middle text-xs">you</span>
               )}

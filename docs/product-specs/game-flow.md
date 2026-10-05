@@ -37,7 +37,7 @@ server                                              clients
   - OP or ED and its number
   - the song title and artists, and the year and season
   - the cover
-  - who picked each option, on its card's edge, and on the scoreboard as the number of the card each player picked, shown only once the round has closed for everyone
+  - who picked each option, as each picker's animal stamp on its card's bottom right corner (named for screen readers and on hover), and on the scoreboard as the number of the card each player picked, shown only once the round has closed for everyone
   - each player's pick and points, and for a player who missed the song, with a wrong answer or none, "You skipped the OP?!" (or the ED)
 - A player whose clip fails to load can still answer. The reveal marks them "no audio", with no penalty.
 - The results bill the standings like a festival lineup, announced from the bottom up, the winner's full name largest, with each player's correct answers, average time and best streak. Players on the same score share a place, at the reveal and in the results. The lobby state keeps them until the next game, so a player who reloads on the results sees them again.

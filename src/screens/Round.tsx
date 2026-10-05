@@ -9,6 +9,7 @@ import { POINTS } from '../../shared/scoring.ts';
 import { answersCanChange } from '../../shared/settings.ts';
 import type { LobbySettings } from '../../shared/settings.ts';
 import { Listening } from '../components/Listening.tsx';
+import { PlayerBadge } from '../components/PlayerIcon.tsx';
 import { ReactionBar } from '../components/Reactions.tsx';
 import { ReportClip } from '../components/ReportClip.tsx';
 import { FaceDownCards, OptionCard } from '../components/OptionCard.tsx';
@@ -411,7 +412,10 @@ function LiveScores({ lobby, round }: { lobby: LobbyState; round: ClientRound })
               data-player={player.id}
               data-you={player.id === lobby.you || undefined}
             >
-              <span className="board-name">{player.name}</span>
+              <span className="board-name">
+                <PlayerBadge icon={player.icon} />
+                {player.name}
+              </span>
               <span className="live-state" data-answered={answered || undefined}>
                 {round.start && (answered ? 'answered' : 'thinking')}
               </span>

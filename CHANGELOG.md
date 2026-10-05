@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.11.0] - 2026-10-05
+
+### Added
+- Player animals: sixteen animals drawn for the game as stamps, the same in every theme. Each player gets a free one on joining and can pick another in the lobby; two players share one only once all are taken. At the reveal each pick is stamped on its card's corner with the picker's animal, and the animals mark players in the lists, scores and results.
+
+### Changed
+- The answer box in the round's side column has a smaller cover and title, so long titles break between words.
+
+### Removed
+- The name chips under the cards, and their per-world styles.
+
 ## [1.10.0] - 2026-10-05
 
 ### Changed
@@ -28,9 +39,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - The lobby's tally: games played, and each player's wins and points across them. The player list shows wins, and from the second game the results say who leads. A player who leaves takes their line with them.
-
-## [1.6.0] - 2026-10-05
-
-### Added
-- Clip reports: at the reveal and in the results' song list, "Report this clip" with four fixed reasons. The server keeps each report (theme, clip start, reason, time; nothing about the player) in `reports.sqlite` in `YSTO_STATE_DIR`, once per player and round. `npm run reports` lists them, most reported first.
-- The image's first writable volume, `ysto_state` at `/data/state`. Copy the new `deploy/compose.yml` to the VPS before updating (DEPLOY.md).

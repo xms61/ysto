@@ -26,6 +26,7 @@ export const ERROR_MESSAGES: Record<ErrorCode | ClientErrorCode, string> = {
   'game-running': 'A game is running. Change the settings once it ends.',
   'pool-too-small': 'Fewer anime match the settings than the game has songs. Widen the filters or play fewer songs.',
   'server-busy': 'The server is running as many games as it can. Try again in a few minutes.',
+  'icon-taken': 'Someone just took that icon. Pick another one.',
   offline: "Couldn't reach the server. Check your connection and try again.",
 };
 

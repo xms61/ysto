@@ -3,9 +3,10 @@
 // edge; then, in the side column, the answer in every language with its song, and the standings as a
 // scoreboard with each player's pick and who moved. Right and wrong show with an icon and words, never color alone. The verdict lands like a stamp, and the right card with its theme's hit, which
 // grows with this player's streak.
-import type { ReactNode } from 'react';
-import type { LobbyState, RoundReveal, StandingView } from '../../shared/protocol.ts';
+import type { CSSProperties, ReactNode } from 'react';
+import type { LobbyState, PlayerIcon, RoundReveal, StandingView } from '../../shared/protocol.ts';
 import { OptionCard, SecondTitle } from '../components/OptionCard.tsx';
+import { PlayerBadge } from '../components/PlayerIcon.tsx';
 import { RoundBody, Stage } from '../components/Stage.tsx';
 import type { CardState } from '../components/OptionCard.tsx';
 import { CheckIcon, CrossIcon } from '../components/ui.tsx';
@@ -30,6 +31,11 @@ interface Verdict {
 
 function nameOf(lobby: LobbyState, playerId: string): string {
   return lobby.players.find((player) => player.id === playerId)?.name ?? 'A player who left';
+}
+
+// A player who left takes their animal with them; their pick still stamps, as the fox.
+function iconOf(lobby: LobbyState, playerId: string): PlayerIcon {
+  return lobby.players.find((player) => player.id === playerId)?.icon ?? 'fox';
 }
 
 // A missed song, wrong or unanswered, earns the game's own line (docs/PRODUCT_SENSE.md#tone).
@@ -127,7 +133,7 @@ function MoveMark({ from, to }: { from: number; to: number }) {
   );
 }
 
-// Who picked this option, under its card, so everyone sees who fell for which. Picks reach the client only
+// Who picked this option, as their animal stamps on its card's edge, so everyone sees who fell for which. Picks reach the client only
 // with the reveal, after the round has closed for everyone, so this can never show while anyone can still
 // answer.
 function Pickers({ reveal, lobby, option }: { reveal: RoundReveal; lobby: LobbyState; option: number }) {
@@ -139,12 +145,16 @@ function Pickers({ reveal, lobby, option }: { reveal: RoundReveal; lobby: LobbyS
       {pickers.map((pick, at) => (
         <span
           key={pick.playerId}
-          className="picker"
+          className="picker-stamp"
           data-player={pick.playerId}
-          data-you={pick.playerId === lobby.you || undefined}
+          title={nameOf(lobby, pick.playerId)}
+          style={{ '--tilt': `${((at * 7) % 3) * 6 - 6}deg` } as CSSProperties}
         >
-          {nameOf(lobby, pick.playerId)}
-          {at < pickers.length - 1 && <span className="sr-only">, </span>}
+          <PlayerBadge icon={iconOf(lobby, pick.playerId)} you={pick.playerId === lobby.you} />
+          <span className="sr-only">
+            {nameOf(lobby, pick.playerId)}
+            {at < pickers.length - 1 && ', '}
+          </span>
         </span>
       ))}
     </p>
@@ -183,6 +193,7 @@ function Lineup({ reveal, lobby }: { reveal: RoundReveal; lobby: LobbyState }) {
             <MoveMark from={before.get(standing.playerId) ?? rank} to={rank} />
             <PickMark option={pick?.option ?? null} />
             <span className="board-name">
+              <PlayerBadge icon={iconOf(lobby, standing.playerId)} />
               {nameOf(lobby, standing.playerId)}
               {standing.playerId === lobby.you && <span className="ml-2 text-xs text-muted">you</span>}
               {pick?.noAudio && <span className="ml-2 text-xs text-muted">no audio</span>}

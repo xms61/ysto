@@ -28,6 +28,7 @@ const VALID: [string, unknown][] = [
   ['settings:update', { type: 'settings:update', settings }],
   ['clip:report', { type: 'clip:report', number: 3, reason: 'wrong-song' }],
   ['reaction', { type: 'reaction', kind: 'facepalm' }],
+  ['player:icon', { type: 'player:icon', icon: 'tanuki' }],
 ];
 
 for (const [name, message] of VALID) {
@@ -47,6 +48,7 @@ const INVALID: [string, string][] = [
   ['a time that is not a number', JSON.stringify({ type: 'time:ping', clientTime: '1' })],
   ['a lock that is not a boolean', JSON.stringify({ type: 'lobby:lock', locked: 'yes' })],
   ['a player id with other characters', JSON.stringify({ type: 'player:kick', playerId: '../x' })],
+  ['an icon outside the set', JSON.stringify({ type: 'player:icon', icon: 'dragon' })],
   ['a reaction outside the set', JSON.stringify({ type: 'reaction', kind: 'lol' })],
   ['a reaction with text', JSON.stringify({ type: 'reaction', kind: 'heart', text: 'gg' })],
   ['a report of round 0', JSON.stringify({ type: 'clip:report', number: 0, reason: 'silent' })],

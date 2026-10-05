@@ -233,6 +233,8 @@ export class Realtime {
         return this.#games.report(seat, message.number, message.reason);
       case 'reaction':
         return this.#react(seat, message.kind);
+      case 'player:icon':
+        return this.#report(connection, this.#registry.setIcon(seat, message.icon));
     }
   }
 
@@ -288,9 +290,10 @@ export class Realtime {
   }
 
   #playerViews(lobby: Lobby): PlayerView[] {
-    return lobby.players.map(({ id, name, connectedSince }) => ({
+    return lobby.players.map(({ id, name, icon, connectedSince }) => ({
       id,
       name,
+      icon,
       connected: connectedSince !== null,
       spectating: this.#games.spectating(lobby.code, id),
       score: this.#games.score(lobby.code, id),

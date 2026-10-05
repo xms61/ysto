@@ -11,7 +11,7 @@ import type { ConnectionStatus, ExitReason, SocketLike } from './connection.ts';
 import { INITIAL_GAME, choose, receive } from './game-state.ts';
 import type { ClientRound, GameState } from './game-state.ts';
 import type { Session } from './session.ts';
-import type { ReactionKind, ReportReason } from '../../shared/protocol.ts';
+import type { PlayerIcon, ReactionKind, ReportReason } from '../../shared/protocol.ts';
 
 export type NoticeCode = ErrorCode | 'server-closing';
 
@@ -136,6 +136,10 @@ export class GameStore {
 
   kick(playerId: string): void {
     this.#connection.send({ type: 'player:kick', playerId });
+  }
+
+  chooseIcon(icon: PlayerIcon): void {
+    this.#connection.send({ type: 'player:icon', icon });
   }
 
   setLocked(locked: boolean): void {

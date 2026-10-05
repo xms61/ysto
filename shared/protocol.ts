@@ -43,7 +43,8 @@ export type ErrorCode =
   | 'cannot-kick-self'
   | 'game-running'
   | 'pool-too-small'
-  | 'server-busy';
+  | 'server-busy'
+  | 'icon-taken';
 
 // Why the server closed a socket. The 4000s are this protocol's own.
 export const CLOSE_CODES = {
@@ -78,7 +79,30 @@ export type ClientMessage =
   | { type: 'answer'; roundId: string; option: number }
   | { type: 'round:skip' }
   | { type: 'clip:report'; number: number; reason: ReportReason }
-  | { type: 'reaction'; kind: ReactionKind };
+  | { type: 'reaction'; kind: ReactionKind }
+  | { type: 'player:icon'; icon: PlayerIcon };
+
+// Each player's mark (docs/product-specs/lobby.md): an animal, drawn the same in every theme, that stamps their
+// picks at the reveal. Two players in a lobby share one only once all are taken.
+export const PLAYER_ICONS = [
+  'fox',
+  'cat',
+  'owl',
+  'frog',
+  'panda',
+  'rabbit',
+  'bear',
+  'penguin',
+  'tanuki',
+  'octopus',
+  'crane',
+  'koi',
+  'dog',
+  'turtle',
+  'hamster',
+  'chick',
+] as const;
+export type PlayerIcon = (typeof PLAYER_ICONS)[number];
 
 // What a player can react with, outside a round's answering (docs/product-specs/lobby.md): a fixed set,
 // drawn as icons, with no free text.
@@ -129,6 +153,9 @@ export function parseClientMessage(text: string, bounds: SettingsBounds): Client
   if (type === 'round:ready' && hasKeys(value, ['type', 'roundId', 'loaded']) && isRoundId(value.roundId)) {
     return typeof value.loaded === 'boolean' ? { type, roundId: value.roundId, loaded: value.loaded } : null;
   }
+  if (type === 'player:icon' && hasKeys(value, ['type', 'icon'])) {
+    return isOneOf(value.icon, PLAYER_ICONS) ? { type, icon: value.icon } : null;
+  }
   if (type === 'reaction' && hasKeys(value, ['type', 'kind'])) {
     return isOneOf(value.kind, REACTION_KINDS) ? { type, kind: value.kind } : null;
   }
@@ -169,6 +196,7 @@ export type PlayedSong = Omit<RevealDetails, 'cover'> & { number: number; skippe
 export interface PlayerView {
   id: string;
   name: string;
+  icon: PlayerIcon;
   connected: boolean;
   spectating: boolean; // joined during a game: plays from the next round
   score: number;

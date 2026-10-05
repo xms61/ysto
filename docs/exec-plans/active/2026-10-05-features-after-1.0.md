@@ -60,8 +60,8 @@ Each milestone is one PR on a `feat/…` branch (two where noted), with a versio
 
 #### M19 Player icons as stamps (M, added 2026-10-05)
 - **Why (owner):** names under the cards are still easy to miss; a picture reads at a glance.
-- **Behavior:** in the lobby each player picks an icon from a set of animals (fox, cat, owl, frog, panda, rabbit, bear, penguin, tanuki, octopus, crane, koi and so on), drawn for this game and the same in every world. A player who joins gets a free one at random, and two players in a lobby never share one. At the reveal each pick lands on its card as that player's stamp, tilted a little, over the card's corner, the player's own ringed in the accent, with the name for screen readers and on hover. The icon also marks the player in the lobby's list, the scores beside the round, the bill at the results and their reactions.
-- **Build:** `PlayerView.icon`; `player:icon { icon }` from the player, refused when taken (`icon-taken`); the registry hands out a free icon on join. The stamps replace the name chips, in the same place on the card's edge, so the cards still keep still. Original SVGs in one ink, filled with the world's card-mark and mark-ink colors.
+- **Behavior:** in the lobby each player picks an icon from a set of animals (fox, cat, owl, frog, panda, rabbit, bear, penguin, tanuki, octopus, crane, koi and so on), drawn for this game and the same in every world. A player who joins gets a free one at random, and two players in a lobby never share one. At the reveal each pick lands on its card's bottom right corner as that player's stamp, tilted a little, the player's own ringed in the accent, with the name for screen readers and on hover. The icon also marks the player in the lobby's list, the scores beside the round, the bill at the results and their reactions.
+- **Build:** `PlayerView.icon`; `player:icon { icon }` from the player, refused when taken (`icon-taken`); the registry hands out a free icon on join. The stamps replace the name chips, in the same place on the card's edge, so the cards still keep still. Original SVGs in two inks, the stamp's paper and ink (`--stamp-paper`, `--stamp-ink`), the same in every theme as the owner asked, so a stamp reads as the player's on any world's cards. The free animal on join is picked by the player's random id, which keeps `addPlayer` pure. The name chips under the cards, and their per-world styles, are gone.
 - **Tests:** registry (a free icon on join, refused when taken, freed on leave), protocol, client (the picker in the lobby, stamps at the reveal), screenshots in every world.
 
 #### M18 The anime log (M, added 2026-10-05)
@@ -151,7 +151,7 @@ Each milestone is one PR on a `feat/…` branch (two where noted), with a versio
 - [x] 2026-10-05 M16 Large screens (1.9.0)
 - [x] 2026-10-05 M17 A reveal that fits the screen (1.10.0)
 - [ ] M18 The anime log
-- [ ] M19 Player icons as stamps
+- [x] 2026-10-05 M19 Player icons as stamps (1.11.0)
 - [x] 2026-10-05 M2 The game's songs at the results (1.4.0)
 - [x] 2026-10-05 M3 Report a broken clip (1.6.0)
 - [x] 2026-10-05 M4 The lobby's tally (1.7.0)

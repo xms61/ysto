@@ -390,6 +390,28 @@ const TALLY = {
   ],
 };
 
+test("picks the player's animal in the lobby, never one another player has", () => {
+  const { socket } = renderSeated();
+  fireEvent.click(screen.getByText('Your animal: Fox'));
+  const animals = screen.getByRole('group', { name: 'Animals' });
+  expect(within(animals).getByRole('button', { name: 'Owl, taken by Ben' })).toHaveProperty('disabled', true);
+  expect(within(animals).getByRole('button', { name: 'Fox' }).getAttribute('aria-pressed')).toBe('true');
+  fireEvent.click(within(animals).getByRole('button', { name: 'Tanuki' }));
+  expect(socket.sentOfType('player:icon')).toEqual([{ type: 'player:icon', icon: 'tanuki' }]);
+});
+
+test("stamps each pick at the reveal with the picker's animal, named for screen readers", () => {
+  const { socket } = renderSeated(lobbyState({ game: PLAYING }));
+  act(() => {
+    socket.receive({ type: 'round:prepare', roundId: 'g.1', clipToken: 'c1', number: 1, rounds: 5 });
+    const startsAt = Date.now() - 20_000;
+    socket.receive({ type: 'round:start', roundId: 'g.1', startsAt, endsAt: startsAt + 20_000, options: OPTIONS });
+    socket.receive(revealOf('g.1'));
+  });
+  const stamps = document.querySelectorAll('.picker-stamp');
+  expect([...stamps].map((stamp) => stamp.getAttribute('title'))).toEqual(['Ben', 'Ann']);
+});
+
 test('sends a reaction from the lobby, and shows who reacted with what', () => {
   const { socket } = renderSeated();
   const bar = screen.getByRole('group', { name: 'React' });

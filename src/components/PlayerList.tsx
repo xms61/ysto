@@ -2,6 +2,7 @@
 // host a way to remove someone.
 import type { LobbyState } from '../../shared/protocol.ts';
 import { score, wins } from '../format.ts';
+import { PlayerBadge } from './PlayerIcon.tsx';
 
 interface PlayerListProps {
   lobby: LobbyState;
@@ -19,6 +20,7 @@ export function PlayerList({ lobby, onKick, showScores }: PlayerListProps) {
     <ul aria-label="Players" className="flex flex-col divide-y divide-line">
       {lobby.players.map((player) => (
         <li key={player.id} data-player={player.id} className="motion-seat flex items-center gap-2 py-2">
+          <PlayerBadge icon={player.icon} you={player.id === lobby.you} />
           <span className={`font-medium ${player.connected ? '' : 'text-muted'}`}>{player.name}</span>
           {player.id === lobby.you && <Tag>you</Tag>}
           {player.id === lobby.hostId && <Tag>host</Tag>}

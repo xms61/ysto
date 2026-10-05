@@ -872,6 +872,11 @@
     --petal: #ff8fb3;
     --twinkle: #fff4fb;
     --rain: rgb(170 225 255 / 0.55);
+    /* The players' stamps (PlayerIcon.tsx): the same paper and ink in every theme, so a stamp reads as the
+       player's own on any world's cards. */
+    --stamp-paper: #fbf6ea;
+    --stamp-ink: #26211e;
+    --stamp-crest: #c8352c;
     accent-color: var(--accent);
     caret-color: var(--accent);
     scrollbar-color: var(--edge) var(--page);
@@ -1587,6 +1592,30 @@
 
     .round-side {
       margin-top: 1rem;
+    }
+
+    /* In the side column the answer box is narrower: a smaller cover, and a title sized for it that breaks only
+       between words. */
+    .round-side .reveal-band {
+      gap: 1rem;
+      padding: 1.25rem;
+    }
+
+    .round-side .reveal-cover {
+      width: 4.5rem;
+    }
+
+    .round-side .reveal-title {
+      font-size: 1.875rem;
+      overflow-wrap: break-word;
+    }
+
+    .round-side .reveal-title[data-length='mid'] {
+      font-size: 1.5rem;
+    }
+
+    .round-side .reveal-title[data-length='long'] {
+      font-size: 1.1875rem;
     }
   }
 
@@ -2686,19 +2715,6 @@
   }
 
   /* Who picked a notice: their names on small paper slips, this player's lit by the candle. */
-  :root[data-theme='isekai'] .picker {
-    border: 0;
-    border-radius: 0.125rem;
-    background: var(--card);
-    color: var(--card-ink);
-    box-shadow: 0 1px 2px rgb(0 0 0 / 0.5);
-  }
-
-  :root[data-theme='isekai'] .picker[data-you] {
-    background: var(--accent);
-    color: var(--accent-ink);
-  }
-
   /* The listening light is a lantern's lens, warm at its heart. */
   :root[data-theme='isekai'] .sonar-core {
     background: radial-gradient(circle, rgb(234 165 58 / 0.35), transparent 70%), var(--panel);
@@ -3717,7 +3733,7 @@
     letter-spacing: var(--title-tracking);
   }
 
-  /* The names under each plate stand clear of the bracket's spine and the final's emblem. */
+  /* The stamps on each plate stand clear of the bracket's spine and the final's emblem. */
   :root[data-theme='tournament-arc'] .pickers {
     padding-inline: 0.875rem;
   }
@@ -4213,9 +4229,10 @@
     stroke-width: 1;
   }
 
-  /* ---- The reveal's answer box (.reveal-band) and the names under each card (.picker), in each rebuilt world's
-     material. Text keeps a tested pair; the cover's wash is cut back on light paper. ---- */
-  /* Tokyo Rain: the machine's lit display panel; the pickers' names on ticket stubs. */
+  /* ---- The reveal's answer box (.reveal-band) in each rebuilt world's material. Text keeps a tested pair;
+     the cover's wash is cut back on light paper. ---- */
+
+  /* Tokyo Rain: the machine's lit display panel. */
   :root[data-theme='tokyo-rain'] .reveal-band,
   :root:not([data-theme]) .reveal-band {
     border: 0;
@@ -4225,40 +4242,13 @@
       inset 0 0.375rem 0.75rem rgb(0 0 0 / 0.5);
   }
 
-  :root[data-theme='tokyo-rain'] .picker,
-  :root:not([data-theme]) .picker {
-    border: 0;
-    border-radius: 0.125rem;
-    background: var(--card-back);
-    color: var(--card-back-ink);
-    box-shadow: 0 1px 0 rgb(0 0 0 / 0.4);
-  }
-
-  :root[data-theme='tokyo-rain'] .picker[data-you],
-  :root:not([data-theme]) .picker[data-you] {
-    background: var(--accent);
-    color: var(--accent-ink);
-  }
-
-  /* Hanami: another lacquer box rimmed twice in vermilion; names on rice-paper slips, this player's sealed. */
+  /* Hanami: another lacquer box rimmed twice in vermilion. */
   :root[data-theme='sakura'] .reveal-band {
     border: 2px solid var(--card-mark);
     background: var(--panel);
     box-shadow:
       inset 0 0 0 5px var(--panel),
       inset 0 0 0 6px var(--card-mark);
-  }
-
-  :root[data-theme='sakura'] .picker {
-    border: 0;
-    border-radius: 0.125rem;
-    background: var(--card);
-    color: var(--card-ink);
-  }
-
-  :root[data-theme='sakura'] .picker[data-you] {
-    background: var(--card-mark);
-    color: var(--card-mark-ink);
   }
 
   /* Fighter Select: the fighter's profile on the select screen under a red slant; names on slanted plates. */
@@ -4271,23 +4261,7 @@
   }
 
   :root[data-theme='shonen'] .reveal-kind,
-  :root[data-theme='shonen'] .picker {
-    border-radius: 0;
-    transform: skewX(-8deg);
-  }
-
-  :root[data-theme='shonen'] .picker {
-    border: 0;
-    background: var(--nameplate);
-    color: var(--card-ink);
-  }
-
-  :root[data-theme='shonen'] .picker[data-you] {
-    background: var(--card-mark);
-    color: var(--card-mark-ink);
-  }
-
-  /* Model Kit: a framed box on a page of the manual; names on gate tags, this player's in yellow. */
+  /* Model Kit: a framed box on a page of the manual. */
   :root[data-theme='mecha'] .reveal-band {
     --ink: var(--manual-ink);
     --muted: var(--manual-muted);
@@ -4303,19 +4277,7 @@
     color: var(--card-mark-ink);
   }
 
-  :root[data-theme='mecha'] .picker {
-    border: 0;
-    border-radius: 0;
-    background: var(--card-mark);
-    color: var(--card-mark-ink);
-  }
-
-  :root[data-theme='mecha'] .picker[data-you] {
-    background: var(--accent);
-    color: var(--accent-ink);
-  }
-
-  /* Gachapon: an open capsule, its blue half over the top; names on little capsules, this player's in red. */
+  /* Gachapon: an open capsule, its blue half over the top. */
   :root[data-theme='magical-girl'] .reveal-band {
     border: 0;
     border-radius: 1.75rem;
@@ -4325,20 +4287,7 @@
     box-shadow: inset 0 0 0 2px var(--capsule-shade);
   }
 
-  :root[data-theme='magical-girl'] .picker {
-    border: 2px solid var(--capsule-shade);
-    background: var(--slip);
-    color: var(--card-ink);
-  }
-
-  :root[data-theme='magical-girl'] .picker[data-you] {
-    border-color: var(--head);
-    background: var(--head);
-    color: var(--head-ink);
-  }
-
-  /* Back Issue: the article page, ruled in ink and printed off register, its kind and the pickers' names set as
-     black caption tags, this player's in the answer page's cyan. */
+  /* Back Issue: the article page, ruled in ink and printed off register, its kind set as a black caption tag. */
   :root[data-theme='retro-vhs'] .reveal-band {
     border: 2px solid var(--ink);
     border-radius: 0;
@@ -4347,18 +4296,6 @@
   }
 
   :root[data-theme='retro-vhs'] .reveal-kind,
-  :root[data-theme='retro-vhs'] .picker {
-    border: 0;
-    border-radius: 0;
-    background: var(--ink);
-    color: var(--panel);
-  }
-
-  :root[data-theme='retro-vhs'] .picker[data-you] {
-    background: var(--card-back);
-    color: var(--card-back-ink);
-  }
-
   /* Konbini 2 a.m.: the answer printed on a receipt in dot type, torn off along a jagged foot, its kind in the
      printer's inverse type; names on price-gun labels, this player's in saffron. */
   :root[data-theme='konbini'] .reveal-band {
@@ -4385,24 +4322,7 @@
     font-weight: 400;
   }
 
-  :root[data-theme='konbini'] .pickers {
-    padding-top: 0.375rem;
-  }
-
-  :root[data-theme='konbini'] .picker {
-    border: 0;
-    border-radius: 0.125rem;
-    background: var(--card-back);
-    color: var(--card-back-ink);
-  }
-
-  :root[data-theme='konbini'] .picker[data-you] {
-    background: var(--accent);
-    color: var(--accent-ink);
-  }
-
-  /* Karaoke Box: the lyric screen again, the title outlined like a lyric and the kind on a pink tag; names on the
-     remote's dark keys, this player's in pink. */
+  /* Karaoke Box: the lyric screen again, the title outlined like a lyric and the kind on a pink tag. */
   :root[data-theme='karaoke'] .reveal-band {
     --ink: var(--screen-ink);
     --muted: var(--screen-muted);
@@ -4415,18 +4335,6 @@
   :root[data-theme='karaoke'] .reveal-title {
     -webkit-text-stroke: 0.14em var(--lyric-edge);
     paint-order: stroke fill;
-  }
-
-  :root[data-theme='karaoke'] .picker {
-    border: 1px solid var(--remote-rim);
-    background: var(--remote);
-    color: var(--ink);
-  }
-
-  :root[data-theme='karaoke'] .picker[data-you] {
-    border-color: var(--accent);
-    background: var(--accent);
-    color: var(--accent-ink);
   }
 
   /* Omikuji: the fortune unfolded, washi framed twice in vermilion, its kind in a vermilion seal; the names on
@@ -4446,19 +4354,6 @@
     color: var(--card-mark-ink);
   }
 
-  :root[data-theme='omikuji'] .picker {
-    border: 1px solid var(--edge);
-    border-radius: 0.125rem;
-    background: var(--card);
-    color: var(--card-ink);
-  }
-
-  :root[data-theme='omikuji'] .picker[data-you] {
-    border-color: var(--card-mark);
-    background: var(--card-mark);
-    color: var(--card-mark-ink);
-  }
-
   /* Blossom Map: the map's legend box in a green rule, its kind on a green tag; names on round map chips, this
      player's in pink. */
   :root[data-theme='blossom-map'] .reveal-band {
@@ -4469,18 +4364,6 @@
   :root[data-theme='blossom-map'] .reveal-kind {
     background: var(--card-mark);
     color: var(--card-mark-ink);
-  }
-
-  :root[data-theme='blossom-map'] .picker {
-    border: 2px solid var(--card-mark);
-    background: var(--panel);
-    color: var(--ink);
-  }
-
-  :root[data-theme='blossom-map'] .picker[data-you] {
-    border-color: var(--accent);
-    background: var(--accent);
-    color: var(--accent-ink);
   }
 
   /* Tournament Arc: the board's result notice in a double ink rule, its kind on a black tag; names on little
@@ -4495,18 +4378,6 @@
     border-radius: 0;
     background: var(--ink);
     color: var(--panel);
-  }
-
-  :root[data-theme='tournament-arc'] .picker {
-    border: 1px solid var(--ink);
-    border-radius: 0;
-    background: var(--card);
-    color: var(--card-ink);
-  }
-
-  :root[data-theme='tournament-arc'] .picker[data-you] {
-    background: var(--accent);
-    color: var(--accent-ink);
   }
 
   /* Splash Page: another panel in a heavy frame with a hard shadow, its kind on a black caption; names in little
@@ -4524,18 +4395,6 @@
     color: var(--panel);
   }
 
-  :root[data-theme='splash-page'] .picker {
-    border: 2px solid var(--ink);
-    border-radius: 1rem / 0.875rem;
-    background: var(--panel);
-    color: var(--ink);
-  }
-
-  :root[data-theme='splash-page'] .picker[data-you] {
-    background: var(--accent);
-    color: var(--accent-ink);
-  }
-
   /* Night Arc: another black panel in a white frame, its kind on a white caption; names in white-ink balloons, this
      player's filled white. */
   :root[data-theme='night-arc'] .reveal-band {
@@ -4550,20 +4409,7 @@
     color: var(--page);
   }
 
-  :root[data-theme='night-arc'] .picker {
-    border: 2px solid var(--ink);
-    border-radius: 1rem / 0.875rem;
-    background: var(--page);
-    color: var(--ink);
-  }
-
-  :root[data-theme='night-arc'] .picker[data-you] {
-    background: var(--ink);
-    color: var(--page);
-  }
-
-  /* Side A: the insert's inside flap, lined paper, the kind under a highlighter stroke; names written on little
-     tape labels, this player's highlighted. */
+  /* Side A: the insert's inside flap, lined paper, the kind under a highlighter stroke. */
   :root[data-theme='side-a'] .reveal-band {
     --ink: var(--card-ink);
     --muted: var(--card-muted);
@@ -4576,18 +4422,6 @@
 
   :root[data-theme='side-a'] .reveal-kind {
     border-radius: 0;
-    background: var(--accent);
-    color: var(--card-ink);
-  }
-
-  :root[data-theme='side-a'] .picker {
-    border: 0;
-    border-radius: 0.125rem;
-    background: var(--label);
-    color: var(--label-ink);
-  }
-
-  :root[data-theme='side-a'] .picker[data-you] {
     background: var(--accent);
     color: var(--card-ink);
   }
@@ -4811,43 +4645,25 @@
     text-transform: uppercase;
   }
 
-  /* Who picked each card, on its bottom edge, over the card rather than under it, so the cards keep their
-     place when the reveal adds them. */
+  /* Who picked each card, stamped on its bottom right corner, over the card rather than under it and clear of
+     the title at its foot, so the cards keep their place when the reveal adds them. */
   .options-picked > li {
     position: relative;
   }
 
   .pickers {
     position: absolute;
-    right: 0.5rem;
+    right: 0.75rem;
     bottom: 0;
-    left: 0.5rem;
+    left: 0.75rem;
     z-index: 3;
     display: flex;
+    flex-direction: row-reverse;
     flex-wrap: wrap;
     gap: 0.25rem;
     align-content: flex-start;
     transform: translateY(45%);
     pointer-events: none;
-  }
-
-  .picker {
-    padding: 0.125rem 0.625rem;
-    border: 1px solid var(--line);
-    border-radius: 999px;
-    background: var(--raised);
-    color: var(--ink);
-    font-size: 0.9375rem;
-    font-weight: 700;
-    line-height: 1.4;
-    overflow-wrap: anywhere;
-    box-shadow: 0 0.125rem 0.375rem rgb(0 0 0 / 0.25);
-  }
-
-  .picker[data-you] {
-    border-color: var(--accent);
-    background: var(--accent);
-    color: var(--accent-ink);
   }
 
   /* Hanami's dango skewer (Dango.tsx): a bamboo stick and the dumplings left on it. */
@@ -5847,6 +5663,130 @@
     gap: 0.5rem;
     padding-left: 1.125rem;
     list-style: disc;
+  }
+
+  /* The players' animals (PlayerIcon.tsx), and the round stamp that carries one: paper, an ink ring, the
+     animal in ink. This player's own takes a second ring in the theme's accent. */
+  .player-icon {
+    width: 1.5rem;
+    height: 1.5rem;
+    flex-shrink: 0;
+    fill: var(--stamp-ink);
+  }
+
+  .player-icon .pi-paper {
+    fill: var(--stamp-paper);
+  }
+
+  .player-icon .pi-crest {
+    fill: var(--stamp-crest);
+  }
+
+  .player-icon .pi-line {
+    fill: none;
+    stroke-linecap: round;
+  }
+
+  .player-icon .pi-ink-line {
+    stroke: var(--stamp-ink);
+  }
+
+  .player-icon .pi-paper-line {
+    stroke: var(--stamp-paper);
+  }
+
+  .player-badge {
+    display: inline-grid;
+    flex-shrink: 0;
+    place-items: center;
+    width: 1.75rem;
+    height: 1.75rem;
+    border-radius: 50%;
+    background: var(--stamp-paper);
+    box-shadow: inset 0 0 0 2px var(--stamp-ink);
+  }
+
+  .player-badge .player-icon {
+    width: 1.3rem;
+    height: 1.3rem;
+  }
+
+  .player-badge[data-you] {
+    box-shadow:
+      inset 0 0 0 2px var(--stamp-ink),
+      0 0 0 2px var(--accent);
+  }
+
+  /* The lobby's icon picker: the sixteen animals as buttons, the taken ones stepped back. */
+  .icon-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(3.25rem, 1fr));
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+  }
+
+  /* Picks at the reveal: each picker's stamp pressed onto the card's bottom edge, a little tilted, the
+     stamps of one card overlapping like a handful pressed in turn. */
+  .picker-stamp {
+    margin-left: -0.375rem;
+    transform: rotate(var(--tilt, 0deg));
+    filter: drop-shadow(0 0.125rem 0.25rem rgb(0 0 0 / 0.35));
+  }
+
+  .picker-stamp .player-badge {
+    width: 2.25rem;
+    height: 2.25rem;
+  }
+
+  .picker-stamp .player-badge .player-icon {
+    width: 1.7rem;
+    height: 1.7rem;
+  }
+
+  .board-name,
+  .bill-name {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: 0;
+  }
+
+  .icon-choice {
+    display: grid;
+    place-items: center;
+    gap: 0.125rem;
+    padding: 0.375rem 0.25rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    background: var(--panel);
+    color: var(--ink);
+    font-size: 0.6875rem;
+    cursor: pointer;
+  }
+
+  .icon-choice .player-badge {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+
+  .icon-choice .player-badge .player-icon {
+    width: 1.9rem;
+    height: 1.9rem;
+  }
+
+  .icon-choice[aria-pressed='true'] {
+    border-color: var(--accent);
+    box-shadow: inset 0 0 0 2px var(--accent);
+  }
+
+  .icon-choice:disabled {
+    cursor: not-allowed;
+    opacity: 0.4;
+  }
+
+  .icon-choice:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
   }
 
   /* Reactions (Reactions.tsx): the bar of six icon buttons in the theme's accent, and the bubbles that rise

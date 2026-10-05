@@ -14,8 +14,10 @@ import {
   newLobby,
   RECONNECT_GRACE_MS,
   removePlayer,
+  setIcon,
 } from '../../server/game/lobby.ts';
 import type { Lobby, Outcome } from '../../server/game/lobby.ts';
+import { PLAYER_ICONS } from '../../shared/protocol.ts';
 import { defaultSettings } from '../../shared/settings.ts';
 
 const settings = defaultSettings({ years: { from: 2000, to: 2020 }, genres: [], maxRank: 100 });
@@ -111,4 +113,23 @@ test('expires a lobby idle for 15 minutes, and any lobby after 4 hours', () => {
   const busy = lobbyWith(['Ann']);
   assert.equal(isExpired(busy, MAX_LOBBY_AGE_MS - 1), false);
   assert.equal(isExpired(busy, MAX_LOBBY_AGE_MS), true);
+});
+
+test('gives each new player an icon nobody else has, and shares only once every icon is taken', () => {
+  const names = Array.from({ length: PLAYER_ICONS.length + 1 }, (_, index) => `p${index}`);
+  let lobby = newLobby('ABC234', settings, 0);
+  for (const name of names) lobby = lobbyOf(addPlayer(lobby, { id: name, name }, 0, 50));
+  const icons = lobby.players.map((player) => player.icon);
+  assert.equal(new Set(icons.slice(0, PLAYER_ICONS.length)).size, PLAYER_ICONS.length);
+  assert.ok(PLAYER_ICONS.includes(icons.at(-1) ?? 'fox'));
+});
+
+test('lets a player switch to a free icon, never to one another player has', () => {
+  const lobby = lobbyWith(['ann', 'ben']);
+  const [ann, ben] = lobby.players;
+  assert.ok(ann && ben);
+  assert.deepEqual(setIcon(lobby, 'ann', ben.icon), { error: 'icon-taken' });
+  const free = PLAYER_ICONS.find((icon) => icon !== ann.icon && icon !== ben.icon) ?? 'fox';
+  assert.equal(lobbyOf(setIcon(lobby, 'ann', free)).players[0]?.icon, free);
+  assert.equal(lobbyOf(setIcon(lobby, 'ann', ann.icon)).players[0]?.icon, ann.icon, 'keeping your own is fine');
 });

@@ -47,7 +47,10 @@ test('seats players with hello and sends each of them the lobby state', async ()
     assert.equal(first.version, packageVersion, "the server's build, for stale pages to reload");
     assert.equal(first.you, ann.playerId);
     assert.equal(first.hostId, ann.playerId);
-    assert.deepEqual(first.players, [{ id: ann.playerId, name: 'Ann', connected: true, spectating: false, score: 0 }]);
+    const icon = first.players[0]?.icon ?? assert.fail();
+    assert.deepEqual(first.players, [
+      { id: ann.playerId, name: 'Ann', icon, connected: true, spectating: false, score: 0 },
+    ]);
     assert.equal(first.game, null);
     assert.ok(first.pool.anime > 0 && first.bounds.genres.length > 0);
     const ben = await joinLobby(server, ann.code, 'Ben');

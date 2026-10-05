@@ -215,8 +215,8 @@ export function lobbyState(overrides: Partial<LobbyState> = {}): LobbyState {
     hostId: 'p1',
     locked: false,
     players: [
-      { id: 'p1', name: 'Ann', connected: true, spectating: false, score: 0 },
-      { id: 'p2', name: 'Ben', connected: true, spectating: false, score: 0 },
+      { id: 'p1', name: 'Ann', icon: 'fox', connected: true, spectating: false, score: 0 },
+      { id: 'p2', name: 'Ben', icon: 'owl', connected: true, spectating: false, score: 0 },
     ],
     settings: defaultSettings(BOUNDS),
     pool: { themes: 300, anime: 120 },
