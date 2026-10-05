@@ -12,6 +12,9 @@ import type { Session } from './realtime/session.ts';
 import { Home } from './screens/Home.tsx';
 import { LobbySession } from './screens/LobbySession.tsx';
 import { ThemeContext } from './themes/stage.ts';
+import { WhatsNew } from './components/WhatsNew.tsx';
+import { CLIENT_VERSION } from './version.ts';
+import { markSeen, notesToShow } from './whats-new.ts';
 
 export interface AppStorage {
   local: Storage | null; // device settings
@@ -44,6 +47,11 @@ export function App({ audio, storage, createSocket, reload }: AppProps) {
   const [joinCode, setJoinCode] = useState(() => codeFromPath(window.location.pathname));
   const [notice, setNotice] = useState<string | null>(null);
   const [replaced, setReplaced] = useState(false);
+  const [notes, setNotes] = useState(() => notesToShow(storage.local, CLIENT_VERSION));
+  const notesSeen = () => {
+    markSeen(storage.local, CLIENT_VERSION);
+    setNotes([]);
+  };
 
   useEffect(() => {
     audio.setVolume(prefs.volume / 100);
@@ -71,14 +79,17 @@ export function App({ audio, storage, createSocket, reload }: AppProps) {
   function screen() {
     if (!session) {
       return (
-        <Home
-          joinCode={joinCode}
-          notice={notice}
-          prefs={prefs}
-          onPrefs={updatePrefs}
-          unlockAudio={() => audio.unlock()}
-          onSeated={seated}
-        />
+        <>
+          <Home
+            joinCode={joinCode}
+            notice={notice}
+            prefs={prefs}
+            onPrefs={updatePrefs}
+            unlockAudio={() => audio.unlock()}
+            onSeated={seated}
+          />
+          {notes.length > 0 && <WhatsNew lines={notes} onClose={notesSeen} />}
+        </>
       );
     }
     if (replaced) {
@@ -108,6 +119,8 @@ export function App({ audio, storage, createSocket, reload }: AppProps) {
         createSocket={createSocket}
         storage={storage.session}
         reload={reload}
+        notes={notes}
+        onNotesSeen={notesSeen}
       />
     );
   }

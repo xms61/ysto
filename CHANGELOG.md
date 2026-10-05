@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.5.0] - 2026-10-05
+
+### Added
+- What's new: the first time a device opens a newer version, a small dialog says what changed for players in up to three lines, on the home screen or in the lobby. The notes live in `src/whats-new.ts`, written for players; a first visit shows nothing.
+
 ## [1.4.0] - 2026-10-05
 
 ### Added
@@ -27,12 +32,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Answer changes: a lobby setting, off by default, lets players pick another option until the round closes. Once everyone has answered, an overtime of 3 to 10 s (the host picks, 5 s by default) gives a last chance to switch before the reveal: "Overtime" is called above the time left, and each world's timer counts it down. The others see who switched, never to what. A switch scores from the moment it is made, and First correct keeps the first answer as before.
-
-## [1.1.0] - 2026-10-05
-
-### Added
-- A second title language: Preferences can show each option's title in a second language under the first, smaller (English with romaji, or English with Japanese, for example). A title that reads the same in both shows once, and the reveal lists the anime's other titles with the second language first.
-
-### Changed
-- The reveal no longer repeats a title that differs only in case, such as "Naruto" and "NARUTO".
-- Older entries moved to the changelog archive.
