@@ -122,11 +122,11 @@ function Countdown({ store, startsAt }: { store: GameStore; startsAt: number }) 
   );
 }
 
-// The time left: the shared bar draining with the seconds beside it, or the theme's own: a seven-segment
-// display of the seconds, a dango skewer eaten down, a nipper cutting along a runner, a coin dial turning, a
-// candle burning down, a printer's ruler, a shrine rope's paper streamers, a walk on a park map, the referee's
-// pennants, a manga panel's focus lines or a cassette's reels, with the seconds beside it, or huge arcade digits.
-// Where the heading is sung as a lyric line, that line is the timer and only the seconds show here.
+// The time left in the theme's own form: a seven-segment display of the seconds, a dango skewer eaten down, a
+// nipper cutting along a runner, a coin dial turning, a candle burning down, a printer's ruler, a shrine rope's paper
+// streamers, a walk on a park map, the referee's pennants, a manga panel's focus lines or a cassette's reels, with the
+// seconds beside it, or huge arcade digits. Where the heading is sung as a lyric line, that line is the timer and only
+// the seconds show here.
 function TimeLeft({ elapsed, secondsLeft }: { elapsed: number; secondsLeft: number }) {
   const { readout } = useStage();
   if (readout === 'segments') {
@@ -223,23 +223,10 @@ function TimeLeft({ elapsed, secondsLeft }: { elapsed: number; secondsLeft: numb
       </div>
     );
   }
-  if (readout === 'nipper') {
-    return (
-      <div className="flex items-center gap-3">
-        <Nipper left={1 - elapsed} />
-        <p className="ml-auto tabular-nums">{secondsLeft} s left</p>
-      </div>
-    );
-  }
   return (
     <div className="flex items-center gap-3">
-      <div aria-hidden="true" className="h-2 flex-1 overflow-hidden rounded-lg bg-raised">
-        <div
-          className="h-full origin-left bg-accent transition-transform duration-300 ease-linear"
-          style={{ transform: `scaleX(${1 - elapsed})` }}
-        />
-      </div>
-      <p className="w-16 text-right tabular-nums">{secondsLeft} s left</p>
+      <Nipper left={1 - elapsed} />
+      <p className="ml-auto tabular-nums">{secondsLeft} s left</p>
     </div>
   );
 }

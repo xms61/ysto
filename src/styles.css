@@ -95,6 +95,11 @@
     --noren-ink: #f3f1ea;
     /* The wooden pole the noren hangs from; it carries no text. */
     --noren-pole: #8a6440;
+    /* The machine's hollows (the LED's glass, the outlet, the coin slot, the grille's holes), its recessed
+       button bank and the buttons' bezel. None carries text. */
+    --glass: #0b0d10;
+    --machine-bank: #1b2027;
+    --bezel: #12161c;
     --radius-lg: 0.375rem;
     --radius-xl: 0.375rem;
     --radius-2xl: 0.625rem;
@@ -134,6 +139,11 @@
     /* The bento's black lacquer and the green leaf dividers between its compartments; neither carries text. */
     --lacquer: #0f0b0b;
     --leaf: #3d7f22;
+    /* The dango skewer's bamboo and its three dumplings. None carries text. */
+    --dango-stick: #c9a46a;
+    --dango-pink: #f4a7b9;
+    --dango-white: #fbfaf6;
+    --dango-green: #8cc068;
     --display-font: 'Zen Antique', 'Hiragino Mincho ProN', 'Yu Mincho', serif;
     --display-weight: 400;
     --display-case: none;
@@ -181,6 +191,7 @@
     --card-back-ink: #1a1400;
     /* The name plate behind each slot's title; it carries the title in card-ink. */
     --nameplate: #2c2c48;
+    --flash: #ffffff; /* the select's confirm flash */
     --display-font: 'Bangers', 'Arial Narrow', sans-serif;
     --display-weight: 400;
     --display-case: uppercase;
@@ -459,6 +470,7 @@
     --register: #232931;
     --register-rim: #48515d;
     --vfd: #46f0c4;
+    --glass: #0b0d10;
     --receipt-muted: #555555;
     --laser: #ff2a3c;
     --display-font: 'DotGothic16', ui-monospace, monospace;
@@ -516,6 +528,8 @@
     --bezel: #05081f;
     --remote: #262838;
     --remote-rim: #4a4d62;
+    --grille: #cfd2dc;
+    --grille-holes: #3a3c4a;
     --display-font: 'M PLUS Rounded 1c', 'Hiragino Maru Gothic ProN', ui-rounded, system-ui, sans-serif;
     --display-weight: 800;
     --display-case: none;
@@ -671,6 +685,8 @@
     --banner: #141414;
     --banner-ink: #fbfaf6;
     --gold: #c9a227;
+    --gong: #a8801f;
+    --gong-light: #f0d27a;
     --display-font: 'Dela Gothic One', 'Arial Black', sans-serif;
     --display-weight: 400;
     --display-case: none;
@@ -821,6 +837,7 @@
     --tape: #5a3a22;
     --rule: #9db4e8;
     --margin: #e57373;
+    --window: #0d0e12;
     --display-font: 'Caveat Brush', 'Comic Sans MS', cursive;
     --display-weight: 400;
     --display-case: none;
@@ -841,6 +858,12 @@
     --ja-font:
       'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Noto Sans JP', 'Noto Sans CJK JP', 'Yu Gothic UI', 'Yu Gothic',
       Meiryo, system-ui, sans-serif;
+    /* The backdrop's weather (Backdrop.tsx), shared by the themes that draw it: blossom petals, twinkling lights
+       and rain. It sits behind everything and carries no text. */
+    --petal-light: #ffc4d6;
+    --petal: #ff8fb3;
+    --twinkle: #fff4fb;
+    --rain: rgb(170 225 255 / 0.55);
     accent-color: var(--accent);
     caret-color: var(--accent);
     scrollbar-color: var(--edge) var(--page);
@@ -1557,7 +1580,7 @@
     height: 2.25rem;
     margin: 1.75rem auto 0.25rem;
     border-radius: 0.375rem;
-    background: #0b0d10;
+    background: var(--glass);
     box-shadow:
       inset 0 0.5rem 0.75rem rgb(0 0 0 / 0.9),
       0 0 0 3px var(--machine-rim),
@@ -1574,7 +1597,7 @@
     width: 0.375rem;
     height: 1.75rem;
     border-radius: 0.25rem;
-    background: #0b0d10;
+    background: var(--glass);
     box-shadow: 0 0 0 4px var(--machine-rim);
   }
 
@@ -1582,14 +1605,14 @@
   :root[data-theme='tokyo-rain'] .sonar-core,
   :root:not([data-theme]) .sonar-core {
     background:
-      radial-gradient(circle, #0b0d10 1.2px, transparent 1.6px) 0 0 / 6px 6px,
+      radial-gradient(circle, var(--glass) 1.2px, transparent 1.6px) 0 0 / 6px 6px,
       var(--machine);
   }
 
   /* The button bank is recessed into the cabinet's face. */
   :root[data-theme='tokyo-rain'] .options,
   :root:not([data-theme]) .options {
-    background: #1b2027;
+    background: var(--machine-bank);
   }
 
   /* The noren is cloth hung from a pole across the cabinet's top. The heading row is one solid indigo panel, so
@@ -1680,7 +1703,7 @@
   :root:not([data-theme]) .card-front {
     border: 0;
     box-shadow:
-      inset 0 0 0 3px #12161c,
+      inset 0 0 0 3px var(--bezel),
       inset 0 -0.375rem 0 rgb(0 0 0 / 0.08);
   }
 
@@ -1695,7 +1718,7 @@
   :root[data-theme='tokyo-rain'] .card[data-state='chosen'] .card-front,
   :root:not([data-theme]) .card[data-state='chosen'] .card-front {
     box-shadow:
-      inset 0 0 0 3px #12161c,
+      inset 0 0 0 3px var(--bezel),
       0 0 1.25rem -0.25rem rgb(255 176 0 / 0.7);
     transform: translateY(1px);
   }
@@ -1735,7 +1758,7 @@
     background: var(--machine);
     color: var(--machine-rim);
     border: 0;
-    box-shadow: inset 0 0 0 3px #12161c;
+    box-shadow: inset 0 0 0 3px var(--bezel);
   }
 
   :root[data-theme='tokyo-rain'] .button-quiet:hover:not(:disabled),
@@ -2770,7 +2793,7 @@
   :root[data-theme='konbini'] .round-head {
     margin: -1rem -1rem 1rem;
     padding: 0.875rem 1rem 1.625rem;
-    border-block: 0.3125rem solid #0b0e12;
+    border-block: 0.3125rem solid var(--glass);
     background:
       linear-gradient(var(--stripe), var(--stripe)) 0 calc(100% - 0.25rem) / 100% 0.3125rem no-repeat,
       linear-gradient(var(--accent), var(--accent)) 0 calc(100% - 0.5625rem) / 100% 0.4375rem no-repeat,
@@ -2809,7 +2832,7 @@
   :root[data-theme='konbini'] .sonar-core {
     background:
       linear-gradient(var(--laser), var(--laser)) center / 70% 1px no-repeat,
-      #0b0d10;
+      var(--glass);
   }
 
   /* The shelf: bright under the shop's lights, each card standing on a clear price rail. */
@@ -2994,8 +3017,8 @@
   /* The listening light is the microphone's head: a silver grille. */
   :root[data-theme='karaoke'] .sonar-core {
     background:
-      radial-gradient(circle, #3a3c4a 1px, transparent 1.4px) 0 0 / 5px 5px,
-      #cfd2dc;
+      radial-gradient(circle, var(--grille-holes) 1px, transparent 1.4px) 0 0 / 5px 5px,
+      var(--grille);
   }
 
   /* The remote: dark plastic round the song list. */
@@ -3151,8 +3174,8 @@
     right: 0;
     height: 0.625rem;
     background:
-      radial-gradient(ellipse 0.5rem 0.375rem at 50% 50%, #ffffff 0 92%, transparent 100%),
-      linear-gradient(#ffffff, #ffffff) center / 100% 0.375rem no-repeat;
+      radial-gradient(ellipse 0.5rem 0.375rem at 50% 50%, var(--panel) 0 92%, transparent 100%),
+      linear-gradient(var(--panel), var(--panel)) center / 100% 0.375rem no-repeat;
     filter: drop-shadow(0 1px 1px rgb(90 40 20 / 0.35));
   }
 
@@ -3204,7 +3227,7 @@
   }
 
   .shide-rope {
-    stroke: var(--rope, #c9a66b);
+    stroke: var(--rope);
     stroke-width: 6;
     stroke-linecap: round;
   }
@@ -3216,7 +3239,7 @@
   }
 
   .shide-paper {
-    fill: #ffffff;
+    fill: var(--panel);
     stroke: var(--edge);
     stroke-width: 0.75;
   }
@@ -3434,7 +3457,7 @@
   :root[data-theme='tournament-arc'] .sonar-core {
     background:
       repeating-radial-gradient(circle, rgb(60 40 10 / 0.25) 0 1px, transparent 1px 5px),
-      radial-gradient(circle at 35% 30%, #f0d27a, #a8801f);
+      radial-gradient(circle at 35% 30%, var(--gong-light), var(--gong));
   }
 
   /* The bracket: a spine down the middle that joins the two matches to the final at its center. */
@@ -4027,7 +4050,7 @@
   }
 
   .cassette-window {
-    fill: #0d0e12;
+    fill: var(--window);
   }
 
   .cassette-tape {
@@ -4530,7 +4553,7 @@
     position: absolute;
     top: 0;
     width: 1px;
-    background: linear-gradient(to bottom, transparent, rgb(170 225 255 / 0.55));
+    background: linear-gradient(to bottom, transparent, var(--rain));
     animation: rain-fall linear infinite;
   }
 
@@ -4538,14 +4561,14 @@
     position: absolute;
     top: 0;
     border-radius: 80% 0 80% 0;
-    background: linear-gradient(135deg, #ffc4d6, #ff8fb3);
+    background: linear-gradient(135deg, var(--petal-light), var(--petal));
     opacity: 0.8;
     animation: petal-fall linear infinite;
   }
 
   .twinkle {
     position: absolute;
-    background: #fff4fb;
+    background: var(--twinkle);
     clip-path: polygon(50% 0, 58% 42%, 100% 50%, 58% 58%, 50% 100%, 42% 58%, 0 50%, 42% 42%);
     animation: twinkle ease-in-out infinite;
   }
@@ -4613,7 +4636,7 @@
     gap: 0.5rem;
     padding: 0.5rem 0.75rem;
     border-radius: 0.25rem;
-    background: #0b0d10;
+    background: var(--glass);
     box-shadow: inset 0 0 0 2px var(--machine-rim, var(--line));
     color: var(--accent);
   }
@@ -4688,21 +4711,21 @@
   }
 
   .dango-stick {
-    stroke: #c9a46a;
+    stroke: var(--dango-stick);
     stroke-width: 3;
     stroke-linecap: round;
   }
 
   .dango-pink {
-    fill: #f4a7b9;
+    fill: var(--dango-pink);
   }
 
   .dango-white {
-    fill: #fbfaf6;
+    fill: var(--dango-white);
   }
 
   .dango-green {
-    fill: #8cc068;
+    fill: var(--dango-green);
   }
 
   :is(.dango-pink, .dango-white, .dango-green) {
@@ -6774,7 +6797,7 @@
 @keyframes select-flash {
   0%,
   50% {
-    background-color: #ffffff;
+    background-color: var(--flash);
     animation-timing-function: steps(1, end);
   }
 

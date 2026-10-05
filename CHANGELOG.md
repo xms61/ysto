@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.32.0] - 2026-10-05
+
+### Changed
+- The catalog's AnimeThemes sync reads AnimeThemes' GraphQL API in place of its deprecated JSON:API. Pages are cached in the same shape as before and dumps still import, so builds don't change: three pages synced both ways parsed to the same 300 anime.
+- Every opaque color in the themes is a named token in its theme block, including the backdrop's petals, twinkles and rain.
+
+### Removed
+- The shared timer bar. Every theme draws its own timer, and a new theme must name one.
+
 ## [0.31.1] - 2026-10-05
 
 ### Fixed

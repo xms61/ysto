@@ -7,8 +7,9 @@ import {
   importDump,
   loadAnimeThemes,
   PAGE_SIZE,
-  pageUrl,
+  pageRequest,
   parseAnime,
+  recordOfGraphqlAnime,
   syncAnimeThemes,
 } from '../../scripts/catalog/animethemes.ts';
 import { fakeHttp, jsonResponse } from './fixtures.ts';
@@ -27,8 +28,23 @@ function rawAnime(id: number): Record<string, unknown> {
   return { id, name: `Anime ${id}`, slug: `anime_${id}`, resources: [{ site: 'AniList', external_id: 5000 + id }] };
 }
 
+function graphqlAnime(id: number): Record<string, unknown> {
+  return {
+    id,
+    title: { romaji: `Anime ${id}` },
+    slug: `anime_${id}`,
+    resources: { nodes: [{ siteLocalized: 'AniList', externalId: 5000 + id }] },
+  };
+}
+
 function page(firstId: number, count: number): Response {
-  return jsonResponse({ anime: Array.from({ length: count }, (_, index) => rawAnime(firstId + index)) });
+  const anime = Array.from({ length: count }, (_, index) => graphqlAnime(firstId + index));
+  return jsonResponse({ data: { animePagination: { data: anime } } });
+}
+
+function requestedPage(http: ReturnType<typeof fakeHttp>, at: number): unknown {
+  const body: unknown = JSON.parse(String(http.requests[at]?.init.body));
+  return typeof body === 'object' && body !== null && 'variables' in body ? body.variables : null;
 }
 
 function syncOptions(cacheDir: string, http: ReturnType<typeof fakeHttp>) {
@@ -109,18 +125,68 @@ test('drops anime without an id, a name or a slug', () => {
   assert.equal(parseAnime({ id: 1, name: 'No slug' }), null);
 });
 
-test('asks for every include the catalog needs, one page at a time', () => {
-  const url = new URL(pageUrl(3));
-  assert.equal(url.searchParams.get('page[number]'), '3');
-  assert.equal(url.searchParams.get('page[size]'), String(PAGE_SIZE));
-  assert.deepEqual(url.searchParams.get('include')?.split(','), [
-    'animethemes.song.artists',
-    'animethemes.animethemeentries.videos',
-    'resources',
-    'series',
-    'animesynonyms',
-    'images',
-  ]);
+test('asks for one page of every field the catalog uses', () => {
+  const request = pageRequest(3);
+  assert.deepEqual(request.variables, { page: 3, size: PAGE_SIZE });
+  for (const field of ['seasonLocalized', 'formatLocalized', 'performances', 'animethemeentries', 'facetLocalized']) {
+    assert.match(request.query, new RegExp(field));
+  }
+});
+
+test('reads a GraphQL anime as the record a dump holds', () => {
+  const record = recordOfGraphqlAnime({
+    id: 352,
+    title: { romaji: 'Boruto: Naruto Next Generations' },
+    slug: 'boruto',
+    year: 2017,
+    seasonLocalized: 'Spring',
+    formatLocalized: 'TV',
+    synonyms: [{ text: 'Boruto' }],
+    series: { nodes: [{ id: 7, name: 'Naruto' }] },
+    resources: { nodes: [{ siteLocalized: 'AniList', externalId: 97938 }] },
+    images: { nodes: [{ facetLocalized: 'Large Cover', link: 'https://img.example.test/large.jpg' }] },
+    animethemes: [
+      {
+        id: 7642,
+        type: 'OP',
+        sequence: 1,
+        slug: 'OP1',
+        song: {
+          id: 7643,
+          title: { romaji: 'Baton Road' },
+          performances: [
+            { as: 'KB', artist: { id: 102, name: { main: 'KANA-BOON' } } },
+            { as: null, artist: { id: 102, name: { main: 'KANA-BOON' } } },
+            { as: null, artist: null },
+          ],
+        },
+        animethemeentries: [{ version: 2, videos: { nodes: [{ basename: 'Boruto-OP1v2.webm' }] } }],
+      },
+    ],
+  });
+  assert.deepEqual(parseAnime(record), {
+    id: 352,
+    name: 'Boruto: Naruto Next Generations',
+    slug: 'boruto',
+    year: 2017,
+    season: 'Spring',
+    mediaFormat: 'TV',
+    anilistId: 97938,
+    malId: null,
+    series: [{ id: 7, name: 'Naruto' }],
+    synonyms: ['Boruto'],
+    coverUrl: 'https://img.example.test/large.jpg',
+    themes: [
+      {
+        id: 7642,
+        kind: 'OP',
+        sequence: 1,
+        slug: 'OP1',
+        song: { id: 7643, title: 'Baton Road', artists: [{ id: 102, name: 'KANA-BOON', creditedAs: 'KB' }] },
+        videos: [{ basename: 'Boruto-OP1v2.webm', entryVersion: 2 }],
+      },
+    ],
+  });
 });
 
 test('syncs pages until a short one, then marks the cache complete', async () => {
@@ -143,12 +209,17 @@ test('resumes an interrupted sync from the pages already cached', async () => {
   const resumed = fakeHttp([page(101, 2)]);
   assert.equal(await syncAnimeThemes(syncOptions(cacheDir, resumed)), PAGE_SIZE + 2);
   assert.equal(resumed.requests.length, 1);
-  assert.equal(new URL(resumed.requests[0]?.url ?? '').searchParams.get('page[number]'), '2');
+  assert.deepEqual(requestedPage(resumed, 0), { page: 2, size: PAGE_SIZE });
 });
 
 test('refuses a page without an anime list instead of ending the sync early', async () => {
   const http = fakeHttp([jsonResponse({ message: 'maintenance' })]);
   await assert.rejects(syncAnimeThemes(syncOptions(tempDir(), http)), /has no "anime" list/);
+});
+
+test('stops on a GraphQL error and says what it was', async () => {
+  const http = fakeHttp([jsonResponse({ errors: [{ message: 'Query complexity too high' }] })]);
+  await assert.rejects(syncAnimeThemes(syncOptions(tempDir(), http)), /Query complexity too high/);
 });
 
 test('imports a dump in place of a sync', () => {

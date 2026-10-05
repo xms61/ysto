@@ -1,6 +1,6 @@
 ---
 status: draft
-last-verified: 2026-09-30
+last-verified: 2026-10-05
 ---
 
 # Catalog
@@ -32,7 +32,7 @@ The audio library is a set of `.ogg` files in the AnimeThemes layout: `<year>/<S
 - A **franchise id** is the smallest anime id in the franchise, so ids are stable across builds of the same data.
 
 **Ingest steps.** Each step is its own command, caches what it fetched or measured under `YSTO_CACHE_DIR`, and resumes after an interruption. The commands and cache layout are in [scripts/catalog/CATALOG.md](../../scripts/catalog/CATALOG.md).
-1. **`catalog:sync-animethemes`** pages through `api.animethemes.moe/anime`, including songs, artists, entries, videos, resources, series, synonyms and images (the cover links). That's about 50 pages of 100 anime, one request a second. `--from-dump <file>` imports an existing dump instead, which lacks `series` and synonyms. A `complete.json` marker is written last, so a build never starts from half a sync.
+1. **`catalog:sync-animethemes`** pages through AnimeThemes' GraphQL API (`graphql.animethemes.moe`, `animePagination`), asking for songs, performances, entries, videos, resources, series, synonyms and images (the cover links). That's about 50 pages of 100 anime, one request a second under the limit of 90 a minute. Each anime is cached in the record shape of the retired JSON:API, which dumps still use, so the parse and the build don't depend on where a page came from: the `*Localized` fields carry the JSON:API's strings ("Spring", "AniList", "Large Cover"), and a group credited once per member performance is credited once. Three pages synced both ways on 2026-10-05 parsed to the same 300 anime. `--from-dump <file>` imports an existing dump instead, which lacks `series` and synonyms. A `complete.json` marker is written last, so a build never starts from half a sync.
 2. **`catalog:scan-audio`** reads every file's duration with ffprobe, several at a time. Results are cached by path, size and mtime, so a rescan only probes what changed.
 3. **`catalog:enrich-anilist`** fetches titles (romaji, English, native), synonyms, genres, popularity, `isAdult` and relations with batched GraphQL (`media(id_in: …)`, 50 ids a request). That's all it fetches, because AniList's terms prohibit hoarding its data ([SECURITY.md](../SECURITY.md#external-services)). AniList allowed 30 requests a minute on 2026-09-25, so the step paces one request every 2.1 s. It remembers ids AniList doesn't know.
 4. **`catalog:covers`** downloads each anime's AnimeThemes cover once: the large one, or the small one when that's all there is. Each is scaled down to at most 600 px wide, never up, and stored as WebP at quality 82, and covers already on disk in another format are converted the same way, once. The reveal shows covers 96 CSS px wide, so 600 px leaves room for a larger reveal on 3x screens. It is above AnimeThemes' large size (about 460 px), so most covers keep their full resolution, at about a quarter of the bytes. The next `catalog:build` records the new file names. It's a separate step that the build doesn't need; a reveal without a cover shows the titles only. A dump carries no cover links, so covers arrive with the first live sync. AniList's covers aren't used; that was the owner's choice, given AniList's terms.
