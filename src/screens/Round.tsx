@@ -17,6 +17,7 @@ import { Route } from '../components/Route.tsx';
 import { Ruler } from '../components/Ruler.tsx';
 import { Shide } from '../components/Shide.tsx';
 import { Dial } from '../components/Dial.tsx';
+import { FocusLines } from '../components/FocusLines.tsx';
 import { Nipper } from '../components/Nipper.tsx';
 import { Pennants } from '../components/Pennants.tsx';
 import { Segments } from '../components/Segments.tsx';
@@ -122,8 +123,9 @@ function Countdown({ store, startsAt }: { store: GameStore; startsAt: number }) 
 
 // The time left: the shared bar draining with the seconds beside it, or the theme's own: a seven-segment
 // display of the seconds, a dango skewer eaten down, a nipper cutting along a runner, a coin dial turning, a
-// candle burning down, a printer's ruler, a shrine rope's paper streamers, a walk on a park map or the referee's
-// pennants, with the seconds beside it, or huge arcade digits. Where the heading is sung as a lyric line, that line is the timer and only the seconds show here.
+// candle burning down, a printer's ruler, a shrine rope's paper streamers, a walk on a park map, the referee's
+// pennants or a manga panel's focus lines, with the seconds beside it, or huge arcade digits. Where the heading
+// is sung as a lyric line, that line is the timer and only the seconds show here.
 function TimeLeft({ elapsed, secondsLeft }: { elapsed: number; secondsLeft: number }) {
   const { readout } = useStage();
   if (readout === 'segments') {
@@ -155,6 +157,14 @@ function TimeLeft({ elapsed, secondsLeft }: { elapsed: number; secondsLeft: numb
   }
   if (readout === 'lyric') {
     return <p className="lyric-left tabular-nums">{secondsLeft} s left</p>;
+  }
+  if (readout === 'focus') {
+    return (
+      <div className="flex items-center gap-3">
+        <FocusLines left={1 - elapsed} />
+        <p className="tabular-nums">{secondsLeft} s left</p>
+      </div>
+    );
   }
   if (readout === 'pennants') {
     return (
