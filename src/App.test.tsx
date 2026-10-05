@@ -134,6 +134,26 @@ test('reloads to a new server version once, and never during a round', () => {
   expect(reload).toHaveBeenCalledTimes(1);
 });
 
+test("tells a returning player what's new once, on the home screen", () => {
+  localStorage.setItem('ysto_seen_version', '1.0.0');
+  renderApp();
+  const dialog = screen.getByRole('dialog', { name: "What's new" });
+  expect(within(dialog).getAllByRole('listitem').length).toBeGreaterThan(0);
+  fireEvent.click(within(dialog).getByRole('button', { name: 'Got it' }));
+  expect(screen.queryByRole('dialog', { name: "What's new" })).toBeNull();
+  cleanup();
+  renderApp();
+  expect(screen.queryByRole('dialog', { name: "What's new" })).toBeNull();
+});
+
+test("keeps what's new for the lobby when a returning player is in a round", () => {
+  localStorage.setItem('ysto_seen_version', '1.0.0');
+  const { socket } = renderSeated(lobbyState({ game: PLAYING }));
+  expect(screen.queryByRole('dialog', { name: "What's new" })).toBeNull();
+  act(() => socket.receive(lobbyState({ game: null })));
+  expect(screen.getByRole('dialog', { name: "What's new" })).toBeTruthy();
+});
+
 test('keeps the options hidden until the clip starts', () => {
   const { socket } = renderSeated(lobbyState({ game: PLAYING }));
   act(() => {

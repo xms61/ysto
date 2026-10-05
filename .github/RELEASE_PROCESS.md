@@ -12,6 +12,7 @@
 - `patch` for fixes and cleanup, `minor` for new capability, `major` for breaking changes.
 - Keep the version in sync everywhere it lives: `package.json` and `package-lock.json`. `npm version <patch|minor|major> --no-git-tag-version` updates both.
 - Add a `CHANGELOG.md` entry ([Keep a Changelog](https://keepachangelog.com/en/1.1.0/): Added/Changed/Fixed/Removed). Read only the top entry and insert yours above it. Keep about 5 releases there, and move older entries to the top of `docs/CHANGELOG-archive.md`.
+- When players will notice the change, add one short line for them to `src/whats-new.ts` under the new version. It shows once after the update, so keep it plain and brief.
 - Update `README.md` when commands, setup or features change, and every doc that describes the changed code ([knowledge base rules](../docs/KNOWLEDGE_BASE.md)).
 
 ## Pre-commit checklist

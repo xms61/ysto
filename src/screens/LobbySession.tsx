@@ -6,6 +6,7 @@ import type { AudioEngine } from '../audio/engine.ts';
 import { NoticeToast } from '../components/NoticeToast.tsx';
 import { PreferencesMenu } from '../components/PrefsPanel.tsx';
 import { SoundBanner } from '../components/SoundBanner.tsx';
+import { WhatsNew } from '../components/WhatsNew.tsx';
 import { ConfirmButton, Panel } from '../components/ui.tsx';
 import type { Prefs } from '../prefs/prefs.ts';
 import type { ExitReason, SocketLike } from '../realtime/connection.ts';
@@ -27,6 +28,8 @@ interface LobbySessionProps {
   createSocket?: (url: string) => SocketLike;
   storage: Storage | null; // this tab's session storage, where a reload for a new version is noted
   reload?: () => void;
+  notes: string[]; // what's new since this device's last visit, shown in the lobby only
+  onNotesSeen: () => void;
 }
 
 function reloadPage(): void {
@@ -80,7 +83,7 @@ function useFocusOnScreenChange(screen: string, container: RefObject<HTMLDivElem
 }
 
 export function LobbySession(props: LobbySessionProps) {
-  const { session, audio, prefs, onPrefs, onExit, createSocket } = props;
+  const { session, audio, prefs, onPrefs, onExit, createSocket, notes, onNotesSeen } = props;
   const [store] = useState(() => new GameStore({ session, audio, onExit, createSocket }));
   useEffect(() => {
     store.connect();
@@ -112,6 +115,7 @@ export function LobbySession(props: LobbySessionProps) {
         <ConfirmButton label="Leave" question="Leave the lobby?" onConfirm={() => store.leave()} />
       </header>
       <SoundBanner audio={audio} />
+      {screen === 'lobby' && lobby && notes.length > 0 && <WhatsNew lines={notes} onClose={onNotesSeen} />}
       {!lobby || !settings ? (
         <Panel>
           <p aria-live="polite">Connecting to the lobby…</p>

@@ -2,6 +2,15 @@
 
 Releases moved out of `CHANGELOG.md` (which keeps about the latest 5). Newest first.
 
+## [1.1.0] - 2026-10-05
+
+### Added
+- A second title language: Preferences can show each option's title in a second language under the first, smaller (English with romaji, or English with Japanese, for example). A title that reads the same in both shows once, and the reveal lists the anime's other titles with the second language first.
+
+### Changed
+- The reveal no longer repeats a title that differs only in case, such as "Naruto" and "NARUTO".
+- Older entries moved to the changelog archive.
+
 ## [1.0.0] - 2026-10-05
 
 ### Changed

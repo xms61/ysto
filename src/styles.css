@@ -5732,6 +5732,33 @@
     transform-origin: bottom;
   }
 
+  /* What's new (WhatsNew.tsx): a small panel in the middle of the screen, three lines at most. */
+  .whats-new {
+    width: min(24rem, calc(100% - 2rem));
+    margin: auto;
+    padding: 1.25rem;
+    color: var(--ink);
+  }
+
+  .whats-new[open] {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.875rem;
+  }
+
+  .whats-new::backdrop {
+    background: rgb(0 0 0 / 0.6);
+  }
+
+  .whats-new-lines {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding-left: 1.125rem;
+    list-style: disc;
+  }
+
   /* The results' list of the game's songs: numbered rows split by hairlines, each with its link out. */
   .song-list {
     margin-bottom: 1rem;
