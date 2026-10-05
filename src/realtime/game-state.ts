@@ -1,6 +1,7 @@
 // The lobby and its game as this client knows them, folded from the server's messages by a pure reducer,
 // so tests can replay message sequences (docs/product-specs/game-flow.md). Times are server times.
 import type { LobbyState, OptionTitles, PlayerView, RoundReveal, ServerMessage } from '../../shared/protocol.ts';
+import { answersCanChange } from '../../shared/settings.ts';
 
 export interface RoundStart {
   startsAt: number;
@@ -15,7 +16,9 @@ export interface ClientRound {
   clipToken: string;
   start: RoundStart | null; // null until round:start
   answeredIds: string[];
-  choice: number | null; // this player's answer, once sent
+  choice: number | null; // this player's answer, once sent; with answer changes on, the latest
+  overtime: { startsAt: number; endsAt: number } | null; // with answer changes on, once everyone has answered
+  nudge: { playerId: string; count: number } | null; // the last player to switch, and how many switches so far
   reveal: RoundReveal | null;
 }
 
@@ -45,7 +48,18 @@ function onPrepare(state: GameState, message: Extract<ServerMessage, { type: 'ro
   const { roundId: id, number, rounds, clipToken } = message;
   return {
     ...state,
-    round: { id, number, rounds, clipToken, start: null, answeredIds: [], choice: null, reveal: null },
+    round: {
+      id,
+      number,
+      rounds,
+      clipToken,
+      start: null,
+      answeredIds: [],
+      choice: null,
+      overtime: null,
+      nudge: null,
+      reveal: null,
+    },
   };
 }
 
@@ -57,6 +71,15 @@ function onRound(state: GameState, message: RoundMessage): GameState {
     return { ...state, round: { ...round, start: { startsAt, endsAt, options } } };
   }
   if (message.type === 'round:answered') return { ...state, round: { ...round, answeredIds: message.playerIds } };
+  if (message.type === 'round:switched') {
+    const nudge = { playerId: message.playerId, count: (round.nudge?.count ?? 0) + 1 };
+    return { ...state, round: { ...round, nudge } };
+  }
+  if (message.type === 'round:overtime') {
+    const { startsAt, endsAt } = message;
+    return { ...state, round: { ...round, overtime: { startsAt, endsAt } } };
+  }
+  if (message.type === 'round:pick') return { ...state, round: { ...round, choice: message.option } };
   if (message.type === 'round:reveal') return { ...state, round: { ...round, reveal: message } };
   return state;
 }
@@ -69,6 +92,9 @@ export function receive(state: GameState, message: ServerMessage): GameState {
       return onPrepare(state, message);
     case 'round:start':
     case 'round:answered':
+    case 'round:switched':
+    case 'round:overtime':
+    case 'round:pick':
     case 'round:reveal':
       return onRound(state, message);
     case 'game:results':
@@ -78,11 +104,13 @@ export function receive(state: GameState, message: ServerMessage): GameState {
   }
 }
 
-// This player's answer: one per round, once the options are out and before the reveal.
+// This player's answer, once the options are out and before the reveal: one per round, or with answer
+// changes on, any other option until the round closes.
 export function choose(state: GameState, option: number): GameState {
-  const round = state.round;
-  if (!round?.start || round.reveal || round.choice !== null) return state;
-  if (state.lobby && round.answeredIds.includes(state.lobby.you)) return state;
+  const { round, lobby } = state;
+  if (!round?.start || round.reveal || round.choice === option) return state;
+  const answered = round.choice !== null || (lobby !== null && round.answeredIds.includes(lobby.you));
+  if (answered && !(lobby && answersCanChange(lobby.settings))) return state;
   return { ...state, round: { ...round, choice: option } };
 }
 

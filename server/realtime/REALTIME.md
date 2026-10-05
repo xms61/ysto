@@ -1,6 +1,6 @@
 ---
 status: verified
-last-verified: 2026-09-29
+last-verified: 2026-10-05
 ---
 
 # Lobby API and sockets
@@ -23,10 +23,10 @@ Entry: `server/realtime/hub.ts`. `Realtime` serves the lobby sockets at `/ws` on
 | `settings:update { settings }` | host | new settings, checked against the catalog's bounds; refused while a game runs |
 | `game:start` | host | starts a game, or the next one from the results |
 | `round:ready { roundId, loaded }` | player | the round's clip is fetched and decoded, or failed to (`loaded: false`) |
-| `answer { roundId, option }` | player | locks in option 0–3 |
+| `answer { roundId, option }` | player | locks in option 0–3; with answer changes on, a later one for another option switches to it |
 | `round:skip` | host | ends the round without points |
 
-During a game the server sends `round:prepare`, `round:start`, `round:answered`, `round:reveal` and `game:results` ([game flow](../../docs/product-specs/game-flow.md)). It sends `lobby:state` after every lobby change and whenever a game starts, prepares a round or ends (its `game` keeps the final results until the next game, for players who reconnect), `error { code }` for a refused message, and `server:closing` before a shutdown. Close codes: 1000 left, 1001 server closing, 1008 invalid messages, 1009 frame too large, 4001 kicked, 4002 lobby closed, 4003 unknown session, 4004 replaced by a newer socket.
+During a game the server sends `round:prepare`, `round:start`, `round:answered`, `round:reveal` and `game:results` ([game flow](../../docs/product-specs/game-flow.md)). With answer changes on it also sends `round:switched { playerId }` to the other players when someone switches, `round:overtime { startsAt, endsAt }` once everyone connected has answered, and to a player who reconnects, their own pick as `round:pick { option }`. It sends `lobby:state` after every lobby change and whenever a game starts, prepares a round or ends (its `game` keeps the final results until the next game, for players who reconnect), `error { code }` for a refused message, and `server:closing` before a shutdown. Close codes: 1000 left, 1001 server closing, 1008 invalid messages, 1009 frame too large, 4001 kicked, 4002 lobby closed, 4003 unknown session, 4004 replaced by a newer socket.
 
 ## Rules
 - The session token travels only in the first message or the clip route's `Authorization` header, never in a URL, and never in a log.

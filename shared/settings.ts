@@ -35,6 +35,8 @@ export interface LobbySettings {
   popularityRanks: Range; // used by 'custom' only: 1 is the most popular playable anime
   sampleStart: SampleStart;
   scoring: ScoringRules;
+  answerChanges: boolean; // players may pick another option until the round closes (not in First correct)
+  overtimeSec: number; // with answer changes: how long the round stays open once everyone has answered
 }
 
 // What the catalog allows: its years, the genres the settings offer, and the largest popularity rank
@@ -48,6 +50,7 @@ export interface SettingsBounds {
 export const LIMITS = {
   sampleLengthSec: { min: 10, max: 30, step: 5 },
   songsPerGame: { min: 5, max: 50 },
+  overtimeSec: { min: 3, max: 10 },
 } as const;
 
 const DEFAULT_RANK_TO = 1000;
@@ -64,6 +67,8 @@ export function defaultSettings(bounds: SettingsBounds): LobbySettings {
     popularityRanks: { from: 1, to: Math.min(DEFAULT_RANK_TO, bounds.maxRank) },
     sampleStart: 'random',
     scoring: { ...SCORING_PRESETS.classic },
+    answerChanges: false,
+    overtimeSec: 5,
   };
 }
 
@@ -78,6 +83,8 @@ const SETTINGS_KEYS = [
   'popularityRanks',
   'sampleStart',
   'scoring',
+  'answerChanges',
+  'overtimeSec',
 ] as const;
 const RANGE_KEYS = ['from', 'to'] as const;
 const SCORING_KEYS = ['mode', 'streakBonus', 'comeback', 'wrongAnswerPenalty'] as const;
@@ -116,8 +123,8 @@ function isScoring(value: unknown): value is ScoringRules {
 export function validateSettings(value: unknown, bounds: SettingsBounds): LobbySettings | null {
   if (!isRecord(value) || !hasKeys(value, SETTINGS_KEYS)) return null;
   const { sampleLengthSec, songsPerGame, years, genres, kinds, formats, difficulty, popularityRanks } = value;
-  const { sampleStart, scoring } = value;
-  const { songsPerGame: songs } = LIMITS;
+  const { sampleStart, scoring, answerChanges, overtimeSec } = value;
+  const { songsPerGame: songs, overtimeSec: overtime } = LIMITS;
   if (
     !isSampleLength(sampleLengthSec) ||
     !isIntegerIn(songsPerGame, songs.min, songs.max) ||
@@ -128,7 +135,9 @@ export function validateSettings(value: unknown, bounds: SettingsBounds): LobbyS
     !isOneOf(difficulty, DIFFICULTIES) ||
     !isRangeWithin(popularityRanks, 1, bounds.maxRank) ||
     !isOneOf(sampleStart, SAMPLE_STARTS) ||
-    !isScoring(scoring)
+    !isScoring(scoring) ||
+    typeof answerChanges !== 'boolean' ||
+    !isIntegerIn(overtimeSec, overtime.min, overtime.max)
   ) {
     return null;
   }
@@ -143,5 +152,12 @@ export function validateSettings(value: unknown, bounds: SettingsBounds): LobbyS
     popularityRanks: { from: popularityRanks.from, to: popularityRanks.to },
     sampleStart,
     scoring: { ...scoring },
+    answerChanges,
+    overtimeSec,
   };
+}
+
+// First correct is a buzzer: its first answer locks, whatever the setting says.
+export function answersCanChange(settings: LobbySettings): boolean {
+  return settings.answerChanges && settings.scoring.mode !== 'firstCorrect';
 }

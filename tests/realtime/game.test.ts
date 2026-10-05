@@ -90,6 +90,41 @@ test('plays a whole game over the sockets, from the host start to the results', 
   });
 });
 
+test('with answer changes on, sends a switch to the others and runs the overtime before the reveal', async () => {
+  await withServer(async (server) => {
+    const { ann, ben, annClient, benClient } = await twoPlayerLobby(server);
+    const lobby = server.registry.lobby(ann.code) ?? assert.fail();
+    annClient.send({ type: 'settings:update', settings: { ...lobby.settings, answerChanges: true, overtimeSec: 3 } });
+    await benClient.state((state) => state.settings.answerChanges);
+    annClient.send({ type: 'game:start' });
+    const prepare = await nextOf(annClient, 'round:prepare');
+    for (const client of [annClient, benClient])
+      client.send({ type: 'round:ready', roundId: prepare.roundId, loaded: true });
+    const start = await nextOf(annClient, 'round:start');
+    server.scheduler.advance(start.startsAt - server.scheduler.now() + 1000);
+    annClient.send({ type: 'answer', roundId: start.roundId, option: 0 });
+    await nextOf(benClient, 'round:answered');
+    annClient.send({ type: 'answer', roundId: start.roundId, option: 2 });
+    assert.deepEqual(await nextOf(benClient, 'round:switched'), {
+      type: 'round:switched',
+      roundId: start.roundId,
+      playerId: ann.playerId,
+    });
+    benClient.send({ type: 'answer', roundId: start.roundId, option: 1 });
+    const overtime = await nextOf(annClient, 'round:overtime');
+    assert.equal(overtime.endsAt - overtime.startsAt, 3000);
+    server.scheduler.advance(overtime.endsAt - server.scheduler.now() + GAME_TIMING.graceMs);
+    const reveal = await nextOf(benClient, 'round:reveal');
+    assert.deepEqual(
+      reveal.picks.map((pick) => [pick.playerId, pick.option]),
+      [
+        [ann.playerId, 2],
+        [ben.playerId, 1],
+      ],
+    );
+  });
+});
+
 test('refuses settings changes and a second start while a game runs, and lets a late joiner watch first', async () => {
   await withServer(async (server) => {
     const { ann, annClient, benClient } = await twoPlayerLobby(server);

@@ -2,6 +2,11 @@
 
 Releases moved out of `CHANGELOG.md` (which keeps about the latest 5). Newest first.
 
+## [0.31.1] - 2026-10-05
+
+### Fixed
+- The "you" and "host" chips and the shared timer bar take each theme's corners, so they are square in the square worlds instead of always round.
+
 ## [0.31.0] - 2026-10-05
 
 ### Added

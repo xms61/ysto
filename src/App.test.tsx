@@ -124,6 +124,27 @@ test('keeps the options hidden until the clip starts', () => {
   expect(screen.queryByText('Rain Song')).toBeNull();
 });
 
+test('with answer changes on, lets the player switch, runs the overtime and names who switched', async () => {
+  const lobby = lobbyState({ game: PLAYING });
+  const { socket } = renderSeated({ ...lobby, settings: { ...lobby.settings, answerChanges: true } });
+  const startsAt = Date.now() - 100;
+  act(() => {
+    socket.receive({ type: 'round:prepare', roundId: 'g.1', clipToken: 'c1', number: 1, rounds: 5 });
+    socket.receive({ type: 'round:start', roundId: 'g.1', startsAt, endsAt: startsAt + 20_000, options: OPTIONS });
+  });
+  fireEvent.click(await screen.findByRole('button', { name: 'Rain Song' }));
+  fireEvent.click(screen.getByRole('button', { name: 'Petal Story' }));
+  expect(socket.sentOfType('answer').map((message) => message.option)).toEqual([0, 1]);
+  expect(screen.getByText('Locked in for now. Tap another card to switch.')).toBeTruthy();
+  act(() => {
+    socket.receive({ type: 'round:switched', roundId: 'g.1', playerId: 'p2' });
+    socket.receive({ type: 'round:overtime', roundId: 'g.1', startsAt: Date.now(), endsAt: Date.now() + 5000 });
+  });
+  expect(screen.getByText('Ben switched')).toBeTruthy();
+  expect(screen.getByText('Overtime')).toBeTruthy();
+  expect(screen.getByText('Last chance to switch')).toBeTruthy();
+});
+
 test('sets the round as a masthead number in Back Issue, still named as the round', () => {
   localStorage.setItem('ysto_prefs', JSON.stringify({ volume: 15, theme: 'retro-vhs' }));
   const { socket } = renderSeated(lobbyState({ game: PLAYING }));

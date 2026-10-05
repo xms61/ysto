@@ -4,6 +4,7 @@
 import type { GameView, Pick, ResultView, ServerMessage, StandingView } from '../../shared/protocol.ts';
 import { rankPlayers, scoreQuestion } from '../../shared/scoring.ts';
 import type { Answer } from '../../shared/scoring.ts';
+import { answersCanChange } from '../../shared/settings.ts';
 import type { LobbySettings } from '../../shared/settings.ts';
 import type { Question } from './questions.ts';
 
@@ -44,7 +45,8 @@ export interface Round {
   startsAt: number;
   endsAt: number;
   closeAt: number; // the earliest close timer set so far
-  answers: AnswerRecord[]; // in arrival order
+  overtime: { startsAt: number; endsAt: number } | null; // with answer changes on, once everyone has answered
+  answers: AnswerRecord[]; // in arrival order; a switch replaces the player's record in place
   reveal: ServerMessage | null; // kept for players who reconnect during the reveal
 }
 
@@ -139,6 +141,10 @@ function answeredMessage(round: Round): ServerMessage {
   return { type: 'round:answered', roundId: round.id, playerIds: answeredIds(round) };
 }
 
+function overtimeMessage(round: Round, overtime: { startsAt: number; endsAt: number }): ServerMessage {
+  return { type: 'round:overtime', roundId: round.id, ...overtime };
+}
+
 // Everyone in the lobby plays from this round on: late joiners start at 0.
 function beginRound(draft: Draft, index: number, clip: { question: Question; clipToken: string }): void {
   const { game, now } = draft;
@@ -158,6 +164,7 @@ function beginRound(draft: Draft, index: number, clip: { question: Question; cli
     startsAt: 0,
     endsAt: 0,
     closeAt: 0,
+    overtime: null,
     answers: [],
     reveal: null,
   };
@@ -285,7 +292,37 @@ function recheck(draft: Draft): void {
   const { game } = draft;
   const round = game.round;
   if (round?.phase === 'preparing' && allConnectedDone(game, round.ready)) startRound(draft, round);
-  else if (round?.phase === 'playing' && allConnectedDone(game, answeredIds(round))) closeRound(draft, round, false);
+  else if (round?.phase === 'playing' && allConnectedDone(game, answeredIds(round))) everyoneAnswered(draft, round);
+}
+
+// Every connected player has answered: the round closes, or with answer changes on, first runs its
+// overtime, which never outlasts the clip. A switch doesn't restart it.
+function everyoneAnswered(draft: Draft, round: Round): void {
+  const { game, now } = draft;
+  if (!answersCanChange(game.settings)) return closeRound(draft, round, false);
+  if (round.overtime) return;
+  const overtime = { startsAt: now, endsAt: Math.min(now + game.settings.overtimeSec * 1000, round.endsAt) };
+  round.overtime = overtime;
+  round.closeAt = overtime.endsAt + GAME_TIMING.graceMs;
+  send(draft, overtimeMessage(round, overtime));
+  draft.effects.push({ type: 'timer', name: 'close', roundId: round.id, at: round.closeAt });
+}
+
+function pickOf(round: Round, event: AnswerEvent, now: number): AnswerRecord {
+  const compensation = Math.min(event.rttMs / 2, GAME_TIMING.maxRttCompensationMs);
+  const correct = event.option === round.question.correctIndex;
+  const responseMs = Math.max(0, Math.round(now - round.startsAt - compensation));
+  return { playerId: event.playerId, option: event.option, correct, responseMs };
+}
+
+// A switch takes the time it was made, so in Speed it costs points as a late answer does. The others hear
+// who switched, never to what.
+function switchAnswer(draft: Draft, round: Round, previous: AnswerRecord, event: AnswerEvent): void {
+  const { game, now } = draft;
+  if (!answersCanChange(game.settings) || previous.option === event.option) return;
+  Object.assign(previous, pickOf(round, event, now));
+  const others = game.players.filter((id) => id !== event.playerId);
+  send(draft, { type: 'round:switched', roundId: round.id, playerId: event.playerId }, others);
 }
 
 function onAnswer(draft: Draft, event: AnswerEvent): void {
@@ -293,18 +330,18 @@ function onAnswer(draft: Draft, event: AnswerEvent): void {
   const round = game.round;
   if (!round || round.id !== event.roundId || round.phase !== 'playing') return;
   if (!game.participants.includes(event.playerId)) return;
-  if (round.answers.some((answer) => answer.playerId === event.playerId)) return;
-  if (now < round.startsAt || now > round.endsAt + GAME_TIMING.graceMs) return;
-  const compensation = Math.min(event.rttMs / 2, GAME_TIMING.maxRttCompensationMs);
-  const correct = event.option === round.question.correctIndex;
-  const responseMs = Math.max(0, Math.round(now - round.startsAt - compensation));
-  round.answers.push({ playerId: event.playerId, option: event.option, correct, responseMs });
+  const answersEndAt = round.overtime?.endsAt ?? round.endsAt;
+  if (now < round.startsAt || now > answersEndAt + GAME_TIMING.graceMs) return;
+  const previous = round.answers.find((answer) => answer.playerId === event.playerId);
+  if (previous) return switchAnswer(draft, round, previous, event);
+  const pick = pickOf(round, event, now);
+  round.answers.push(pick);
   send(draft, answeredMessage(round));
-  if (allConnectedDone(game, answeredIds(round))) return closeRound(draft, round, false);
+  if (allConnectedDone(game, answeredIds(round))) return everyoneAnswered(draft, round);
   // In First correct a later answer may still have the lower adjusted time, so the round waits the
   // compensation cap before it closes.
   const closeAt = now + GAME_TIMING.maxRttCompensationMs;
-  if (game.settings.scoring.mode === 'firstCorrect' && correct && closeAt < round.closeAt) {
+  if (game.settings.scoring.mode === 'firstCorrect' && pick.correct && closeAt < round.closeAt) {
     round.closeAt = closeAt;
     draft.effects.push({ type: 'timer', name: 'close', roundId: round.id, at: closeAt });
   }
@@ -337,6 +374,9 @@ function catchUp(draft: Draft, playerId: string): void {
   if (round.phase === 'playing') {
     send(draft, startMessage(round), [playerId]);
     send(draft, answeredMessage(round), [playerId]);
+    if (round.overtime) send(draft, overtimeMessage(round, round.overtime), [playerId]);
+    const pick = round.answers.find((answer) => answer.playerId === playerId);
+    if (pick) send(draft, { type: 'round:pick', roundId: round.id, option: pick.option }, [playerId]);
   }
   if (round.reveal) send(draft, round.reveal, [playerId]);
 }

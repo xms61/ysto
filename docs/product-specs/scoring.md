@@ -1,6 +1,6 @@
 ---
 status: draft
-last-verified: 2026-09-29
+last-verified: 2026-10-05
 ---
 
 # Scoring
@@ -33,7 +33,7 @@ The host sets the scoring in the lobby, and presets bundle common combinations. 
 - A wrong answer or no answer ends the streak. No answer never costs points, even with the penalty on. With the penalty, a total can drop below zero.
 - The streak bonus only adds to points a correct answer earned, so in First correct only the winner gets it. Comeback compares the scores from before the round.
 - In First correct, the fastest correct answer wins, and an exact tie goes to the answer that arrived first.
-- Each player locks in one answer per round. Ties in the final ranking go to the player with less total response time on correct answers.
+- Each player locks in one answer per round, unless the host turns on answer changes ([game flow](game-flow.md)). Then the last pick counts, and its response time is the time of the switch, so in Speed a late switch scores like a late answer. First correct always keeps the first answer. Ties in the final ranking go to the player with less total response time on correct answers.
 - Response times are measured by the server ([anti-cheat](../design-docs/anti-cheat.md)).
 
 ## Acceptance criteria

@@ -1,11 +1,13 @@
 // A round from the player's side (docs/product-specs/game-flow.md): four cards dealt face down while the clip
 // loads and the countdown runs, turned face up together exactly when the clip starts, then the reveal. Keys 1
-// to 4 answer too.
-import { useEffect } from 'react';
+// to 4 answer too. With answer changes on, the cards stay open after a pick, and once everyone has answered
+// an overtime counts down before the reveal.
+import { useEffect, useState } from 'react';
 import type { CSSProperties } from 'react';
 import type { LobbyState } from '../../shared/protocol.ts';
 import { POINTS } from '../../shared/scoring.ts';
-import type { ScoringRules } from '../../shared/scoring.ts';
+import { answersCanChange } from '../../shared/settings.ts';
+import type { LobbySettings } from '../../shared/settings.ts';
 import { Listening } from '../components/Listening.tsx';
 import { FaceDownCards, OptionCard } from '../components/OptionCard.tsx';
 import type { CardState } from '../components/OptionCard.tsx';
@@ -72,14 +74,17 @@ function useAnswerKeys(store: GameStore, active: boolean): void {
   }, [store, active]);
 }
 
-// What a round is worth, stated where the answer is given: a wrong answer can cost points.
-function scoringLine(rules: ScoringRules): string {
+// What a round is worth, stated where the answer is given: a wrong answer can cost points, and an answer may
+// be changed.
+function scoringLine(settings: LobbySettings): string {
+  const rules = settings.scoring;
   const penalty = rules.mode === 'firstCorrect' ? POINTS.firstCorrectPenalty : POINTS.penalty;
   return [
     MODE_LABELS[rules.mode],
     rules.streakBonus && 'streak bonus',
     rules.comeback && 'comeback',
     rules.wrongAnswerPenalty && `wrong answers cost ${penalty}`,
+    answersCanChange(settings) && 'answers can change',
   ]
     .filter((part) => part !== false)
     .join(' · ');
@@ -240,23 +245,69 @@ interface AnsweringProps {
   clip: ClipStatus | null;
 }
 
-function cardState(round: ClientRound, answered: boolean, index: number): CardState {
+function cardState(round: ClientRound, open: boolean, index: number): CardState {
   if (round.choice === index) return 'chosen';
-  return answered ? 'muted' : 'open';
+  return open ? 'open' : 'muted';
+}
+
+const NUDGE_MS = 2500;
+
+// "Mio switched", for a moment after each switch. Who, never to what.
+function Nudge({ lobby, nudge }: { lobby: LobbyState; nudge: ClientRound['nudge'] }) {
+  const [faded, setFaded] = useState(0);
+  useEffect(() => {
+    if (!nudge) return;
+    const timer = setTimeout(() => setFaded(nudge.count), NUDGE_MS);
+    return () => clearTimeout(timer);
+  }, [nudge]);
+  const name = lobby.players.find((player) => player.id === nudge?.playerId)?.name;
+  return (
+    <p aria-live="polite" className="nudge-line">
+      {nudge && faded !== nudge.count && name && (
+        <span key={nudge.count} className="nudge">
+          {name} switched
+        </span>
+      )}
+    </p>
+  );
+}
+
+// The overtime's call above the time left: the round stays open a few seconds more, for a last switch.
+function OvertimeCall({ secondsLeft }: { secondsLeft: number }) {
+  return (
+    <p className="overtime-call" role="status">
+      <span className="display overtime-word">Overtime</span>
+      <span className="overtime-hint">Last chance to switch</span>
+      <span className="sr-only">, {secondsLeft} seconds</span>
+    </p>
+  );
+}
+
+function statusLine(spectating: boolean, answered: boolean, canSwitch: boolean, closed: boolean, overtime: boolean) {
+  if (spectating) return "You joined during this round. You'll play from the next one.";
+  if (closed) return answered ? 'Locked in.' : "Time's up.";
+  if (overtime) return answered ? 'Everyone has answered. Keep your pick, or switch now.' : 'Pick the anime, quick.';
+  if (answered && canSwitch) return 'Locked in for now. Tap another card to switch.';
+  if (answered) return 'Locked in. Waiting for the others.';
+  return null;
 }
 
 function Answering({ store, lobby, round, start, titles, clip }: AnsweringProps) {
   const now = useTicker(store.serverNow, TICK_MS);
   const spectating = lobby.players.find((player) => player.id === lobby.you)?.spectating ?? false;
   const answered = round.choice !== null || round.answeredIds.includes(lobby.you);
-  const timeUp = now >= start.endsAt;
-  const canAnswer = !spectating && !answered && !timeUp;
+  const canSwitch = answersCanChange(lobby.settings);
+  const { overtime } = round;
+  const countdown = overtime ?? start;
+  const closed = now >= countdown.endsAt;
+  const canAnswer = !spectating && !closed && (!answered || canSwitch);
   useAnswerKeys(store, canAnswer);
-  const elapsed = Math.min(1, Math.max(0, (now - start.startsAt) / (start.endsAt - start.startsAt)));
+  const elapsed = Math.min(1, Math.max(0, (now - countdown.startsAt) / (countdown.endsAt - countdown.startsAt)));
+  const secondsLeft = Math.max(0, Math.ceil((countdown.endsAt - now) / 1000));
   const players = lobby.players.filter((player) => !player.spectating).length;
 
   const columns = useOptionColumns();
-  const timer = <TimeLeft elapsed={elapsed} secondsLeft={Math.max(0, Math.ceil((start.endsAt - now) / 1000))} />;
+  const timer = <TimeLeft elapsed={elapsed} secondsLeft={secondsLeft} />;
   const cards = (
     <ol aria-label="Options" className={`options grid ${columns} gap-3`}>
       {start.options[titles.first].map((_, index) => (
@@ -264,26 +315,21 @@ function Answering({ store, lobby, round, start, titles, clip }: AnsweringProps)
           <OptionCard
             index={index}
             title={optionTitle(start.options, index, titles)}
-            state={cardState(round, answered, index)}
+            state={cardState(round, canAnswer, index)}
             tag={round.choice === index ? 'Your pick' : undefined}
             dealt
-            disabled={!canAnswer}
+            disabled={!canAnswer || round.choice === index}
             onPick={() => answer(store, index)}
           />
         </li>
       ))}
     </ol>
   );
+  const status = statusLine(spectating, answered, canSwitch, closed, overtime !== null);
   const below = (
     <>
       <p aria-live="polite" className="text-muted">
-        {spectating ? (
-          "You joined during this round. You'll play from the next one."
-        ) : answered ? (
-          'Locked in. Waiting for the others.'
-        ) : timeUp ? (
-          "Time's up."
-        ) : (
+        {status ?? (
           <>
             Pick the anime.
             {/* Keys only help where there is a keyboard, which a mouse or trackpad suggests. */}
@@ -296,12 +342,16 @@ function Answering({ store, lobby, round, start, titles, clip }: AnsweringProps)
           {round.answeredIds.length} of {players} answered
         </p>
       )}
+      {canSwitch && players > 1 && <Nudge lobby={lobby} nudge={round.nudge} />}
     </>
   );
   const slot = (
     <>
-      <Listening status={clip} playing={!timeUp} />
-      {timer}
+      <Listening status={clip} playing={now < start.endsAt} />
+      {overtime && !closed && <OvertimeCall secondsLeft={secondsLeft} />}
+      <div className="time-left" data-overtime={overtime ? '' : undefined}>
+        {timer}
+      </div>
     </>
   );
   return <Stage slot={slot} cards={cards} below={below} />;
@@ -383,7 +433,7 @@ function RoundView({ store, lobby, round, titles, isHost, clip }: RoundProps & {
           />
         )}
       </div>
-      <p className="mt-1 text-sm text-muted">{scoringLine(lobby.settings.scoring)}</p>
+      <p className="mt-1 text-sm text-muted">{scoringLine(lobby.settings)}</p>
       {reveal ? (
         <Reveal round={round} reveal={reveal} lobby={lobby} titles={titles} />
       ) : !start ? (

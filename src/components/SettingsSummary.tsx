@@ -1,5 +1,5 @@
 // The lobby settings in words, for the players who aren't the host.
-import { MEDIA_FORMATS } from '../../shared/settings.ts';
+import { MEDIA_FORMATS, answersCanChange } from '../../shared/settings.ts';
 import type { LobbySettings, SettingsBounds } from '../../shared/settings.ts';
 import { DIFFICULTY_LABELS, MODE_LABELS, PRESET_LABELS, SAMPLE_START_LABELS, presetOf } from './SettingsForm.tsx';
 
@@ -38,6 +38,12 @@ export function SettingsSummary({ settings, bounds }: { settings: LobbySettings;
     ['Samples start at', SAMPLE_START_LABELS[settings.sampleStart].toLowerCase()],
     ['Songs', songsFrom(settings, bounds)],
     ['Scoring', scoring(settings)],
+    [
+      'Answers',
+      answersCanChange(settings)
+        ? `Can change until the round closes, with ${settings.overtimeSec} s of overtime`
+        : 'Locked once picked',
+    ],
   ];
   return (
     <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2">

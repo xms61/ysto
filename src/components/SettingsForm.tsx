@@ -43,6 +43,9 @@ export const SAMPLE_START_LABELS: Record<SampleStart, string> = {
   intro: 'The start of the song',
 };
 
+const { min: OVERTIME_MIN, max: OVERTIME_MAX } = LIMITS.overtimeSec;
+const OVERTIMES = Array.from({ length: OVERTIME_MAX - OVERTIME_MIN + 1 }, (_, index) => OVERTIME_MIN + index);
+
 const { min: LENGTH_MIN, max: LENGTH_MAX, step: LENGTH_STEP } = LIMITS.sampleLengthSec;
 const SAMPLE_LENGTHS = Array.from(
   { length: (LENGTH_MAX - LENGTH_MIN) / LENGTH_STEP + 1 },
@@ -83,6 +86,47 @@ function Choice({ children, ...input }: { children: ReactNode } & InputHTMLAttri
       <input className="choice" {...input} />
       <span>{children}</span>
     </label>
+  );
+}
+
+// Whether players may switch their answer, and the overtime that gives them a last chance once everyone has
+// answered. First correct is a buzzer, so it keeps the first answer whatever this says.
+function AnswerChanges({ settings, set }: { settings: LobbySettings; set: (change: Partial<LobbySettings>) => void }) {
+  const buzzer = settings.scoring.mode === 'firstCorrect';
+  const on = settings.answerChanges && !buzzer;
+  const hint = buzzer
+    ? 'First correct keeps the first answer.'
+    : on
+      ? 'Once everyone has answered, an overtime gives a last chance to switch. A switch scores from when it is made.'
+      : 'An answer locks once it is picked.';
+  return (
+    <Group legend="Answers">
+      <Choice
+        type="checkbox"
+        checked={on}
+        disabled={buzzer}
+        onChange={(event) => set({ answerChanges: event.target.checked })}
+      >
+        Players can switch until the round closes
+      </Choice>
+      {on && (
+        <label className="flex flex-col gap-1.5">
+          Overtime once everyone has answered
+          <select
+            className={INPUT}
+            value={settings.overtimeSec}
+            onChange={(event) => set({ overtimeSec: Number(event.target.value) })}
+          >
+            {OVERTIMES.map((seconds) => (
+              <option key={seconds} value={seconds}>
+                {seconds} s
+              </option>
+            ))}
+          </select>
+        </label>
+      )}
+      <p className="text-sm text-muted">{hint}</p>
+    </Group>
   );
 }
 
@@ -196,6 +240,8 @@ export function SettingsForm({ settings, bounds, onChange }: SettingsFormProps) 
         </div>
         <p className="text-sm text-muted">{SCORING_SUMMARY[settings.scoring.mode]}</p>
       </Group>
+
+      <AnswerChanges settings={settings} set={set} />
 
       <details className="adjust">
         <summary className="adjust-summary">Adjust the song pool and scoring rules</summary>

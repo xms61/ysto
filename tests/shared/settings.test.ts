@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { SCORING_PRESETS } from '../../shared/scoring.ts';
-import { defaultSettings, validateSettings } from '../../shared/settings.ts';
+import { answersCanChange, defaultSettings, validateSettings } from '../../shared/settings.ts';
 import type { SettingsBounds } from '../../shared/settings.ts';
 
 const bounds: SettingsBounds = { years: { from: 1963, to: 2026 }, genres: ['Action', 'Drama'], maxRank: 4000 };
@@ -18,6 +18,8 @@ test('starts a lobby with the defaults of the settings spec', () => {
     popularityRanks: { from: 1, to: 1000 },
     sampleStart: 'random',
     scoring: { mode: 'speed', streakBonus: true, comeback: false, wrongAnswerPenalty: false },
+    answerChanges: false,
+    overtimeSec: 5,
   });
 });
 
@@ -61,6 +63,9 @@ const INVALID: [string, Record<string, unknown>][] = [
   ['an unknown sample start', { sampleStart: 'chorus' }],
   ['an unknown scoring mode', { scoring: { ...SCORING_PRESETS.classic, mode: 'fastest' } }],
   ['a scoring flag that is not a boolean', { scoring: { ...SCORING_PRESETS.classic, comeback: 'yes' } }],
+  ['answer changes that are not a boolean', { answerChanges: 'on' }],
+  ['an overtime under 3 s', { overtimeSec: 2 }],
+  ['an overtime over 10 s', { overtimeSec: 11 }],
   ['an extra field', { extra: true }],
   ['a range with an extra field', { years: { from: 2000, to: 2010, step: 1 } }],
 ];
@@ -74,4 +79,11 @@ for (const [name, change] of INVALID) {
 test('refuses settings that are not an object or miss a field', () => {
   const { difficulty, ...withoutDifficulty } = defaultSettings(bounds);
   for (const value of [null, 'settings', [], withoutDifficulty]) assert.equal(validateSettings(value, bounds), null);
+});
+
+test('lets answers change only outside First correct', () => {
+  const settings = { ...defaultSettings(bounds), answerChanges: true };
+  assert.equal(answersCanChange(settings), true);
+  assert.equal(answersCanChange({ ...settings, scoring: { ...SCORING_PRESETS.buzzer } }), false);
+  assert.equal(answersCanChange(defaultSettings(bounds)), false);
 });

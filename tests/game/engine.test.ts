@@ -430,3 +430,106 @@ test('leaks nothing about the answer before its reveal', () => {
     }
   }
 });
+
+const SWITCHING = { answerChanges: true, overtimeSec: 5 } as const;
+
+function pointsOf(reveal: RoundReveal): Record<string, number> {
+  return Object.fromEntries(reveal.picks.map((pick) => [pick.playerId, pick.points]));
+}
+
+test('with answer changes on, a switch replaces the pick at its own time, and the others hear only who switched', () => {
+  const sim = new Simulation(settings(SWITCHING), ['p1', 'p2', 'p3']);
+  allReady(sim);
+  const start = sim.last('round:start');
+  const answer = (playerId: string, correct: boolean) =>
+    sim.event({ type: 'answer', playerId, roundId: start.roundId, option: optionFor(sim, correct), rttMs: 0 });
+  sim.advanceTo(start.startsAt + 1000);
+  answer('p1', false);
+  sim.advanceTo(start.startsAt + 3000);
+  answer('p1', true);
+  answer('p1', true);
+  const switched = sim.sent.filter((sent) => sent.message.type === 'round:switched');
+  assert.equal(switched.length, 1, 'picking the same option again is no switch');
+  assert.deepEqual(switched[0]?.to, ['p2', 'p3']);
+  assert.deepEqual(switched[0]?.message, { type: 'round:switched', roundId: start.roundId, playerId: 'p1' });
+  assert.deepEqual(sim.last('round:answered').playerIds, ['p1']);
+  sim.advanceTo(start.endsAt + GAME_TIMING.graceMs);
+  const reveal = sim.last('round:reveal');
+  assert.equal(reveal.picks.find((pick) => pick.playerId === 'p1')?.option, optionFor(sim, true));
+  // Speed scores the switch's time: 3 s of a 10 s window.
+  assert.deepEqual(pointsOf(reveal), { p1: 850, p2: 0, p3: 0 });
+});
+
+test('runs an overtime once everyone has answered, open to switches, and never past the clip', () => {
+  const sim = new Simulation(settings(SWITCHING), ['p1', 'p2']);
+  playRoundPartly(sim, [
+    { playerId: 'p1', delayMs: 1000, correct: false },
+    { playerId: 'p2', delayMs: 2000, correct: true },
+  ]);
+  const start = sim.last('round:start');
+  const overtime = sim.last('round:overtime');
+  assert.deepEqual(overtime, {
+    type: 'round:overtime',
+    roundId: start.roundId,
+    startsAt: start.startsAt + 2000,
+    endsAt: start.startsAt + 7000,
+  });
+  assert.equal(sim.count('round:reveal'), 0);
+  sim.advanceTo(start.startsAt + 6000);
+  sim.event({ type: 'answer', playerId: 'p1', roundId: start.roundId, option: optionFor(sim, true), rttMs: 0 });
+  sim.advanceTo(overtime.endsAt + GAME_TIMING.graceMs - 1);
+  assert.equal(sim.count('round:reveal'), 0);
+  sim.advanceTo(overtime.endsAt + GAME_TIMING.graceMs);
+  assert.deepEqual(pointsOf(sim.last('round:reveal')), { p1: 700, p2: 900 });
+  assert.equal(sim.count('round:overtime'), 1, 'a switch never restarts the overtime');
+
+  const late = new Simulation(settings(SWITCHING), ['p1', 'p2']);
+  playRoundPartly(late, [
+    { playerId: 'p1', delayMs: 1000, correct: true },
+    { playerId: 'p2', delayMs: 8000, correct: true },
+  ]);
+  const lateStart = late.last('round:start');
+  assert.equal(late.last('round:overtime').endsAt, lateStart.endsAt);
+});
+
+test('First correct keeps the first answer, even with answer changes on', () => {
+  const buzzer = { ...SWITCHING, scoring: { ...SCORING_PRESETS.buzzer } };
+  const sim = new Simulation(settings(buzzer), ['p1', 'p2']);
+  playRoundPartly(sim, [
+    { playerId: 'p1', delayMs: 1000, correct: false },
+    { playerId: 'p1', delayMs: 2000, correct: true },
+  ]);
+  assert.equal(sim.count('round:switched'), 0);
+  sim.event({
+    type: 'answer',
+    playerId: 'p2',
+    roundId: sim.last('round:start').roundId,
+    option: optionFor(sim, false),
+    rttMs: 0,
+  });
+  assert.equal(sim.count('round:overtime'), 0);
+  assert.deepEqual(pointsOf(sim.last('round:reveal')), { p1: -500, p2: -500 });
+});
+
+test('starts the overtime when the last player to answer drops, and catches up a returning player with it', () => {
+  const sim = new Simulation(settings(SWITCHING), ['p1', 'p2', 'p3']);
+  playRoundPartly(sim, [
+    { playerId: 'p1', delayMs: 1000, correct: true },
+    { playerId: 'p2', delayMs: 2000, correct: false },
+  ]);
+  assert.equal(sim.count('round:overtime'), 0);
+  sim.event({ type: 'player-disconnected', playerId: 'p3' });
+  assert.equal(sim.count('round:overtime'), 1);
+  sim.event({ type: 'player-disconnected', playerId: 'p2' });
+  sim.event({ type: 'player-connected', playerId: 'p2' });
+  const toP2 = sim.sent.filter((sent) => sent.to.join() === 'p2').map((sent) => sent.message);
+  assert.deepEqual(
+    toP2.map((message) => message.type),
+    ['round:prepare', 'round:start', 'round:answered', 'round:overtime', 'round:pick'],
+  );
+  assert.deepEqual(toP2.at(-1), {
+    type: 'round:pick',
+    roundId: sim.last('round:start').roundId,
+    option: optionFor(sim, false),
+  });
+});
