@@ -2498,9 +2498,9 @@
 
   /* Hanami's dango skewer (Dango.tsx): a bamboo stick and the dumplings left on it. */
   .dango {
-    width: 9.5rem;
-    height: 1.625rem;
-    flex-shrink: 0;
+    flex: 1;
+    min-width: 0;
+    height: auto;
   }
 
   .dango-stick {
