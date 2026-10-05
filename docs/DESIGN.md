@@ -109,29 +109,37 @@ colors:
   mecha-runner-shade: "#5f686e"
   mecha-nipper: "#b8c0c6"
   mecha-nipper-grip: "#c8372d"
-  magical-girl-page: "#170c33"
-  magical-girl-panel: "#231249"
-  magical-girl-raised: "#321a64"
-  magical-girl-line: "#4a2e82"
-  magical-girl-edge: "#a98ad8"
-  magical-girl-ink: "#fff4fb"
-  magical-girl-muted: "#d6c3f0"
-  magical-girl-accent: "#ff5fb4"
-  magical-girl-accent-ink: "#1a0b2e"
-  magical-girl-good: "#7cf2c0"
-  magical-girl-bad: "#ff8aa8"
-  magical-girl-card: "#fff0fa"
-  magical-girl-card-ink: "#36104a"
-  magical-girl-card-muted: "#6d4a7c"
-  magical-girl-card-dim: "#e8daef"
-  magical-girl-card-mark: "#c21d7c"
+  magical-girl-page: "#fff4e3"
+  magical-girl-panel: "#ffffff"
+  magical-girl-raised: "#fbeedd"
+  magical-girl-line: "#ecd9c2"
+  magical-girl-edge: "#9b7b5e"
+  magical-girl-ink: "#2a1810"
+  magical-girl-muted: "#6b5244"
+  magical-girl-accent: "#c42b26"
+  magical-girl-accent-ink: "#ffffff"
+  magical-girl-good: "#1d7a3d"
+  magical-girl-bad: "#bb241d"
+  magical-girl-card: "#eef6fb"
+  magical-girl-card-ink: "#1d2a33"
+  magical-girl-card-muted: "#4a5a66"
+  magical-girl-card-dim: "#dde4e9"
+  magical-girl-card-mark: "#1d5f9e"
   magical-girl-card-mark-ink: "#ffffff"
-  magical-girl-card-chosen: "#e2ceff"
-  magical-girl-card-chosen-ink: "#36104a"
-  magical-girl-card-alert: "#b0184d"
-  magical-girl-card-back: "#a81d68"
-  magical-girl-card-back-ink: "#ffffff"
+  magical-girl-card-chosen: "#ffe9a8"
+  magical-girl-card-chosen-ink: "#2a1810"
+  magical-girl-card-alert: "#b3261e"
+  magical-girl-card-back: "#ffd23f"
+  magical-girl-card-back-ink: "#2a1810"
   magical-girl-foil: "#f2c14e"
+  magical-girl-head: "#c42b26"
+  magical-girl-head-ink: "#ffffff"
+  magical-girl-dome: "#e3f1fa"
+  magical-girl-capsule: "#3a9ad9"
+  magical-girl-capsule-shade: "#2a7bb5"
+  magical-girl-chrome: "#b8c3cc"
+  magical-girl-chrome-shade: "#7f8b95"
+  magical-girl-slip: "#ffffff"
   isekai-page: "#0b0e1c"
   isekai-panel: "#1d2f94"
   isekai-raised: "#2a3fb0"
@@ -366,7 +374,7 @@ The game is played on a phone under time pressure, so expression never hides the
 
 The fifteen themes, in picker order, with their ids in `src/prefs/prefs.ts`: Tokyo Rain (`tokyo-rain`, the default), Konbini 2 a.m. (`konbini`), Karaoke Box (`karaoke`), Hanami (`sakura`), Omikuji (`omikuji`), Blossom Map (`blossom-map`), Fighter Select (`shonen`), Tournament Arc (`tournament-arc`), Splash Page (`splash-page`), Night Arc (`night-arc`), Model Kit (`mecha`), Gachapon (`magical-girl`), Quest Board (`isekai`), Back Issue (`retro-vhs`) and Side A (`side-a`). Each player picks one on their device.
 
-The themes are being rebuilt as fifteen worlds, each laying out the round, the reveal and the results in its own way ([plan](exec-plans/active/2026-10-01-theme-worlds.md)). Until a theme's world is built, it plays on the card anatomy below: the older themes not yet rebuilt keep the stocks this doc describes under their old names (Magical Girl, Isekai, Retro VHS), and the eight new ones print the plain stock in their own colors and faces. Their tokens join the frontmatter when their world is built.
+The themes are being rebuilt as fifteen worlds, each laying out the round, the reveal and the results in its own way ([plan](exec-plans/active/2026-10-01-theme-worlds.md)). Until a theme's world is built, it plays on the card anatomy below: the older themes not yet rebuilt keep the stocks this doc describes under their old names (Isekai, Retro VHS), and the eight new ones print the plain stock in their own colors and faces. Their tokens join the frontmatter when their world is built.
 
 **Key Characteristics:**
 - One card anatomy, seven printed stocks.
@@ -381,7 +389,7 @@ The themes are being rebuilt as fifteen worlds, each laying out the round, the r
 Each theme is one block of variables on any element with `data-theme`, in two families: the chrome around the cards and the card stock itself.
 
 ### Primary
-- **Accent** (`accent`, with `accent-ink` on it): the primary button, the timer's fill, the lit sonar in the listening panel, focus outlines, the selected theme in the picker, the caret and text selection. Tokyo Rain's is signal amber, Hanami's blossom pink, Fighter Select's arcade yellow, Model Kit's yellow part plastic, Magical Girl's pink, Isekai's menu yellow, Retro VHS's sunset orange.
+- **Accent** (`accent`, with `accent-ink` on it): the primary button, the timer's fill, the lit sonar in the listening panel, focus outlines, the selected theme in the picker, the caret and text selection. Tokyo Rain's is signal amber, Hanami's blossom pink, Fighter Select's arcade yellow, Model Kit's yellow part plastic, Gachapon's candy red, Isekai's menu yellow, Retro VHS's sunset orange.
 
 ### Secondary
 - **Card stock** (`card`, `card-ink`): the face of an open card.
@@ -393,7 +401,7 @@ Each theme is one block of variables on any element with `data-theme`, in two fa
 
 ### Tertiary
 - **Right and wrong** (`good`, `bad`): verdict and error colors on the panels. They never carry meaning alone; an icon and words always go with them.
-- **Material colors**, only where a theme's stock needs them: Hanami's `blossom` and gold `foil`, Magical Girl's `foil` and its `--foil-sheen` gradient, Retro VHS's three sunset stripes (`stripe-1` to `stripe-3`).
+- **Material colors**, only where a theme's stock needs them: Hanami's `blossom` and gold `foil`, Gachapon's gold `foil` and its `--foil-sheen` gradient for the charm, Retro VHS's three sunset stripes (`stripe-1` to `stripe-3`).
 
 ### Neutral
 - **Page** (`page`): behind everything, under the theme's texture. Also the fill of fields.
@@ -474,12 +482,12 @@ Depth is printed, not lifted. Stocks show their edges with inset rims, bands and
 
 ## Shapes
 
-Each theme resizes three radii: `lg` for buttons, fields, index marks and the stamp; `xl` for card faces; `2xl` for panels. The corners follow the stock: Fighter Select and Model Kit are square or nearly, Hanami and Retro VHS are cut close, Magical Girl is soft and its buttons are pills.
+Each theme resizes three radii: `lg` for buttons, fields, index marks and the stamp; `xl` for card faces; `2xl` for panels. The corners follow the stock: Fighter Select and Model Kit are square or nearly, Hanami and Retro VHS are cut close, Gachapon is soft, its capsules rounder still and its buttons pills.
 
 Signature silhouettes:
 - **Model Kit's chamfer:** panels and card faces, cut like armor parts, lose their four corners to a clip path (0.875rem on panels, 0.625rem on cards).
-- **Tokyo Rain's round coin lamp**, **Fighter Select's slanted number** and **Magical Girl's diamond gem** break the square mark.
-- **Magical Girl's four-point sparkle** appears on a chosen card, on the radio dot and in the backdrop.
+- **Tokyo Rain's round coin lamp**, **Fighter Select's slanted number** and **Gachapon's round sticker** break the square mark.
+- **Gachapon's four-point sparkle** is the charm in the right capsule, on the radio dot and in its burst.
 - **Isekai's triangle cursor** marks the chosen item and the checked radio.
 
 ## Components
@@ -511,7 +519,7 @@ A small tag across the card's top edge, 0.5rem from the right, outside the faces
 | Hanami (`sakura`) | A compartment of a lacquer bento (see Theme worlds): a rice-paper slip, its edge a faint hairline, between green leaf dividers | A filled vermilion seal | The compartment lifts 3px with a doubled vermilion rim; the others' lids close, a lacquer edge across the top of each dimmed slip | Vermilion with a gold foil hairline inside the edge; face down, black lacquer with a vermilion rim |
 | Fighter Select (`shonen`) | A fighter slot on the select screen (see Theme worlds): a dark slot in a 2px rim, the title on a slanted name plate (`--nameplate`) | A red number, slanted 12 degrees | The red player cursor: a red inner rim and a white outer ring, the stamp lettered as the cursor's tag; muted slots drop their name plate | The winner's gold with a dark title; face down, the dim slot with a red "?!" |
 | Model Kit (`mecha`) | An armor part on the runner (see Theme worlds): light grey plastic with chamfered corners, a shaded edge, a molded panel line and two pin marks, hung from the frame by two gates | A gate tag, "A1" to "A4", white on dark grey | A pale yellow part with a yellow edge, its gates yellow; muted parts go darker grey | Yellow part plastic with black type, its gates cut; face down, a blank grey part with a dark "?!" |
-| Magical Girl | A gem card: pale pink stock inside a 3px gold foil rim, cut from the foil gradient | A faceted magenta gem, set on the diagonal in foil | Lilac stock and two foil sparkles on its corners; muted cards lose the foil for a plain rim | Magenta with a foil hairline inset |
+| Gachapon (`magical-girl`) | A capsule in the dome (see Theme worlds): a sky-blue half on top over a seam, and a clear half with the title on a white paper slip | A round blue sticker with a white numeral and rim, on the colored half | The machine's red half over pale lemon, dropped 0.25rem toward the tray; muted capsules turn chrome grey | An open lemon capsule, its blue lid lifted to a strip along the top, a gold charm in the corner; face down, a closed capsule with a blue "?!" |
 | Isekai | A JRPG menu window: menu blue, a 3px white rim, a dark outer ring | A numbered slot in yellow on a dark square, with a gutter left of it | A white window with blue type and a triangle cursor in the gutter | A yellow window with the same rims |
 | Retro VHS | A tape label: pale grey, with an orange, pink and violet sunset stripe along the foot | "CH" and the numeral in teal on near-black, like an on-screen display | A pale cyan label inside a 3px teal outline; muted labels grey their stripe too | A near-black screen with teal scanlines, type in teal capitals |
 
@@ -524,7 +532,7 @@ After the right card turns over, its stock prints a hit round it (`.card-impact`
 | Hanami (`sakura`) | A gold foil ring with a vermilion hairline opens round the card; a sheen passes over the back | Blossom and gold petals |
 | Fighter Select (`shonen`) | A starburst in arcade yellow behind the slot, the slot shakes, and the round's panel inverts for one frame | White shards, a few in yellow |
 | Model Kit (`mecha`) | The part lifts off the runner and snaps down; green brackets close round its corners and strobe twice | Yellow and runner grey flash off the cut |
-| Magical Girl | A foil ring opens round the card; a sheen passes over the back | Foil sparkles, a few in pink |
+| Gachapon (`magical-girl`) | A foil ring opens round the capsule; a sheen passes over the back | Foil sparkles, a few in candy red |
 | Isekai | The window flashes white twice; a white rim opens round it | Yellow and white pixels, moving in steps |
 | Retro VHS | The card jolts with a tracking glitch and a split in pink and teal; a teal scan line passes down the back | Sunset stripe bits |
 
@@ -536,7 +544,7 @@ After the right card turns over, its stock prints a hit round it (`.card-impact`
 | Hanami (`sakura`) | Zen Antique | The same | The blue picnic tarp as the page, its plate of blossom from above barely showing; falling petals with motion on, more while the clip plays, and a soft flash at the reveal | Panels are black lacquer with a double vermilion rim, as are quiet buttons; the primary button a dark hairline inside; 1px field rim |
 | Fighter Select (`shonen`) | Bangers, in capitals | The same | A rooftop dojo stage at dusk behind the black screen; white speed lines turn slowly while the clip plays | Panels take a 2px rim; buttons slant 8 degrees, quiet ones light a yellow rim under the pointer; 2px field rim |
 | Model Kit (`mecha`) | Saira Stencil One, in capitals | System sans, bold capitals | A workbench from above under the cutting mat's green grid; nothing moves on it, and the desk lamp flickers on at the reveal | Panels are chamfered with a 1px rim; quiet buttons are grey plates with a 1px rim; square fields with a 1px rim |
-| Magical Girl | Mochiy Pop One | The same | A violet night with white and gold star dots; stars twinkle with motion on, more while the clip plays, and a foil ring opens at the reveal | Pill buttons with a gold foil rim; panels ringed in foil; sparkle radio dots; 1px field rim |
+| Gachapon (`magical-girl`) | Mochiy Pop One | The same | Capsule machines on a sunny shopping street behind a cream page with faint red dots; nothing falls, and a foil ring opens at the reveal | Pill buttons; panels with a 2px rim; sparkle radio dots; 1px field rim |
 | Isekai | Press Start 2P | Pixelify Sans | A near-black dither; pixel stars blink with motion on, more while the clip plays, and the screen flashes at the reveal | Buttons and panels take a 3px white rim, buttons a dark outer ring as well; quiet buttons are menu blue; 3px field rim; square radios with a cursor mark |
 | Retro VHS | VT323, in capitals | The same | Scanlines; a tracking band rolls down with motion on, a second, faster one while the clip plays, and a burst of static at the reveal; the home title flickers | Panels carry the sunset stripe across the top, quiet buttons along the foot; 1px field rim |
 
@@ -550,6 +558,8 @@ The fifteen themes are becoming worlds that each lay out the round, the reveal a
 **Fighter Select (`shonen`): an arcade character select.** A black screen. The round's heading is a red slanted banner, and the time left is the arcade countdown: two huge yellow digits, slanted, red in the last five seconds (`readout: 'digits'`). The options are four fighter slots in a 2x2 grid, each title on a slanted name plate under a red slanted number. A pick takes the red player cursor. At the reveal the right slot turns gold behind a yellow starburst and shakes, and the round's panel inverts for one 120ms frame, the negative cut of a battle anime's hit (motion on only, once). The results bill each player with a health bar of their score against the winner's (`scoreBars`, `.bill-bar`). With motion on, the chosen slot flashes white twice as the select is confirmed (280ms), the digits tick each second, and each health bar fills as its player is billed (700ms).
 
 **Model Kit (`mecha`): a step of a plastic model kit's manual on the cutting mat.** The round's panel is the cutting mat (`--mat`), solid green under the text, with ruler ticks along its left edge. The round's heading is the step's header on the manual's paper (`--manual`, its text `--manual-ink`): a black step bar before it and a black rule under it. The listening light is a paint pot's lid seen from above, a ridged grip round a flat top. The time left is a nipper working along the runner's frame (`readout: 'nipper'`, `Nipper.tsx`): the frame runs the width of the row on fourteen gates, the nipper cuts one at a time from the left, and the gaps show what is gone, the seconds beside it. The options are four armor parts on one grey runner (`--runner`, its shade `--runner-shade`), a frame with a cross bar between them, each part hung by a gate to its left and one above, its key on a gate tag "A1" to "A4". A pick turns its part pale yellow and its gates yellow. At the reveal the right part is cut free: its gates are gone and it turns to yellow part plastic; the other parts stay on the runner with a "Spare" tag (`wrongMark`). The results bill the winner on a yellow part under a strip of runner. With motion on, a picked part takes its yellow in 150ms, the nipper's jaws snap shut at each cut (260ms) as the gate fades, and at the reveal the right part lifts off the runner and snaps down into place (620ms) as green brackets close round it and the desk lamp flickers on. The backdrop keeps still: a workbench has no weather.
+
+**Gachapon (`magical-girl`): a capsule toy machine on a sunny shopping street.** A light world: a cream page with faint red dots over the street's plate. The round's panel is the machine's white body, rimmed in its red (`--head`), with the tray at its foot: a dark mouth in a chrome rim (`--chrome`, `--chrome-shade`), after the panel's last line. The round's heading is the machine's red head (`--head`, its text `--head-ink`), with a row of gold bulbs along its foot below the text. The listening light is a capsule seen end on. The time left is the coin dial (`readout: 'dial'`, `Dial.tsx`): a chrome knob with a grip bar that turns once round over the round, ringed by twelve ticks that go grey as the knob passes them, the seconds beside it. The options are four alike capsules in the clear dome (`--dome`), rounded over the top in a chrome rim: each a sky-blue half on top (`--capsule`, its seam `--capsule-shade`) holding the key on a round sticker, and a clear half with the title on a white paper slip (`--slip`). A pick drops its capsule toward the tray in the machine's red. At the reveal the other capsules drop out of the running in chrome grey, titles still readable, and the right one opens: lemon (`card-back`), its blue lid lifted to a strip along the top, a gold charm in its corner. The results bring the winner out in an open lemon capsule. The lobby's start bar is the machine's white body under its red rim. With motion on, the dial's knob turns smoothly between seconds, a picked capsule drops (360ms), at the reveal the others drop out of the dome (420ms) and the right capsule's lid lifts (520ms), and the standings tumble out one capsule at a time. Nothing falls in the backdrop: a sunny street has no weather.
 
 ### The backdrop plates
 Each theme sets a painted scene behind its page: `--plate` names the image in `src/assets/plates/` and `--plate-opacity` how strongly it shows over the page color. The opacity is the highest that keeps the page pairs passing over every pixel (Contrast the tests enforce), so Hanami's bright tarp shows least and Blossom Map's flat park most. With motion on the plate drifts slowly (Motion).
@@ -569,7 +579,7 @@ The plates were generated by the owner from the prompts in [PLATE_PROMPTS.md](PL
 | Splash Page | `splash-page.webp` | 0.14 | A cliff-top battlefield with radiating speed lines, in black ink |
 | Night Arc | `night-arc.webp` | 0.17 | A ruined city under a full moon in white ink on black |
 | Model Kit | `mecha.webp` | 0.05 | A hobby workbench from above: cutting mat, nippers, paint pots |
-| Gachapon | `magical-girl.webp` | 0.2 | Capsule toy machines on a sunny shopping street, out of focus |
+| Gachapon | `magical-girl.webp` | 0.07 | Capsule toy machines on a sunny shopping street, out of focus |
 | Quest Board | `isekai.webp` | 0.24 | An empty adventurers' guild hall at night, candlelight on oak |
 | Back Issue | `retro-vhs.webp` | 0.17 | Overlapping process-color shapes and halftone dots on white |
 | Side A | `side-a.webp` | 0.15 | A desk at night with a cassette deck, loose tape and a lamp |
@@ -577,7 +587,7 @@ The plates were generated by the owner from the prompts in [PLATE_PROMPTS.md](PL
 A new or replaced plate follows the same rules: no characters, no text, a quiet center (a phone shows only the middle), light for the light themes and dark for the rest, a row here, and `scripts/check-plate-contrast.mjs` passing.
 
 ### Buttons
-- **Shape:** the theme's `lg` radius (Magical Girl: a pill), printed in the theme's display face.
+- **Shape:** the theme's `lg` radius (Gachapon: a pill), printed in the theme's display face.
 - **Primary:** the accent fill with `accent-ink`, padded 0.625rem 1rem; it brightens 10% under the pointer.
 - **Quiet:** secondary actions, a size smaller (0.875rem, padded 0.5rem 0.75rem) so a phone's header holds them on one line in every face. The raised fill with a line border by default; each stock prints its own frame (table above).
 - **Focus:** a 2px accent outline, offset 2px. **Disabled:** half opacity and a not-allowed cursor.
@@ -585,7 +595,7 @@ A new or replaced plate follows the same rules: no characters, no text, a quiet 
 
 ### Inputs / Fields
 - **Style:** the page color inside a rim of `edge` (`--field-rim`: 1px by default, 2px in Fighter Select, 3px in Isekai), at the `lg` radius. Selects draw their chevron in the theme's ink.
-- **Checkboxes and radios** sit on the same field: a check on the accent when checked, an accent dot for a radio. Magical Girl's dot is a sparkle; Isekai's radios are square with a cursor.
+- **Checkboxes and radios** sit on the same field: a check on the accent when checked, an accent dot for a radio. Gachapon's dot is a sparkle; Isekai's radios are square with a cursor.
 - **Focus:** a 2px accent outline, offset 1px (2px on checkboxes and radios).
 
 ### Panels
@@ -610,13 +620,13 @@ The reveal runs in a fixed order:
 5. A line saying what comes next.
 
 ### The results bill
-The final standings billed like a festival lineup (`.bill-*`), announced from the bottom up: each act rises 260ms after the one below it, and the headliner holds a beat longer, then drops in from larger and blurred while its score counts up and its theme's burst flies from it. Places are shared on a tie. The bill sits in the middle of a panel that fills the screen, with Play again at its foot. Each row is a grid of place, name and score in tabular figures, rows split by a 1px line. The winner headlines: place and score on the first line, the full name across the width below it in the display face (bill lead). The winner's row is printed on the theme's card back (`card-back` with `card-back-ink`), the stock the right answer turns over to at the reveal, at the `xl` radius with the panel shadow, and carries its theme's ornament: Tokyo Rain's ticket perforated top and bottom under a steel order rail, Sakura's inner hairline rim, Fighter Select's gold plate in a white frame, Model Kit's chamfered yellow part with a strip of runner across the top, Magical Girl's double foil rim, Isekai's menu window with a blinking cursor on the winner, and Retro VHS's sunset stripe. Second and third are billed below in the display face at 1.5rem with scores at 1.125rem; everyone else is packed smaller in the body face. Each name carries a small muted stats line: right answers, average time and best streak. This player's row carries a "you" chip.
+The final standings billed like a festival lineup (`.bill-*`), announced from the bottom up: each act rises 260ms after the one below it, and the headliner holds a beat longer, then drops in from larger and blurred while its score counts up and its theme's burst flies from it. Places are shared on a tie. The bill sits in the middle of a panel that fills the screen, with Play again at its foot. Each row is a grid of place, name and score in tabular figures, rows split by a 1px line. The winner headlines: place and score on the first line, the full name across the width below it in the display face (bill lead). The winner's row is printed on the theme's card back (`card-back` with `card-back-ink`), the stock the right answer turns over to at the reveal, at the `xl` radius with the panel shadow, and carries its theme's ornament: Tokyo Rain's ticket perforated top and bottom under a steel order rail, Sakura's inner hairline rim, Fighter Select's gold plate in a white frame, Model Kit's chamfered yellow part with a strip of runner across the top, Gachapon's open lemon capsule with its blue lid lifted to a strip along the top, Isekai's menu window with a blinking cursor on the winner, and Retro VHS's sunset stripe. Second and third are billed below in the display face at 1.5rem with scores at 1.125rem; everyone else is packed smaller in the body face. Each name carries a small muted stats line: right answers, average time and best streak. This player's row carries a "you" chip.
 
 ### The lobby
 - The lobby code is in the display face, tracked wide, in the header and the invite.
 - A player who joins takes a seat in the list with a short slide.
 - The host's settings show the songs, the sample length, the difficulty and the scoring presets with a line on what the mode means; the song pool and the scoring rules fold under "Adjust the song pool and scoring rules", a summary row with a chevron in the display face.
-- The start bar stands on the viewport's foot, also at the end of the scroll, and pads its own foot clear of a phone's home bar. It is the solid page color with a line on top, except in the rebuilt worlds, which print it on their own material: Tokyo Rain's machine foot, a steel kick plate under a lit lip; Hanami's lacquer lid edge, rimmed twice in vermilion; Fighter Select's control deck, edged in the red slant. A waiting guest sees three small accent bars idle beside "Waiting for the host to start."
+- The start bar stands on the viewport's foot, also at the end of the scroll, and pads its own foot clear of a phone's home bar. It is the solid page color with a line on top, except in the rebuilt worlds, which print it on their own material: Tokyo Rain's machine foot, a steel kick plate under a lit lip; Hanami's lacquer lid edge, rimmed twice in vermilion; Fighter Select's control deck, edged in the red slant; Gachapon's white machine body under its red rim. A waiting guest sees three small accent bars idle beside "Waiting for the host to start."
 
 ### The home screen
 The name's "?!" is printed in the accent and stamped on after the name, with a jolt every few seconds. Below the forms, "How to play" folds three lines on how a round works.

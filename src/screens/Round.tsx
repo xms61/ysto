@@ -11,6 +11,7 @@ import { FaceDownCards, OptionCard } from '../components/OptionCard.tsx';
 import type { CardState } from '../components/OptionCard.tsx';
 import { MODE_LABELS } from '../components/SettingsForm.tsx';
 import { Dango } from '../components/Dango.tsx';
+import { Dial } from '../components/Dial.tsx';
 import { Nipper } from '../components/Nipper.tsx';
 import { Segments } from '../components/Segments.tsx';
 import { Stage } from '../components/Stage.tsx';
@@ -114,8 +115,8 @@ function Countdown({ store, startsAt }: { store: GameStore; startsAt: number }) 
 }
 
 // The time left: the shared bar draining with the seconds beside it, or the theme's own: a seven-segment
-// display of the seconds, a dango skewer eaten down or a nipper cutting along a runner with the seconds beside
-// it, or huge arcade digits.
+// display of the seconds, a dango skewer eaten down, a nipper cutting along a runner or a coin dial turning,
+// with the seconds beside it, or huge arcade digits.
 function TimeLeft({ elapsed, secondsLeft }: { elapsed: number; secondsLeft: number }) {
   const { readout } = useStage();
   if (readout === 'segments') {
@@ -142,6 +143,14 @@ function TimeLeft({ elapsed, secondsLeft }: { elapsed: number; secondsLeft: numb
       <div className="flex items-center gap-3">
         <Dango left={1 - elapsed} />
         <p className="ml-auto tabular-nums">{secondsLeft} s left</p>
+      </div>
+    );
+  }
+  if (readout === 'dial') {
+    return (
+      <div className="flex items-center gap-3">
+        <Dial left={1 - elapsed} />
+        <p className="tabular-nums">{secondsLeft} s left</p>
       </div>
     );
   }

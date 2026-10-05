@@ -2,6 +2,24 @@
 
 Releases moved out of `CHANGELOG.md` (which keeps about the latest 5). Newest first.
 
+## [0.18.2] - 2026-10-05
+
+### Fixed
+- The listening rings start on the headphones at round start: they followed the headphones only when the whole round panel resized, so when the countdown gave way to a world's timer, or a web font landed, they kept their old center. A browser test plays a game on a phone across five worlds and checks the center in every phase.
+
+## [0.18.1] - 2026-10-01
+
+### Changed
+- The theme worlds plan says where to pick up: the three open review findings in order, with the causes found so far, and notes for checking a world locally.
+
+## [0.18.0] - 2026-10-02
+
+### Added
+- The rebuilt worlds move in their own way, with motion on: Tokyo Rain's ticket feeds out of the machine line by line and its "Sold out" lamps flicker on; Hanami's dumplings pop off the skewer as they are eaten and the lids slide down over the other compartments; Fighter Select's chosen slot flashes as the select is confirmed, its digits tick each second, and the health bars fill as each player is billed.
+
+### Changed
+- Tokyo Rain's whole round panel is the ticket machine: a steel cabinet with the noren over its top, the listening light as a speaker grille, a recessed button bank, and a ticket outlet and coin slot along its foot.
+
 ## [0.17.0] - 2026-10-02
 
 ### Changed

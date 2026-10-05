@@ -239,34 +239,46 @@
     --radius-2xl: 0;
   }
 
-  /* Magical Girl: a transformation at night, gem cards in gold foil. */
+  /* Gachapon (id magical-girl): a capsule toy machine on a sunny shopping street. The round is the machine: its
+     red head, the clear dome with four alike capsules, the coin dial, and the tray the capsule drops to. */
   [data-theme='magical-girl'] {
     --display-adjust: 0.52;
-    color-scheme: dark;
-    --page: #170c33;
+    color-scheme: light;
+    --page: #fff4e3;
     --plate: url('./assets/plates/magical-girl.webp');
-    --plate-opacity: 0.2;
-    --panel: #231249;
-    --raised: #321a64;
-    --line: #4a2e82;
-    --edge: #a98ad8;
-    --ink: #fff4fb;
-    --muted: #d6c3f0;
-    --accent: #ff5fb4;
-    --accent-ink: #1a0b2e;
-    --good: #7cf2c0;
-    --bad: #ff8aa8;
-    --card: #fff0fa;
-    --card-ink: #36104a;
-    --card-muted: #6d4a7c;
-    --card-dim: #e8daef;
-    --card-mark: #c21d7c;
+    --plate-opacity: 0.07;
+    --panel: #ffffff;
+    --raised: #fbeedd;
+    --line: #ecd9c2;
+    --edge: #9b7b5e;
+    --ink: #2a1810;
+    --muted: #6b5244;
+    --accent: #c42b26;
+    --accent-ink: #ffffff;
+    --good: #1d7a3d;
+    --bad: #bb241d;
+    --card: #eef6fb;
+    --card-ink: #1d2a33;
+    --card-muted: #4a5a66;
+    --card-dim: #dde4e9;
+    --card-mark: #1d5f9e;
     --card-mark-ink: #ffffff;
-    --card-chosen: #e2ceff;
-    --card-chosen-ink: #36104a;
-    --card-alert: #b0184d;
-    --card-back: #a81d68;
-    --card-back-ink: #ffffff;
+    --card-chosen: #ffe9a8;
+    --card-chosen-ink: #2a1810;
+    --card-alert: #b3261e;
+    --card-back: #ffd23f;
+    --card-back-ink: #2a1810;
+    /* The machine: its red head with the round on it, the clear dome, the capsules' colored halves, the chrome of
+       the dial and the tray, the paper slips, and the gold charm inside the right capsule. Only the head and the
+       slips carry text. */
+    --head: #c42b26;
+    --head-ink: #ffffff;
+    --dome: #e3f1fa;
+    --capsule: #3a9ad9;
+    --capsule-shade: #2a7bb5;
+    --chrome: #b8c3cc;
+    --chrome-shade: #7f8b95;
+    --slip: #ffffff;
     --foil: #f2c14e;
     --foil-sheen: linear-gradient(135deg, #fff1b8, #d9a23a 28%, #fff6d8 48%, #b7862e 66%, #f2c14e 84%, #fff1b8);
     --display-font: 'Mochiy Pop One', 'Hiragino Maru Gothic ProN', ui-rounded, system-ui, sans-serif;
@@ -278,10 +290,8 @@
     --title-case: none;
     --title-tracking: 0;
     --title-adjust: 0.52;
-    --panel-shadow: 0 1rem 2.25rem -1.25rem rgb(10 0 30 / 0.8);
-    --page-texture:
-      radial-gradient(rgb(255 244 251 / 0.5) 1px, transparent 1.6px) 0 0 / 53px 53px,
-      radial-gradient(rgb(242 193 78 / 0.4) 1px, transparent 1.7px) 23px 31px / 89px 89px;
+    --panel-shadow: 0 1rem 2.25rem -1.25rem rgb(90 50 20 / 0.35);
+    --page-texture: radial-gradient(rgb(196 43 38 / 0.08) 2px, transparent 2.5px) 0 0 / 1.5rem 1.5rem;
     --radius-lg: 0.75rem;
     --radius-xl: 1.25rem;
     --radius-2xl: 1.5rem;
@@ -2011,120 +2021,161 @@
       repeating-conic-gradient(var(--line) 0 6deg, var(--raised) 6deg 12deg);
   }
 
-  /* ---- Magical Girl: gem cards rimmed in gold foil, a faceted gem for the index, sparkles when chosen. ---- */
+  /* ---- Gachapon: a capsule toy machine. The round's heading is the machine's red head under a row of bulbs;
+     the options are four alike capsules in the clear dome, each title on a paper slip inside. A pick drops its
+     capsule toward the tray; at the reveal the wrong capsules drop out of the dome and the right one opens on a
+     gold charm. ---- */
   :root[data-theme='magical-girl'] .panel {
-    position: relative;
-    border-color: transparent;
-    border-width: 2px;
+    border: 2px solid var(--line);
+  }
+
+  /* The round's panel is the machine's white body, rimmed in its red, with the tray at its foot. */
+  :root[data-theme='magical-girl'] .round-panel {
+    border: 0;
+    box-shadow:
+      inset 0 0 0 3px var(--head),
+      var(--panel-shadow);
+  }
+
+  /* The tray: a chrome-rimmed mouth after the panel's last line, so it never sits over text. */
+  :root[data-theme='magical-girl'] .round-panel::after {
+    content: '';
+    display: block;
+    width: min(55%, 14rem);
+    height: 2.25rem;
+    margin: 1.5rem auto 0.25rem;
+    border-radius: 0.375rem 0.375rem 1.25rem 1.25rem;
+    background: var(--ink);
+    box-shadow:
+      inset 0 0.5rem 0.75rem rgb(0 0 0 / 0.6),
+      0 0 0 4px var(--chrome),
+      0 0 0 5px var(--chrome-shade);
+  }
+
+  /* The machine's head: solid red under the heading, its bulbs along the foot below the text. */
+  :root[data-theme='magical-girl'] .round-head {
+    margin: -1rem -1rem 0.75rem;
+    padding: 0.875rem 1rem 1.5rem;
+    border-radius: var(--radius-2xl) var(--radius-2xl) 0 0;
+    background:
+      radial-gradient(circle, var(--foil) 0 3px, transparent 3.5px) 0.25rem calc(100% - 0.25rem) / 1.25rem 0.75rem
+        repeat-x,
+      var(--head);
+    color: var(--head-ink);
+  }
+
+  @media (min-width: 40rem) {
+    :root[data-theme='magical-girl'] .round-head {
+      margin: -1.5rem -1.5rem 1rem;
+      padding: 1.125rem 1.5rem 1.75rem;
+    }
+  }
+
+  :root[data-theme='magical-girl'] .round-head .button-quiet {
+    border-color: var(--head-ink);
+    background: transparent;
+    color: var(--head-ink);
+  }
+
+  /* The dome: clear glass with a highlight, rounded over the top, in a chrome rim. */
+  :root[data-theme='magical-girl'] .options {
+    padding: 1rem 0.875rem 0.875rem;
+    border-radius: 3.5rem 3.5rem 1.25rem 1.25rem;
+    background: radial-gradient(ellipse 30% 18% at 22% 10%, rgb(255 255 255 / 0.95), transparent 70%), var(--dome);
+    box-shadow:
+      inset 0 0 0 3px var(--chrome),
+      inset 0 0 0 4px var(--chrome-shade);
+  }
+
+  /* A capsule: its colored half on top, holding the key, a seam, and the clear half with the title on a slip. */
+  :root[data-theme='magical-girl'] .card-face {
+    border-radius: 1.75rem;
   }
 
   :root[data-theme='magical-girl'] .card-front {
     border: 0;
-  }
-
-  /* Foil is a sheen, not a flat rule: the rim is a ring cut out of the gradient. */
-  :root[data-theme='magical-girl'] .panel::after,
-  :root[data-theme='magical-girl'] .card-face::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    padding: 3px;
-    border-radius: inherit;
-    background: var(--foil-sheen);
-    mask:
-      linear-gradient(#000 0 0) content-box,
-      linear-gradient(#000 0 0);
-    mask-composite: exclude;
-    pointer-events: none;
-  }
-
-  :root[data-theme='magical-girl'] .panel::after {
-    inset: -2px;
-    padding: 2px;
-  }
-
-  :root[data-theme='magical-girl'] .card-back::after {
-    inset: 5px;
-    padding: 1.5px;
-    border-radius: calc(var(--radius-xl) - 5px);
-  }
-
-  :root[data-theme='magical-girl'] .card[data-state='muted'] .card-front::after {
-    padding: 2px;
-    background: var(--card-muted);
+    background:
+      linear-gradient(var(--capsule), var(--capsule)) top / 100% 3rem no-repeat,
+      linear-gradient(var(--capsule-shade), var(--capsule-shade)) 0 3rem / 100% 3px no-repeat,
+      radial-gradient(ellipse 18% 12% at 82% 72%, rgb(255 255 255 / 0.9), transparent 70%),
+      var(--card);
+    box-shadow: inset 0 0 0 2px var(--capsule-shade);
   }
 
   :root[data-theme='magical-girl'] .card-index {
-    isolation: isolate;
-    background: transparent;
+    border-radius: 50%;
+    box-shadow: 0 0 0 2px var(--card-mark-ink);
   }
 
-  :root[data-theme='magical-girl'] .card-index::before {
-    content: '';
-    position: absolute;
-    inset: 0.0625rem;
-    z-index: -1;
-    border: 2px solid transparent;
+  :root[data-theme='magical-girl'] .card-title {
+    padding: 0.25rem 0.5rem;
     border-radius: 0.25rem;
-    background:
-      conic-gradient(#c21d7c 0 25%, #86104f 0 50%, #b01a70 0 75%, #9c145f 0) padding-box,
-      var(--foil-sheen) border-box;
-    transform: rotate(45deg);
+    background: var(--slip);
+    box-shadow: 0 1px 2px rgb(0 0 0 / 0.12);
   }
 
-  :root[data-theme='magical-girl'] .card[data-state='muted'] .card-index {
+  /* The pick drops toward the tray and takes the machine's red. */
+  :root[data-theme='magical-girl'] .card[data-state='chosen'] .card-front {
+    background:
+      linear-gradient(var(--head), var(--head)) top / 100% 3rem no-repeat,
+      var(--card-chosen);
+    box-shadow: inset 0 0 0 2px var(--head);
+    transform: translateY(0.25rem);
+  }
+
+  :root[data-theme='magical-girl'] .card[data-state='chosen'] .card-title {
+    background: transparent;
     box-shadow: none;
   }
 
-  :root[data-theme='magical-girl'] .card[data-state='muted'] .card-index::before {
-    border-color: var(--card-muted);
-    background: transparent;
+  /* Capsules out of the running lose their color, the dome's grey under them. */
+  :root[data-theme='magical-girl'] .card:is([data-state='muted'], [data-state='missed']) .card-front {
+    background:
+      linear-gradient(var(--chrome), var(--chrome)) top / 100% 3rem no-repeat,
+      var(--card-dim);
+    box-shadow: inset 0 0 0 2px var(--chrome-shade);
   }
 
-  :root[data-theme='magical-girl'] .card[data-state='chosen']::before,
-  :root[data-theme='magical-girl'] .card[data-state='chosen']::after {
+  /* The right capsule opens: its colored half lifted off the top, a gold charm inside. */
+  :root[data-theme='magical-girl'] .card-back:not(.card-printed) {
+    padding-top: 1.75rem;
+    background:
+      linear-gradient(var(--capsule), var(--capsule)) top / 100% 0.875rem no-repeat,
+      var(--card-back);
+    box-shadow: inset 0 0 0 2px var(--capsule-shade);
+  }
+
+  :root[data-theme='magical-girl'] .card-back:not(.card-printed)::after {
     content: '';
     position: absolute;
-    z-index: 1;
-    background: var(--foil-sheen);
-    clip-path: polygon(50% 0, 61% 39%, 100% 50%, 61% 61%, 50% 100%, 39% 61%, 0 50%, 39% 39%);
-    pointer-events: none;
-  }
-
-  :root[data-theme='magical-girl'] .card[data-state='chosen']::before {
-    top: -0.625rem;
-    left: -0.5rem;
+    right: 0.875rem;
+    bottom: 0.75rem;
     width: 1.5rem;
     height: 1.5rem;
+    background: var(--foil-sheen);
+    clip-path: polygon(50% 0, 61% 39%, 100% 50%, 61% 61%, 50% 100%, 39% 61%, 0 50%, 39% 39%);
   }
 
-  :root[data-theme='magical-girl'] .card[data-state='chosen']::after {
-    right: 0.75rem;
-    bottom: -0.5rem;
-    width: 1rem;
-    height: 1rem;
+  /* Face down, a closed capsule with nothing to read. */
+  :root[data-theme='magical-girl'] .card-printed {
+    background:
+      linear-gradient(var(--capsule), var(--capsule)) top / 100% 45% no-repeat,
+      linear-gradient(var(--capsule-shade), var(--capsule-shade)) 0 45% / 100% 3px no-repeat,
+      var(--card);
+    color: var(--capsule-shade);
+    box-shadow: inset 0 0 0 2px var(--capsule-shade);
+  }
+
+  :root[data-theme='magical-girl'] .card-printed .card-emblem {
+    margin-top: 2.5rem;
   }
 
   :root[data-theme='magical-girl'] .button {
-    border: 2px solid transparent;
     border-radius: 999px;
   }
 
   :root[data-theme='magical-girl'] .button-quiet {
-    background:
-      linear-gradient(var(--raised), var(--raised)) padding-box,
-      var(--foil-sheen) border-box;
-  }
-
-  :root[data-theme='magical-girl'] .button-primary {
-    background:
-      linear-gradient(var(--accent), var(--accent)) padding-box,
-      var(--foil-sheen) border-box;
-  }
-
-  :root[data-theme='magical-girl'] .button-quiet:hover:not(:disabled) {
-    border-color: transparent;
-    filter: brightness(1.2);
+    border: 2px solid var(--line);
   }
 
   :root[data-theme='magical-girl'] .choice[type='radio']::before {
@@ -2132,6 +2183,11 @@
     height: 0.75rem;
     border-radius: 0;
     clip-path: polygon(50% 0, 61% 39%, 100% 50%, 61% 61%, 50% 100%, 39% 61%, 0 50%, 39% 39%);
+  }
+
+  /* The listening light is a capsule seen end on: its colored half over its clear half. */
+  :root[data-theme='magical-girl'] .sonar-core {
+    background: linear-gradient(var(--dome) 0 50%, var(--panel) 50%);
   }
 
   /* ---- Isekai: menu windows with white rims, numbered slots, a pixel cursor on the chosen item. ---- */
@@ -2585,6 +2641,39 @@
     box-shadow: none;
   }
 
+  /* Gachapon's coin dial (Dial.tsx): a chrome knob with a grip bar, ringed by the seconds still to turn. */
+  .dial {
+    width: 4rem;
+    height: 4rem;
+    flex-shrink: 0;
+  }
+
+  .dial-body {
+    fill: var(--chrome);
+    stroke: var(--chrome-shade);
+    stroke-width: 1.5;
+  }
+
+  .dial-tick {
+    stroke: var(--accent);
+    stroke-width: 2.5;
+    stroke-linecap: round;
+  }
+
+  .dial-tick[data-turned] {
+    stroke: var(--line);
+  }
+
+  .dial-knob {
+    transform-origin: 26px 26px;
+  }
+
+  .dial-grip {
+    fill: var(--panel);
+    stroke: var(--chrome-shade);
+    stroke-width: 1.5;
+  }
+
   /* ---- A burst of the theme's material (Burst.tsx): the right card's hit, and the winner's. ---- */
   .burst {
     position: absolute;
@@ -2889,12 +2978,15 @@
     background-repeat: no-repeat;
   }
 
+  /* Gachapon's winner comes out of the machine in an open lemon capsule, its blue half over the top. */
   :root[data-theme='magical-girl'] .bill-lead {
-    border: 2px solid var(--foil);
-    border-radius: 1.5rem;
+    padding-top: 1.75rem;
+    border-radius: 1.75rem;
+    background-image: linear-gradient(var(--capsule), var(--capsule));
+    background-size: 100% 0.875rem;
+    background-repeat: no-repeat;
     box-shadow:
-      inset 0 0 0 4px var(--card-back),
-      inset 0 0 0 5px var(--foil),
+      inset 0 0 0 2px var(--capsule-shade),
       var(--panel-shadow);
   }
 
@@ -2954,6 +3046,12 @@
     box-shadow:
       inset 0 5px 0 var(--panel),
       inset 0 6px 0 var(--card-mark);
+  }
+
+  /* Gachapon: the machine's white body under its red rim. */
+  :root[data-theme='magical-girl'] .start-bar {
+    border-top: 3px solid var(--head);
+    background: var(--panel);
   }
 
   /* Fighter Select: the cabinet's control deck, edged in the player's red slant. */
@@ -3995,6 +4093,74 @@
 
   to {
     box-shadow: inset 0 0.375rem 0 var(--lacquer);
+  }
+}
+
+/* Gachapon: the dial's knob turns smoothly between seconds; a pick drops its capsule toward the tray; at the
+   reveal the wrong capsules drop out of the dome and the right one opens, its lid lifting off; at the results
+   the standings tumble out one capsule at a time. */
+:root[data-motion='full'] .dial-knob {
+  transition: transform 300ms linear;
+}
+
+:root[data-motion='full'][data-theme='magical-girl'] .card[data-state='chosen'] .card-front {
+  animation: capsule-drop 360ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+:root[data-motion='full'][data-phase='reveal'][data-theme='magical-girl']
+  .card:is([data-state='muted'], [data-state='missed'])
+  .card-front {
+  animation: capsule-out 420ms cubic-bezier(0.16, 1, 0.3, 1) 620ms both;
+}
+
+:root[data-motion='full'][data-theme='magical-girl'] .card[data-turned] .card-back {
+  animation: capsule-open 520ms cubic-bezier(0.16, 1, 0.3, 1) 760ms both;
+}
+
+:root[data-motion='full'][data-theme='magical-girl'] .bill-act {
+  animation-name: capsule-tumble;
+}
+
+@keyframes capsule-drop {
+  from {
+    transform: translateY(-0.75rem);
+  }
+
+  to {
+    transform: translateY(0.25rem);
+  }
+}
+
+@keyframes capsule-out {
+  from {
+    opacity: 0.4;
+    transform: translateY(-0.75rem);
+  }
+}
+
+@keyframes capsule-open {
+  from {
+    background-size:
+      100% 2.5rem,
+      auto;
+  }
+
+  to {
+    background-size:
+      100% 0.875rem,
+      auto;
+  }
+}
+
+@keyframes capsule-tumble {
+  from {
+    opacity: 0;
+    transform: translateY(-1.5rem) rotate(-12deg);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
   }
 }
 
