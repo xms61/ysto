@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.21.3] - 2026-10-05
 
 ### Changed
-- Quest Board's type fits the guild: carved Cinzel capitals for the headings, scores and stamps, and IM Fell English, an old printer's face, for the notice titles, in place of the JRPG menu's pixel fonts.
+- Quest Board's type fits the guild: carved Cinzel capitals for the headings, scores and stamps, and IM Fell English, an old printer's face, for the notice titles, in place of the JRPG menu's pixel fonts. The "Completed" seal's lettering is set small enough to sit inside its ring.
 - Model Kit's type is a kit manual's: Barlow Condensed in bold capitals for the headings and semibold capitals for the part titles, in place of the hangar's stencil and the system sans, so long titles fit their parts.
 
 ### Removed
