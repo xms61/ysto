@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.30.0] - 2026-10-05
+
+### Added
+- Night Arc is its own world: the all-black pages of a manga's darkest chapter. The round's heading is the chapter's header in white brush capitals; the time left is white focus lines closing in; the options are four black panels in white frames, their titles in white-ink balloons and their numbers in the gutters. A pick doubles its panel's frame; at the reveal the right panel bursts to white. Red is kept for a wrong verdict. Type is Shojumaru and Patrick Hand SC.
+
+### Changed
+- Night Arc's pick keeps its panel black with a doubled frame, so only the right answer turns white.
+
 ## [0.29.0] - 2026-10-05
 
 ### Added
