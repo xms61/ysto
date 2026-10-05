@@ -242,13 +242,13 @@ typography:
     fontWeight: 400
     letterSpacing: "0.04em"
   mecha-display:
-    fontFamily: "'Saira Stencil One', 'Arial Narrow', sans-serif"
-    fontWeight: 400
-    letterSpacing: "0.05em"
-  mecha-title:
-    fontFamily: "ui-sans-serif, system-ui, sans-serif"
+    fontFamily: "'Barlow Condensed', 'Arial Narrow', sans-serif"
     fontWeight: 700
-    letterSpacing: "0.06em"
+    letterSpacing: "0.04em"
+  mecha-title:
+    fontFamily: "'Barlow Condensed', 'Arial Narrow', sans-serif"
+    fontWeight: 600
+    letterSpacing: "0.04em"
   magical-girl-display:
     fontFamily: "'Mochiy Pop One', 'Hiragino Maru Gothic ProN', ui-rounded, system-ui, sans-serif"
     fontWeight: 400
@@ -258,13 +258,13 @@ typography:
     fontWeight: 400
     letterSpacing: "0"
   isekai-display:
-    fontFamily: "'Press Start 2P', ui-monospace, monospace"
+    fontFamily: "'Cinzel', 'Palatino Linotype', Georgia, serif"
+    fontWeight: 700
+    letterSpacing: "0.02em"
+  isekai-title:
+    fontFamily: "'IM Fell English', 'Palatino Linotype', Georgia, serif"
     fontWeight: 400
     letterSpacing: "0"
-  isekai-title:
-    fontFamily: "'Pixelify Sans', ui-monospace, monospace"
-    fontWeight: 500
-    letterSpacing: "0.01em"
   retro-vhs-display:
     fontFamily: "'VT323', ui-monospace, monospace"
     fontWeight: 400
@@ -437,12 +437,12 @@ The page pairs (`ink`, `muted` and `bad` at 4.5:1, `edge` and `accent` at 3:1) m
 ## Typography
 
 **Display font:** each theme's own, self-hosted, Latin only, OFL licensed (see the frontmatter's `<theme>-display` entries).
-**Title font:** the face of the card titles, the stamp and the back's title (`<theme>-title`). Model Kit uses the system sans in bold capitals and Quest Board uses Pixelify Sans; the other five reuse their display face.
+**Title font:** the face of the card titles, the stamp and the back's title (`<theme>-title`). Model Kit sets its titles in the semibold of its condensed face and Quest Board in the lowercase of its old printer's face; the others reuse their display face.
 **Body font:** the system sans. Japanese titles (`lang="ja"`) use the device's Japanese fonts (`--ja-font`) wherever they appear, never a display face's fallback.
 
-**Character:** the display face is the theme's voice: a station gothic, a woodblock antique, a manga letterer, a hangar stencil, a pop rounded face, a pixel font, a tape counter. The body stays plain so the long text reads the same everywhere.
+**Character:** the display face is the theme's voice: a station gothic, a woodblock antique, a manga letterer, a kit manual's condensed sans, a pop rounded face, carved capitals over an old printer's face on a bounty notice, a tape counter. The body stays plain so the long text reads the same everywhere.
 
-Per theme, in the variables `--display-*` and `--title-*`: the font, weight, case (Fighter Select, Model Kit and Retro VHS set capitals), tracking and `font-size-adjust` (`--display-adjust`, `--title-adjust`). The adjust evens out the faces' very different x-heights, so a heading keeps its size from Tokyo Rain's gothic to Quest Board's pixels.
+Per theme, in the variables `--display-*` and `--title-*`: the font, weight, case (Fighter Select, Model Kit and Retro VHS set capitals), tracking and `font-size-adjust` (`--display-adjust`, `--title-adjust`). The adjust evens out the faces' very different x-heights, so a heading keeps its size from Tokyo Rain's gothic to Quest Board's old printer's face.
 
 ### Hierarchy
 - **Home title** (display face, 3rem, 3.75rem from 640 px): the game's name.
@@ -549,9 +549,9 @@ After the right card turns over, its stock prints a hit round it (`.card-impact`
 | Tokyo Rain | Zen Kaku Gothic New, bold | The same | A rainy ramen alley at night; slanted rain with motion on, heavier while the clip plays, and lightning at the reveal | The round panel's heading hangs on an indigo noren of four cloth panels; quiet buttons light an amber rim under the pointer; 1px field rim |
 | Hanami (`sakura`) | Zen Antique | The same | The blue picnic tarp as the page, its plate of blossom from above barely showing; falling petals with motion on, more while the clip plays, and a soft flash at the reveal | Panels are black lacquer with a double vermilion rim, as are quiet buttons; the primary button a dark hairline inside; 1px field rim |
 | Fighter Select (`shonen`) | Bangers, in capitals | The same | A rooftop dojo stage at dusk behind the black screen; white speed lines turn slowly while the clip plays | Panels take a 2px rim; buttons slant 8 degrees, quiet ones light a yellow rim under the pointer; 2px field rim |
-| Model Kit (`mecha`) | Saira Stencil One, in capitals | System sans, bold capitals | A workbench from above under the cutting mat's green grid; nothing moves on it, and the desk lamp flickers on at the reveal | Panels are chamfered with a 1px rim; quiet buttons are grey plates with a 1px rim; square fields with a 1px rim |
+| Model Kit (`mecha`) | Barlow Condensed, bold capitals, like a kit manual's step headers | Barlow Condensed, semibold capitals | A workbench from above under the cutting mat's green grid; nothing moves on it, and the desk lamp flickers on at the reveal | Panels are chamfered with a 1px rim; quiet buttons are grey plates with a 1px rim; square fields with a 1px rim |
 | Gachapon (`magical-girl`) | Mochiy Pop One | The same | Capsule machines on a sunny shopping street behind a cream page with faint red dots; nothing falls, and a foil ring opens at the reveal | Pill buttons; panels with a 2px rim; sparkle radio dots; 1px field rim |
-| Quest Board (`isekai`) | Press Start 2P | Pixelify Sans | The guild's common room by candlelight behind faint plank lines; nothing moves, and the room flashes at the reveal | Panels take a 2px rim; quiet buttons are dark oak with a 2px rim; 1px field rim |
+| Quest Board (`isekai`) | Cinzel, inscriptional capitals as carved on the guild's plank, with lining figures so a 1 never reads as an I | IM Fell English, an old printer's face | The guild's common room by candlelight behind faint plank lines; nothing moves, and the room flashes at the reveal | Panels take a 2px rim; quiet buttons are dark oak with a 2px rim; 1px field rim |
 | Retro VHS | VT323, in capitals | The same | Scanlines; a tracking band rolls down with motion on, a second, faster one while the clip plays, and a burst of static at the reveal; the home title flickers | Panels carry the sunset stripe across the top, quiet buttons along the foot; 1px field rim |
 
 ### Theme worlds
@@ -567,7 +567,7 @@ The fifteen themes are becoming worlds that each lay out the round, the reveal a
 
 **Gachapon (`magical-girl`): a capsule toy machine on a sunny shopping street.** A light world: a cream page with faint red dots over the street's plate. The round's panel is the machine's white body, rimmed in its red (`--head`), with the tray at its foot: a dark mouth in a chrome rim (`--chrome`, `--chrome-shade`), after the panel's last line. The round's heading is the machine's red head (`--head`, its text `--head-ink`), with a row of gold bulbs along its foot below the text. The listening light is a capsule seen end on. The time left is the coin dial (`readout: 'dial'`, `Dial.tsx`): a chrome knob with a grip bar that turns once round over the round, ringed by twelve ticks that go grey as the knob passes them, the seconds beside it. The options are four alike capsules in the clear dome (`--dome`), rounded over the top in a chrome rim: each a sky-blue half on top (`--capsule`, its seam `--capsule-shade`) holding the key on a round sticker, and a clear half with the title on a white paper slip (`--slip`). A pick drops its capsule toward the tray in the machine's red. At the reveal the other capsules drop out of the running in chrome grey, titles still readable, and the right one opens: lemon (`card-back`), its blue lid lifted to a strip along the top, a gold charm in its corner. The results bring the winner out in an open lemon capsule. The lobby's start bar is the machine's white body under its red rim. With motion on, the dial's knob turns smoothly between seconds, a picked capsule drops (360ms), at the reveal the others drop out of the dome (420ms) and the right capsule's lid lifts (520ms), and the standings tumble out one capsule at a time. Nothing falls in the backdrop: a sunny street has no weather. Below the cards, the answer box is an open capsule, its blue half over the top and the cover's wash cut back, and the pickers' names sit on little capsules, this player's in the machine's red.
 
-**Quest Board (`isekai`): the adventurers' guild notice board at night.** The page is the guild's common room in candlelight. The round's panel is the board (`--board`): dark oak in a frame of lighter wood (`--plank`) with nails at its corners. The round's heading is carved into a plank across the top (`--plank`, its text `--plank-ink`). The listening light is a lantern's lens. The time left is a candle (`readout: 'candle'`, `Candle.tsx`): its wax (`--wax`) burns down past four hour marks in a brass dish and the flame (`--flame`) goes out at the end, the seconds beside it. The options are four bounty notices pinned to the board with red pins (`--pin`), all in one design: parchment in a double-ruled frame with corner marks, a red heading and lines in a made-up script at the top right, and a monster drawn faintly in ink behind the title (a slime, a tusked beast, a wyvern, a stone golem; `src/assets/notices/`). The monsters were generated by the owner from the prompts in [PLATE_PROMPTS.md](PLATE_PROMPTS.md#quest-board-monster-sprites) and turned into sepia ink layers with ffmpeg, as described there. The script and the drawings are images, so screen readers hear only the title, and the drawings are faint enough that the title keeps 7:1 over them; dimmed notices drop them. Each key is a red rank stamp. A pick is taken down to the counter, lit amber by the candle, its pin pulled. At the reveal the right notice turns to aged parchment with a large round "Completed" seal in half-strength red ink behind its text, where the text still keeps 4.5:1. The answer box below the cards is one more bounty pinned to the board, parchment in the same frame with the cover pasted on like a portrait, its kind in a red stamp and the cover's wash a faint sepia; the names of who picked each notice are on small paper slips, this player's in candle amber. The results pin the winner's notice to the board. With motion on, the flame flickers, a picked notice lifts as it is taken down (300ms), and the completed seal thunks on (340ms). The backdrop keeps still.
+**Quest Board (`isekai`): the adventurers' guild notice board at night.** The page is the guild's common room in candlelight. The round's panel is the board (`--board`): dark oak in a frame of lighter wood (`--plank`) with nails at its corners. The round's heading is carved into a plank across the top (`--plank`, its text `--plank-ink`). The listening light is a lantern's lens. The time left is a candle (`readout: 'candle'`, `Candle.tsx`): its wax (`--wax`) burns down past four hour marks in a brass dish and the flame (`--flame`) goes out at the end, the seconds beside it. The options are four bounty notices pinned to the board with red pins (`--pin`), all in one design: parchment in a double-ruled frame with corner marks, a red heading and lines in a made-up script at the top right, and a monster drawn faintly in ink behind the title (a slime, a tusked beast, a wyvern, a stone golem; `src/assets/notices/`). The monsters were generated by the owner with Gemini Flash 3.8 and its image generation from the prompts in [PLATE_PROMPTS.md](PLATE_PROMPTS.md#quest-board-monster-sprites) and turned into sepia ink layers with ffmpeg, as described there. The script and the drawings are images, so screen readers hear only the title, and the drawings are faint enough that the title keeps 7:1 over them; dimmed notices drop them. Each key is a red rank stamp. A pick is taken down to the counter, lit amber by the candle, its pin pulled. At the reveal the right notice turns to aged parchment with a large round "Completed" seal in half-strength red ink behind its text, where the text still keeps 4.5:1. The answer box below the cards is one more bounty pinned to the board, parchment in the same frame with the cover pasted on like a portrait, its kind in a red stamp and the cover's wash a faint sepia; the names of who picked each notice are on small paper slips, this player's in candle amber. The results pin the winner's notice to the board. With motion on, the flame flickers, a picked notice lifts as it is taken down (300ms), and the completed seal thunks on (340ms). The backdrop keeps still.
 
 ### The backdrop plates
 Each theme sets a painted scene behind its page: `--plate` names the image in `src/assets/plates/` and `--plate-opacity` how strongly it shows over the page color. The opacity is the highest that keeps the page pairs passing over every pixel (Contrast the tests enforce), so Hanami's bright tarp shows least and Blossom Map's flat park most. With motion on the plate drifts slowly (Motion).
