@@ -1,6 +1,6 @@
 ---
 status: draft
-last-verified: 2026-10-01
+last-verified: 2026-10-05
 ---
 
 # Tech debt tracker
@@ -14,4 +14,3 @@ Known shortcuts and gaps, written down so they are paid off on purpose instead o
 | Some theme details use raw colors outside the theme blocks: Mecha's bevel, seam, rivets and stripe dark; Shonen's muted rim; Isekai's outer ring; Retro VHS's grey stripes; Magical Girl's gem facets; the backdrop decorations | `src/styles.css` | The contrast test reads only the theme blocks, so these colors are never checked, and a theme change can miss them | 2026-09-30 | Move each into its theme block as a named token, and add the ones that carry meaning (the muted rims) to `src/themes.test.ts` |
 | The timer strip and the "you" chip are fully rounded in every theme, even the square ones (Mecha, Shonen) | `src/screens/Round.tsx`, `src/screens/Reveal.tsx`, `src/screens/Results.tsx` | Two small shapes ignore the theme's corners | 2026-09-30 | Give both the theme's `--radius-lg` |
 | The lobby's start bar (the song count and Start game) is `sticky bottom-0` inside the lobby panel, so scrolling to the end carries it up with the panel's foot and the backdrop shows below it (owner's screenshot, 2026-10-02); it is also a flat page-colored strip outside every theme's world | `src/screens/Lobby.tsx` (`.start-bar`), `src/styles.css` | The first thing a host taps floats loose over the backdrop, on every game night | 2026-10-02 | Pin the bar to the viewport's foot (fixed, or sticky in a container that reaches the foot) with the lobby's last field padded clear of it, print it on the theme's own material, and check it at 375 px scrolled to the end and with the keyboard open |
-| At round start the listening ring sits off-center from the headphones (owner's screenshot, Tokyo Rain, 2026-10-02). `useRingField` measures the headphones' center when the round mounts and again only when the whole panel resizes, so when the headphones move inside a panel that keeps its size (the web font landing, the status line changing length, the slot settling) the ring keeps the old center | `src/components/Listening.tsx` (`useRingField`) | The round's first sight is a ring that misses its center, in every theme | 2026-10-02 | Observe the headphones' own box as well as the panel (a ResizeObserver on the stage slot, or remeasure on `document.fonts.ready`), or place the field relative to the headphones in CSS so no measurement is needed; add a browser test that the ring's center matches the icon's |

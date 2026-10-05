@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.18.2] - 2026-10-05
+
+### Fixed
+- The listening rings start on the headphones at round start: they followed the headphones only when the whole round panel resized, so when the countdown gave way to a world's timer, or a web font landed, they kept their old center. A browser test plays a game on a phone across five worlds and checks the center in every phase.
+
 ## [0.18.1] - 2026-10-01
 
 ### Changed

@@ -1,6 +1,6 @@
 ---
 status: draft
-last-verified: 2026-10-01
+last-verified: 2026-10-05
 ---
 
 # Testing
@@ -10,7 +10,7 @@ last-verified: 2026-10-01
 | `npm test` | Server, shared and catalog tests (`node:test`) | `tests/**/*.test.ts` |
 | `npm run test:coverage` | The same tests with coverage thresholds over `server/`, `shared/` and `scripts/catalog/`: lines and functions ≥ 85 %, branches ≥ 75 %. `server/main.ts` and `scripts/catalog/bin/` only wire things together and are left out. | Node's built-in coverage; the flags are in `package.json` |
 | `npm run test:web` | Client tests (Vitest, jsdom, Testing Library): the reducer, clock, socket, store and audio engine against fakes, whole flows through `App`, and the themes' contrast | `src/**/*.test.{ts,tsx}`, `vitest.config.ts` |
-| `npm run test:e2e` | Browser tests against the production build, in Chromium, Firefox and WebKit: the smoke test, the clip decode test, a whole game with two players, and axe on every screen in every theme (Chromium only). Run `npm run build` first. | `e2e/`, `playwright.config.ts` |
+| `npm run test:e2e` | Browser tests against the production build, in Chromium, Firefox and WebKit: the smoke test, the clip decode test, a whole game with two players, the listening rings centered on the headphones on a phone, and axe on every screen in every theme (Chromium only). Run `npm run build` first. | `e2e/`, `playwright.config.ts` |
 | `npm run test:ci` | Lint, format check, typecheck, coverage and client tests: everything CI runs except the build, the smoke test and the repo checks | `.github/workflows/ci.yml` |
 | `node --test scripts/*.test.mjs` | Tests of the doc and tracked-files checks | `scripts/` |
 
@@ -26,7 +26,7 @@ The browser tests need their browsers once per machine: `npx playwright install 
 - The client tests pass their fakes to the code under test: `socketFactory()` and `FakeSocket` for the lobby socket, `FakeAudioContext` for Web Audio, `FakeClipPlayer` for the store, and `lobbyState()` and friends for server messages, all in `src/testing/fakes.ts`. `App` takes the audio engine, the storage and the socket factory as props for this.
 - The browser tests run against `e2e/fixture-server.ts`: `e2e/fixture-data.ts` builds a 12-anime catalog in code with the catalog build's own writer and makes 40 s tones with ffmpeg in a temporary folder, and the fixture server starts `server/main.ts` on them. CI's `docker` job runs the image on the same data (`node e2e/fixture-data.ts <folder>`). It never reads `.env`, so no browser test touches the real library. The game test plays five rounds, the fewest a game allows, in under a minute per browser.
 - Each browser project sends its own `X-Forwarded-For` address and the fixture server trusts one proxy hop (`YSTO_TRUST_PROXY=1`), so the per-IP lobby limits count each browser's tests on their own.
-- `src/themes.test.ts` reads each theme's colors from `styles.css` (Vitest processes that one stylesheet, `vitest.config.ts`) and checks WCAG AA for every text and graphic pair. `e2e/a11y.spec.ts` plays a game alone and runs axe on each screen in all seven themes, failing on any serious or critical issue. The contrast test covers the card stock too: text on cards, chosen cards, card backs and index marks.
+- `src/themes.test.ts` reads each theme's colors from `styles.css` (Vitest processes that one stylesheet, `vitest.config.ts`) and checks WCAG AA for every text and graphic pair. `e2e/a11y.spec.ts` plays a game alone and runs axe on each screen in all fifteen themes, failing on any serious or critical issue. The contrast test covers the card stock too: text on cards, chosen cards, card backs and index marks.
 - The game engine is tested without any shell: a simulator in `tests/game/engine.test.ts` feeds it events on a fake clock, serves its clip cuts at once and fires its timers in order.
 - Every test builds its own fixtures with a small function (`clientDirWith(files)`), and temporary folders are deleted in `after`. No state carries over from one test to the next.
 - Use in-memory or temp-dir databases, never the app's singleton for writes.
