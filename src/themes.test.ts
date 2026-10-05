@@ -63,7 +63,8 @@ const GRAPHIC_PAIRS: [graphic: string, background: string][] = [
 ];
 
 // Pairs only a theme's own world draws: Tokyo Rain's heading on its noren and the round's text on the machine's
-// cabinet, Fighter Select's titles on their plates.
+// cabinet, Fighter Select's titles on their plates, Model Kit's step header on the manual and the round's text on
+// the cutting mat.
 const WORLD_TEXT_PAIRS: Partial<Record<(typeof THEMES)[number], [text: string, background: string][]>> = {
   'tokyo-rain': [
     ['noren-ink', 'noren'],
@@ -73,6 +74,13 @@ const WORLD_TEXT_PAIRS: Partial<Record<(typeof THEMES)[number], [text: string, b
     ['good', 'machine'],
   ],
   shonen: [['card-ink', 'nameplate']],
+  mecha: [
+    ['manual-ink', 'manual'],
+    ['ink', 'mat'],
+    ['muted', 'mat'],
+    ['good', 'mat'],
+    ['bad', 'mat'],
+  ],
 };
 
 test.each(THEMES)('%s meets AA contrast for text and graphics', (theme) => {
