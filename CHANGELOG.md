@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.2.1] - 2026-10-05
+
+### Added
+- An exec plan for the features after 1.0: the game's songs at the results, clip reports, the lobby's tally, reactions, saved settings, sound effects per world, hints, elimination, teams, song title and artist rounds, typed answers, a daily challenge with a streak, and party mode.
+
 ## [1.2.0] - 2026-10-05
 
 ### Added
@@ -34,12 +39,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - A round that not everyone answered could stay open for good: Node can run a timer a millisecond before the clock reaches its time, the round's close was then ignored, and nothing tried again. Timers now wait out the rest.
-
-## [0.32.0] - 2026-10-05
-
-### Changed
-- The catalog's AnimeThemes sync reads AnimeThemes' GraphQL API in place of its deprecated JSON:API. Pages are cached in the same shape as before and dumps still import, so builds don't change: three pages synced both ways parsed to the same 300 anime.
-- Every opaque color in the themes is a named token in its theme block, including the backdrop's petals, twinkles and rain.
-
-### Removed
-- The shared timer bar. Every theme draws its own timer, and a new theme must name one.
