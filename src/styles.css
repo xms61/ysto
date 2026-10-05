@@ -181,13 +181,14 @@
     --radius-2xl: 2px;
   }
 
-  /* Mecha: a hangar bay, riveted armor plates, hazard stripes and lock brackets. */
+  /* Model Kit (id mecha): a plastic model kit on the workbench. The page is the cutting mat; the round is a step
+     of the kit's manual, its options four armor parts on one grey runner, cut with a nipper as the round runs. */
   [data-theme='mecha'] {
     --display-adjust: 0.55;
     color-scheme: dark;
-    --page: #111417;
+    --page: #142a22;
     --plate: url('./assets/plates/mecha.webp');
-    --plate-opacity: 0.13;
+    --plate-opacity: 0.05;
     --panel: #1c2126;
     --raised: #262d33;
     --line: #3a434b;
@@ -198,15 +199,15 @@
     --accent-ink: #141414;
     --good: #5cf28a;
     --bad: #ff6a55;
-    --card: #252b31;
-    --card-ink: #eef2f4;
-    --card-muted: #9aa6af;
-    --card-dim: #181c20;
-    --card-mark: #f2c230;
-    --card-mark-ink: #141414;
-    --card-chosen: #1b2b22;
-    --card-chosen-ink: #eef2f4;
-    --card-alert: #ff6a55;
+    --card: #c9cfd3;
+    --card-ink: #14181b;
+    --card-muted: #30373d;
+    --card-dim: #a3abb1;
+    --card-mark: #2b3136;
+    --card-mark-ink: #f2f4f5;
+    --card-chosen: #f7e9ad;
+    --card-chosen-ink: #14181b;
+    --card-alert: #a3221b;
     --card-back: #f2c230;
     --card-back-ink: #141414;
     --display-font: 'Saira Stencil One', 'Arial Narrow', sans-serif;
@@ -220,8 +221,19 @@
     --title-adjust: none;
     --panel-shadow: 0 1rem 2rem -1.25rem rgb(0 0 0 / 0.85);
     --page-texture:
-      linear-gradient(rgb(125 138 149 / 0.07) 1px, transparent 1px) 0 0 / 2rem 2rem,
-      linear-gradient(90deg, rgb(125 138 149 / 0.07) 1px, transparent 1px) 0 0 / 2rem 2rem;
+      linear-gradient(rgb(170 214 190 / 0.12) 1px, transparent 1px) 0 0 / 5rem 5rem,
+      linear-gradient(90deg, rgb(170 214 190 / 0.12) 1px, transparent 1px) 0 0 / 5rem 5rem,
+      linear-gradient(rgb(170 214 190 / 0.06) 1px, transparent 1px) 0 0 / 1rem 1rem,
+      linear-gradient(90deg, rgb(170 214 190 / 0.06) 1px, transparent 1px) 0 0 / 1rem 1rem;
+    /* The workbench: the cutting mat under the round, the manual's paper with its step header, the runner's grey
+       plastic, and the nipper's steel and grips. Only the mat and the manual carry text. */
+    --mat: #19332a;
+    --manual: #f1efe8;
+    --manual-ink: #16181a;
+    --runner: #8d969c;
+    --runner-shade: #5f686e;
+    --nipper: #b8c0c6;
+    --nipper-grip: #c8372d;
     --radius-lg: 0;
     --radius-xl: 0;
     --radius-2xl: 0;
@@ -1398,7 +1410,7 @@
     color: var(--bad);
   }
 
-  /* Mecha cuts corners off its cards and panels; each element sets its own cut. */
+  /* Model Kit cuts the corners off its parts and panels, like armor plates; each element sets its own cut. */
   :root[data-theme='mecha'] .panel {
     --cut: 0.875rem;
   }
@@ -1809,19 +1821,123 @@
     color: var(--bad);
   }
 
-  /* ---- Mecha: chamfered armor plates with a bevel, a seam and rivets, a hazard strip, lock brackets when chosen. ---- */
+  /* ---- Model Kit: a step of a plastic model kit's manual on the cutting mat. The round's heading is the step's
+     header on the manual's paper; the options are four armor parts on one grey runner, each on its gate tag
+     A1 to A4. A pick marks its part and gates in yellow; at the reveal the right part is cut free in yellow
+     plastic and snaps in, and the rest stay on the runner as spares. ---- */
   :root[data-theme='mecha'] .panel {
     border: 0;
-    background:
-      repeating-linear-gradient(-45deg, var(--accent) 0 0.5rem, #141414 0.5rem 1rem) top / 100% 0.375rem no-repeat,
-      var(--panel);
+    box-shadow:
+      inset 0 0 0 1px var(--line),
+      var(--panel-shadow);
   }
 
-  /* The front's own color is the plate's bevel, showing round the plate itself, drawn a little smaller. */
+  /* The round's panel is the cutting mat: solid green under the text, its ruler ticks along the left edge. */
+  :root[data-theme='mecha'] .round-panel {
+    background:
+      repeating-linear-gradient(to bottom, rgb(170 214 190 / 0.4) 0 1px, transparent 1px 1rem) 0 0 / 0.375rem 100%
+        no-repeat,
+      repeating-linear-gradient(to bottom, rgb(170 214 190 / 0.4) 0 1px, transparent 1px 5rem) 0 0 / 0.625rem 100%
+        no-repeat,
+      var(--mat);
+  }
+
+  /* The step header, printed on the manual's paper: a black step bar before the heading and a rule under it. */
+  :root[data-theme='mecha'] .round-head {
+    margin: -1rem -1rem 0.75rem;
+    padding: 0.75rem 1rem;
+    border-bottom: 3px solid var(--manual-ink);
+    background: var(--manual);
+    color: var(--manual-ink);
+  }
+
+  @media (min-width: 40rem) {
+    :root[data-theme='mecha'] .round-head {
+      margin: -1.5rem -1.5rem 1rem;
+      padding: 1rem 1.5rem;
+    }
+  }
+
+  :root[data-theme='mecha'] .round-head h2 {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+  }
+
+  :root[data-theme='mecha'] .round-head h2::before {
+    content: '';
+    width: 0.625rem;
+    align-self: stretch;
+    background: var(--manual-ink);
+  }
+
+  :root[data-theme='mecha'] .round-head .button-quiet {
+    border: 2px solid var(--manual-ink);
+    background: transparent;
+    color: var(--manual-ink);
+  }
+
+  :root[data-theme='mecha'] .round-head .button-quiet:hover:not(:disabled) {
+    background: rgb(22 24 26 / 0.08);
+  }
+
+  /* The runner: a grey plastic frame with a cross bar between the four parts. */
+  :root[data-theme='mecha'] .options {
+    padding: 0.75rem;
+    border: 0.375rem solid var(--runner);
+    background:
+      linear-gradient(var(--runner), var(--runner)) center / 100% 0.25rem no-repeat,
+      linear-gradient(var(--runner), var(--runner)) center / 0.25rem 100% no-repeat;
+    box-shadow:
+      inset 0 0 0 1px var(--runner-shade),
+      0 0 0 1px var(--runner-shade),
+      0 0.75rem 1.25rem -0.75rem rgb(0 0 0 / 0.75);
+  }
+
+  /* Each part hangs from the frame or the cross bar by two gates, one to its left and one above. */
+  :root[data-theme='mecha'] .options > li {
+    position: relative;
+  }
+
+  :root[data-theme='mecha'] .options > li::before,
+  :root[data-theme='mecha'] .options > li::after {
+    content: '';
+    position: absolute;
+    background: var(--runner);
+    box-shadow: 0 0 0 1px var(--runner-shade);
+  }
+
+  :root[data-theme='mecha'] .options > li::before {
+    top: 50%;
+    left: -0.75rem;
+    width: 0.75rem;
+    height: 0.25rem;
+  }
+
+  :root[data-theme='mecha'] .options > li::after {
+    top: -0.75rem;
+    left: 50%;
+    width: 0.25rem;
+    height: 0.75rem;
+  }
+
+  :root[data-theme='mecha'] .options > li:has(.card[data-state='chosen'])::before,
+  :root[data-theme='mecha'] .options > li:has(.card[data-state='chosen'])::after {
+    background: var(--accent);
+  }
+
+  /* The right part is cut free: its gates are gone. */
+  :root[data-theme='mecha'] .options > li:has(.card[data-turned])::before,
+  :root[data-theme='mecha'] .options > li:has(.card[data-turned])::after {
+    visibility: hidden;
+  }
+
+  /* A part's front is its plastic: a shaded edge round a lighter face, drawn a little smaller, with a molded
+     panel line under the tag and two pin marks. */
   :root[data-theme='mecha'] .card-front {
     border: 0;
     isolation: isolate;
-    background-color: #6b7680;
+    background-color: var(--runner-shade);
   }
 
   :root[data-theme='mecha'] .card-front::before {
@@ -1831,12 +1947,10 @@
     z-index: -1;
     --cut: calc(0.625rem - 1.2px);
     background:
-      linear-gradient(#0c0f12, #0c0f12) 0 calc(2.625rem + 2px) / 100% 1px no-repeat,
-      linear-gradient(#3d464e, #3d464e) 0 calc(2.625rem + 3px) / 100% 1px no-repeat,
-      radial-gradient(circle at calc(100% - 0.875rem) 0.875rem, #6b7680 0 2px, transparent 2.5px),
-      radial-gradient(circle at calc(100% - 1.625rem) 0.875rem, #6b7680 0 2px, transparent 2.5px),
-      repeating-linear-gradient(-45deg, var(--card-mark) 0 0.375rem, #141414 0.375rem 0.75rem) bottom / 100% 0.3125rem
-        no-repeat;
+      linear-gradient(rgb(0 0 0 / 0.22), rgb(0 0 0 / 0.22)) 0 calc(2.625rem + 2px) / 100% 1px no-repeat,
+      linear-gradient(rgb(255 255 255 / 0.5), rgb(255 255 255 / 0.5)) 0 calc(2.625rem + 3px) / 100% 1px no-repeat,
+      radial-gradient(circle at calc(100% - 0.875rem) 0.875rem, var(--runner-shade) 0 2px, transparent 2.5px),
+      radial-gradient(circle at calc(100% - 1.625rem) 0.875rem, var(--runner-shade) 0 2px, transparent 2.5px);
     background-color: var(--card);
   }
 
@@ -1846,10 +1960,6 @@
 
   :root[data-theme='mecha'] .card[data-state='chosen'] .card-front::before {
     background-color: var(--card-chosen);
-  }
-
-  :root[data-theme='mecha'] .card[data-state='muted'] .card-front {
-    background-color: #3a434b;
   }
 
   :root[data-theme='mecha'] .card[data-state='muted'] .card-front::before {
@@ -1863,46 +1973,42 @@
     justify-content: center;
   }
 
+  /* The gate tag molded on the runner beside each part: A1 to A4. */
   :root[data-theme='mecha'] .card-index {
-    background: transparent;
-    color: var(--card-mark);
-    font-size: 1.35rem;
-  }
-
-  :root[data-theme='mecha'] .card-index::before {
-    content: '0';
-  }
-
-  :root[data-theme='mecha'] .card[data-state='chosen']::after {
-    content: '';
-    position: absolute;
-    inset: -0.3125rem;
-    pointer-events: none;
-    background:
-      linear-gradient(var(--accent), var(--accent)) top left / 1rem 2px,
-      linear-gradient(var(--accent), var(--accent)) top left / 2px 1rem,
-      linear-gradient(var(--accent), var(--accent)) top right / 1rem 2px,
-      linear-gradient(var(--accent), var(--accent)) top right / 2px 1rem,
-      linear-gradient(var(--accent), var(--accent)) bottom left / 1rem 2px,
-      linear-gradient(var(--accent), var(--accent)) bottom left / 2px 1rem,
-      linear-gradient(var(--accent), var(--accent)) bottom right / 1rem 2px,
-      linear-gradient(var(--accent), var(--accent)) bottom right / 2px 1rem;
-    background-repeat: no-repeat;
-  }
-
-  :root[data-theme='mecha'] .card[data-state='muted'] .card-index {
+    width: auto;
+    min-width: 2.25rem;
+    padding: 0 0.375rem;
+    border-radius: 0;
+    background: var(--card-mark);
+    color: var(--card-mark-ink);
+    font-size: 1rem;
     box-shadow: none;
   }
 
+  :root[data-theme='mecha'] .card-index::before {
+    content: 'A';
+  }
+
+  :root[data-theme='mecha'] .card-printed {
+    background: var(--runner);
+    color: var(--card-mark);
+    box-shadow: inset 0 0 0 2px var(--runner-shade);
+  }
+
   :root[data-theme='mecha'] .button-quiet {
-    border: 0;
-    background:
-      repeating-linear-gradient(-45deg, var(--accent) 0 4px, #141414 4px 8px) left / 0.375rem 100% no-repeat,
-      var(--raised);
+    border: 1px solid var(--edge);
+    background: var(--raised);
   }
 
   :root[data-theme='mecha'] .button-quiet:hover:not(:disabled) {
     background-color: var(--line);
+  }
+
+  /* The listening light is a paint pot's lid seen from above: a ridged grip round a flat top. */
+  :root[data-theme='mecha'] .sonar-core {
+    background:
+      radial-gradient(circle, var(--panel) 0 60%, transparent 61%),
+      repeating-conic-gradient(var(--line) 0 6deg, var(--raised) 6deg 12deg);
   }
 
   /* ---- Magical Girl: gem cards rimmed in gold foil, a faceted gem for the index, sparkles when chosen. ---- */
@@ -2260,16 +2366,6 @@
     animation: pixel-blink steps(2, jump-none) infinite;
   }
 
-  .sweep {
-    position: absolute;
-    inset-inline: 0;
-    top: 0;
-    height: 2px;
-    background: rgb(92 242 138 / 0.35);
-    box-shadow: 0 0 1.5rem 0.25rem rgb(92 242 138 / 0.12);
-    animation: sweep 7s linear infinite;
-  }
-
   .tracking {
     position: absolute;
     inset-inline: 0;
@@ -2430,6 +2526,39 @@
     stroke-width: 1;
   }
 
+  /* Model Kit's nipper (Nipper.tsx): the runner's frame, its gates, and the tool with red grips. */
+  .nipper {
+    flex: 1;
+    min-width: 0;
+    height: auto;
+    flex-shrink: 0;
+    overflow: visible;
+  }
+
+  .nipper-frame,
+  .nipper-gate {
+    fill: var(--runner);
+    stroke: var(--runner-shade);
+    stroke-width: 1;
+  }
+
+  .nipper [data-cut] .nipper-gate {
+    opacity: 0;
+  }
+
+  .nipper-grip {
+    fill: none;
+    stroke: var(--nipper-grip);
+    stroke-width: 5;
+    stroke-linecap: round;
+  }
+
+  .nipper-jaw {
+    fill: var(--nipper);
+    stroke: var(--runner-shade);
+    stroke-width: 1;
+  }
+
   /* The mark a theme prints on each option that was not the answer, lit across the face's corner. */
   .card-mark-plate {
     position: absolute;
@@ -2445,6 +2574,15 @@
     line-height: 1.4;
     white-space: nowrap;
     box-shadow: 0 0 0.75rem -0.125rem var(--card-alert);
+  }
+
+  /* Model Kit's "Spare": a plain tag over the part's pin marks, since a part left on the runner is kept, not wrong. */
+  :root[data-theme='mecha'] .card-mark-plate {
+    top: 0.5rem;
+    border-radius: 0;
+    background: var(--card-mark);
+    color: var(--card-mark-ink);
+    box-shadow: none;
   }
 
   /* ---- A burst of the theme's material (Burst.tsx): the right card's hit, and the winner's. ---- */
@@ -2498,8 +2636,9 @@
     background: var(--accent);
   }
 
+  /* Model Kit's burst is plastic flash off the cut: yellow and runner grey. */
   :root[data-theme='mecha'] .burst-mote:nth-child(even) {
-    background: var(--good);
+    background: var(--runner);
   }
 
   :root[data-theme='magical-girl'] .burst-mote {
@@ -2599,7 +2738,7 @@
     );
   }
 
-  /* Mecha clamps the answer in its lock brackets, in the green of a right answer. */
+  /* Model Kit's right part clicks into place: brackets close round its corners in the green of a right answer. */
   :root[data-theme='mecha'] .card-impact::before {
     --clamp: var(--good);
     inset: -0.4375rem;
@@ -2745,7 +2884,7 @@
     border-radius: 0;
     clip-path: polygon(1rem 0, calc(100% - 1rem) 0, 100% 1rem, 100% 100%, 0 100%, 0 1rem);
     box-shadow: var(--panel-shadow);
-    background-image: repeating-linear-gradient(-45deg, var(--card-back-ink) 0 0.5rem, var(--card-back) 0.5rem 1rem);
+    background-image: linear-gradient(var(--runner), var(--runner));
     background-size: 100% 0.5rem;
     background-repeat: no-repeat;
   }
@@ -2939,10 +3078,9 @@
     mask: radial-gradient(circle, transparent 18%, #000 42%);
   }
 
+  /* Model Kit: the desk lamp swung over the bench. */
   :root[data-theme='mecha'] .phase-flash {
-    background:
-      repeating-linear-gradient(-45deg, var(--accent) 0 1rem, #141414 1rem 2rem) top / 100% 0.75rem no-repeat,
-      repeating-linear-gradient(-45deg, var(--accent) 0 1rem, #141414 1rem 2rem) bottom / 100% 0.75rem no-repeat;
+    background: radial-gradient(ellipse at 50% 0, rgb(255 240 205 / 0.35), transparent 65%);
   }
 
   :root[data-theme='magical-girl'] .phase-flash {
@@ -2983,16 +3121,6 @@
       transparent 1.2deg 7deg
     );
     mask: radial-gradient(circle, transparent 18%, #000 42%);
-  }
-
-  .beacon {
-    position: absolute;
-    background: var(--good);
-    animation: pixel-blink steps(2, jump-none) infinite;
-  }
-
-  .beacon:nth-child(3n) {
-    background: var(--accent);
   }
 
   .weather-surge .tracking {
@@ -3041,15 +3169,6 @@
   }
   to {
     opacity: 0.9;
-  }
-}
-
-@keyframes sweep {
-  from {
-    transform: translateY(-5vh);
-  }
-  to {
-    transform: translateY(105vh);
   }
 }
 
@@ -3876,6 +3995,48 @@
 
   to {
     box-shadow: inset 0 0.375rem 0 var(--lacquer);
+  }
+}
+
+/* Model Kit: a picked part's plastic takes its yellow mark in 150ms; the nipper's jaws snap shut at each cut and
+   its gate fades away; at the reveal the right part lifts off the runner as it is cut, then snaps down into place. */
+:root[data-motion='full'][data-theme='mecha'] :is(.card-front, .card-front::before) {
+  transition: background-color 150ms ease-out;
+}
+
+:root[data-motion='full'] .nipper-tool {
+  animation: nipper-snap 260ms cubic-bezier(0.3, 0, 0.2, 1);
+}
+
+:root[data-motion='full'] .nipper-gate {
+  transition: opacity 200ms ease-out;
+}
+
+:root[data-motion='full'][data-theme='mecha'] .card[data-turned] {
+  animation: part-snap 620ms cubic-bezier(0.2, 0.9, 0.3, 1.2) 620ms both;
+}
+
+@keyframes nipper-snap {
+  from {
+    transform: scaleX(1.6);
+  }
+
+  to {
+    transform: none;
+  }
+}
+
+@keyframes part-snap {
+  0% {
+    transform: none;
+  }
+
+  45% {
+    transform: translateY(-0.5rem) scale(1.04);
+  }
+
+  100% {
+    transform: none;
   }
 }
 

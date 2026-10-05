@@ -5,8 +5,9 @@ import { createContext, useContext } from 'react';
 import type { Theme } from '../prefs/prefs.ts';
 
 export interface ThemeStage {
-  // The shared bar, a seven-segment display, a dango skewer eaten down, or the seconds as huge arcade digits.
-  readout: 'bar' | 'segments' | 'dango' | 'digits';
+  // The shared bar, a seven-segment display, a dango skewer eaten down, the seconds as huge arcade digits, or a
+  // nipper cutting along a runner.
+  readout: 'bar' | 'segments' | 'dango' | 'digits' | 'nipper';
   wrongMark: string | null; // printed on each option that was not the answer, at the reveal
   scoreBars: boolean; // each final score also drawn as a bar against the winner's, like a health bar
 }
@@ -17,6 +18,7 @@ const STAGES: Partial<Record<Theme, Partial<ThemeStage>>> = {
   'tokyo-rain': { readout: 'segments', wrongMark: 'Sold out' },
   sakura: { readout: 'dango' },
   shonen: { readout: 'digits', scoreBars: true },
+  mecha: { readout: 'nipper', wrongMark: 'Spare' },
 };
 
 export function stageOf(theme: Theme): ThemeStage {

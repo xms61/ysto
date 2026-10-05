@@ -63,7 +63,7 @@ Each milestone is one or more PRs on `feat/…` branches with a version bump, a 
 - [x] 2026-10-01 Who picked each option, shown at the reveal in every theme (v0.15.0)
 - [x] 2026-10-02 Hanami: the lacquer bento on the blue tarp, with the dango timer (v0.16.0)
 - [x] 2026-10-02 Fighter Select: the arcade character select, with arcade digits and health bars (v0.17.0)
-- [ ] Model Kit
+- [x] 2026-10-05 Model Kit: a manual step on the cutting mat, the parts on a runner, the nipper timer (v0.19.0)
 - [ ] Gachapon
 - [ ] Quest Board
 - [ ] Back Issue
@@ -78,9 +78,9 @@ Each milestone is one or more PRs on `feat/…` branches with a version bump, a 
 - [x] 2026-10-01 Plates in place for all fifteen
 
 ## Where to pick up
-State on 2026-10-05: v0.18.4 closes the three open review findings (the listening ring, the lobby's start bar, Tokyo Rain's noren). Tokyo Rain, Hanami and Fighter Select are rebuilt with their motion; the other twelve themes run on the shared card layout with their own tokens and plates.
+State on 2026-10-05: v0.18.4 closed the three open review findings (the listening ring, the lobby's start bar, Tokyo Rain's noren), and v0.19.0 builds Model Kit. Tokyo Rain, Hanami, Fighter Select and Model Kit are rebuilt with their motion; the other eleven themes run on the shared card layout with their own tokens and plates.
 
-Do next: Model Kit, shaped with the owner first (its direction contract in its own surface brief), following the rules under Owner review findings.
+Do next: Gachapon, then Quest Board and Back Issue, following the rules under Owner review findings.
 
 Working notes for a new session:
 - Check a theme by eye with `npm run build`, then the "start" preview (production server on :5173), a solo lobby, and `localStorage.ysto_prefs` set to the theme with `motion: 'full'` to see motion or `'reduced'` for steady screenshots. A solo answer ends the round at once; set Songs per game to 5 to reach the results quickly.
@@ -123,6 +123,9 @@ What the owner found playing the built worlds on 2026-10-02, and where each stan
 - 2026-10-02: Hanami's plate shows at 0.05, barely there: the tarp is now the page color itself, and a stronger blend of the plate's bright blossom breaks the page's contrast.
 
 - 2026-10-02: Every world ships its own motion in the PR that builds it: one authored moment and a little feedback, motion-gated like the rest. The first three worlds shipped without it and read blander than the stocks they replaced (owner's review), so v0.18.0 added theirs. Tokyo Rain's whole round panel became the machine at the same review, since the buttons alone did not read as a ticket machine.
+
+- 2026-10-05: Model Kit was built straight from its row in the worlds table, without its own shape round, because the owner said to continue. Its wrong mark is "Spare", since a part left on the runner is kept, not wrong. The hangar's scanner sweep and beacons went with the hangar: a workbench has no weather, so the backdrop keeps still, and the two effects, used by no other theme, were deleted.
+- 2026-10-05: Model Kit's plate shows at 0.05, like Hanami's: the page turned cutting-mat green, and at the old 0.13 the workbench plate dropped the wrong color and the field rims below AA (plate check).
 
 ## Surprises
 - 2026-10-01: The protocol sends no per-pick answer time, so Tokyo Rain's ticket carries the title, kind and year instead of the answer time the shape promised.
