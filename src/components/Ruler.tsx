@@ -21,7 +21,7 @@ export function Ruler({ left }: { left: number }) {
           className="ruler-tick"
         />
       ))}
-      <rect x="2" y="1" width={LENGTH * share} height="4" className="ruler-left" />
+      <rect x="2" y="1" width={LENGTH} height="4" className="ruler-left" style={{ transform: `scaleX(${share})` }} />
     </svg>
   );
 }

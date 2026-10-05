@@ -2668,6 +2668,8 @@
 
   .ruler-left {
     fill: var(--cyan);
+    transform-box: fill-box;
+    transform-origin: left;
   }
 
   /* ---- The reveal's answer box (.reveal-band) and the names under each card (.picker), in each rebuilt world's
@@ -4575,7 +4577,7 @@
 }
 
 :root[data-motion='full'] .ruler-left {
-  transition: width 300ms linear;
+  transition: transform 300ms linear;
 }
 
 :root[data-motion='full'][data-theme='retro-vhs'] .card[data-turned] .card-back {
