@@ -6,8 +6,8 @@ import type { Theme } from '../prefs/prefs.ts';
 
 export interface ThemeStage {
   // The shared bar, a seven-segment display, a dango skewer eaten down, the seconds as huge arcade digits, a
-  // nipper cutting along a runner, or a gachapon's coin dial turning.
-  readout: 'bar' | 'segments' | 'dango' | 'digits' | 'nipper' | 'dial';
+  // nipper cutting along a runner, a gachapon's coin dial turning, or a candle burning down.
+  readout: 'bar' | 'segments' | 'dango' | 'digits' | 'nipper' | 'dial' | 'candle';
   wrongMark: string | null; // printed on each option that was not the answer, at the reveal
   scoreBars: boolean; // each final score also drawn as a bar against the winner's, like a health bar
 }
@@ -20,6 +20,7 @@ const STAGES: Partial<Record<Theme, Partial<ThemeStage>>> = {
   shonen: { readout: 'digits', scoreBars: true },
   mecha: { readout: 'nipper', wrongMark: 'Spare' },
   'magical-girl': { readout: 'dial' },
+  isekai: { readout: 'candle' },
 };
 
 export function stageOf(theme: Theme): ThemeStage {

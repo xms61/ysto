@@ -65,7 +65,9 @@ Each milestone is one or more PRs on `feat/…` branches with a version bump, a 
 - [x] 2026-10-02 Fighter Select: the arcade character select, with arcade digits and health bars (v0.17.0)
 - [x] 2026-10-05 Model Kit: a manual step on the cutting mat, the parts on a runner, the nipper timer (v0.19.0)
 - [x] 2026-10-05 Gachapon: the capsule machine, light, with the coin dial (v0.20.0)
-- [ ] Quest Board
+- [x] 2026-10-05 Quest Board: the guild's notice board, bounty notices, the candle (v0.21.0)
+- [ ] The answer box and pick chips in the world's material for Tokyo Rain, Hanami, Fighter Select, Model Kit and Gachapon (Quest Board has them)
+- [ ] Quest Board: the owner's monster sprites in place of the line drawings ([prompts](../../PLATE_PROMPTS.md#quest-board-monster-sprites))
 - [ ] Back Issue
 - [ ] Konbini 2 a.m.
 - [ ] Karaoke Box
@@ -78,9 +80,9 @@ Each milestone is one or more PRs on `feat/…` branches with a version bump, a 
 - [x] 2026-10-01 Plates in place for all fifteen
 
 ## Where to pick up
-State on 2026-10-05: v0.18.4 closed the three open review findings (the listening ring, the lobby's start bar, Tokyo Rain's noren), v0.19.0 built Model Kit and v0.20.0 Gachapon. Tokyo Rain, Hanami, Fighter Select, Model Kit and Gachapon are rebuilt with their motion; the other ten themes run on the shared card layout with their own tokens and plates.
+State on 2026-10-05: v0.18.4 closed the three open review findings (the listening ring, the lobby's start bar, Tokyo Rain's noren), v0.19.0 built Model Kit, v0.20.0 Gachapon and v0.21.0 Quest Board. Tokyo Rain, Hanami, Fighter Select, Model Kit, Gachapon and Quest Board are rebuilt with their motion; the other nine themes run on the shared card layout with their own tokens and plates.
 
-Do next: Quest Board, then Back Issue, following the rules under Owner review findings.
+Do next: give the five earlier worlds their answer box and pick chips, drop in the owner's Quest Board sprites when they arrive (encode each PNG to a faded WebP, check the title's contrast over it), then Back Issue, following the rules under Owner review findings.
 
 Working notes for a new session:
 - Check a theme by eye with `npm run build`, then the "start" preview (production server on :5173), a solo lobby, and `localStorage.ysto_prefs` set to the theme with `motion: 'full'` to see motion or `'reduced'` for steady screenshots. A solo answer ends the round at once; set Songs per game to 5 to reach the results quickly.
@@ -103,6 +105,7 @@ What the owner found playing the built worlds on 2026-10-02, and where each stan
 - **The world fills the round's panel, not only the options.** The heading, the readout, the listening light and the panel's own frame belong to the world, the way the whole cabinet is Tokyo Rain's machine. Check the full panel at 375 px, not the cards alone.
 - **The world moves.** One authored moment at the reveal and a little feedback on the pick, built in the same PR, motion-gated, and checked with motion on in a real game (record the animation names firing, as in v0.18.0).
 - **No flat bars.** A header or footer that is a plain colored strip is the generic version; draw the world's object instead (cloth, a sign, a plank, a screen).
+- **The reveal's answer box and the pick chips belong to the world too** (owner, 2026-10-05). The band under the cards (`.reveal-band`, with its cover, wash and kind) and the names under each card (`.picker`) take the world's material, as Quest Board's pinned bounty and paper slips do.
 
 ## Decision log
 - 2026-10-01: Each theme may lay out the round, reveal and results its own way; home, lobby and preferences stay shared, because that gives each world its signature moments at a fraction of fourteen full flows. Rejected: skin-only themes; every screen per theme.
@@ -127,6 +130,7 @@ What the owner found playing the built worlds on 2026-10-02, and where each stan
 - 2026-10-05: Model Kit was built straight from its row in the worlds table, without its own shape round, because the owner said to continue. Its wrong mark is "Spare", since a part left on the runner is kept, not wrong. The hangar's scanner sweep and beacons went with the hangar: a workbench has no weather, so the backdrop keeps still, and the two effects, used by no other theme, were deleted.
 - 2026-10-05: Model Kit's plate shows at 0.05, like Hanami's: the page turned cutting-mat green, and at the old 0.13 the workbench plate dropped the wrong color and the field rims below AA (plate check).
 - 2026-10-05: Gachapon turns light, as its plate prompt and its sunny street call for; the provisional night palette was left from Magical Girl. Its plate shows at 0.07, the strongest that keeps the field rims at 3:1 on the light page. Like Model Kit it was built from its row without its own shape round, and the starry backdrop went with the night: nothing falls on a sunny street. It keeps the four-point sparkle as the charm.
+- 2026-10-05: Quest Board's notices are all one bounty design, after the owner's reference images and review: a ruled frame, a red heading and lines in a made-up script, and a monster drawn faintly behind the title, no skulls. Rejected on review: rolled parchment ends, tilted and overlapping notices, and four different notice styles. No notice carries words, because generated text joins the option's accessible name; the script and monsters are images. The monsters are line drawings until the owner's sprites arrive. The "Completed" seal sits behind the right notice's text in half-strength ink, where the text keeps 4.5:1, because over the corner it covered the neighboring notice. The pixel stars and the cursor blink went with the JRPG menu; the plate shows at 0.18.
 
 ## Surprises
 - 2026-10-01: The protocol sends no per-pick answer time, so Tokyo Rain's ticket carries the title, kind and year instead of the answer time the shape promised.
