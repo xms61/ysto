@@ -6,7 +6,6 @@ import type { CSSProperties } from 'react';
 import type { LobbyState } from '../../shared/protocol.ts';
 import { POINTS } from '../../shared/scoring.ts';
 import type { ScoringRules } from '../../shared/scoring.ts';
-import type { TitleLanguage } from '../../shared/settings.ts';
 import { Listening } from '../components/Listening.tsx';
 import { FaceDownCards, OptionCard } from '../components/OptionCard.tsx';
 import type { CardState } from '../components/OptionCard.tsx';
@@ -24,7 +23,8 @@ import { Pennants } from '../components/Pennants.tsx';
 import { Segments } from '../components/Segments.tsx';
 import { Stage } from '../components/Stage.tsx';
 import { ConfirmButton, Panel } from '../components/ui.tsx';
-import { langOf } from '../format.ts';
+import { optionTitle } from '../format.ts';
+import type { TitleLanguages } from '../format.ts';
 import { motionAllowed, usePagePhase, useReached, useTicker } from '../hooks.ts';
 import type { ClientRound, RoundStart } from '../realtime/game-state.ts';
 import type { ClipStatus, GameStore } from '../realtime/store.ts';
@@ -46,7 +46,7 @@ interface RoundProps {
   store: GameStore;
   lobby: LobbyState;
   round: ClientRound | null;
-  titleLanguage: TitleLanguage;
+  titles: TitleLanguages;
   isHost: boolean;
   clip: ClipStatus | null; // this player's clip for the round in progress
 }
@@ -236,7 +236,7 @@ interface AnsweringProps {
   lobby: LobbyState;
   round: ClientRound;
   start: RoundStart;
-  titleLanguage: TitleLanguage;
+  titles: TitleLanguages;
   clip: ClipStatus | null;
 }
 
@@ -245,7 +245,7 @@ function cardState(round: ClientRound, answered: boolean, index: number): CardSt
   return answered ? 'muted' : 'open';
 }
 
-function Answering({ store, lobby, round, start, titleLanguage, clip }: AnsweringProps) {
+function Answering({ store, lobby, round, start, titles, clip }: AnsweringProps) {
   const now = useTicker(store.serverNow, TICK_MS);
   const spectating = lobby.players.find((player) => player.id === lobby.you)?.spectating ?? false;
   const answered = round.choice !== null || round.answeredIds.includes(lobby.you);
@@ -259,12 +259,11 @@ function Answering({ store, lobby, round, start, titleLanguage, clip }: Answerin
   const timer = <TimeLeft elapsed={elapsed} secondsLeft={Math.max(0, Math.ceil((start.endsAt - now) / 1000))} />;
   const cards = (
     <ol aria-label="Options" className={`options grid ${columns} gap-3`}>
-      {start.options[titleLanguage].map((title, index) => (
+      {start.options[titles.first].map((_, index) => (
         <li key={index}>
           <OptionCard
             index={index}
-            title={title}
-            lang={langOf(titleLanguage)}
+            title={optionTitle(start.options, index, titles)}
             state={cardState(round, answered, index)}
             tag={round.choice === index ? 'Your pick' : undefined}
             dealt
@@ -361,7 +360,7 @@ function LyricHeading({ number, rounds, store, start, revealed }: RoundHeadingPr
   );
 }
 
-function RoundView({ store, lobby, round, titleLanguage, isHost, clip }: RoundProps & { round: ClientRound }) {
+function RoundView({ store, lobby, round, titles, isHost, clip }: RoundProps & { round: ClientRound }) {
   const { start, reveal } = round;
   const started = useReached(store.serverNow, start?.startsAt ?? null);
   const solo = lobby.players.length === 1;
@@ -386,7 +385,7 @@ function RoundView({ store, lobby, round, titleLanguage, isHost, clip }: RoundPr
       </div>
       <p className="mt-1 text-sm text-muted">{scoringLine(lobby.settings.scoring)}</p>
       {reveal ? (
-        <Reveal round={round} reveal={reveal} lobby={lobby} titleLanguage={titleLanguage} />
+        <Reveal round={round} reveal={reveal} lobby={lobby} titles={titles} />
       ) : !start ? (
         <Stage
           slot={
@@ -408,7 +407,7 @@ function RoundView({ store, lobby, round, titleLanguage, isHost, clip }: RoundPr
           cards={<FaceDownCards />}
         />
       ) : (
-        <Answering store={store} lobby={lobby} round={round} start={start} titleLanguage={titleLanguage} clip={clip} />
+        <Answering store={store} lobby={lobby} round={round} start={start} titles={titles} clip={clip} />
       )}
     </Panel>
   );

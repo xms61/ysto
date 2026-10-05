@@ -6,7 +6,7 @@ last-verified: 2026-10-05
 # Settings
 
 ## Goal
-The host shapes the game (pool, length, difficulty, scoring). Each player sets what only affects them (volume, look, title language).
+The host shapes the game (pool, length, difficulty, scoring). Each player sets what only affects them (volume, look, title languages).
 
 ## Behavior
 | Setting | Scope | Range | Default |
@@ -25,13 +25,14 @@ The host shapes the game (pool, length, difficulty, scoring). Each player sets w
 | Volume | Player (device) | 0–100% | 15% |
 | Theme | Player (device) | Tokyo Rain, Konbini 2 a.m., Karaoke Box, Hanami, Omikuji, Blossom Map, Fighter Select, Tournament Arc, Splash Page, Night Arc, Model Kit, Gachapon, Quest Board, Back Issue, Side A ([DESIGN.md](../DESIGN.md)) | Tokyo Rain |
 | Title language | Player (device) | English, romaji, Japanese | English, falling back to romaji |
+| Second title language | Player (device) | none, or one of the other two | none |
 | Reduced motion | Player (device) | follows the OS setting, can be overridden | OS setting |
 
 - While the host edits the settings, the lobby shows how many songs and anime match. An anime plays at most once per game, so the host can't start a game with fewer matching anime than the songs-per-game setting.
 - A custom difficulty starts at popularity ranks 1–1,000 (every rank, when the catalog has fewer anime), where rank 1 is the most popular playable anime.
 - Player settings are saved on the device (the `ysto_prefs` key in `localStorage`) and apply straight away. The Preferences button on every screen opens them, and the theme row opens the picker: a full-screen grid of every theme as its world's object in its own colors, where selecting one tries it on across the page, "Use this world" keeps it, Back or Escape keeps the theme the player had, and "Surprise me" lands on a random other world. A stored value that is missing or out of range falls back to its default, alone.
 - Volume goes through a gain node, so the 15% default also applies on iPhones ([audio clips](../design-docs/audio-clips.md)).
-- The interface is in English. Anime titles follow each player's title-language setting.
+- The interface is in English. Anime titles follow each player's title-language setting. A second language shows each option's title in it too, smaller, under the first; when both read the same ("Naruto" and "NARUTO"), the title shows once. Picking the second language as the first swaps the two. At the reveal the second language heads the anime's other titles.
 
 ## Acceptance criteria
 - The server rejects settings outside these ranges, and genres outside the catalog's list.

@@ -4,6 +4,7 @@
 // turns over to its printed back and lands with its theme's hit. A tag such as "Your pick" is a stamp on the
 // card's edge, outside its faces, so it never changes the card's size.
 import type { CSSProperties, ReactNode } from 'react';
+import type { OptionTitle, Title } from '../format.ts';
 import { useOptionColumns } from '../themes/stage.ts';
 import { Burst } from './Burst.tsx';
 
@@ -13,8 +14,7 @@ export type CardState = 'open' | 'chosen' | 'muted' | 'missed' | 'right';
 
 interface OptionCardProps {
   index: number;
-  title: string;
-  lang: string | undefined;
+  title: OptionTitle;
   state: CardState;
   tag?: ReactNode;
   mark?: string; // printed on the face at the reveal, such as Tokyo Rain's "Sold out"
@@ -31,7 +31,7 @@ const FOCUS = 'focus-visible:outline-3 focus-visible:outline-offset-4 focus-visi
 const BURST_BY_HEAT = [0, 12, 18, 26];
 
 export function OptionCard(props: OptionCardProps) {
-  const { index, title, lang, state, tag, mark, back, dealt = false, heat = 1, onPick, disabled = false } = props;
+  const { index, title, state, tag, mark, back, dealt = false, heat = 1, onPick, disabled = false } = props;
   const turned = state === 'right' && back !== undefined;
   const faces = (
     <span className="card-turn">
@@ -39,8 +39,9 @@ export function OptionCard(props: OptionCardProps) {
         <span aria-hidden="true" className="card-index">
           {index + 1}
         </span>
-        <span className="card-title" lang={lang}>
-          {title}
+        <span className="card-title" lang={title.lang}>
+          {title.text}
+          {title.second && <SecondTitle title={title.second} />}
           {turned && <span className="sr-only"> (the right answer)</span>}
         </span>
         {mark && (
@@ -83,6 +84,19 @@ export function OptionCard(props: OptionCardProps) {
         </span>
       )}
     </div>
+  );
+}
+
+// The title in the player's second language, under the first. It names its own language, since it sits
+// inside the first title's element.
+export function SecondTitle({ title }: { title: Title }) {
+  return (
+    <>
+      <span className="sr-only">, </span>
+      <span className="card-second" lang={title.lang ?? 'en'}>
+        {title.text}
+      </span>
+    </>
   );
 }
 

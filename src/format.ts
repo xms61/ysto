@@ -1,5 +1,6 @@
 // How places, points, times, titles and credits read on screen.
-import type { RevealDetails, SongCredit } from '../shared/protocol.ts';
+import type { OptionTitles, RevealDetails, SongCredit } from '../shared/protocol.ts';
+import { TITLE_LANGUAGES } from '../shared/settings.ts';
 import type { TitleLanguage } from '../shared/settings.ts';
 
 const ORDINALS = new Intl.PluralRules('en', { type: 'ordinal' });
@@ -44,6 +45,33 @@ export interface Title {
   lang: string | undefined;
 }
 
+// The player's title languages: the first heads every title, and the second, if any, sits under it.
+export interface TitleLanguages {
+  first: TitleLanguage;
+  second: TitleLanguage | null;
+}
+
+export interface OptionTitle extends Title {
+  second: Title | null; // in the second language, unless it reads the same as the first
+}
+
+// Titles that differ only in case or width, such as "Naruto" and "NARUTO", read as one.
+function titleKey(title: string): string {
+  return title.normalize('NFKC').toLowerCase();
+}
+
+// An option's title in the player's languages. Each list is complete: the server fell back to romaji for a
+// language one of the four options lacks (server/game/titles.ts).
+export function optionTitle(options: OptionTitles, index: number, languages: TitleLanguages): OptionTitle {
+  const text = options[languages.first][index] ?? '';
+  const secondText = languages.second ? (options[languages.second][index] ?? '') : '';
+  const second =
+    languages.second && secondText && titleKey(secondText) !== titleKey(text)
+      ? { text: secondText, lang: langOf(languages.second) }
+      : null;
+  return { text, lang: langOf(languages.first), second };
+}
+
 type AnimeTitles = RevealDetails['anime'];
 
 // The anime's title in the player's language, or romaji, which every anime has.
@@ -52,17 +80,14 @@ export function animeTitle(anime: AnimeTitles, language: TitleLanguage): Title {
   return text ? { text, lang: langOf(language) } : { text: anime.romaji, lang: undefined };
 }
 
-// Its titles in the other languages, each once, for the reveal to teach.
-export function otherTitles(anime: AnimeTitles, shown: Title): Title[] {
-  const seen = new Set([shown.text]);
-  const candidates: Title[] = [
-    { text: anime.english ?? '', lang: undefined },
-    { text: anime.romaji, lang: undefined },
-    { text: anime.japanese ?? '', lang: 'ja' },
-  ];
+// Its titles in the other languages, each once, for the reveal to teach: the player's second language first.
+export function otherTitles(anime: AnimeTitles, shown: Title, second: TitleLanguage | null): Title[] {
+  const seen = new Set([titleKey(shown.text)]);
+  const order = second ? [second, ...TITLE_LANGUAGES.filter((language) => language !== second)] : TITLE_LANGUAGES;
+  const candidates = order.map((language): Title => ({ text: anime[language] ?? '', lang: langOf(language) }));
   return candidates.filter((title) => {
-    if (title.text === '' || seen.has(title.text)) return false;
-    seen.add(title.text);
+    if (title.text === '' || seen.has(titleKey(title.text))) return false;
+    seen.add(titleKey(title.text));
     return true;
   });
 }

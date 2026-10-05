@@ -1,6 +1,6 @@
 ---
 status: verified
-last-verified: 2026-09-30
+last-verified: 2026-10-05
 ---
 
 # Frontend
@@ -21,7 +21,7 @@ How the UI code is built. How it should look is in [DESIGN.md](DESIGN.md), and w
 - `components/`: the option cards and the face-down deal (`OptionCard.tsx`), the burst of a theme's material at the reveal and the results (`Burst.tsx`), the round's layout that keeps the cards in one place (`Stage.tsx`), the listening panel (`Listening.tsx`), the settings form and its summary, the player list, the QR code, the device settings with the theme picker and the Preferences menu (`PrefsPanel.tsx`), the theme's backdrop (`Backdrop.tsx`), the sound banner, the notice toast, and the shared buttons and panels in `ui.tsx`.
 - `realtime/`: the lobby routes (`api.ts`), the socket with hello, pings and reconnects (`connection.ts`), the server clock (`clock.ts`), the pure reducer of server messages (`game-state.ts`), and `store.ts`, which ties them to the audio engine and gives the screens one snapshot.
 - `audio/engine.ts`: fetches, decodes and plays each clip through Web Audio ([audio clips](design-docs/audio-clips.md)).
-- `prefs/prefs.ts`: volume, theme, title language and motion, in `localStorage`. `usePrefs` puts `data-theme`, `data-motion` and the browser's theme color on `<html>` before the first paint.
+- `prefs/prefs.ts`: volume, theme, title languages (a first and an optional second) and motion, in `localStorage`. `usePrefs` puts `data-theme`, `data-motion` and the browser's theme color on `<html>` before the first paint.
 - `styles.css`: Tailwind, the seven themes as blocks of variables, the component classes (`.display`, `.panel`, `.card` and its faces, `.listening`, `.page-texture`), each theme's card stock and frames, and the animations ([DESIGN.md](DESIGN.md)). `realtime/session.ts` keeps the seat in `sessionStorage`. Both go through `storage.ts`, which survives blocked storage.
 - `copy.ts` words every error code. `format.ts` formats places, points, times, titles and credits.
 - `testing/fakes.ts`: a fake socket, a fake `AudioContext`, and builders for server messages. Only tests import it.

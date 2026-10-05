@@ -1,6 +1,6 @@
 ---
 status: draft
-last-verified: 2026-09-25
+last-verified: 2026-10-05
 ---
 
 # Questions and options
@@ -11,7 +11,7 @@ Each round asks which anime a sample comes from. It has four plausible options a
 ## Behavior
 **Options.**
 - Four anime titles, exactly one of them right. The only text inputs in the app are the player name and the lobby code.
-- Titles show in each player's title language: English, romaji or Japanese. The server sends the four titles in all three languages, and each device shows its player's choice.
+- Titles show in each player's title language: English, romaji or Japanese, and optionally a second one under it ([settings](settings.md)). The server sends the four titles in all three languages, and each device shows its player's choice.
   - If any of the four has no title in that language, all four show romaji for that round, so a fallback never singles one out. A missing romaji title falls back to the AnimeThemes name.
   - Two anime whose titles match in some language share a question only when their years differ. The year is then added to both titles in that language.
 - The option order is random each round and the same for every player in the lobby.
