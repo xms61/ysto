@@ -1,7 +1,8 @@
 // Players' reports of broken clips (docs/product-specs/game-flow.md), kept in reports.sqlite in the state
 // folder for the owner to read with npm run reports. A report holds the theme, the clip's start and the
-// reason: no names, addresses or lobby codes (docs/SECURITY.md). Without a state folder, reports are only
-// logged. A failed write is logged and never reaches the player.
+// reason: no names, addresses or lobby codes (docs/SECURITY.md). Without a state folder, or with one the
+// server can't write (a VPS whose compose file predates the state volume), reports are only logged and the
+// game runs on. A failed write is logged and never reaches the player.
 import { mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { DatabaseSync } from 'node:sqlite';
@@ -37,8 +38,20 @@ export function openReportsDb(stateDir: string): DatabaseSync {
   return db;
 }
 
+function openOrLog(stateDir: string | null, log: Logger): DatabaseSync | null {
+  if (stateDir === null) return null;
+  try {
+    return openReportsDb(stateDir);
+  } catch (error) {
+    log.error('reports.unavailable', {
+      message: `${error instanceof Error ? error.message : String(error)}; reports are only logged`,
+    });
+    return null;
+  }
+}
+
 export function openReports(stateDir: string | null, log: Logger): Reports {
-  const db = stateDir === null ? null : openReportsDb(stateDir);
+  const db = openOrLog(stateDir, log);
   const insert = db?.prepare('INSERT INTO report (at, theme_id, start_ms, reason) VALUES (?, ?, ?, ?)');
   return {
     add(report) {
