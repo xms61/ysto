@@ -140,8 +140,12 @@ export interface RevealDetails {
   song: { title: string | null; artists: SongCredit[] };
   year: number | null;
   season: string | null;
+  slug: string; // the anime's page on AnimeThemes: https://animethemes.moe/anime/<slug>
   cover: string | null; // a path on this server
 }
+
+// A song the game played, for the list at the results. A skipped round's song is listed too.
+export type PlayedSong = Omit<RevealDetails, 'cover'> & { number: number; skipped: boolean };
 
 export interface PlayerView {
   id: string;
@@ -158,6 +162,7 @@ export interface GameView {
   number: number;
   rounds: number;
   results: ResultView[] | null;
+  songs: PlayedSong[] | null; // with the results: the songs in the order they played
 }
 
 // Sent to each player whenever the lobby changes. `you` is the receiving player.

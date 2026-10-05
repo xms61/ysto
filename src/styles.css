@@ -5732,6 +5732,41 @@
     transform-origin: bottom;
   }
 
+  /* The results' list of the game's songs: numbered rows split by hairlines, each with its link out. */
+  .song-list {
+    margin-bottom: 1rem;
+  }
+
+  .song-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding-block: 0.625rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .song-number {
+    min-width: 1.75rem;
+    font-family: var(--display-font);
+    font-weight: var(--display-weight);
+    font-size-adjust: var(--display-adjust, 0.52);
+    font-variant-numeric: tabular-nums;
+    color: var(--muted);
+  }
+
+  .song-link {
+    flex-shrink: 0;
+    color: var(--accent);
+    font-size: 0.875rem;
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+
+  .song-link:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
   /* A folded section: its summary reads as a quiet row with a chevron in the theme's ink. */
   .adjust {
     border-top: 1px solid var(--line);

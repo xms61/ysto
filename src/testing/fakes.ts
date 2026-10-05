@@ -251,6 +251,7 @@ export function revealOf(roundId: string, overrides: Partial<RoundReveal> = {}):
     song: { title: 'Full Throttle', artists: [{ name: 'Singer', as: 'Heroine' }] },
     year: 2019,
     season: 'Spring',
+    slug: 'speed_line',
     cover: null,
     ...overrides,
   };

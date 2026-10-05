@@ -302,6 +302,23 @@ test('drops a round whose clip failed on every theme, and plays the rest', () =>
   assert.equal(sim.game.playedThemeIds.length, 4);
 });
 
+test("lists the game's songs with the results, in the order they played, without dropped rounds", () => {
+  const sim = new Simulation(settings(), ['p1'], [], (index) => index === 1);
+  const reveals = [playRound(sim, [])];
+  allReady(sim);
+  sim.event({ type: 'skip' });
+  reveals.push(sim.last('round:reveal'));
+  sim.advanceTo(sim.now + GAME_TIMING.revealMs);
+  assert.equal(gameView(sim.game).songs, null, 'no list before the game ends');
+  for (let round = 0; round < 2; round++) reveals.push(playRound(sim, []));
+  const songs = gameView(sim.game).songs ?? assert.fail();
+  assert.deepEqual(
+    songs.map((song) => [song.number, song.skipped, song.slug, song.song.title]),
+    reveals.map((reveal, index) => [index + 1, index === 1, reveal.slug, reveal.song.title]),
+  );
+  assert.ok(songs.every((song) => !('cover' in song)));
+});
+
 test('lets a late joiner watch the round in progress, then play from the next one at 0 points', () => {
   const sim = new Simulation(settings(), ['p1']);
   allReady(sim);

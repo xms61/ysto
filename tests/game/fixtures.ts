@@ -10,6 +10,7 @@ import type { LobbySettings } from '../../shared/settings.ts';
 export function animeEntry(id: number, overrides: Partial<CatalogAnime> = {}): CatalogAnime {
   return {
     id,
+    slug: `show_${id}`,
     titles: { display: `Show ${id}`, romaji: `Show ${id}`, english: `English ${id}`, native: `Native ${id}` },
     year: 2010,
     season: 'Spring',

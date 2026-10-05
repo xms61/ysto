@@ -1,7 +1,7 @@
 # Features after 1.0
 
 ## Purpose
-Thirteen features the owner picked on 2026-10-05 from the list after 1.0, built one milestone at a time. When they are done, a group can react to a reveal, look back at the game's songs and play on in the same lobby with a running tally. A host can save their favorite setups and pick from new ways to play: hints, elimination, teams, song title and artist rounds, and typed answers. A solo player can come back every day for the daily challenge and keep a streak going. A living room can put the audio on one TV while phones only answer. Each milestone says how to see it working.
+Thirteen features the owner picked on 2026-10-05, and a fourteenth added the same day (M15, What's new), from the list after 1.0, built one milestone at a time. When they are done, a group can react to a reveal, look back at the game's songs and play on in the same lobby with a running tally. A host can save their favorite setups and pick from new ways to play: hints, elimination, teams, song title and artist rounds, and typed answers. A solo player can come back every day for the daily challenge and keep a streak going. A living room can put the audio on one TV while phones only answer. Each milestone says how to see it working.
 
 Not in this plan, by the owner's choice: importing AniList or MyAnimeList lists, and translations of the interface.
 
@@ -39,6 +39,11 @@ Each milestone is one PR on a `feat/…` branch (two where noted), with a versio
 - **Why:** most milestones add lobby settings or messages. A tab opened before a deploy sends settings the new server refuses, and misses new messages.
 - **Behavior:** the server tells each socket its build version in `lobby:state`. A client of another version reloads itself, but never during a round: it waits for the lobby or the results. The session survives the reload, so the player keeps their seat.
 - **Tests:** the client reloads on a version mismatch only outside a round.
+
+#### M15 What's new (S, added 2026-10-05)
+- **Behavior:** the first time a player opens a newer version, a small dialog says what changed for them, in at most three short lines ("Answers can change: ask your host to turn it on."), with one "Got it" button. Escape or a tap outside closes it too. It shows only on the home screen or in the lobby, never during a round or on the results. A device on its first visit gets nothing, because everything is new to it; it only notes the version.
+- **Build:** the notes are written for players in `src/whats-new.ts`, by version, separately from the CHANGELOG, which is written for developers. A version with nothing a player would notice has no note, and then nothing shows. The device keeps the last version it saw under `ysto_seen_version`. Coming back after several versions shows the newest three lines across them.
+- **Tests:** shown once for a newer version with notes; not on a first visit, not for a version without notes, never during a round; storage that is blocked doesn't show it on every load.
 
 #### M2 The game's songs at the results (S)
 - **Behavior:** below the standings, a "Songs this game" list: round number, the anime in the player's title languages, OP or ED and its number, song title and artists, and a link to the anime on AnimeThemes (`https://animethemes.moe/anime/<slug>`, new tab, `rel="noreferrer"`). A player who reconnects to the results sees it too.
@@ -118,7 +123,8 @@ Each milestone is one PR on a `feat/…` branch (two where noted), with a versio
 ## Progress
 - [x] 2026-10-05 Features picked and shaped with the owner; plan written
 - [x] 2026-10-05 M1 Stale tabs reload (1.3.0)
-- [ ] M2 The game's songs at the results
+- [ ] M15 What's new
+- [x] 2026-10-05 M2 The game's songs at the results (1.4.0)
 - [ ] M3 Report a broken clip
 - [ ] M4 The lobby's tally
 - [ ] M5 Reactions
@@ -135,6 +141,7 @@ Each milestone is one PR on a `feat/…` branch (two where noted), with a versio
 ## Decision log
 - 2026-10-05: The owner picked thirteen of the fifteen suggestions, leaving out list imports and interface translations. Typed answers become an alternative way to answer, not a replacement for the four options. Hints exist only when the lobby turns them on. The daily challenge shows a streak of the days played in a row.
 - 2026-10-05: The order runs from small changes that improve a session with friends (M1–M6) to sound, then new modes, then the daily and party mode, because a playtest can start after phase 1 and its findings may reshape the modes. Rejected: building the daily first (it needs the most new parts: a seed secret, a solo lobby, device storage).
+- 2026-10-05: The owner added M15, a short "What's new" dialog on a player's first visit after an update. It follows M1, which gives the page its version. Its notes are written for players, apart from the CHANGELOG, because the CHANGELOG is written for developers and is too long for a dialog.
 - 2026-10-05: Stale tabs reload (M1) comes first, because nearly every later milestone changes the settings or the protocol, and the validator refuses an old tab's settings.
 - 2026-10-05: Sound effects are synthesized with Web Audio rather than shipped as files, because files would need licensing and space, and a table per world is easy to tune. Rejected: CC0 sample packs.
 - 2026-10-05: The daily's seed takes a server secret, because the code and the catalog's sources are public. Rejected: a seed from the date alone.

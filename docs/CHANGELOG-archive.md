@@ -2,6 +2,12 @@
 
 Releases moved out of `CHANGELOG.md` (which keeps about the latest 5). Newest first.
 
+## [1.0.0] - 2026-10-05
+
+### Changed
+- 1.0: the v1 plan is complete. The game runs on its VPS from the released image; the load test meets its targets and the security review has no high findings. The playtest with friends, the clip timing on the VPS and an external port scan follow (tech-debt tracker).
+- The docs describe the running deployment: DEPLOY.md lists the open checks, SECURITY.md records the review, and the README's status is 1.0.
+
 ## [0.33.0] - 2026-10-05
 
 ### Added

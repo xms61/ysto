@@ -5,7 +5,7 @@ import { AudioEngine } from './audio/engine.ts';
 import { writeSession } from './realtime/session.ts';
 import { FakeAudioContext, OPTIONS, SESSION, lobbyState, revealOf, socketFactory } from './testing/fakes.ts';
 
-const PLAYING = { phase: 'playing', number: 1, rounds: 5, results: null } as const;
+const PLAYING = { phase: 'playing', number: 1, rounds: 5, results: null, songs: null } as const;
 
 function renderApp(reload = () => {}) {
   const context = new FakeAudioContext();
@@ -122,7 +122,7 @@ test('reloads to a new server version once, and never during a round', () => {
   writeSession(sessionStorage, SESSION);
   const reload = vi.fn();
   const socket = renderApp(reload).sockets.latest();
-  const RESULTS = { phase: 'results' as const, number: 5, rounds: 5, results: [] };
+  const RESULTS = { phase: 'results' as const, number: 5, rounds: 5, results: [], songs: [] };
   act(() => {
     socket.open();
     socket.receive(lobbyState({ version: '9.9.9', game: PLAYING }));
@@ -318,6 +318,17 @@ function spokenText(element: Element): string {
   return copy.textContent ?? '';
 }
 
+const SONG = {
+  number: 1,
+  skipped: false,
+  anime: { english: 'Speed Line', romaji: 'Supiido Rain', japanese: 'スピードライン' },
+  theme: { kind: 'OP' as const, sequence: 2 },
+  song: { title: 'Full Throttle', artists: [{ name: 'Singer', as: 'Heroine' }] },
+  year: 2019,
+  season: 'Spring',
+  slug: 'speed_line',
+};
+
 test('shows the final results, also to a player who reconnects after the game', () => {
   renderSeated(
     lobbyState({
@@ -329,6 +340,7 @@ test('shows the final results, also to a player who reconnects after the game', 
           { playerId: 'p2', score: 2400, correct: 3, averageMs: 4200, bestStreak: 2 },
           { playerId: 'p1', score: 900, correct: 1, averageMs: null, bestStreak: 1 },
         ],
+        songs: [SONG],
       },
     }),
   );
@@ -340,6 +352,17 @@ test('shows the final results, also to a player who reconnects after the game', 
     '2ndAnnyou1 of 5 right · best streak 1900 points',
   ]);
   expect(screen.getByRole('button', { name: 'Play again' })).toBeTruthy();
+});
+
+test("lists the game's songs at the results, each linking to its anime on AnimeThemes", () => {
+  const results = [{ playerId: 'p1', score: 900, correct: 1, averageMs: null, bestStreak: 1 }];
+  renderSeated(lobbyState({ game: { phase: 'results', number: 1, rounds: 1, results, songs: [SONG] } }));
+  const list = screen.getByRole('list', { name: 'Songs this game' });
+  expect(within(list).getByText('Speed Line')).toBeTruthy();
+  expect(within(list).getByText('OP 2 · Full Throttle · by Singer (as Heroine) · Spring 2019')).toBeTruthy();
+  const link = within(list).getByRole('link', { name: 'AnimeThemes: Speed Line, opens in a new tab' });
+  expect(link.getAttribute('href')).toBe('https://animethemes.moe/anime/speed_line');
+  expect(link.getAttribute('rel')).toBe('noreferrer');
 });
 
 test('goes home with the reason when the host removes this player', () => {
