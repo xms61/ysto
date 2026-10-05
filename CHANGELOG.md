@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.2.0] - 2026-10-05
+
+### Added
+- Answer changes: a lobby setting, off by default, lets players pick another option until the round closes. Once everyone has answered, an overtime of 3 to 10 s (the host picks, 5 s by default) gives a last chance to switch before the reveal: "Overtime" is called above the time left, and each world's timer counts it down. The others see who switched, never to what. A switch scores from the moment it is made, and First correct keeps the first answer as before.
+
 ## [1.1.0] - 2026-10-05
 
 ### Added
@@ -38,8 +43,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 - The shared timer bar. Every theme draws its own timer, and a new theme must name one.
-
-## [0.31.1] - 2026-10-05
-
-### Fixed
-- The "you" and "host" chips and the shared timer bar take each theme's corners, so they are square in the square worlds instead of always round.

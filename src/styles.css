@@ -1172,6 +1172,45 @@
     font-family: var(--ja-font);
   }
 
+  /* With answer changes on (Round.tsx): the overtime's call above the time left, in the theme's display face
+     on its accent, and the line that names who just switched. The time left's wrapper only carries
+     data-overtime for a world to restyle its readout. */
+  .time-left {
+    display: contents;
+  }
+
+  .overtime-call {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.25rem 0.75rem;
+  }
+
+  .overtime-word {
+    padding: 0.125rem 0.625rem;
+    border-radius: var(--radius-lg);
+    background: var(--accent);
+    color: var(--accent-ink);
+    font-size: 1.5rem;
+    line-height: 1.2;
+  }
+
+  .overtime-hint {
+    color: var(--muted);
+    font-size: 0.875rem;
+  }
+
+  .nudge-line {
+    min-height: 1.5rem;
+    font-size: 0.875rem;
+  }
+
+  .nudge {
+    display: inline-block;
+    color: var(--ink);
+    font-weight: 600;
+  }
+
   /* The pick's stamp sits on the card's top edge, over the card rather than in it, so a picked card keeps
      its height and its row stays even. */
   .card-tag {
@@ -5959,6 +5998,41 @@
 
 :root[data-motion='full'] .motion-tick {
   animation: tick 300ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* The overtime's call slams in, then its word keeps a slow beat while the overtime runs. */
+:root[data-motion='full'] .overtime-call {
+  animation: tick 400ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+:root[data-motion='full'] .overtime-word {
+  animation: overtime-beat 1s ease-in-out 400ms infinite;
+}
+
+@keyframes overtime-beat {
+  50% {
+    transform: scale(1.06);
+  }
+}
+
+/* A switch nudges in from the side, then fades before the line clears. */
+:root[data-motion='full'] .nudge {
+  animation:
+    nudge-in 300ms cubic-bezier(0.16, 1, 0.3, 1) both,
+    nudge-out 400ms ease-in 2100ms both;
+}
+
+@keyframes nudge-in {
+  from {
+    opacity: 0;
+    transform: translateX(-0.75rem);
+  }
+}
+
+@keyframes nudge-out {
+  to {
+    opacity: 0;
+  }
 }
 
 @keyframes band-wipe {

@@ -22,6 +22,8 @@ The host shapes the game (pool, length, difficulty, scoring). Each player sets w
 | Scoring preset | Lobby | Classic, Buzzer, Chill ([scoring](scoring.md)) | Classic |
 | Scoring mode | Lobby | Speed, First correct, Flat | Speed |
 | Streak bonus, Comeback, Wrong-answer penalty | Lobby | on or off each | on, off, off |
+| Answer changes | Lobby | on or off; ignored in First correct ([game flow](game-flow.md)) | off |
+| Overtime | Lobby | 3–10 s, once everyone has answered, with answer changes on | 5 s |
 | Volume | Player (device) | 0–100% | 15% |
 | Theme | Player (device) | Tokyo Rain, Konbini 2 a.m., Karaoke Box, Hanami, Omikuji, Blossom Map, Fighter Select, Tournament Arc, Splash Page, Night Arc, Model Kit, Gachapon, Quest Board, Back Issue, Side A ([DESIGN.md](../DESIGN.md)) | Tokyo Rain |
 | Title language | Player (device) | English, romaji, Japanese | English, falling back to romaji |

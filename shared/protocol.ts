@@ -209,6 +209,11 @@ export type ServerMessage =
   | { type: 'round:prepare'; roundId: string; clipToken: string; number: number; rounds: number }
   | { type: 'round:start'; roundId: string; startsAt: number; endsAt: number; options: OptionTitles }
   | { type: 'round:answered'; roundId: string; playerIds: string[] }
+  // With answer changes on: someone picked another option (never which), the overtime once everyone has
+  // answered, and a returning player's own pick.
+  | { type: 'round:switched'; roundId: string; playerId: string }
+  | { type: 'round:overtime'; roundId: string; startsAt: number; endsAt: number }
+  | { type: 'round:pick'; roundId: string; option: number }
   | RoundReveal
   | { type: 'game:results'; standings: ResultView[] }
   | { type: 'time:pong'; clientTime: number; serverTime: number }

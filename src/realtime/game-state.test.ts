@@ -1,6 +1,7 @@
 import { expect, test } from 'vitest';
 import type { ServerMessage } from '../../shared/protocol.ts';
 import { OPTIONS, lobbyState, revealOf } from '../testing/fakes.ts';
+import { SCORING_PRESETS } from '../../shared/scoring.ts';
 import { INITIAL_GAME, choose, isHost, playerOf, receive } from './game-state.ts';
 import type { GameState } from './game-state.ts';
 
@@ -65,6 +66,40 @@ test('takes one answer per round, only while the options are out', () => {
   expect(choose(receive(started, revealOf('g.1')), 1).round?.choice).toBeNull();
   const answeredElsewhere = receive(started, { type: 'round:answered', roundId: 'g.1', playerIds: ['p1'] });
   expect(choose(answeredElsewhere, 1)).toBe(answeredElsewhere);
+});
+
+function switching(overrides: Parameters<typeof lobbyState>[0] = {}) {
+  const lobby = lobbyState({ game: PLAYING, ...overrides });
+  return { ...lobby, settings: { ...lobby.settings, answerChanges: true, ...overrides.settings } };
+}
+
+test('with answer changes on, takes another option until the reveal, and never the same one twice', () => {
+  const started = replay([switching(), prepare('g.1'), start('g.1')]);
+  const first = choose(started, 1);
+  const second = choose(first, 2);
+  expect(second.round?.choice).toBe(2);
+  expect(choose(second, 2)).toBe(second);
+  expect(choose(receive(second, revealOf('g.1')), 0).round?.choice).toBe(2);
+  const buzzer = switching({ settings: { ...switching().settings, scoring: { ...SCORING_PRESETS.buzzer } } });
+  const locked = choose(replay([buzzer, prepare('g.1'), start('g.1')]), 1);
+  expect(choose(locked, 2)).toBe(locked);
+});
+
+test('follows the overtime, who switched, and the pick a reconnect hands back', () => {
+  const state = replay([
+    switching(),
+    prepare('g.1'),
+    start('g.1'),
+    { type: 'round:switched', roundId: 'g.1', playerId: 'p2' },
+    { type: 'round:switched', roundId: 'g.1', playerId: 'p2' },
+    { type: 'round:overtime', roundId: 'g.1', startsAt: 15_000, endsAt: 20_000 },
+    { type: 'round:pick', roundId: 'g.1', option: 3 },
+  ]);
+  expect(state.round).toMatchObject({
+    overtime: { startsAt: 15_000, endsAt: 20_000 },
+    nudge: { playerId: 'p2', count: 2 },
+    choice: 3,
+  });
 });
 
 test('drops the round when the game ends, and reopens the results for the next game', () => {
