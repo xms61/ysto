@@ -1,5 +1,5 @@
 // What players read for each theme: its name, and its world in one line, as the picker shows them
-// (docs/exec-plans/active/2026-10-01-theme-worlds.md). Ids are permanent once released; names may change.
+// (docs/exec-plans/completed/2026-10-01-theme-worlds.md). Ids are permanent once released; names may change.
 import type { Theme } from '../prefs/prefs.ts';
 
 export const THEME_NAMES: Record<Theme, string> = {

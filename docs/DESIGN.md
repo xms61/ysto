@@ -2,7 +2,7 @@
 status: verified
 last-verified: 2026-10-05
 name: "You Skipped The OP?!"
-description: "One card anatomy, printed on seven genre card stocks, for a multiplayer anime music quiz."
+description: "Fifteen theme worlds over one card anatomy, for a multiplayer anime music quiz."
 colors:
   tokyo-rain-page: "#0b1220"
   tokyo-rain-panel: "#121c30"
@@ -379,6 +379,35 @@ colors:
   night-arc-card-alert: "#ff6b6b"
   night-arc-card-back: "#f4f4f0"
   night-arc-card-back-ink: "#0a0a0a"
+  side-a-page: "#15161c"
+  side-a-panel: "#1f2129"
+  side-a-raised: "#2a2d38"
+  side-a-line: "#3b3f4d"
+  side-a-edge: "#8f96ad"
+  side-a-ink: "#f1f2f6"
+  side-a-muted: "#b2b7c8"
+  side-a-accent: "#fff35c"
+  side-a-accent-ink: "#1a1a00"
+  side-a-good: "#6fe3a1"
+  side-a-bad: "#ff7b7b"
+  side-a-card: "#f6f8ff"
+  side-a-card-ink: "#1b2a6b"
+  side-a-card-muted: "#45507a"
+  side-a-card-dim: "#e3e8f5"
+  side-a-card-mark: "#1b2a6b"
+  side-a-card-mark-ink: "#ffffff"
+  side-a-card-chosen: "#f6f8ff"
+  side-a-card-chosen-ink: "#1b2a6b"
+  side-a-card-alert: "#c0262d"
+  side-a-card-back: "#f6f8ff"
+  side-a-card-back-ink: "#1b2a6b"
+  side-a-shell: "#2b2e3a"
+  side-a-label: "#fdfbf3"
+  side-a-label-ink: "#1b2a6b"
+  side-a-stripe-warm: "#ff7a59"
+  side-a-tape: "#5a3a22"
+  side-a-rule: "#9db4e8"
+  side-a-margin: "#e57373"
 rounded:
   tokyo-rain-lg: "0.375rem"
   tokyo-rain-xl: "0.375rem"
@@ -422,6 +451,9 @@ rounded:
   night-arc-lg: "2px"
   night-arc-xl: "2px"
   night-arc-2xl: "2px"
+  side-a-lg: "0.25rem"
+  side-a-xl: "0.25rem"
+  side-a-2xl: "0.5rem"
 typography:
   tokyo-rain-display:
     fontFamily: "'Zen Kaku Gothic New', ui-sans-serif, system-ui, sans-serif"
@@ -535,6 +567,14 @@ typography:
     fontFamily: "'Patrick Hand SC', 'Comic Sans MS', sans-serif"
     fontWeight: 400
     letterSpacing: "0.02em"
+  side-a-display:
+    fontFamily: "'Caveat Brush', 'Comic Sans MS', cursive"
+    fontWeight: 400
+    letterSpacing: "0.01em"
+  side-a-title:
+    fontFamily: "'Caveat', 'Comic Sans MS', cursive"
+    fontWeight: 600
+    letterSpacing: "0"
   home-title:
     fontSize: "3rem"
     lineHeight: 1
@@ -643,7 +683,7 @@ The game is played on a phone under time pressure, so expression never hides the
 
 The fifteen themes, in picker order, with their ids in `src/prefs/prefs.ts`: Tokyo Rain (`tokyo-rain`, the default), Konbini 2 a.m. (`konbini`), Karaoke Box (`karaoke`), Hanami (`sakura`), Omikuji (`omikuji`), Blossom Map (`blossom-map`), Fighter Select (`shonen`), Tournament Arc (`tournament-arc`), Splash Page (`splash-page`), Night Arc (`night-arc`), Model Kit (`mecha`), Gachapon (`magical-girl`), Quest Board (`isekai`), Back Issue (`retro-vhs`) and Side A (`side-a`). Each player picks one on their device.
 
-The themes are being rebuilt as fifteen worlds, each laying out the round, the reveal and the results in its own way ([plan](exec-plans/active/2026-10-01-theme-worlds.md)). Until a theme's world is built, it plays on the card anatomy below: the eight new themes print the plain stock in their own colors and faces. The seven older themes are all rebuilt as worlds. Their tokens join the frontmatter when their world is built.
+All fifteen themes are worlds, each laying out the round, the reveal and the results in its own way over the card anatomy below ([plan](exec-plans/completed/2026-10-01-theme-worlds.md)). Each world's tokens are in the frontmatter.
 
 **Key Characteristics:**
 - One card anatomy, seven printed stocks.
@@ -658,7 +698,7 @@ The themes are being rebuilt as fifteen worlds, each laying out the round, the r
 Each theme is one block of variables on any element with `data-theme`, in two families: the chrome around the cards and the card stock itself.
 
 ### Primary
-- **Accent** (`accent`, with `accent-ink` on it): the primary button, the timer's fill, the lit sonar in the listening panel, focus outlines, the selected theme in the picker, the caret and text selection. Tokyo Rain's is signal amber, Hanami's blossom pink, Fighter Select's arcade yellow, Model Kit's yellow part plastic, Gachapon's candy red, Quest Board's candle amber, Back Issue's process magenta, kept to what can be tapped, Konbini 2 a.m.'s saffron from its shop stripe, Karaoke Box's booth pink, Omikuji's shrine vermilion, Blossom Map's blossom pink for this player's chip, Tournament Arc's referee red, Splash Page's sound-effect red, Night Arc's white ink, with red kept for a wrong verdict.
+- **Accent** (`accent`, with `accent-ink` on it): the primary button, the timer's fill, the lit sonar in the listening panel, focus outlines, the selected theme in the picker, the caret and text selection. Tokyo Rain's is signal amber, Hanami's blossom pink, Fighter Select's arcade yellow, Model Kit's yellow part plastic, Gachapon's candy red, Quest Board's candle amber, Back Issue's process magenta, kept to what can be tapped, Konbini 2 a.m.'s saffron from its shop stripe, Karaoke Box's booth pink, Omikuji's shrine vermilion, Blossom Map's blossom pink for this player's chip, Tournament Arc's referee red, Splash Page's sound-effect red, Night Arc's white ink, with red kept for a wrong verdict, Side A's highlighter yellow.
 
 ### Secondary
 - **Card stock** (`card`, `card-ink`): the face of an open card.
@@ -670,7 +710,7 @@ Each theme is one block of variables on any element with `data-theme`, in two fa
 
 ### Tertiary
 - **Right and wrong** (`good`, `bad`): verdict and error colors on the panels. They never carry meaning alone; an icon and words always go with them.
-- **Material colors**, only where a theme's stock needs them: Hanami's `blossom` and gold `foil`, Gachapon's gold `foil` and its `--foil-sheen` gradient for the charm, Back Issue's process-yellow `slab`, process `cyan` and `halftone`, Konbini 2 a.m.'s shop, Karaoke Box's booth, Omikuji's shrine, Blossom Map's map, Tournament Arc's board and Splash Page's screentone (see Theme worlds).
+- **Material colors**, only where a theme's stock needs them: Hanami's `blossom` and gold `foil`, Gachapon's gold `foil` and its `--foil-sheen` gradient for the charm, Back Issue's process-yellow `slab`, process `cyan` and `halftone`, Konbini 2 a.m.'s shop, Karaoke Box's booth, Omikuji's shrine, Blossom Map's map, Tournament Arc's board, Splash Page's screentone and Side A's tape (see Theme worlds).
 
 ### Neutral
 - **Page** (`page`): behind everything, under the theme's texture. Also the fill of fields.
@@ -797,6 +837,7 @@ A small tag across the card's top edge, 0.5rem from the right, outside the faces
 | Tournament Arc (`tournament-arc`) | An entrant plate on the bracket (see Theme worlds): hinoki in a 2px ink rule with a hard ink shadow and two nails, each match's pair joined by a VS medallion on the spine | A black square with a white numeral | The plate turns black, its key red, and advances toward the spine, its match's medallion red; muted plates go grey | The final: gold framed in ink; face down, a blank black plate with a white "?!" |
 | Splash Page (`splash-page`) | A manga panel (see Theme worlds): screentone on white in a 3px ink frame, cut on a slant so the gutters lean, the title in a white speech balloon | A black square with a white numeral | The panel blacked out, its key red, the balloon still white; muted panels go grey | The splash: white with focus lines bursting from the middle, the words on white, and "ドン" lettered over its corner; face down, a black panel with a white "?!" |
 | Night Arc (`night-arc`) | A black panel (see Theme worlds) in a 3px white frame, its title in a white-ink balloon | A white numeral set in the gutter on the panel's top corner | The frame doubled, a black rule inside the white; muted frames go grey | Burst to white: black focus lines from its edges, its words on white; face down, a black panel in its white frame with a white "?!" |
+| Side A (`side-a`) | A track on the lined insert (see Theme worlds): one ruled line in a single column, its number in the margin, its title in ballpoint | "A1" to "A4" in navy ballpoint in the margin | The number circled in ballpoint; muted tracks fade | A highlighter stroke over the title, the details written in beside it; face down, a blank ruled line with a faint "?!" |
 
 ### The reveal's hit
 After the right card turns over, its stock prints a hit round it (`.card-impact`) and a burst of its own material flies out from the middle (`Burst.tsx`). With a streak of 3 or more right answers the hit lands harder, and harder again from 5: more motes, a wider ring, a bigger shake (`data-heat`, 1 to 3).
@@ -817,6 +858,7 @@ After the right card turns over, its stock prints a hit round it (`.card-impact`
 | Tournament Arc (`tournament-arc`) | The final's emblem at the bracket's center lights gold | The shared burst in the theme's colors |
 | Splash Page (`splash-page`) | The right panel bursts out of the page and settles a little larger, over its neighbors; its sound effect slams on | The shared burst in the theme's colors |
 | Night Arc (`night-arc`) | The right panel's white light flares out past its frame and fades | The shared burst in the theme's colors |
+| Side A (`side-a`) | The highlighter sweeps over the right track's title | The shared burst in the theme's colors |
 
 ### Themes beyond the card
 
@@ -836,9 +878,10 @@ After the right card turns over, its stock prints a hit round it (`.card-impact`
 | Tournament Arc (`tournament-arc`) | Dela Gothic One, the heavy gothic of a tournament poster | Kaisei Tokumin, bold, brushed like a name plate; the buttons take it too, since Dela Gothic runs too wide for a phone's header | A stone arena in a mountain valley in ink wash; speed lines at the reveal | The round's heading is a black banner brushed ragged at its ends; panels and quiet buttons take a 2px ink rule; the lobby's start bar is the ring's edge with red pennants |
 | Splash Page (`splash-page`) | Reggae One, a heavy brush display like manga sound effects | Comic Neue, bold capitals, like a balloon's lettering | A cliff-top battlefield with speed lines in black ink; speed lines at the reveal | The round's heading is a narration box in a 3px ink frame with a hard shadow; panels and quiet buttons take a heavy ink rule; the lobby's start bar is the page's foot under a panel rule and a strip of screentone |
 | Night Arc (`night-arc`) | Shojumaru, brush capitals | Patrick Hand SC, a hand-lettered face, like white-ink balloon lettering | A ruined city under a full moon in white ink on black; speed lines at the reveal | The round's heading is the chapter's header between two white rules; panels and quiet buttons take a white rule; the lobby's start bar is the page's foot under a white panel rule |
+| Side A (`side-a`) | Caveat Brush, a marker on the tape's label | Caveat, semibold, a ballpoint hand | A desk at night with a cassette deck and a lamp; a tracking band rolls with motion on | The round's heading is written on the cassette's label under two printed stripes beside a printed "A"; the lobby's start bar is the cassette's shell under the label's stripes |
 
 ### Theme worlds
-The fifteen themes are becoming worlds that each lay out the round, the reveal and the results in their own way ([plan](exec-plans/active/2026-10-01-theme-worlds.md)). What a world changes beyond its stock lives in `src/themes/stage.ts`, read through `useStage()`: how the time left reads (`readout`: the shared bar, a seven-segment display of the seconds, or a world's own object), the mark printed on each option that was not the answer (`wrongMark`), and whether the four options stand in one column of rows instead of 2x2 (`rows`). A theme that sets nothing plays the shared round. The stage never changes what the four options are, that they are equal in size, or when they show.
+The fifteen themes are worlds that each lay out the round, the reveal and the results in their own way ([plan](exec-plans/completed/2026-10-01-theme-worlds.md)). What a world changes beyond its stock lives in `src/themes/stage.ts`, read through `useStage()`: how the time left reads (`readout`: the shared bar, a seven-segment display of the seconds, or a world's own object), the mark printed on each option that was not the answer (`wrongMark`), and whether the four options stand in one column of rows instead of 2x2 (`rows`). A theme that sets nothing plays the shared round. The stage never changes what the four options are, that they are equal in size, or when they show.
 
 **Tokyo Rain: a ramen ticket machine under the noren.** The round's panel is the machine's steel cabinet (`--machine`, its rim `--machine-rim`), with a lit and a shaded side edge, a recessed button bank, the listening light as a perforated speaker grille, and a ticket outlet and a coin slot along its foot. The round's heading hangs on an indigo noren across its top, cloth hung from a wooden pole (`--noren-pole`) that runs past the cabinet's edges. The heading row is one solid indigo panel (`--noren`, its text `--noren-ink`); below it the hem splits into four panels with the cabinet showing through the slits, carries a printed white band and a white crest that the middle slit cuts in two (no letters, no shop name), and ends a little unevenly. The time left reads on the machine's amber LED (`Segments.tsx`: lit segments in the accent, unlit ones at 12% behind dark glass), "S LEFT" beside it, and the countdown on a larger LED. The options are four backlit buttons in a 2x2 grid on the machine's dark face (`--machine`, its rim `--machine-rim`), each a paper insert in a 3px bezel with its key on a round indigo coin lamp. A pick presses its button in, lights the insert brighter amber and the lamp amber with a soft glow; the others go unlit. At the reveal the right button turns over to its ticket, and every other button lights a red "Sold out" plate beside its lamp (`.card-mark-plate`, decoration hidden from screen readers, who hear which card is right). The results hang from a steel order rail, the leader's ticket perforated like the round's. With motion on, a pressed button's coin lamp lights in 150ms, the right button's ticket feeds out line by line like a thermal printer after it turns (640ms in 12 steps), and the "Sold out" lamps flicker on one after another, 120ms apart. While the clip plays the noren's hem sways slowly in the street's draft (3.6s each way); the heading row above it stays still. Below the cards, the answer box is the machine's lit display panel, and the names of who picked each button sit on ticket stubs, this player's in amber.
 
@@ -867,6 +910,8 @@ The fifteen themes are becoming worlds that each lay out the round, the reveal a
 **Splash Page (`splash-page`): a battle manga page.** A light world in black ink on white. The round's heading is a narration box, white in a 3px ink frame with a hard shadow. The listening light is a disc of screentone (`--tone`) in an ink ring. The time left is a panel's focus lines (`readout: 'focus'`, `FocusLines.tsx`): ink wedges drawn in from a white panel's frame toward its center, reaching further in as the round runs down, so the clear space in the middle tightens to a point; the seconds beside it. The options are four manga panels in the 2x2 grid, read right to left like a manga page (the first panel is the top right; `direction: rtl` on the grid, each panel's own content left to right). Each panel is cut on a slant (`clip-path`, its outline drawn as an ink ring along the same cut), so the gutters lean, and every panel loses the same corner triangle, so all four keep the same area. Each is screentone on white with its key on a black square and its title lettered in a white speech balloon. A pick blacks the panel out with a red key, the balloon still white. At the reveal the right panel blows up into the splash: it bursts out of the page and settles a little larger over its neighbors, white with focus lines from its middle and its words on white, and a sound effect, "ドン", lettered in red over its corner (decoration, hidden from screen readers); the other panels go grey. Below the cards, the answer box is another framed panel with a hard shadow, its kind on a black caption; the names of who picked each panel sit in little speech balloons, this player's in red. The results give the winner the splash panel with "ドドド" lettered over its corner. The lobby's start bar is the page's foot under a panel rule. With motion on, a picked panel jolts as it is blacked out (240ms), the splash bursts out and settles (620ms), and the sound effect slams on (300ms), at the reveal and again on the winner.
 
 **Night Arc (`night-arc`): the all-black pages of a manga's darkest chapter.** White ink on a solid black page. The round's heading is the chapter's header: white brush capitals centered between two white rules. The listening light is a white-ringed disc of black. The time left is white focus lines closing in on a black panel (`readout: 'focus'`, the same `FocusLines.tsx` as Splash Page, drawn in this world's ink). The options are four black panels in the 2x2 grid, each in a 3px white frame with its title in a white-ink balloon, a white outline round black, and its number set in the gutter on the panel's top corner. A pick doubles the panel's frame, a black rule inside the white. At the reveal the right panel bursts to white, black focus lines from its edges and its words on white; the other frames go grey. Red is spent only on a wrong verdict. Below the cards, the answer box is another black panel in a white frame, its kind on a white caption; the names of who picked each panel sit in white-ink balloons, this player's filled white. The results give the winner the panel burst to white, framed in white on the black page. The lobby's start bar is the page's foot under a white panel rule. With motion on, a picked panel's frame doubles as it is drawn in (260ms), and at the reveal the right panel's white light flares out past its frame and fades (700ms).
+
+**Side A (`side-a`): Side A of a friend's mixtape.** The page is a desk at night. The round's heading is written in marker on the cassette's label (`--label`, its text `--label-ink`): cream paper with two printed stripes along its top (`--stripe-warm` and the accent) and a printed "A" before the heading, in the cassette's smoky shell (`--shell`). The listening light is a reel's hub. The time left is the cassette itself (`readout: 'reels'`, `Cassette.tsx`): its brown tape (`--tape`) winds off the left reel onto the right as the round runs down, the seconds beside it. The options are four tracks handwritten in ballpoint down the lined insert (`rows`: one column), each on its own blue rule (`--rule`) with its number, A1 to A4, in the margin left of a red margin line (`--margin`). A pick circles the number in ballpoint. At the reveal a highlighter stroke (the accent) goes over the right track's title and its details are written in beside it; the other tracks fade. Below the cards, the answer box is the insert's inside flap, lined paper with the kind under a highlighter stroke; the names of who picked each track are written on little tape labels, this player's highlighted. The results write the winner on the insert with a highlighter stroke over their name. The lobby's start bar is the cassette's shell under the label's stripes. With motion on, the reels turn while the clip plays, a picked number is circled in ballpoint (300ms), and the highlighter sweeps over the right title (520ms) and over the winner's name at the results.
 
 ### The backdrop plates
 Each theme sets a painted scene behind its page: `--plate` names the image in `src/assets/plates/` and `--plate-opacity` how strongly it shows over the page color. The opacity is the highest that keeps the page pairs passing over every pixel (Contrast the tests enforce), so Hanami's bright tarp shows least and Blossom Map's flat park most. With motion on the plate drifts slowly (Motion).
