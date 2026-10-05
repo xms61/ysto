@@ -1,18 +1,19 @@
 // What a theme's world changes in the round beyond its stock (docs/DESIGN.md#theme-worlds): how the time left
-// reads, the mark printed on an option that was not the answer, and whether the results draw each score as a
-// bar. A theme that sets nothing plays the shared round. The stage never changes what the four options are or when they show, only how they are drawn.
+// reads, the mark printed on an option that was not the answer, whether the results draw each score as a
+// bar, and whether the round's heading is set as a masthead. A theme that sets nothing plays the shared round. The stage never changes what the four options are or when they show, only how they are drawn.
 import { createContext, useContext } from 'react';
 import type { Theme } from '../prefs/prefs.ts';
 
 export interface ThemeStage {
   // The shared bar, a seven-segment display, a dango skewer eaten down, the seconds as huge arcade digits, a
-  // nipper cutting along a runner, a gachapon's coin dial turning, or a candle burning down.
-  readout: 'bar' | 'segments' | 'dango' | 'digits' | 'nipper' | 'dial' | 'candle';
+  // nipper cutting along a runner, a gachapon's coin dial turning, a candle burning down, or a printer's ruler.
+  readout: 'bar' | 'segments' | 'dango' | 'digits' | 'nipper' | 'dial' | 'candle' | 'ruler';
   wrongMark: string | null; // printed on each option that was not the answer, at the reveal
   scoreBars: boolean; // each final score also drawn as a bar against the winner's, like a health bar
+  masthead: boolean; // the round's heading set as a magazine's issue number, "No. 03 / 15"
 }
 
-const SHARED_STAGE: ThemeStage = { readout: 'bar', wrongMark: null, scoreBars: false };
+const SHARED_STAGE: ThemeStage = { readout: 'bar', wrongMark: null, scoreBars: false, masthead: false };
 
 const STAGES: Partial<Record<Theme, Partial<ThemeStage>>> = {
   'tokyo-rain': { readout: 'segments', wrongMark: 'Sold out' },
@@ -21,6 +22,7 @@ const STAGES: Partial<Record<Theme, Partial<ThemeStage>>> = {
   mecha: { readout: 'nipper', wrongMark: 'Spare' },
   'magical-girl': { readout: 'dial' },
   isekai: { readout: 'candle' },
+  'retro-vhs': { readout: 'ruler', masthead: true },
 };
 
 export function stageOf(theme: Theme): ThemeStage {

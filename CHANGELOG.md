@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.22.0] - 2026-10-05
+
+### Added
+- Back Issue is its own world, and a light one: an eighties monthly anime magazine. The round's heading is the issue's masthead, "No. 03 / 15" at monumental size; the time left is a printer's ruler; the options are four feature boxes on one process-yellow slab, each with a reader's ballot square, printed a little off register. A pick marks its ballot with an X; at the reveal the other boxes are screened back under halftone and the right one turns to the answer page in process cyan; the answer box is the article page and the pickers' names are caption tags; the results are the readers' poll. Magenta is kept for what can be tapped. Type is Anton and Archivo Narrow.
+
+### Removed
+- Back Issue's tape: the VT323 font, the sunset stripes, the scanlines, the tracking band behind it, the title flicker and the reveal's glitch. Side A keeps its tracking band.
+
 ## [0.21.3] - 2026-10-05
 
 ### Changed
@@ -34,11 +42,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 - Quest Board's pixel stars and blinking menu cursor.
-
-## [0.20.0] - 2026-10-05
-
-### Added
-- Gachapon is its own world, and a light one: a capsule toy machine on a sunny shopping street. The round's heading is the machine's red head under a row of bulbs; the options are four alike capsules in the clear dome, each title on a paper slip; the time left is the coin dial turning. A pick drops its capsule toward the tray; at the reveal the others drop out in grey and the right capsule opens on a gold charm; the results bring the winner out in an open capsule. With motion on, the dial turns smoothly, the capsules drop and open, and the standings tumble out one at a time.
-
-### Removed
-- Gachapon's twinkling night stars; its sunny street keeps still.

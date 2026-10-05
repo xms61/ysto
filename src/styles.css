@@ -7,7 +7,8 @@
 @import '@fontsource/mochiy-pop-one/latin-400.css';
 @import '@fontsource/cinzel/latin-700.css';
 @import '@fontsource/im-fell-english/latin-400.css';
-@import '@fontsource/vt323/latin-400.css';
+@import '@fontsource/anton/latin-400.css';
+@import '@fontsource/archivo-narrow/latin-700.css';
 
 /*
  * Seven themes, one card anatomy (docs/DESIGN.md). Every round deals four identical cards, and each theme
@@ -352,51 +353,55 @@
     --radius-2xl: 0.5rem;
   }
 
-  /* Retro VHS: an eighties anime on tape, sunset-striped labels and on-screen-display type. */
+  /* Back Issue (id retro-vhs): an eighties monthly anime magazine on glossy paper. The round is an issue: its
+     masthead number, a printer's ruler as the timer, four feature boxes on one process-yellow slab. Magenta is
+     only on what can be tapped. */
   [data-theme='retro-vhs'] {
     --display-adjust: 0.56;
-    color-scheme: dark;
-    --page: #0d0b14;
+    color-scheme: light;
+    --page: #f4f1ea;
     --plate: url('./assets/plates/retro-vhs.webp');
-    --plate-opacity: 0.17;
-    --panel: #17142a;
-    --raised: #231e3d;
-    --line: #3a3360;
-    --edge: #9a8fd1;
-    --ink: #f4f1ff;
-    --muted: #b9b1d9;
-    --accent: #ff8a1f;
-    --accent-ink: #140d06;
-    --good: #5ef0c8;
-    --bad: #ff6f8a;
-    --card: #eeedf1;
-    --card-ink: #17121f;
-    --card-muted: #4f4862;
-    --card-dim: #d3d1da;
-    --card-mark: #17121f;
-    --card-mark-ink: #3ee0cf;
-    --card-chosen: #d9fbf6;
-    --card-chosen-ink: #17121f;
-    --card-alert: #c21f4a;
-    --card-back: #0d0b14;
-    --card-back-ink: #3ee0cf;
-    --stripe-1: #ff8a1f;
-    --stripe-2: #ff3d7f;
-    --stripe-3: #8a3ffc;
-    --display-font: 'VT323', ui-monospace, monospace;
+    --plate-opacity: 0.07;
+    --panel: #ffffff;
+    --raised: #efeae0;
+    --line: #d8d1c4;
+    --edge: #77716a;
+    --ink: #141414;
+    --muted: #55514b;
+    --accent: #d6006f;
+    --accent-ink: #ffffff;
+    --good: #0a7a3d;
+    --bad: #c4121a;
+    --card: #ffffff;
+    --card-ink: #141414;
+    --card-muted: #4d4a45;
+    --card-dim: #ebe7df;
+    --card-mark: #d6006f;
+    --card-mark-ink: #ffffff;
+    --card-chosen: #fff6c2;
+    --card-chosen-ink: #141414;
+    --card-alert: #c4121a;
+    --card-back: #4cc3ea;
+    --card-back-ink: #0d0d0d;
+    /* The press: the process-yellow slab, process cyan for the misregistered shadows and the ruler, and the
+       halftone dots that screen a box back. Only the slab and the halftone sit under text. */
+    --slab: #ffd400;
+    --cyan: #00a3dc;
+    --halftone: #d6d0c4;
+    --display-font: 'Anton', 'Impact', 'Arial Narrow', sans-serif;
     --display-weight: 400;
     --display-case: uppercase;
-    --display-tracking: 0.04em;
-    --title-font: var(--display-font);
-    --title-weight: 400;
-    --title-case: uppercase;
-    --title-tracking: 0.04em;
-    --title-adjust: 0.56;
-    --panel-shadow: 0 1rem 2.25rem -1.25rem rgb(0 0 0 / 0.85);
-    --page-texture: repeating-linear-gradient(to bottom, rgb(255 255 255 / 0.035) 0 1px, transparent 1px 3px);
-    --radius-lg: 0.1875rem;
-    --radius-xl: 0.25rem;
-    --radius-2xl: 0.375rem;
+    --display-tracking: 0.02em;
+    --title-font: 'Archivo Narrow', 'Arial Narrow', sans-serif;
+    --title-weight: 700;
+    --title-case: none;
+    --title-tracking: 0;
+    --title-adjust: 0.52;
+    --panel-shadow: 0.25rem 0.25rem 0 var(--cyan);
+    --page-texture: radial-gradient(rgb(20 20 20 / 0.05) 0.8px, transparent 1.2px) 0 0 / 4px 4px;
+    --radius-lg: 0;
+    --radius-xl: 0;
+    --radius-2xl: 0;
   }
 
   /* Konbini 2 a.m.: the one bright shop on a wet street, marker price cards and a thermal receipt. */
@@ -2485,54 +2490,186 @@
     stroke-width: 1.5;
   }
 
-  /* ---- Retro VHS: tape labels with sunset stripes, a channel counter, an on-screen-display outline. ---- */
+  /* ---- Back Issue: an eighties anime magazine. The round's heading is the issue's masthead number; the options
+     are four feature boxes on one process-yellow slab, each with a reader's ballot square. A pick marks its ballot
+     with an X; at the reveal the wrong boxes are screened back under halftone and the right one turns to the
+     answer page in process cyan. Every box prints a little off register, its cyan shadow showing. ---- */
   :root[data-theme='retro-vhs'] .panel {
+    border: 2px solid var(--ink);
+  }
+
+  /* The round's panel is the magazine's page: white paper with crop marks at its corners. */
+  :root[data-theme='retro-vhs'] .round-panel {
     background:
-      linear-gradient(var(--stripe-1) 0 33.3%, var(--stripe-2) 33.3% 66.6%, var(--stripe-3) 66.6%) top / 100% 0.5625rem
-        no-repeat,
+      linear-gradient(var(--ink), var(--ink)) 0.375rem 0.375rem / 0.75rem 1px,
+      linear-gradient(var(--ink), var(--ink)) 0.375rem 0.375rem / 1px 0.75rem,
+      linear-gradient(var(--ink), var(--ink)) calc(100% - 0.375rem) 0.375rem / 0.75rem 1px,
+      linear-gradient(var(--ink), var(--ink)) calc(100% - 0.375rem) 0.375rem / 1px 0.75rem,
+      linear-gradient(var(--ink), var(--ink)) 0.375rem calc(100% - 0.375rem) / 0.75rem 1px,
+      linear-gradient(var(--ink), var(--ink)) 0.375rem calc(100% - 0.375rem) / 1px 0.75rem,
+      linear-gradient(var(--ink), var(--ink)) calc(100% - 0.375rem) calc(100% - 0.375rem) / 0.75rem 1px,
+      linear-gradient(var(--ink), var(--ink)) calc(100% - 0.375rem) calc(100% - 0.375rem) / 1px 0.75rem,
       var(--panel);
+    background-repeat: no-repeat;
+  }
+
+  /* The masthead: the issue number at monumental size over a double rule (Round.tsx renders it for the stage's
+     masthead; the heading keeps "Round 1 of 5" for screen readers). */
+  :root[data-theme='retro-vhs'] .round-head {
+    padding-bottom: 0.5rem;
+    border-bottom: 4px double var(--ink);
+  }
+
+  .masthead {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.375rem;
+    line-height: 0.9;
+  }
+
+  .masthead-no {
+    font-size: 1.25rem;
+  }
+
+  .masthead-issue {
+    font-size: 3.5rem;
+    letter-spacing: 0;
+  }
+
+  .masthead-of {
+    font-size: 1.5rem;
+    color: var(--muted);
+  }
+
+  @media (min-width: 40rem) {
+    .masthead-issue {
+      font-size: 4.5rem;
+    }
+  }
+
+  /* The slab: one process-yellow block the four boxes are printed over. */
+  :root[data-theme='retro-vhs'] .options {
+    padding: 0.75rem;
+    background: var(--slab);
   }
 
   :root[data-theme='retro-vhs'] .card-front {
-    border: 0;
-    padding-bottom: 1.875rem;
-    background-image: linear-gradient(var(--stripe-1) 0 33.3%, var(--stripe-2) 33.3% 66.6%, var(--stripe-3) 66.6%);
-    background-position: bottom;
-    background-size: 100% 0.75rem;
-    background-repeat: no-repeat;
+    border: 2px solid var(--ink);
+    box-shadow: 3px 3px 0 var(--cyan);
   }
 
-  /* An unchosen label fades to grey, its stripes too. */
-  :root[data-theme='retro-vhs'] .card[data-state='muted'] .card-front {
-    background-image: linear-gradient(#b3afbf 0 33.3%, #a29db3 33.3% 66.6%, #908aa3 66.6%);
+  /* The key: a magenta box with the number, since the box can be tapped. */
+  :root[data-theme='retro-vhs'] .card-index {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.125rem;
   }
 
-  :root[data-theme='retro-vhs'] .card-index::before {
-    content: 'CH';
-    margin-right: 0.15rem;
+  /* The reader's ballot square on every box, top right; the pick marks it with an X. */
+  :root[data-theme='retro-vhs'] .card-front::after {
+    content: '';
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    width: 1.25rem;
+    height: 1.25rem;
+    border: 2px solid var(--ink);
   }
 
-  :root[data-theme='retro-vhs'] .card[data-state='chosen'] .card-front {
-    outline: 3px solid var(--card-mark-ink);
-    outline-offset: -3px;
-  }
-
-  :root[data-theme='retro-vhs'] .card-back {
+  :root[data-theme='retro-vhs'] .card[data-state='chosen'] .card-front::after {
     background:
-      repeating-linear-gradient(to bottom, rgb(62 224 207 / 0.06) 0 1px, transparent 1px 3px), var(--card-back);
-    text-transform: uppercase;
+      linear-gradient(
+        45deg,
+        transparent calc(50% - 1.5px),
+        var(--ink) calc(50% - 1.5px) calc(50% + 1.5px),
+        transparent calc(50% + 1.5px)
+      ),
+      linear-gradient(
+        -45deg,
+        transparent calc(50% - 1.5px),
+        var(--ink) calc(50% - 1.5px) calc(50% + 1.5px),
+        transparent calc(50% + 1.5px)
+      );
+  }
+
+  /* Out of the running: screened back under halftone dots, the text still on a tested tone. */
+  :root[data-theme='retro-vhs'] .card:is([data-state='muted'], [data-state='missed']) .card-front {
+    background-image: radial-gradient(circle, var(--halftone) 0 1.4px, transparent 1.8px);
+    background-size: 5px 5px;
+    box-shadow: none;
+  }
+
+  :root[data-theme='retro-vhs'] .card:is([data-state='muted'], [data-state='missed']) .card-index {
+    background: transparent;
+    color: var(--card-muted);
+    box-shadow: inset 0 0 0 2px var(--card-muted);
+  }
+
+  /* The answer page: process cyan, still a hair off register. */
+  :root[data-theme='retro-vhs'] .card-back:not(.card-printed) {
+    border: 2px solid var(--ink);
+    box-shadow: 3px 3px 0 var(--slab);
+  }
+
+  /* Face down, the back cover: white paper with the game's mark in ink. */
+  :root[data-theme='retro-vhs'] .card-printed {
+    border: 2px solid var(--ink);
+    background: var(--panel);
+    color: var(--ink);
   }
 
   :root[data-theme='retro-vhs'] .button-quiet {
-    background-image: linear-gradient(
-      to right,
-      var(--stripe-1) 0 33.3%,
-      var(--stripe-2) 33.3% 66.6%,
-      var(--stripe-3) 66.6%
-    );
-    background-position: bottom;
-    background-size: 100% 3px;
-    background-repeat: no-repeat;
+    border: 2px solid var(--ink);
+  }
+
+  /* Magenta stays on what can be tapped: the lit listening light is ink, and the name's "?!" is ink on a swipe of
+     the slab's yellow. */
+  :root[data-theme='retro-vhs'] .listening[data-status='ready'] .sonar {
+    color: var(--ink);
+  }
+
+  :root[data-theme='retro-vhs'] .title-bang {
+    padding-inline: 0.125em;
+    background: var(--slab);
+    color: var(--ink);
+  }
+
+  /* The listening light is a registration mark: a ring crossed by hairlines. */
+  :root[data-theme='retro-vhs'] .sonar-core {
+    background:
+      linear-gradient(var(--ink), var(--ink)) center / 100% 1px no-repeat,
+      linear-gradient(var(--ink), var(--ink)) center / 1px 100% no-repeat,
+      var(--panel);
+  }
+
+  /* The printer's ruler (Ruler.tsx): a steel rule ticked in millimetres, the time left as a cyan bar along it. */
+  /* The ruler keeps its height and stretches along the row, its strokes kept to hairlines. */
+  .ruler {
+    flex: 1;
+    min-width: 0;
+    height: 1.375rem;
+  }
+
+  .ruler :is(rect, line) {
+    vector-effect: non-scaling-stroke;
+  }
+
+  .ruler-body {
+    fill: var(--raised);
+    stroke: var(--ink);
+    stroke-width: 1;
+  }
+
+  .ruler-tick {
+    stroke: var(--ink);
+    stroke-width: 1;
+  }
+
+  .ruler-left {
+    fill: var(--cyan);
+    transform-box: fill-box;
+    transform-origin: left;
   }
 
   /* ---- The reveal's answer box (.reveal-band) and the names under each card (.picker), in each rebuilt world's
@@ -2659,8 +2796,30 @@
     color: var(--head-ink);
   }
 
+  /* Back Issue: the article page, ruled in ink and printed off register, its kind and the pickers' names set as
+     black caption tags, this player's in the answer page's cyan. */
+  :root[data-theme='retro-vhs'] .reveal-band {
+    border: 2px solid var(--ink);
+    border-radius: 0;
+    background: var(--panel);
+    box-shadow: 0.25rem 0.25rem 0 var(--cyan);
+  }
+
+  :root[data-theme='retro-vhs'] .reveal-kind,
+  :root[data-theme='retro-vhs'] .picker {
+    border: 0;
+    border-radius: 0;
+    background: var(--ink);
+    color: var(--panel);
+  }
+
+  :root[data-theme='retro-vhs'] .picker[data-you] {
+    background: var(--card-back);
+    color: var(--card-back-ink);
+  }
+
   /* On light paper the cover's wash is cut back, so the dark ink keeps its contrast. */
-  :root:is([data-theme='mecha'], [data-theme='magical-girl']) .reveal-wash {
+  :root:is([data-theme='mecha'], [data-theme='magical-girl'], [data-theme='retro-vhs']) .reveal-wash {
     opacity: 0.12;
   }
 
@@ -3094,18 +3253,18 @@
     background: var(--ink);
   }
 
+  /* Back Issue's burst is trimmed paper in the process colors. */
   :root[data-theme='retro-vhs'] .burst-mote {
-    width: calc(var(--size) * 1.8);
-    height: calc(var(--size) * 0.35);
-    background: var(--stripe-1);
+    border-radius: 0;
+    background: var(--cyan);
   }
 
   :root[data-theme='retro-vhs'] .burst-mote:nth-child(3n + 1) {
-    background: var(--stripe-2);
+    background: var(--slab);
   }
 
   :root[data-theme='retro-vhs'] .burst-mote:nth-child(3n + 2) {
-    background: var(--stripe-3);
+    background: var(--ink);
   }
 
   /* ---- The right card's hit: printed in each stock's own material, behind the card and round it. A streak
@@ -3213,12 +3372,11 @@
     box-shadow: 0 0 1.5rem 0.25rem rgb(234 165 58 / 0.45);
   }
 
+  /* Back Issue's hit: a cyan frame printed off register round the answer page. */
   :root[data-theme='retro-vhs'] .card-impact::before {
-    border: 0;
+    border: 3px solid var(--cyan);
     border-radius: 0;
-    background:
-      linear-gradient(var(--stripe-1), var(--stripe-1)) top / 100% 3px no-repeat,
-      linear-gradient(var(--stripe-3), var(--stripe-3)) bottom / 100% 3px no-repeat;
+    translate: 0.25rem 0.25rem;
   }
 
   /* A light passes once over a printed back, clipped to the face: a sheen on foil, a scan line on a board or
@@ -3235,14 +3393,6 @@
     transform: skewX(-18deg);
     opacity: 0;
     pointer-events: none;
-  }
-
-  :root[data-theme='retro-vhs'] .card[data-turned] .card-back::before {
-    inset: 0 0 auto;
-    width: auto;
-    height: 2px;
-    background: var(--card-back-ink);
-    transform: none;
   }
 
   .card-printed::before {
@@ -3354,12 +3504,12 @@
     box-shadow: 0 2px 2px rgb(0 0 0 / 0.5);
   }
 
+  /* Back Issue's readers' poll: the winner printed on the slab's yellow in a ruled box, off register. */
   :root[data-theme='retro-vhs'] .bill-lead {
-    padding-top: 1.75rem;
-    box-shadow: var(--panel-shadow);
-    background-image: linear-gradient(var(--stripe-1) 0 33.3%, var(--stripe-2) 33.3% 66.6%, var(--stripe-3) 66.6%);
-    background-size: 100% 0.5625rem;
-    background-repeat: no-repeat;
+    border: 2px solid var(--ink);
+    background: var(--slab);
+    color: var(--ink);
+    box-shadow: 0.25rem 0.25rem 0 var(--cyan);
   }
 
   /* ---- The lobby. ---- */
@@ -3394,6 +3544,12 @@
   /* Gachapon: the machine's white body under its red rim. */
   :root[data-theme='magical-girl'] .start-bar {
     border-top: 3px solid var(--head);
+    background: var(--panel);
+  }
+
+  /* Back Issue: the page's foot, under a ruled line of ink. */
+  :root[data-theme='retro-vhs'] .start-bar {
+    border-top: 2px solid var(--ink);
     background: var(--panel);
   }
 
@@ -3531,8 +3687,9 @@
     background: none;
   }
 
+  /* Back Issue: a pass of halftone, as a page comes off the press. */
   :root[data-theme='retro-vhs'] .phase-flash {
-    background: repeating-linear-gradient(to bottom, rgb(255 255 255 / 0.12) 0 2px, transparent 2px 5px);
+    background: radial-gradient(circle, rgb(0 163 220 / 0.18) 0 1.5px, transparent 2px) 0 0 / 6px 6px;
   }
 
   /* Shonen's page moves only when the game does: ink speed lines turn slowly while the clip plays. */
@@ -3667,22 +3824,6 @@
   }
 }
 
-@keyframes flicker {
-  0%,
-  91%,
-  93%,
-  96%,
-  100% {
-    opacity: 1;
-  }
-  92% {
-    opacity: 0.55;
-  }
-  95% {
-    opacity: 0.7;
-  }
-}
-
 /* The reveal: the right card turns over while the verdict and the answer rise in behind it. */
 :root[data-motion='full'] .card[data-turned] .card-turn {
   animation: card-turn 700ms cubic-bezier(0.2, 0.7, 0.2, 1) 200ms both;
@@ -3710,10 +3851,6 @@
 
 :root[data-motion='full'] .motion-tick {
   animation: tick 300ms cubic-bezier(0.16, 1, 0.3, 1) both;
-}
-
-:root[data-motion='full'][data-theme='retro-vhs'] .motion-neon {
-  animation: flicker 6s linear infinite;
 }
 
 @keyframes band-wipe {
@@ -3896,17 +4033,6 @@
   }
 }
 
-@keyframes scan-pass {
-  from {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  to {
-    opacity: 0;
-    transform: translateY(12rem);
-  }
-}
-
 @keyframes window-flash {
   0%,
   100% {
@@ -3918,30 +4044,6 @@
   }
   40% {
     opacity: 0;
-  }
-}
-
-@keyframes vhs-glitch {
-  0%,
-  100% {
-    transform: none;
-    filter: none;
-  }
-  15% {
-    transform: translateX(-4px) skewX(4deg);
-    filter: drop-shadow(3px 0 var(--stripe-2)) drop-shadow(-3px 0 var(--card-mark-ink));
-  }
-  30% {
-    transform: translateX(3px);
-    filter: drop-shadow(-2px 0 var(--stripe-2)) drop-shadow(2px 0 var(--card-mark-ink));
-  }
-  45% {
-    transform: translateX(-1px) skewX(-2deg);
-    filter: none;
-  }
-  60% {
-    transform: translateX(2px);
-    filter: drop-shadow(2px 0 var(--stripe-3));
   }
 }
 
@@ -4185,10 +4287,6 @@
   animation: sheen 1.6s ease-in-out 900ms both;
 }
 
-:root[data-motion='full'][data-theme='retro-vhs'] .card[data-turned] .card-back::before {
-  animation: scan-pass 700ms linear 880ms both;
-}
-
 :root[data-motion='full'][data-theme='shonen'] .card[data-turned] .card-impact::before {
   animation: starburst 900ms cubic-bezier(0.16, 1, 0.3, 1) 820ms both;
 }
@@ -4205,10 +4303,6 @@
 
 :root[data-motion='full'][data-theme='mecha'] .card[data-turned] .card-impact::before {
   animation: clamp-lock 900ms cubic-bezier(0.2, 0.9, 0.3, 1) 820ms both;
-}
-
-:root[data-motion='full'][data-theme='retro-vhs'] .card[data-turned] {
-  animation: vhs-glitch 520ms steps(1) 860ms;
 }
 
 /* The results: the bill from the bottom up, the headliner last and largest. */
@@ -4473,6 +4567,33 @@
   to {
     opacity: 1;
     transform: none;
+  }
+}
+
+/* Back Issue: the reader's X is drawn into the ballot square; the ruler's bar shortens smoothly; at the reveal
+   the answer page settles into register, its offset shadow closing in. */
+:root[data-motion='full'][data-theme='retro-vhs'] .card[data-state='chosen'] .card-front::after {
+  animation: ballot-mark 260ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+:root[data-motion='full'] .ruler-left {
+  transition: transform 300ms linear;
+}
+
+:root[data-motion='full'][data-theme='retro-vhs'] .card[data-turned] .card-back {
+  animation: register 520ms cubic-bezier(0.16, 1, 0.3, 1) 760ms both;
+}
+
+@keyframes ballot-mark {
+  from {
+    background-size: 0 0;
+  }
+}
+
+@keyframes register {
+  from {
+    box-shadow: 0.75rem 0.75rem 0 var(--slab);
+    translate: -0.25rem -0.25rem;
   }
 }
 

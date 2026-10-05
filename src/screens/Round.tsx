@@ -12,6 +12,7 @@ import type { CardState } from '../components/OptionCard.tsx';
 import { MODE_LABELS } from '../components/SettingsForm.tsx';
 import { Candle } from '../components/Candle.tsx';
 import { Dango } from '../components/Dango.tsx';
+import { Ruler } from '../components/Ruler.tsx';
 import { Dial } from '../components/Dial.tsx';
 import { Nipper } from '../components/Nipper.tsx';
 import { Segments } from '../components/Segments.tsx';
@@ -116,8 +117,8 @@ function Countdown({ store, startsAt }: { store: GameStore; startsAt: number }) 
 }
 
 // The time left: the shared bar draining with the seconds beside it, or the theme's own: a seven-segment
-// display of the seconds, a dango skewer eaten down, a nipper cutting along a runner, a coin dial turning or a
-// candle burning down, with the seconds beside it, or huge arcade digits.
+// display of the seconds, a dango skewer eaten down, a nipper cutting along a runner, a coin dial turning, a
+// candle burning down or a printer's ruler, with the seconds beside it, or huge arcade digits.
 function TimeLeft({ elapsed, secondsLeft }: { elapsed: number; secondsLeft: number }) {
   const { readout } = useStage();
   if (readout === 'segments') {
@@ -144,6 +145,14 @@ function TimeLeft({ elapsed, secondsLeft }: { elapsed: number; secondsLeft: numb
       <div className="flex items-center gap-3">
         <Dango left={1 - elapsed} />
         <p className="ml-auto tabular-nums">{secondsLeft} s left</p>
+      </div>
+    );
+  }
+  if (readout === 'ruler') {
+    return (
+      <div className="flex items-center gap-3">
+        <Ruler left={1 - elapsed} />
+        <p className="tabular-nums">{secondsLeft} s left</p>
       </div>
     );
   }
@@ -260,6 +269,32 @@ function Answering({ store, lobby, round, start, titleLanguage, clip }: Answerin
   return <Stage slot={slot} cards={cards} below={below} />;
 }
 
+// The round's heading: "Round 3 of 15", or a magazine's masthead number, "No. 03 / 15", which screen readers
+// still hear as the round.
+function RoundHeading({ number, rounds }: { number: number; rounds: number }) {
+  const { masthead } = useStage();
+  if (!masthead) {
+    return (
+      <h2 className="display text-[1.375rem] sm:text-2xl">
+        Round {number} of {rounds}
+      </h2>
+    );
+  }
+  const issue = (value: number) => String(value).padStart(2, '0');
+  return (
+    <h2 className="display">
+      <span className="sr-only">
+        Round {number} of {rounds}
+      </span>
+      <span aria-hidden="true" className="masthead">
+        <span className="masthead-no">No.</span>
+        <span className="masthead-issue">{issue(number)}</span>
+        <span className="masthead-of">/ {issue(rounds)}</span>
+      </span>
+    </h2>
+  );
+}
+
 function RoundView({ store, lobby, round, titleLanguage, isHost, clip }: RoundProps & { round: ClientRound }) {
   const { start, reveal } = round;
   const started = useReached(store.serverNow, start?.startsAt ?? null);
@@ -268,9 +303,7 @@ function RoundView({ store, lobby, round, titleLanguage, isHost, clip }: RoundPr
   return (
     <Panel className="round-panel">
       <div className="round-head flex flex-wrap items-center justify-between gap-x-3 gap-y-2">
-        <h2 className="display text-[1.375rem] sm:text-2xl">
-          Round {round.number} of {round.rounds}
-        </h2>
+        <RoundHeading number={round.number} rounds={round.rounds} />
         {isHost && !reveal && (
           <ConfirmButton
             label="Skip round"

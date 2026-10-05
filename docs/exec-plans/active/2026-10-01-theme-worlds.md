@@ -68,7 +68,7 @@ Each milestone is one or more PRs on `feat/…` branches with a version bump, a 
 - [x] 2026-10-05 Quest Board: the guild's notice board, bounty notices, the candle (v0.21.0)
 - [x] 2026-10-05 The answer box and pick chips in the world's material for Tokyo Rain, Hanami, Fighter Select, Model Kit and Gachapon (v0.21.1)
 - [x] 2026-10-05 Quest Board: the owner's monster sprites in place of the line drawings (v0.21.2)
-- [ ] Back Issue
+- [x] 2026-10-05 Back Issue: the eighties magazine, its masthead, the ruler, the readers' poll (v0.22.0)
 - [ ] Konbini 2 a.m.
 - [ ] Karaoke Box
 - [ ] Omikuji
@@ -80,9 +80,9 @@ Each milestone is one or more PRs on `feat/…` branches with a version bump, a 
 - [x] 2026-10-01 Plates in place for all fifteen
 
 ## Where to pick up
-State on 2026-10-05: v0.18.4 closed the three open review findings (the listening ring, the lobby's start bar, Tokyo Rain's noren), v0.19.0 built Model Kit, v0.20.0 Gachapon and v0.21.0 Quest Board. Tokyo Rain, Hanami, Fighter Select, Model Kit, Gachapon and Quest Board are rebuilt with their motion; the other nine themes run on the shared card layout with their own tokens and plates.
+State on 2026-10-05: the seven reshaped themes are all rebuilt as worlds with their motion, answer boxes, pick chips and type: Tokyo Rain, Hanami, Fighter Select, Model Kit, Gachapon, Quest Board (with the owner's monster sprites) and Back Issue (v0.22.0). The eight new themes still run on the shared card layout with their own tokens and plates.
 
-Do next: Back Issue, following the rules under Owner review findings.
+Do next: the picker (milestone 2, shaped with the owner first), then the eight new themes, starting with Konbini 2 a.m., following the rules under Owner review findings.
 
 Working notes for a new session:
 - Check a theme by eye with `npm run build`, then the "start" preview (production server on :5173), a solo lobby, and `localStorage.ysto_prefs` set to the theme with `motion: 'full'` to see motion or `'reduced'` for steady screenshots. A solo answer ends the round at once; set Songs per game to 5 to reach the results quickly.
@@ -134,6 +134,7 @@ What the owner found playing the built worlds on 2026-10-02, and where each stan
 - 2026-10-05: Quest Board's notices are all one bounty design, after the owner's reference images and review: a ruled frame, a red heading and lines in a made-up script, and a monster drawn faintly behind the title, no skulls. Rejected on review: rolled parchment ends, tilted and overlapping notices, and four different notice styles. No notice carries words, because generated text joins the option's accessible name; the script and monsters are images. The monsters are line drawings until the owner's sprites arrive. The "Completed" seal sits behind the right notice's text in half-strength ink, where the text keeps 4.5:1, because over the corner it covered the neighboring notice. The pixel stars and the cursor blink went with the JRPG menu; the plate shows at 0.18.
 - 2026-10-05: The owner's monster sprites came as JPEGs with a checkerboard painted where transparency should be. Rather than ask for new ones, each becomes an ink layer: light neutral pixels go transparent and the rest are drawn in sepia as strong as they are dark, capped at 0.28 so the title keeps 7:1 (PLATE_PROMPTS.md has the command).
 - 2026-10-05: Each world's type is part of its world (owner's review): Quest Board moves from the JRPG menu's pixel fonts to Cinzel capitals over IM Fell English, and Model Kit from the hangar's stencil to Barlow Condensed, a kit manual's sans. Tokyo Rain, Hanami, Fighter Select and Gachapon keep theirs, which already fit. IM Fell's small capitals were tried for Quest Board's headings and rejected: their old-style 1 reads as an I in "Round 1" and "1st".
+- 2026-10-05: Back Issue is light, as its plate calls for, and keeps magenta for what can be tapped, so its listening light is lit in ink and the title's "?!" is ink on the slab's yellow. Its round heading is set as the magazine's masthead number through a stage field (`masthead`), with "Round 3 of 15" kept for screen readers, because the plan's "No. 03 / 15" is a different string, not a different style. The tape's tracking band stays for Side A; the tape's flicker, scan line and glitch are deleted with VT323. Its plate shows at 0.07 (plate check).
 
 ## Surprises
 - 2026-10-01: The protocol sends no per-pick answer time, so Tokyo Rain's ticket carries the title, kind and year instead of the answer time the shape promised.
