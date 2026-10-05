@@ -10,7 +10,8 @@ export interface ThemeStage {
   // How the time left reads: the shared bar; a seven-segment display; a dango skewer eaten down; the seconds as
   // huge arcade digits; a nipper cutting along a runner; a gachapon's coin dial turning; a candle burning down; a
   // printer's ruler; the round's heading sung like a lyric line; a shrine rope's paper streamers taken one by one;
-  // a walk on a park map toward a blossom tree; or the referee's pennants taken down one by one.
+  // a walk on a park map toward a blossom tree; the referee's pennants taken down one by one; or a manga panel's
+  // focus lines closing in on its center.
   readout:
     | 'bar'
     | 'segments'
@@ -23,7 +24,8 @@ export interface ThemeStage {
     | 'lyric'
     | 'shide'
     | 'route'
-    | 'pennants';
+    | 'pennants'
+    | 'focus';
   wrongMark: string | null; // printed on each option that was not the answer, at the reveal
   scoreBars: boolean; // each final score also drawn as a bar against the winner's, like a health bar
   masthead: boolean; // the round's heading set as a magazine's issue number, "No. 03 / 15"
@@ -39,6 +41,7 @@ const STAGES: Partial<Record<Theme, Partial<ThemeStage>>> = {
   omikuji: { readout: 'shide' },
   'blossom-map': { readout: 'route' },
   'tournament-arc': { readout: 'pennants' },
+  'splash-page': { readout: 'focus' },
   sakura: { readout: 'dango' },
   shonen: { readout: 'digits', scoreBars: true },
   mecha: { readout: 'nipper', wrongMark: 'Spare' },

@@ -334,6 +334,29 @@ colors:
   tournament-arc-banner: "#141414"
   tournament-arc-banner-ink: "#fbfaf6"
   tournament-arc-gold: "#c9a227"
+  splash-page-page: "#f4f4f1"
+  splash-page-panel: "#ffffff"
+  splash-page-raised: "#e6e6e2"
+  splash-page-line: "#111111"
+  splash-page-edge: "#111111"
+  splash-page-ink: "#0d0d0d"
+  splash-page-muted: "#4a4a4a"
+  splash-page-accent: "#d42a1c"
+  splash-page-accent-ink: "#ffffff"
+  splash-page-good: "#1f6e3c"
+  splash-page-bad: "#b3140a"
+  splash-page-card: "#ffffff"
+  splash-page-card-ink: "#0d0d0d"
+  splash-page-card-muted: "#555555"
+  splash-page-card-dim: "#e6e6e2"
+  splash-page-card-mark: "#0d0d0d"
+  splash-page-card-mark-ink: "#ffffff"
+  splash-page-card-chosen: "#0d0d0d"
+  splash-page-card-chosen-ink: "#ffffff"
+  splash-page-card-alert: "#b3140a"
+  splash-page-card-back: "#ffffff"
+  splash-page-card-back-ink: "#0d0d0d"
+  splash-page-tone: "#b8b8b8"
 rounded:
   tokyo-rain-lg: "0.375rem"
   tokyo-rain-xl: "0.375rem"
@@ -371,6 +394,9 @@ rounded:
   tournament-arc-lg: "2px"
   tournament-arc-xl: "2px"
   tournament-arc-2xl: "2px"
+  splash-page-lg: "2px"
+  splash-page-xl: "2px"
+  splash-page-2xl: "2px"
 typography:
   tokyo-rain-display:
     fontFamily: "'Zen Kaku Gothic New', ui-sans-serif, system-ui, sans-serif"
@@ -468,6 +494,14 @@ typography:
     fontFamily: "'Kaisei Tokumin', 'Hiragino Mincho ProN', 'Yu Mincho', serif"
     fontWeight: 700
     letterSpacing: "0.01em"
+  splash-page-display:
+    fontFamily: "'Reggae One', 'Arial Black', sans-serif"
+    fontWeight: 400
+    letterSpacing: "0.02em"
+  splash-page-title:
+    fontFamily: "'Comic Neue', 'Comic Sans MS', sans-serif"
+    fontWeight: 700
+    letterSpacing: "0.02em"
   home-title:
     fontSize: "3rem"
     lineHeight: 1
@@ -591,7 +625,7 @@ The themes are being rebuilt as fifteen worlds, each laying out the round, the r
 Each theme is one block of variables on any element with `data-theme`, in two families: the chrome around the cards and the card stock itself.
 
 ### Primary
-- **Accent** (`accent`, with `accent-ink` on it): the primary button, the timer's fill, the lit sonar in the listening panel, focus outlines, the selected theme in the picker, the caret and text selection. Tokyo Rain's is signal amber, Hanami's blossom pink, Fighter Select's arcade yellow, Model Kit's yellow part plastic, Gachapon's candy red, Quest Board's candle amber, Back Issue's process magenta, kept to what can be tapped, Konbini 2 a.m.'s saffron from its shop stripe, Karaoke Box's booth pink, Omikuji's shrine vermilion, Blossom Map's blossom pink for this player's chip, Tournament Arc's referee red.
+- **Accent** (`accent`, with `accent-ink` on it): the primary button, the timer's fill, the lit sonar in the listening panel, focus outlines, the selected theme in the picker, the caret and text selection. Tokyo Rain's is signal amber, Hanami's blossom pink, Fighter Select's arcade yellow, Model Kit's yellow part plastic, Gachapon's candy red, Quest Board's candle amber, Back Issue's process magenta, kept to what can be tapped, Konbini 2 a.m.'s saffron from its shop stripe, Karaoke Box's booth pink, Omikuji's shrine vermilion, Blossom Map's blossom pink for this player's chip, Tournament Arc's referee red, Splash Page's sound-effect red.
 
 ### Secondary
 - **Card stock** (`card`, `card-ink`): the face of an open card.
@@ -603,7 +637,7 @@ Each theme is one block of variables on any element with `data-theme`, in two fa
 
 ### Tertiary
 - **Right and wrong** (`good`, `bad`): verdict and error colors on the panels. They never carry meaning alone; an icon and words always go with them.
-- **Material colors**, only where a theme's stock needs them: Hanami's `blossom` and gold `foil`, Gachapon's gold `foil` and its `--foil-sheen` gradient for the charm, Back Issue's process-yellow `slab`, process `cyan` and `halftone`, Konbini 2 a.m.'s shop, Karaoke Box's booth, Omikuji's shrine, Blossom Map's map and Tournament Arc's board (see Theme worlds).
+- **Material colors**, only where a theme's stock needs them: Hanami's `blossom` and gold `foil`, Gachapon's gold `foil` and its `--foil-sheen` gradient for the charm, Back Issue's process-yellow `slab`, process `cyan` and `halftone`, Konbini 2 a.m.'s shop, Karaoke Box's booth, Omikuji's shrine, Blossom Map's map, Tournament Arc's board and Splash Page's screentone (see Theme worlds).
 
 ### Neutral
 - **Page** (`page`): behind everything, under the theme's texture. Also the fill of fields.
@@ -637,7 +671,7 @@ The page pairs (`ink`, `muted` and `bad` at 4.5:1, `edge` and `accent` at 3:1) m
 
 **Character:** the display face is the theme's voice: a station gothic, a woodblock antique, a manga letterer, a kit manual's condensed sans, a pop rounded face, carved capitals over an old printer's face on a bounty notice, a magazine's heavy coverline sans. The body stays plain so the long text reads the same everywhere.
 
-Per theme, in the variables `--display-*` and `--title-*`: the font, weight, case (Fighter Select, Model Kit and Back Issue set capitals), tracking and `font-size-adjust` (`--display-adjust`, `--title-adjust`). The adjust evens out the faces' very different x-heights, so a heading keeps its size from Tokyo Rain's gothic to Quest Board's old printer's face.
+Per theme, in the variables `--display-*` and `--title-*`: the font, weight, case (Fighter Select, Model Kit and Back Issue set capitals; Splash Page letters its titles in capitals), tracking and `font-size-adjust` (`--display-adjust`, `--title-adjust`). The adjust evens out the faces' very different x-heights, so a heading keeps its size from Tokyo Rain's gothic to Quest Board's old printer's face.
 
 ### Hierarchy
 - **Home title** (display face, 3rem, 3.75rem from 640 px): the game's name.
@@ -728,6 +762,7 @@ A small tag across the card's top edge, 0.5rem from the right, outside the faces
 | Omikuji (`omikuji`) | A folded slip (see Theme worlds): washi with its top corner folded down, in a hairline | A brushed vermilion numeral, no box | A vermilion rim round the drawn slip; muted slips are tied to the branch, a paper knot across the top and the numeral faded | The great blessing: the slip unfolded, framed twice in vermilion, 大吉 brushed faintly down one side; face down, the plain folded slip with a vermilion "?!" |
 | Blossom Map (`blossom-map`) | A viewing spot on the map (see Theme worlds): a white capsule at its own place over the map's lawns and paths, all four the same size | A green spot marker with a white numeral | A pink rim, this player's chip on the capsule's leading edge; muted spots go pale green | The spot in bloom: blossom pink with a five-petal flower open at its foot; face down, a green capsule with a white "?!" |
 | Tournament Arc (`tournament-arc`) | An entrant plate on the bracket (see Theme worlds): hinoki in a 2px ink rule with a hard ink shadow and two nails, each match's pair joined by a VS medallion on the spine | A black square with a white numeral | The plate turns black, its key red, and advances toward the spine, its match's medallion red; muted plates go grey | The final: gold framed in ink; face down, a blank black plate with a white "?!" |
+| Splash Page (`splash-page`) | A manga panel (see Theme worlds): screentone on white in a 3px ink frame, cut on a slant so the gutters lean, the title in a white speech balloon | A black square with a white numeral | The panel blacked out, its key red, the balloon still white; muted panels go grey | The splash: white with focus lines bursting from the middle, the words on white, and "ドン" lettered over its corner; face down, a black panel with a white "?!" |
 
 ### The reveal's hit
 After the right card turns over, its stock prints a hit round it (`.card-impact`) and a burst of its own material flies out from the middle (`Burst.tsx`). With a streak of 3 or more right answers the hit lands harder, and harder again from 5: more motes, a wider ring, a bigger shake (`data-heat`, 1 to 3).
@@ -746,6 +781,7 @@ After the right card turns over, its stock prints a hit round it (`.card-impact`
 | Omikuji (`omikuji`) | The slip unfolds from its top as it lands | The shared burst in the theme's colors |
 | Blossom Map (`blossom-map`) | The flower opens on the right spot | The shared burst in the theme's colors |
 | Tournament Arc (`tournament-arc`) | The final's emblem at the bracket's center lights gold | The shared burst in the theme's colors |
+| Splash Page (`splash-page`) | The right panel bursts out of the page and settles a little larger, over its neighbors; its sound effect slams on | The shared burst in the theme's colors |
 
 ### Themes beyond the card
 
@@ -763,6 +799,7 @@ After the right card turns over, its stock prints a hit round it (`.card-impact`
 | Omikuji (`omikuji`) | Yuji Syuku, a brush face, for the headings and the slips' numerals | Shippori Mincho, semibold, as printed on a fortune | A misty shrine courtyard with tied fortunes and a blossom branch; petals fall with motion on | The round's heading hangs on a torii's vermilion beam under its black cap; quiet buttons light a vermilion rim under the pointer; the lobby's start bar is the torii's beam |
 | Blossom Map (`blossom-map`) | Zen Maru Gothic, bold, the rounded type of a park's guide map | The same | A flat illustrated park map; petals fall with motion on | The round's heading is the map's green title cartouche with a north arrow; pill buttons, quiet ones lighting a pink rim under the pointer; the lobby's start bar is the map sheet's foot with its scale bar |
 | Tournament Arc (`tournament-arc`) | Dela Gothic One, the heavy gothic of a tournament poster | Kaisei Tokumin, bold, brushed like a name plate; the buttons take it too, since Dela Gothic runs too wide for a phone's header | A stone arena in a mountain valley in ink wash; speed lines at the reveal | The round's heading is a black banner brushed ragged at its ends; panels and quiet buttons take a 2px ink rule; the lobby's start bar is the ring's edge with red pennants |
+| Splash Page (`splash-page`) | Reggae One, a heavy brush display like manga sound effects | Comic Neue, bold capitals, like a balloon's lettering | A cliff-top battlefield with speed lines in black ink; speed lines at the reveal | The round's heading is a narration box in a 3px ink frame with a hard shadow; panels and quiet buttons take a heavy ink rule; the lobby's start bar is the page's foot under a panel rule and a strip of screentone |
 
 ### Theme worlds
 The fifteen themes are becoming worlds that each lay out the round, the reveal and the results in their own way ([plan](exec-plans/active/2026-10-01-theme-worlds.md)). What a world changes beyond its stock lives in `src/themes/stage.ts`, read through `useStage()`: how the time left reads (`readout`: the shared bar, a seven-segment display of the seconds, or a world's own object), the mark printed on each option that was not the answer (`wrongMark`), and whether the four options stand in one column of rows instead of 2x2 (`rows`). A theme that sets nothing plays the shared round. The stage never changes what the four options are, that they are equal in size, or when they show.
@@ -790,6 +827,8 @@ The fifteen themes are becoming worlds that each lay out the round, the reveal a
 **Blossom Map (`blossom-map`): a hanami park's guide map in flat color lobes.** A light world. The round's heading is the map's title cartouche: a green pill (`card-mark`) with a north arrow at its end. The listening light is the map's "you are here" mark, a white disc in a pink ring (`--blossom`). The time left is a walk on the map (`readout: 'route'`, `Route.tsx`): a dotted route (`--route`) across the row to a blossom tree, the part walked drawn solid in green and the player's pink pin walking along it, the seconds beside it. The options are four viewing spots on the map itself: the map's ground is a flat drawing of lawns, a pond, sand paths and pink tree clusters (`src/assets/map/ground.svg`, no text) inside the sheet's white margin, and each spot is a white capsule set at its own fixed place, nudged up or down, all four the same size, its key on a green spot marker. A pick rims the capsule in pink and sends this player's chip across to its leading edge. At the reveal the right spot blooms: blossom pink (`card-back`) with a five-petal flower (`--blossom`, its heart `--blossom-heart`) opening at its foot; the others go pale green. Below the cards, the answer box is the map's legend box in a green rule, its kind on a green tag; the names of who picked each spot sit on round map chips, this player's in pink. The results give the winner the spot in bloom, a pink capsule with its flower open. The lobby's start bar is the map sheet's foot with its green and white scale bar. With motion on, the pin walks the route smoothly, a picked capsule's chip crosses to its leading edge (420ms), and the flower opens on the right spot (520ms) and again on the winner.
 
 **Tournament Arc (`tournament-arc`): a semifinal bracket on the tournament board.** A light world in ink and hinoki. The round's heading is a black cloth banner (`--banner`, its text `--banner-ink`) across the panel's top, its ends brushed ragged. The listening light is the ring's bronze gong. The time left is the referee's strip of pennants (`readout: 'pennants'`, `Pennants.tsx`): ten red and white flags on a sagging black cord, taken down one at a time from the right, the seconds beside it. The options are four entrant plates in the 2x2 grid, read as a bracket: each row is a semifinal, its two plates joined by a VS medallion on the ink spine down the middle, and the final's emblem, a diamond, sits at the spine's center. Each plate is hinoki (`card`) in a 2px ink rule with a hard ink shadow and two nails at its top corners, keyed by a black square. A pick turns the plate black with a red key and advances it a step toward the spine, its match's medallion red. At the reveal the final's emblem lights gold (`--gold`) and the right entrant's plate turns gold; the others go grey. Below the cards, the answer box is the board's result notice in a double ink rule, its kind on a black tag; the names of who picked each plate sit on little wooden plates, this player's in red, inset so they stand clear of the spine and the emblem. The results hang the champion's gold plate from a nail by its cord. The lobby's start bar is the ring's edge with red pennants along it. With motion on, each pennant drops as it is taken down (320ms), a picked plate advances (260ms), the final's emblem lights gold (480ms), and the champion's plate swings on its cord as it is billed.
+
+**Splash Page (`splash-page`): a battle manga page.** A light world in black ink on white. The round's heading is a narration box, white in a 3px ink frame with a hard shadow. The listening light is a disc of screentone (`--tone`) in an ink ring. The time left is a panel's focus lines (`readout: 'focus'`, `FocusLines.tsx`): ink wedges drawn in from a white panel's frame toward its center, reaching further in as the round runs down, so the clear space in the middle tightens to a point; the seconds beside it. The options are four manga panels in the 2x2 grid, read right to left like a manga page (the first panel is the top right; `direction: rtl` on the grid, each panel's own content left to right). Each panel is cut on a slant (`clip-path`, its outline drawn as an ink ring along the same cut), so the gutters lean, and every panel loses the same corner triangle, so all four keep the same area. Each is screentone on white with its key on a black square and its title lettered in a white speech balloon. A pick blacks the panel out with a red key, the balloon still white. At the reveal the right panel blows up into the splash: it bursts out of the page and settles a little larger over its neighbors, white with focus lines from its middle and its words on white, and a sound effect, "ドン", lettered in red over its corner (decoration, hidden from screen readers); the other panels go grey. Below the cards, the answer box is another framed panel with a hard shadow, its kind on a black caption; the names of who picked each panel sit in little speech balloons, this player's in red. The results give the winner the splash panel with "ドドド" lettered over its corner. The lobby's start bar is the page's foot under a panel rule. With motion on, a picked panel jolts as it is blacked out (240ms), the splash bursts out and settles (620ms), and the sound effect slams on (300ms), at the reveal and again on the winner.
 
 ### The backdrop plates
 Each theme sets a painted scene behind its page: `--plate` names the image in `src/assets/plates/` and `--plate-opacity` how strongly it shows over the page color. The opacity is the highest that keeps the page pairs passing over every pixel (Contrast the tests enforce), so Hanami's bright tarp shows least and Blossom Map's flat park most. With motion on the plate drifts slowly (Motion).

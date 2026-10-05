@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.29.0] - 2026-10-05
+
+### Added
+- Splash Page is its own world: a battle manga page. The round's heading is a narration box; the time left is a panel's focus lines closing in on its center; the options are four slanted manga panels on screentone, read right to left, each title in a speech balloon. A pick blacks its panel out; at the reveal the right panel bursts into a splash of focus lines with a sound effect lettered over its corner. The answer box is another framed panel, the pickers' names little speech balloons, and the winner gets the splash. Type is Reggae One and Comic Neue.
+
+### Changed
+- Splash Page's type: Reggae One and Comic Neue, in place of Fighter Select's Bangers.
+
 ## [0.28.0] - 2026-10-05
 
 ### Added
