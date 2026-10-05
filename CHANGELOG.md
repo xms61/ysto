@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.33.0] - 2026-10-05
+
+### Added
+- A load test, `npm run load`: 25 lobbies of 8 bots play whole games against a running server and check the targets in RELIABILITY.md (clips and event-loop lag at the 95th percentile). Three runs passed: every game finished, clips at p95 under 120 ms and ping round trips under 10 ms.
+
+### Fixed
+- A round that not everyone answered could stay open for good: Node can run a timer a millisecond before the clock reaches its time, the round's close was then ignored, and nothing tried again. Timers now wait out the rest.
+
 ## [0.32.0] - 2026-10-05
 
 ### Changed

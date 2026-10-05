@@ -1,6 +1,6 @@
 ---
 status: draft
-last-verified: 2026-09-30
+last-verified: 2026-10-05
 ---
 
 # Architecture
@@ -24,6 +24,7 @@ You Skipped The OP?! is a browser quiz. Players join a lobby with a code, hear a
 - `scripts/`: the repo checks (`check-docs.mjs`, `check-tracked-files.mjs`) and their tests, and `check-plate-contrast.mjs`, which checks the page's text over each theme's backdrop plate ([DESIGN.md](docs/DESIGN.md)).
   - `scripts/catalog/`: the offline catalog build, from AnimeThemes, AniList and the audio library to `catalog.sqlite` ([CATALOG.md](scripts/catalog/CATALOG.md)). It may import `server/config.ts`, `server/catalog/`, the seeded generator in `server/game/random.ts`, and `pool.ts`'s genre threshold.
   - `scripts/clips/bench.ts`: times clip cuts from the real library with the server's cutter. The image ships it, so it also runs on the VPS.
+  - `scripts/load/`: the load test (`npm run load`): bots that play whole games over the API and sockets against a running server, and the verdict against the targets in [RELIABILITY.md](docs/RELIABILITY.md#performance).
 - `docs/`: the knowledge base ([KNOWLEDGE_BASE.md](docs/KNOWLEDGE_BASE.md)).
 
 ## Layers
