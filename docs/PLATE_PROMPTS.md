@@ -40,10 +40,14 @@ Light plates sit behind the light themes, dark plates behind the dark ones. "Reu
 | `side-a` | Side A | Dark | Reuse `retro-vhs.webp` (an eighties coastal highway at dusk with palm silhouettes and a striped sunset). To make a new one: a teenager's desk at night in the late eighties, a cassette deck and a loose tangle of tape, a desk lamp's warm pool of light, a window with a blue night sky beyond, softly out of focus. |
 
 ## Quest Board monster sprites
-Each of Quest Board's four notices carries a monster drawn faintly in ink behind its title, like the creature on a guild bounty poster. Until these sprites exist, the notices use simple line drawings (`src/assets/notices/*.svg`).
+Each of Quest Board's four notices carries a monster drawn faintly in ink behind its title, like the creature on a guild bounty poster. The owner's sprites are in place (`src/assets/notices/*.webp`); these prompts remake them.
 
 - Paste the monster's prompt followed by the sprite ending below, as one prompt.
-- Save the result as `src/assets/notices/<name>.png`, square, at least 1024 px, with a transparent background. Git ignores the PNG; the build scales it down, fades it to the strength that keeps the title at 7:1 over it, and encodes it as WebP.
+- Save the result as `src/assets/notices/<name>.png`, square, at least 1024 px, on a transparent or plain light background. Git ignores the PNG. It becomes an ink layer with ffmpeg: scaled to 512 px, every light neutral pixel (white or grey, so a painted-in checkerboard too) made transparent, and every other pixel drawn in sepia ink as strong as it is dark, capped at 0.28, which keeps the title at 7:1 over it; then encoded as WebP:
+
+  ```bash
+  ffmpeg -i <name>.png -vf "scale=512:512:flags=lanczos,format=rgba,geq=r='59':g='36':b='20':a='255*if(lt(abs(r(X,Y)-b(X,Y)),16)*gt(0.2126*r(X,Y)+0.7152*g(X,Y)+0.0722*b(X,Y),150),0,min(0.28,0.28*(255-(0.2126*r(X,Y)+0.7152*g(X,Y)+0.0722*b(X,Y)))/200))'" -c:v libwebp -q:v 85 -pix_fmt yuva420p <name>.webp
+  ```
 - Reject an image with any text, runes, signature, frame, ground shadow, skull or bones, or a creature from an existing game, anime or film, and generate again.
 
 Sprite ending, added to every prompt:
