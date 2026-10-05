@@ -790,7 +790,7 @@ Depth is printed, not lifted. Stocks show their edges with inset rims, bands and
 
 ## Shapes
 
-Each theme resizes three radii: `lg` for buttons, fields, index marks and the stamp; `xl` for card faces; `2xl` for panels. The corners follow the stock: Fighter Select and Model Kit are square or nearly, Back Issue is square, Hanami is cut close, Gachapon is soft, its capsules rounder still and its buttons pills.
+Each theme resizes three radii: `lg` for buttons, fields, index marks, the stamp, the players' "you" and "host" chips and the shared timer bar; `xl` for card faces; `2xl` for panels. The corners follow the stock: Fighter Select and Model Kit are square or nearly, Back Issue is square, Hanami is cut close, Gachapon is soft, its capsules rounder still and its buttons pills.
 
 Signature silhouettes:
 - **Model Kit's chamfer:** panels and card faces, cut like armor parts, lose their four corners to a clip path (0.875rem on panels, 0.625rem on cards).
