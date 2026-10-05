@@ -1,12 +1,14 @@
 // The end of a game (docs/product-specs/game-flow.md): the standings billed like a festival lineup, the
 // winner's full name largest, each player's right answers, average time and best streak, and the way to the
 // next game. The bill is announced from the bottom up, like a festival's, so the headliner comes last: the
-// winner's score counts up, the name drops in, and the theme's material bursts round it.
+// winner's score counts up, the name drops in, and the theme's material bursts round it. Below, folded away,
+// the songs the game played, each with a link to its anime on AnimeThemes.
 import type { CSSProperties } from 'react';
-import type { LobbyState, ResultView } from '../../shared/protocol.ts';
+import type { LobbyState, PlayedSong, ResultView } from '../../shared/protocol.ts';
 import { Burst } from '../components/Burst.tsx';
 import { Button, Panel } from '../components/ui.tsx';
-import { place, score, seconds, sharedPlaces } from '../format.ts';
+import { aired, animeTitle, credits, place, score, seconds, sharedPlaces } from '../format.ts';
+import type { TitleLanguages } from '../format.ts';
 import { useCountUp, usePagePhase } from '../hooks.ts';
 import type { GameStore } from '../realtime/store.ts';
 import { useStage } from '../themes/stage.ts';
@@ -15,6 +17,7 @@ interface ResultsProps {
   store: GameStore;
   lobby: LobbyState;
   isHost: boolean;
+  titles: TitleLanguages;
 }
 
 // Each act waits for the one billed below it; the headliner holds a beat longer.
@@ -107,10 +110,59 @@ function Bill({ lobby, results, rounds }: { lobby: LobbyState; results: ResultVi
   );
 }
 
-export function Results({ store, lobby, isHost }: ResultsProps) {
+const ANIMETHEMES = 'https://animethemes.moe/anime/';
+
+function SongRow({ song, titles }: { song: PlayedSong; titles: TitleLanguages }) {
+  const title = animeTitle(song.anime, titles.first);
+  const second = titles.second ? animeTitle(song.anime, titles.second) : null;
+  const details = [
+    `${song.theme.kind} ${song.theme.sequence}`,
+    song.song.title,
+    song.song.artists.length > 0 && `by ${credits(song.song.artists)}`,
+    aired(song.season, song.year),
+    song.skipped && 'skipped',
+  ].filter((part) => typeof part === 'string');
+  return (
+    <li className="song-row">
+      <span aria-hidden="true" className="song-number">
+        {song.number}
+      </span>
+      <span className="min-w-0 flex-1">
+        <span className="block font-semibold [overflow-wrap:anywhere]" lang={title.lang}>
+          {title.text}
+        </span>
+        {second && second.text !== title.text && (
+          <span className="block text-sm [overflow-wrap:anywhere]" lang={second.lang ?? 'en'}>
+            {second.text}
+          </span>
+        )}
+        <span className="block text-sm text-muted">{details.join(' · ')}</span>
+      </span>
+      <a className="song-link" href={`${ANIMETHEMES}${encodeURIComponent(song.slug)}`} target="_blank" rel="noreferrer">
+        AnimeThemes<span className="sr-only">: {title.text}, opens in a new tab</span>
+      </a>
+    </li>
+  );
+}
+
+function SongList({ songs, titles }: { songs: PlayedSong[]; titles: TitleLanguages }) {
+  return (
+    <details className="adjust song-list">
+      <summary className="adjust-summary">Songs this game ({songs.length})</summary>
+      <ol aria-label="Songs this game" className="mt-3 flex flex-col">
+        {songs.map((song) => (
+          <SongRow key={song.number} song={song} titles={titles} />
+        ))}
+      </ol>
+    </details>
+  );
+}
+
+export function Results({ store, lobby, isHost, titles }: ResultsProps) {
   usePagePhase('results');
   const results = lobby.game?.results ?? [];
   const rounds = lobby.game?.rounds ?? 0;
+  const songs = lobby.game?.songs ?? [];
   return (
     <Panel className="results flex flex-1 flex-col">
       <h2 className="display mb-4 text-3xl">Final results</h2>
@@ -121,6 +173,7 @@ export function Results({ store, lobby, isHost }: ResultsProps) {
           <Bill lobby={lobby} results={results} rounds={rounds} />
         </div>
       )}
+      {songs.length > 0 && <SongList songs={songs} titles={titles} />}
       <div className="mt-auto flex flex-wrap items-center gap-3 border-t border-line pt-4">
         {isHost ? (
           <Button onClick={() => store.startGame()}>Play again</Button>

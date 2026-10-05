@@ -9,6 +9,7 @@ import { SCHEMA_VERSION } from './schema.ts';
 
 export interface CatalogAnime {
   id: number;
+  slug: string; // AnimeThemes' name for it, as in https://animethemes.moe/anime/<slug>
   titles: { display: string; romaji: string | null; english: string | null; native: string | null };
   year: number | null;
   season: string | null;
@@ -146,6 +147,7 @@ export function loadCatalog(file: string): Catalog {
       const id = required(numeric(row.id), 'an anime id');
       return {
         id,
+        slug: required(text(row.slug), 'an anime slug'),
         titles: {
           display: required(text(row.title_display), 'a display title'),
           romaji: text(row.title_romaji),

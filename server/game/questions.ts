@@ -33,6 +33,7 @@ function revealOf(answer: CatalogAnime, theme: CatalogTheme): RevealDetails {
     song: { title: theme.songTitle, artists: theme.artists },
     year: answer.year,
     season: answer.season,
+    slug: answer.slug,
     cover: answer.coverFile === null ? null : `/covers/${answer.coverFile}`,
   };
 }

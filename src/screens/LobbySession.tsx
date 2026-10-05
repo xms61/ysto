@@ -91,6 +91,7 @@ export function LobbySession(props: LobbySessionProps) {
   const lobby = game.lobby;
   const host = isHost(game);
   const screen = screenOf(game);
+  const titles = { first: prefs.titleLanguage, second: prefs.secondTitleLanguage };
   useReloadWhenStale({ version: lobby?.version, screen }, props);
   const page = useRef<HTMLDivElement>(null);
   useFocusOnScreenChange(lobby && settings ? screen : 'connecting', page);
@@ -120,12 +121,12 @@ export function LobbySession(props: LobbySessionProps) {
           store={store}
           lobby={lobby}
           round={game.round}
-          titles={{ first: prefs.titleLanguage, second: prefs.secondTitleLanguage }}
+          titles={titles}
           isHost={host}
           clip={clip && clip.roundId === game.round?.id ? clip.status : null}
         />
       ) : screen === 'results' ? (
-        <Results store={store} lobby={lobby} isHost={host} />
+        <Results store={store} lobby={lobby} isHost={host} titles={titles} />
       ) : (
         <Lobby store={store} lobby={lobby} settings={settings} isHost={host} />
       )}

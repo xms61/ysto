@@ -1,7 +1,7 @@
 // A game's rounds as a pure state machine (docs/product-specs/game-flow.md). `step` takes the game, an event
 // and the time, and returns the next game and the effects for the shell to run: messages, timers, clip cuts
 // and clip expiries. Nothing here reads a clock, a socket or a file, so a fake clock can drive whole games.
-import type { GameView, Pick, ResultView, ServerMessage, StandingView } from '../../shared/protocol.ts';
+import type { GameView, Pick, PlayedSong, ResultView, ServerMessage, StandingView } from '../../shared/protocol.ts';
 import { rankPlayers, scoreQuestion } from '../../shared/scoring.ts';
 import type { Answer } from '../../shared/scoring.ts';
 import { answersCanChange } from '../../shared/settings.ts';
@@ -67,6 +67,7 @@ export interface Game {
   played: number; // rounds begun
   dropped: number; // rounds whose clip failed on every theme
   playedThemeIds: number[];
+  songs: PlayedSong[]; // each closed round's song, for the results
   finished: boolean;
 }
 
@@ -240,6 +241,8 @@ function closeRound(draft: Draft, round: Round, skipped: boolean): void {
   round.phase = 'revealing';
   game.playedThemeIds.push(round.question.themeId);
   const { question } = round;
+  const { cover, ...song } = question.reveal;
+  game.songs.push({ number: game.played, skipped, ...song });
   round.reveal = {
     type: 'round:reveal',
     roundId: round.id,
@@ -462,6 +465,7 @@ export function startGame({ id, settings, questions, players, away }: NewGame): 
     played: 0,
     dropped: 0,
     playedThemeIds: [],
+    songs: [],
     finished: false,
   };
   const draft: Draft = { game, effects: [], now: 0 };
@@ -475,6 +479,7 @@ export function gameView(game: Game): GameView {
     number: game.played,
     rounds: rounds(game),
     results: game.finished ? results(game) : null,
+    songs: game.finished ? game.songs : null,
   };
 }
 

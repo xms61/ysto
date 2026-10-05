@@ -4,7 +4,7 @@ import { FakeClipPlayer, OPTIONS, SESSION, lobbyState, revealOf, socketFactory }
 import type { ExitReason } from './connection.ts';
 import { GameStore } from './store.ts';
 
-const PLAYING = { phase: 'playing', number: 1, rounds: 5, results: null } as const;
+const PLAYING = { phase: 'playing', number: 1, rounds: 5, results: null, songs: null } as const;
 const NOW = 1_000_000;
 
 function prepare(roundId: string): ServerMessage {

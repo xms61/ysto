@@ -5,7 +5,7 @@ import { SCORING_PRESETS } from '../../shared/scoring.ts';
 import { INITIAL_GAME, choose, isHost, playerOf, receive } from './game-state.ts';
 import type { GameState } from './game-state.ts';
 
-const PLAYING = { phase: 'playing', number: 1, rounds: 5, results: null } as const;
+const PLAYING = { phase: 'playing', number: 1, rounds: 5, results: null, songs: null } as const;
 const prepare = (roundId: string): ServerMessage => ({
   type: 'round:prepare',
   roundId,
@@ -106,7 +106,7 @@ test('drops the round when the game ends, and reopens the results for the next g
   const playing = replay([lobbyState({ game: PLAYING }), prepare('g.1')]);
   const over = replay([{ type: 'game:results', standings: [] }], playing);
   expect(over.round).toBeNull();
-  const results = lobbyState({ game: { phase: 'results', number: 5, rounds: 5, results: [] } });
+  const results = lobbyState({ game: { phase: 'results', number: 5, rounds: 5, results: [], songs: [] } });
   const closed = { ...receive(over, results), resultsClosed: true };
   expect(receive(closed, results).resultsClosed).toBe(true);
   expect(receive(closed, lobbyState({ game: { ...PLAYING, number: 0 } })).resultsClosed).toBe(false);

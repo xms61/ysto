@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.4.0] - 2026-10-05
+
+### Added
+- The results list the game's songs, folded away below the standings: each round's anime in the player's title languages, OP or ED, the song and its artists, when it aired, and a link to the anime on AnimeThemes.
+- The features plan gains M15, a short "What's new" dialog on a player's first visit after an update.
+
 ## [1.3.0] - 2026-10-05
 
 ### Added
@@ -30,9 +36,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - The reveal no longer repeats a title that differs only in case, such as "Naruto" and "NARUTO".
 - Older entries moved to the changelog archive.
-
-## [1.0.0] - 2026-10-05
-
-### Changed
-- 1.0: the v1 plan is complete. The game runs on its VPS from the released image; the load test meets its targets and the security review has no high findings. The playtest with friends, the clip timing on the VPS and an external port scan follow (tech-debt tracker).
-- The docs describe the running deployment: DEPLOY.md lists the open checks, SECURITY.md records the review, and the README's status is 1.0.
