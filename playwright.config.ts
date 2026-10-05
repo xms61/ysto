@@ -9,14 +9,21 @@ const isCI = Boolean(process.env.CI);
 // per-IP lobby limits count each browser's tests on their own.
 const clientAddress = (host: number) => ({ extraHTTPHeaders: { 'x-forwarded-for': `10.0.0.${host}` } });
 
+// The browsers play the test tones silently: the clips still decode and play, only the speakers stay quiet.
+// WebKit has no switch for it.
+const muted = {
+  chromium: { launchOptions: { args: ['--mute-audio'] } },
+  firefox: { launchOptions: { firefoxUserPrefs: { 'media.volume_scale': '0.0' } } },
+};
+
 export default defineConfig({
   testDir: 'e2e',
   forbidOnly: isCI,
   retries: isCI ? 1 : 0,
   use: { baseURL: `http://localhost:${PORT}` },
   projects: [
-    { name: 'chromium', use: { ...devices['Desktop Chrome'], ...clientAddress(1) } },
-    { name: 'firefox', use: { ...devices['Desktop Firefox'], ...clientAddress(2) } },
+    { name: 'chromium', use: { ...devices['Desktop Chrome'], ...clientAddress(1), ...muted.chromium } },
+    { name: 'firefox', use: { ...devices['Desktop Firefox'], ...clientAddress(2), ...muted.firefox } },
     { name: 'webkit', use: { ...devices['Desktop Safari'], ...clientAddress(3) } },
   ],
   webServer: {

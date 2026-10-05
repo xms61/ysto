@@ -8,8 +8,9 @@ export interface ThemeStage {
   // The shared bar, a seven-segment display, a dango skewer eaten down, the seconds as huge arcade digits, a
   // nipper cutting along a runner, a gachapon's coin dial turning, a candle burning down, a printer's ruler, or
   // the round's heading sung like a lyric line, its color wiping across as the time runs, or a shrine rope's
-  // paper streamers taken one by one.
-  readout: 'bar' | 'segments' | 'dango' | 'digits' | 'nipper' | 'dial' | 'candle' | 'ruler' | 'lyric' | 'shide';
+  // paper streamers taken one by one, or a walk on a park map toward a blossom tree.
+  readout:
+    'bar' | 'segments' | 'dango' | 'digits' | 'nipper' | 'dial' | 'candle' | 'ruler' | 'lyric' | 'shide' | 'route';
   wrongMark: string | null; // printed on each option that was not the answer, at the reveal
   scoreBars: boolean; // each final score also drawn as a bar against the winner's, like a health bar
   masthead: boolean; // the round's heading set as a magazine's issue number, "No. 03 / 15"
@@ -23,6 +24,7 @@ const STAGES: Partial<Record<Theme, Partial<ThemeStage>>> = {
   konbini: { readout: 'segments', wrongMark: 'Sold out' },
   karaoke: { readout: 'lyric', rows: true },
   omikuji: { readout: 'shide' },
+  'blossom-map': { readout: 'route' },
   sakura: { readout: 'dango' },
   shonen: { readout: 'digits', scoreBars: true },
   mecha: { readout: 'nipper', wrongMark: 'Spare' },
