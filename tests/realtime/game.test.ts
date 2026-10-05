@@ -168,6 +168,34 @@ test('keeps one report per player for each revealed clip, and none for a round n
   });
 });
 
+test('sends reactions to the whole lobby, once a second per player, and never while a round takes answers', async () => {
+  await withServer(async (server) => {
+    const { ann, annClient, benClient } = await twoPlayerLobby(server);
+    const flush = async () => {
+      for (const client of [annClient, benClient]) {
+        client.send({ type: 'time:ping', clientTime: 1 });
+        await nextOf(client, 'time:pong');
+      }
+    };
+    annClient.send({ type: 'reaction', kind: 'hype' });
+    annClient.send({ type: 'reaction', kind: 'laugh' });
+    await flush();
+    for (const client of [annClient, benClient]) {
+      const reactions = client.received.filter((message) => message.type === 'reaction');
+      assert.deepEqual(reactions, [{ type: 'reaction', playerId: ann.playerId, kind: 'hype' }]);
+    }
+    annClient.send({ type: 'game:start' });
+    const prepare = await nextOf(annClient, 'round:prepare');
+    benClient.send({ type: 'reaction', kind: 'shock' });
+    for (const client of [annClient, benClient])
+      client.send({ type: 'round:ready', roundId: prepare.roundId, loaded: true });
+    await nextOf(benClient, 'round:start');
+    benClient.send({ type: 'reaction', kind: 'clap' });
+    await flush();
+    assert.equal(annClient.received.filter((message) => message.type === 'reaction').length, 1);
+  });
+});
+
 test('refuses settings changes and a second start while a game runs, and lets a late joiner watch first', async () => {
   await withServer(async (server) => {
     const { ann, annClient, benClient } = await twoPlayerLobby(server);

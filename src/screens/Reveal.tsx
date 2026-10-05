@@ -18,7 +18,7 @@ interface RevealProps {
   reveal: RoundReveal;
   lobby: LobbyState;
   titles: TitleLanguages;
-  report: ReactNode; // the way to report this round's clip
+  actions: ReactNode; // reactions, and the way to report this round's clip
 }
 
 interface Verdict {
@@ -135,7 +135,12 @@ function Pickers({ reveal, lobby, option }: { reveal: RoundReveal; lobby: LobbyS
     <p className="pickers">
       <span className="sr-only">Picked by </span>
       {pickers.map((pick, at) => (
-        <span key={pick.playerId} className="picker" data-you={pick.playerId === lobby.you || undefined}>
+        <span
+          key={pick.playerId}
+          className="picker"
+          data-player={pick.playerId}
+          data-you={pick.playerId === lobby.you || undefined}
+        >
           {nameOf(lobby, pick.playerId)}
           {at < pickers.length - 1 && <span className="sr-only">, </span>}
         </span>
@@ -156,7 +161,12 @@ function Lineup({ reveal, lobby }: { reveal: RoundReveal; lobby: LobbyState }) {
         const gained = pointsOf(reveal, standing.playerId);
         const pick = reveal.picks.find((candidate) => candidate.playerId === standing.playerId);
         return (
-          <li key={standing.playerId} className="board-row" data-you={standing.playerId === lobby.you || undefined}>
+          <li
+            key={standing.playerId}
+            className="board-row"
+            data-player={standing.playerId}
+            data-you={standing.playerId === lobby.you || undefined}
+          >
             <span className="board-place">{place(places[rank] ?? rank + 1)}</span>
             <MoveMark from={before.get(standing.playerId) ?? rank} to={rank} />
             <span className="board-name">
@@ -207,7 +217,7 @@ function VerdictLine({ verdict, standing, streak }: { verdict: Verdict; standing
   );
 }
 
-export function Reveal({ round, reveal, lobby, titles, report }: RevealProps) {
+export function Reveal({ round, reveal, lobby, titles, actions }: RevealProps) {
   const title = animeTitle(reveal.anime, titles.first);
   const when = aired(reveal.season, reveal.year);
   const options = round.start?.options;
@@ -293,7 +303,7 @@ export function Reveal({ round, reveal, lobby, titles, report }: RevealProps) {
         </div>
       </div>
       <Lineup reveal={reveal} lobby={lobby} />
-      {report}
+      {actions}
       <p className="text-sm text-muted">
         {round.number === round.rounds ? 'The results come next.' : 'The next round starts in a few seconds.'}
       </p>

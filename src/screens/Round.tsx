@@ -9,6 +9,7 @@ import { POINTS } from '../../shared/scoring.ts';
 import { answersCanChange } from '../../shared/settings.ts';
 import type { LobbySettings } from '../../shared/settings.ts';
 import { Listening } from '../components/Listening.tsx';
+import { ReactionBar } from '../components/Reactions.tsx';
 import { ReportClip } from '../components/ReportClip.tsx';
 import { FaceDownCards, OptionCard } from '../components/OptionCard.tsx';
 import type { CardState } from '../components/OptionCard.tsx';
@@ -442,7 +443,12 @@ function RoundView({ store, lobby, round, titles, reported, isHost, clip }: Roun
           reveal={reveal}
           lobby={lobby}
           titles={titles}
-          report={<ReportClip store={store} number={round.number} reported={reported.includes(round.number)} />}
+          actions={
+            <>
+              <ReactionBar store={store} />
+              <ReportClip store={store} number={round.number} reported={reported.includes(round.number)} />
+            </>
+          }
         />
       ) : !start ? (
         <Stage

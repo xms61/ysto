@@ -146,13 +146,16 @@ export async function joinLobby(server: TestServer, code: string, name: string):
 export class TestClient {
   readonly socket: WebSocket;
   readonly closed: Promise<{ code: number; reason: string }>;
+  readonly received: ServerMessage[] = []; // every message so far, in order, whether next() took it or not
   readonly #queue: ServerMessage[] = [];
   #wake: () => void = () => {};
 
   constructor(url: string, options: ClientOptions) {
     this.socket = new WebSocket(url, options);
     this.socket.on('message', (data) => {
-      this.#queue.push(JSON.parse(String(data)) as ServerMessage);
+      const message = JSON.parse(String(data)) as ServerMessage;
+      this.received.push(message);
+      this.#queue.push(message);
       this.#wake();
     });
     this.closed = new Promise((resolve) => {

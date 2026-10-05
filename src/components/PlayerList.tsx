@@ -18,7 +18,7 @@ export function PlayerList({ lobby, onKick, showScores }: PlayerListProps) {
   return (
     <ul aria-label="Players" className="flex flex-col divide-y divide-line">
       {lobby.players.map((player) => (
-        <li key={player.id} className="motion-seat flex items-center gap-2 py-2">
+        <li key={player.id} data-player={player.id} className="motion-seat flex items-center gap-2 py-2">
           <span className={`font-medium ${player.connected ? '' : 'text-muted'}`}>{player.name}</span>
           {player.id === lobby.you && <Tag>you</Tag>}
           {player.id === lobby.hostId && <Tag>host</Tag>}

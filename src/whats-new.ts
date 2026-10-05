@@ -4,6 +4,7 @@
 import { readItem, writeItem } from './storage.ts';
 
 const NOTES: { version: string; lines: string[] }[] = [
+  { version: '1.8.0', lines: ['React to a reveal: six reactions rise from your name for everyone to see.'] },
   { version: '1.7.0', lines: ['Play again in the same lobby: it keeps count of who has won.'] },
   { version: '1.6.0', lines: ['A clip sounds broken? Report it from the reveal or the song list.'] },
   { version: '1.4.0', lines: ['The results list every song of the game, with a link to AnimeThemes.'] },

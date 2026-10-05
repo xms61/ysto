@@ -5,6 +5,7 @@ import type { RefObject } from 'react';
 import type { AudioEngine } from '../audio/engine.ts';
 import { NoticeToast } from '../components/NoticeToast.tsx';
 import { PreferencesMenu } from '../components/PrefsPanel.tsx';
+import { ReactionLayer } from '../components/Reactions.tsx';
 import { SoundBanner } from '../components/SoundBanner.tsx';
 import { WhatsNew } from '../components/WhatsNew.tsx';
 import { ConfirmButton, Panel } from '../components/ui.tsx';
@@ -115,6 +116,7 @@ export function LobbySession(props: LobbySessionProps) {
         <ConfirmButton label="Leave" question="Leave the lobby?" onConfirm={() => store.leave()} />
       </header>
       <SoundBanner audio={audio} />
+      {lobby && <ReactionLayer store={store} lobby={lobby} />}
       {screen === 'lobby' && lobby && notes.length > 0 && <WhatsNew lines={notes} onClose={onNotesSeen} />}
       {!lobby || !settings ? (
         <Panel>

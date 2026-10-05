@@ -77,7 +77,13 @@ export type ClientMessage =
   | { type: 'round:ready'; roundId: string; loaded: boolean }
   | { type: 'answer'; roundId: string; option: number }
   | { type: 'round:skip' }
-  | { type: 'clip:report'; number: number; reason: ReportReason };
+  | { type: 'clip:report'; number: number; reason: ReportReason }
+  | { type: 'reaction'; kind: ReactionKind };
+
+// What a player can react with, outside a round's answering (docs/product-specs/lobby.md): a fixed set,
+// drawn as icons, with no free text.
+export const REACTION_KINDS = ['hype', 'laugh', 'shock', 'facepalm', 'heart', 'clap'] as const;
+export type ReactionKind = (typeof REACTION_KINDS)[number];
 
 // Why a player reports a round's clip: fixed reasons, no free text, so nothing needs moderating.
 export const REPORT_REASONS = ['silent', 'wrong-song', 'bad-cut', 'other'] as const;
@@ -122,6 +128,9 @@ export function parseClientMessage(text: string, bounds: SettingsBounds): Client
   }
   if (type === 'round:ready' && hasKeys(value, ['type', 'roundId', 'loaded']) && isRoundId(value.roundId)) {
     return typeof value.loaded === 'boolean' ? { type, roundId: value.roundId, loaded: value.loaded } : null;
+  }
+  if (type === 'reaction' && hasKeys(value, ['type', 'kind'])) {
+    return isOneOf(value.kind, REACTION_KINDS) ? { type, kind: value.kind } : null;
   }
   if (type === 'clip:report' && hasKeys(value, ['type', 'number', 'reason'])) {
     const { number, reason } = value;
@@ -240,6 +249,7 @@ export type ServerMessage =
   | { type: 'round:pick'; roundId: string; option: number }
   | RoundReveal
   | { type: 'game:results'; standings: ResultView[] }
+  | { type: 'reaction'; playerId: string; kind: ReactionKind }
   | { type: 'time:pong'; clientTime: number; serverTime: number }
   | { type: 'error'; code: ErrorCode }
   | { type: 'server:closing' };

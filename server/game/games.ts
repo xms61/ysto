@@ -87,6 +87,12 @@ export class Games {
     return run !== undefined && !run.game.finished && !run.game.participants.includes(playerId);
   }
 
+  // While a round is being prepared or answered, players can't react, so a reaction can't point at an option.
+  answering(code: string): boolean {
+    const phase = this.#runs.get(code)?.game.round?.phase;
+    return this.running(code) && (phase === 'preparing' || phase === 'playing');
+  }
+
   // The tally of the lobby's finished games, for the players still in it.
   tally(code: string, playerIds: string[]): TallyView | null {
     const tally = this.#tallies.get(code);

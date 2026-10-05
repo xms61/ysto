@@ -370,6 +370,15 @@ const TALLY = {
   ],
 };
 
+test('sends a reaction from the lobby, and shows who reacted with what', () => {
+  const { socket } = renderSeated();
+  const bar = screen.getByRole('group', { name: 'React' });
+  fireEvent.click(within(bar).getByRole('button', { name: 'Laugh' }));
+  expect(socket.sentOfType('reaction')).toEqual([{ type: 'reaction', kind: 'laugh' }]);
+  act(() => socket.receive({ type: 'reaction', playerId: 'p2', kind: 'heart' }));
+  expect(screen.getByText('Ben: Heart')).toBeTruthy();
+});
+
 test("keeps the lobby's tally across games, in the lobby and on the results", () => {
   const { socket } = renderSeated(lobbyState({ tally: TALLY }));
   const players = screen.getByRole('list', { name: 'Players' });

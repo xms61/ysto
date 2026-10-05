@@ -6,6 +6,7 @@
 import type { CSSProperties } from 'react';
 import type { LobbyState, PlayedSong, ResultView } from '../../shared/protocol.ts';
 import { Burst } from '../components/Burst.tsx';
+import { ReactionBar } from '../components/Reactions.tsx';
 import { ReportClip } from '../components/ReportClip.tsx';
 import { Button, Panel } from '../components/ui.tsx';
 import { aired, animeTitle, credits, place, score, seconds, sharedPlaces } from '../format.ts';
@@ -78,6 +79,7 @@ function Bill({ lobby, results, rounds }: { lobby: LobbyState; results: ResultVi
         return (
           <li
             key={result.playerId}
+            data-player={result.playerId}
             className={`bill-row bill-act ${tierOf(rank)}`}
             style={{ '--act-delay': `${delayMs}ms` } as CSSProperties}
           >
@@ -200,6 +202,7 @@ export function Results({ store, lobby, isHost, titles, reported }: ResultsProps
           <Bill lobby={lobby} results={results} rounds={rounds} />
         </div>
       )}
+      <ReactionBar store={store} />
       {songs.length > 0 && <SongList store={store} songs={songs} titles={titles} reported={reported} />}
       <div className="mt-auto flex flex-wrap items-center gap-3 border-t border-line pt-4">
         {isHost ? (

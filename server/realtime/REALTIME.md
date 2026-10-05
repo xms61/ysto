@@ -24,6 +24,7 @@ Entry: `server/realtime/hub.ts`. `Realtime` serves the lobby sockets at `/ws` on
 | `game:start` | host | starts a game, or the next one from the results |
 | `round:ready { roundId, loaded }` | player | the round's clip is fetched and decoded, or failed to (`loaded: false`) |
 | `clip:report { number, reason }` | player | reports the clip of round `number` (1–50) of the current or last game, for a reason in `REPORT_REASONS`; dropped when that round isn't revealed yet or the player already reported it |
+| `reaction { kind }` | player | one of `REACTION_KINDS`, sent on to everyone in the lobby as `reaction { playerId, kind }`; dropped while a round is being prepared or answered, and past one a second per player (no strike) |
 | `answer { roundId, option }` | player | locks in option 0–3; with answer changes on, a later one for another option switches to it |
 | `round:skip` | host | ends the round without points |
 
