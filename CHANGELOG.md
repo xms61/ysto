@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.29.1] - 2026-10-06
+
+### Changed
+- CI runs the browser tests as one job per browser, side by side, and keeps the Ubuntu packages of the browsers' system libraries in the Actions cache, since the mirror took up to 13 minutes to send them. The required `e2e` check passes when all three browsers do.
+
 ## [1.29.0] - 2026-10-06
 
 ### Changed
@@ -31,8 +36,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Party mode: with it on in the lobby settings, a TV or laptop joins by the link with "Use as the screen" and plays the sound for everyone, showing the round large with the join QR in its corner, while the phones only answer. A lobby takes up to two screens, which don't count as players; a party game needs one connected to start.
-
-## [1.26.0] - 2026-10-06
-
-### Added
-- Today's challenge: the same ten songs for everyone each day (it changes at 00:00 UTC), played solo from the home screen, with this device's streak of days in a row, badges at 7, 30 and 100 days, and a result to copy and share as plain blocks that name no song. Replays of a day are practice. Needs `YSTO_DAILY_SECRET` on the server.

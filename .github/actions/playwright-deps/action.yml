@@ -1,0 +1,35 @@
+name: Install the browsers' system libraries
+description: >-
+  Installs the system libraries a Playwright browser needs, keeping the Ubuntu packages apt downloads in the Actions
+  cache per runner image and Playwright version. The mirror the runners use can take a quarter of an hour to send
+  them; from the cache apt only installs.
+inputs:
+  browser:
+    description: The Playwright browser, such as chromium
+    required: true
+  playwright-version:
+    description: The Playwright version, which pins the libraries its browsers need
+    required: true
+runs:
+  using: composite
+  steps:
+    - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+      with:
+        path: ~/.playwright-debs
+        key: >-
+          playwright-debs-${{ runner.os }}-${{ runner.arch }}-${{ env.ImageOS }}-${{ env.ImageVersion }}-${{
+          inputs.playwright-version }}-${{ inputs.browser }}
+    # apt keeps what it downloads in the cached folder, and finds there what an earlier run kept. The man page
+    # index rebuild after an install is skipped: nothing here reads man pages.
+    - name: Install from the packages, downloading only what's missing
+      shell: bash
+      env:
+        BROWSER: ${{ inputs.browser }}
+      run: |
+        mkdir -p ~/.playwright-debs/partial
+        printf 'Dir::Cache::Archives "%s";\nAPT::Keep-Downloaded-Packages "true";\n' "$HOME/.playwright-debs" \
+          | sudo tee /etc/apt/apt.conf.d/99playwright-debs > /dev/null
+        sudo rm -f /var/lib/man-db/auto-update
+        npx playwright install-deps "$BROWSER"
+        sudo rm /etc/apt/apt.conf.d/99playwright-debs
+        sudo chown -R "$USER" ~/.playwright-debs

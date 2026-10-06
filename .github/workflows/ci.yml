@@ -76,8 +76,13 @@ jobs:
       - name: Build
         run: npm run build
 
-  e2e:
+  # One job per browser, side by side; `e2e` below is the check the ruleset requires.
+  e2e-browser:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, firefox, webkit]
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -90,27 +95,43 @@ jobs:
       # The clip decode test and the fixture server make tones with ffmpeg.
       - name: Install ffmpeg
         uses: ./.github/actions/ffmpeg
-      # The browsers are kept in the Actions cache per Playwright version, which pins their builds; the system
-      # libraries they need still come from apt, and are mostly on the runner image already.
+      # The browser is kept in the Actions cache per Playwright version, which pins its build, and so are the
+      # Ubuntu packages of its system libraries.
       - name: Playwright version
         id: playwright
         run: echo "version=$(node -p "require('@playwright/test/package.json').version")" >> "$GITHUB_OUTPUT"
-      - name: Cache browsers
-        id: browsers
+      - name: Cache the browser
+        id: browser
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ~/.cache/ms-playwright
-          key: playwright-${{ runner.os }}-${{ runner.arch }}-${{ steps.playwright.outputs.version }}
-      - name: Install browsers
-        if: steps.browsers.outputs.cache-hit != 'true'
-        run: npx playwright install --with-deps chromium firefox webkit
-      - name: Install the browsers' system libraries
-        if: steps.browsers.outputs.cache-hit == 'true'
-        run: npx playwright install-deps chromium firefox webkit
+          key: playwright-${{ runner.os }}-${{ runner.arch }}-${{ steps.playwright.outputs.version }}-${{ matrix.browser }}
+      - name: Install the browser
+        if: steps.browser.outputs.cache-hit != 'true'
+        run: npx playwright install "$BROWSER"
+        env:
+          BROWSER: ${{ matrix.browser }}
+      - name: Install the browser's system libraries
+        uses: ./.github/actions/playwright-deps
+        with:
+          browser: ${{ matrix.browser }}
+          playwright-version: ${{ steps.playwright.outputs.version }}
       - name: Build
         run: npm run build
-      - name: Browser tests (Chromium, Firefox, WebKit)
-        run: npm run test:e2e
+      - name: Browser tests
+        run: npm run test:e2e -- --project="$BROWSER"
+        env:
+          BROWSER: ${{ matrix.browser }}
+
+  e2e:
+    needs: e2e-browser
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Every browser passed
+        run: test "$RESULT" = success
+        env:
+          RESULT: ${{ needs.e2e-browser.result }}
 
   docker:
     runs-on: ubuntu-latest
