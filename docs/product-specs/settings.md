@@ -26,6 +26,7 @@ The host shapes the game (pool, length, difficulty, scoring). Each player sets w
 | Answer changes | Lobby | on or off; ignored in First correct ([game flow](game-flow.md)) | off |
 | Overtime | Lobby | 3–10 s, once everyone has answered, with answer changes on | 5 s |
 | Volume | Player (device) | 0–100% | 15% |
+| Sound effects | Player (device) | on or off | on |
 | Theme | Player (device) | Neon Rain, Karaoke Box, Omikuji, Blossom Map, Fighter Select, Quest Board, Back Issue, Side A ([DESIGN.md](../DESIGN.md)) | Neon Rain |
 | Title language | Player (device) | English, romaji, Japanese | English, falling back to romaji |
 | Second title language | Player (device) | none, or one of the other two | none |
@@ -37,12 +38,14 @@ The host shapes the game (pool, length, difficulty, scoring). Each player sets w
 - Player settings are saved on the device (the `ysto_prefs` key in `localStorage`) and apply straight away. The Preferences button on every screen opens them, and the theme row opens the picker: a full-screen grid of every theme as its world's object in its own colors, where selecting one tries it on across the page, "Use this world" keeps it, Back or Escape keeps the theme the player had, and "Surprise me" lands on a random other world. A stored value that is missing or out of range falls back to its default, alone; a player whose saved world was retired (Hanami, Tournament Arc, Splash Page, Night Arc, Model Kit and Gachapon, in 1.17.0, and Konbini 2 a.m., merged into Neon Rain in 1.18.0) gets Neon Rain.
 - **What's new:** the first time a device opens a newer version, a dialog lists what changed for players, in at most three short lines from `src/whats-new.ts`, with a "Got it" button (Escape or a tap outside closes it too). It shows on the home screen or in the lobby, never in a round or on the results. A device's first visit shows nothing and only notes the version (`ysto_seen_version`), and a version without a note shows nothing.
 - Volume goes through a gain node, so the 15% default also applies on iPhones ([audio clips](../design-docs/audio-clips.md)).
+- **Sound effects:** each world has its own short sounds (`src/audio/sounds.ts`): the deal as a round's cards come in, a pick when this player picks, the overtime's call when it starts, right or wrong as the right card lands at the reveal (a missed round sounds wrong, a skipped one plays nothing), and the results as the game ends. They are synthesized with Web Audio, play at 35% of the game's volume under the clip, and stay silent at volume 0, before the first tap unlocks audio, and with the switch off. Nothing plays for the state a page loads into.
 - The interface is in English. Anime titles follow each player's title-language setting. A second language shows each option's title in it too, smaller, under the first; when both read the same ("Naruto" and "NARUTO"), the title shows once. Picking the second language as the first swaps the two. At the reveal the second language heads the anime's other titles.
 
 ## Acceptance criteria
 - The server rejects settings outside these ranges, and genres outside the catalog's list.
 - A new device plays at 15% volume in the Neon Rain theme with English titles.
 - A player's settings survive a reload and never reach other players.
+- With sound effects off or the volume at 0, the game makes no sound but the clip's.
 - Trying a world on in the picker never saves it; only "Use this world" does.
 
 ## Out of scope

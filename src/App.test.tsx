@@ -313,6 +313,14 @@ test('applies the motion picked in the preferences at once', () => {
   expect(JSON.parse(localStorage.getItem('ysto_prefs') ?? '{}')).toMatchObject({ motion: 'reduced' });
 });
 
+test('turns the sound effects off from the preferences', () => {
+  renderApp();
+  const box = screen.getByLabelText('Sound effects');
+  expect((box as HTMLInputElement).checked).toBe(true);
+  fireEvent.click(box);
+  expect(JSON.parse(localStorage.getItem('ysto_prefs') ?? '{}')).toMatchObject({ soundEffects: false });
+});
+
 test('keeps both title languages when the second becomes the first', () => {
   renderApp();
   fireEvent.change(screen.getByLabelText('And under them, smaller'), { target: { value: 'japanese' } });

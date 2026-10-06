@@ -10,6 +10,7 @@ test('a new device plays at 15% in Neon Rain with English titles, and follows it
     titleLanguage: 'english',
     secondTitleLanguage: null,
     motion: 'system',
+    soundEffects: true,
   });
   expect(readPrefs(null)).toEqual(DEFAULT_PREFS);
 });
@@ -21,6 +22,7 @@ test('keeps the settings across a reload', () => {
     titleLanguage: 'japanese',
     secondTitleLanguage: 'romaji',
     motion: 'reduced',
+    soundEffects: false,
   } as const;
   writePrefs(localStorage, prefs);
   expect(readPrefs(localStorage)).toEqual(prefs);
@@ -55,4 +57,11 @@ test('a retired world falls back to the default, keeping the rest', () => {
     localStorage.setItem('ysto_prefs', JSON.stringify({ volume: 40, theme }));
     expect(readPrefs(localStorage)).toEqual({ ...DEFAULT_PREFS, volume: 40 });
   }
+});
+
+test('keeps sound effects on unless the player turned them off', () => {
+  localStorage.setItem('ysto_prefs', JSON.stringify({ soundEffects: 'no' }));
+  expect(readPrefs(localStorage).soundEffects).toBe(true);
+  localStorage.setItem('ysto_prefs', JSON.stringify({ soundEffects: false }));
+  expect(readPrefs(localStorage).soundEffects).toBe(false);
 });

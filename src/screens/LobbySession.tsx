@@ -2,6 +2,7 @@
 // round or the results, depending on where the lobby's game stands.
 import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import type { RefObject } from 'react';
+import { useSoundCues } from '../audio/cues.ts';
 import type { AudioEngine } from '../audio/engine.ts';
 import { NoticeToast } from '../components/NoticeToast.tsx';
 import { PreferencesMenu } from '../components/PrefsPanel.tsx';
@@ -110,6 +111,7 @@ export function LobbySession(props: LobbySessionProps) {
   const titles = { first: prefs.titleLanguage, second: prefs.secondTitleLanguage };
   useReloadWhenStale({ version: lobby?.version, screen }, props);
   useLogGame(lobby, props.log);
+  useSoundCues(game, audio, prefs.theme, prefs.soundEffects);
   const page = useRef<HTMLDivElement>(null);
   useFocusOnScreenChange(lobby && settings ? screen : 'connecting', page);
 

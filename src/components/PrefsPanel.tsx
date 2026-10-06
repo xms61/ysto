@@ -1,4 +1,4 @@
-// This device's settings: volume, theme, title languages and motion (docs/product-specs/settings.md). They
+// This device's settings: volume, sound effects, theme, title languages and motion (docs/product-specs/settings.md). They
 // apply at once and stay on this device. PreferencesMenu puts them behind a button on every screen.
 import { useEffect, useRef, useState } from 'react';
 import { TITLE_LANGUAGES } from '../../shared/settings.ts';
@@ -118,6 +118,15 @@ export function PrefsPanel({ prefs, onChange, onChooseTheme }: PrefsPanelProps) 
   return (
     <div className="flex flex-col gap-4">
       <VolumeSlider volume={prefs.volume} onChange={(volume) => onChange({ volume })} />
+      <label className="flex items-center gap-2">
+        <input
+          type="checkbox"
+          className="choice"
+          checked={prefs.soundEffects}
+          onChange={(event) => onChange({ soundEffects: event.target.checked })}
+        />
+        <span>Sound effects</span>
+      </label>
       <ThemeRow theme={prefs.theme} onChoose={onChooseTheme} />
       <TitleLanguageFields prefs={prefs} onChange={onChange} />
       <label className="flex flex-col gap-1.5">

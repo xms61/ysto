@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.19.0] - 2026-10-06
+
+### Added
+- Sound effects in every world's own voice: the deal, a pick, the overtime's call, a right or wrong answer and the results, synthesized with Web Audio under the clip at the game's volume. A "Sound effects" switch in Preferences turns them off; they are on by default.
+
 ## [1.18.0] - 2026-10-06
 
 ### Changed
@@ -42,14 +47,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 - The latency allowance: an answer's time is its arrival at the server, and First correct closes on the first right answer instead of waiting 150 ms.
 - The line "The next round starts in a few seconds", and the count of who has answered under the cards (the scores column shows it).
-
-## [1.14.0] - 2026-10-06
-
-### Changed
-- The round on a wide screen: the scores in a column left of the cards, and the answer in a column right of them, kept free from the round's start. On a phone the scores follow the cards and the answer comes last.
-- The reveal moves nothing: the slot above the cards holds the longest verdict's height, each card the height of its back, and the lines under the cards keep their height. Splash Page's right panel settles back to its size.
-- The answer's cover sits above its title, set to the right.
-- The cards grow into the space the headphones left.
-
-### Removed
-- The headphones and their rings above the cards. A line under the cards says when the clip is loading or failed to load.
