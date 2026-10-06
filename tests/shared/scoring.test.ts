@@ -35,6 +35,25 @@ const cases: { name: string; rules: ScoringRules; answer: Answer | null; streak?
     answer: answer('a', true, 9000),
     points: 1000,
   },
+  {
+    name: 'Speed, half the window, after a hint',
+    rules: plain,
+    answer: { ...answer('a', true, 10_000), hinted: true },
+    points: 525,
+  },
+  {
+    name: 'a hint takes its share of the streak bonus too',
+    rules: SCORING_PRESETS.classic,
+    answer: { ...answer('a', true), hinted: true },
+    streak: 2,
+    points: 840,
+  },
+  {
+    name: 'a hint never softens a penalty',
+    rules: { ...plain, wrongAnswerPenalty: true },
+    answer: { ...answer('a', false), hinted: true },
+    points: -250,
+  },
   { name: 'wrong, no penalty', rules: plain, answer: answer('a', false), points: 0 },
   { name: 'wrong, penalty', rules: { ...plain, wrongAnswerPenalty: true }, answer: answer('a', false), points: -250 },
   {

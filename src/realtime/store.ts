@@ -126,6 +126,12 @@ export class GameStore {
     this.#setGame(game);
   }
 
+  // Asks for the round's hint; the server answers this player alone, from halfway through the round.
+  takeHint(): void {
+    const round = this.#game.round;
+    if (round && !round.hint) this.#connection.send({ type: 'round:hint', roundId: round.id });
+  }
+
   startGame(): void {
     this.#connection.send({ type: 'game:start' });
   }

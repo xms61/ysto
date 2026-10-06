@@ -25,6 +25,7 @@ export const POINTS = {
   streakCap: 500,
   penalty: 250,
   firstCorrectPenalty: 500,
+  hintFactor: 0.7, // a right answer after a hint keeps this share of its points, streak bonus included
 } as const;
 
 // Answers in the order they arrived, which breaks exact ties in First correct. responseMs is measured by
@@ -33,6 +34,7 @@ export interface Answer {
   playerId: string;
   correct: boolean;
   responseMs: number;
+  hinted?: boolean; // the player took the round's hint
 }
 
 // A player's total and current run of correct answers before the question.
@@ -87,7 +89,8 @@ export function scoreQuestion(
     const nextStreak = streak + 1;
     const base = basePoints(rules, answer, windowMs, firstCorrectId);
     const bonus = base > 0 ? streakBonus(rules, nextStreak, score < leaderScore) : 0;
-    return { playerId, points: base + bonus, streak: nextStreak };
+    const points = base + bonus;
+    return { playerId, points: answer.hinted ? Math.round(points * POINTS.hintFactor) : points, streak: nextStreak };
   });
 }
 

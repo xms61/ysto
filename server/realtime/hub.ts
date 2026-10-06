@@ -203,6 +203,8 @@ export class Realtime {
         return this.#games.ready(seat, message.roundId, message.loaded);
       case 'answer':
         return this.#games.answer(seat, message.roundId, message.option);
+      case 'round:hint':
+        return this.#games.hint(seat, message.roundId);
       case 'round:skip':
         return this.#report(connection, this.#games.skip(seat));
       case 'game:end':

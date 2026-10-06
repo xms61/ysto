@@ -1,5 +1,5 @@
 // How places, points, times, titles and credits read on screen.
-import type { OptionTitles, RevealDetails, SongCredit } from '../shared/protocol.ts';
+import type { OptionTitles, RevealDetails, RoundHint, SongCredit } from '../shared/protocol.ts';
 import { TITLE_LANGUAGES } from '../shared/settings.ts';
 import type { TitleLanguage } from '../shared/settings.ts';
 
@@ -106,6 +106,11 @@ export function otherTitles(anime: AnimeTitles, shown: Title, second: TitleLangu
     seen.add(titleKey(title.text));
     return true;
   });
+}
+
+// A hint as it reads: "TV, Spring 2013".
+export function hintText(hint: RoundHint): string {
+  return [hint.format, aired(hint.season, hint.year)].filter((part) => part !== null).join(', ');
 }
 
 export function aired(season: string | null, year: number | null): string | null {

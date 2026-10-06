@@ -25,7 +25,7 @@ Entry: `server/game/questions.ts`. `buildGame(catalog, settings, random, playedT
 - Each clip is cut when the round before it is prepared, so a reveal hides the cut. A round whose clip fails on three themes is dropped.
 - Settings arrive already validated against `settingsBounds` (`shared/settings.ts`). Genres with fewer than `MIN_GENRE_THEMES` playable themes aren't offered, and the catalog gate warns about them.
 - Everything random takes a `Random` argument. Live games pass `secureRandom`. Tests and the catalog check pass `seededRandom(seed)`, so a run repeats.
-- A `Question` holds the answer (`animeId`, `correctIndex`, `clip.relPath`). A round sends clients only the option titles, never the question itself ([anti-cheat](../../docs/design-docs/anti-cheat.md)).
+- A `Question` holds the answer (`animeId`, `correctIndex`, `clip.relPath`). A round sends clients only the option titles, never the question itself ([anti-cheat](../../docs/design-docs/anti-cheat.md)). Its `hint` (the answer's format, season and year) goes only to a player who asks for it with hints on, from halfway through the answer window (`onHint`), and is listed in `round.hinted`, which scores their right answer at `POINTS.hintFactor`.
 - The options' franchises never point at the answer: four franchises, or on Hard two pairs. Any change to the distractor rules keeps this, and the property tests check it.
 - Distractors come from `optionUniverse` first. Single options fall back to the whole catalog only when it runs out. Hard's pairs never fall back, since an option from outside the filters would mark its pair as the wrong one.
 - The lobby checks `poolSize` before a game. If `buildGame` throws because the pool has fewer anime than the game needs, that is a programming error.

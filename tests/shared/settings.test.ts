@@ -21,6 +21,7 @@ test('starts a lobby with the defaults of the settings spec', () => {
     answerChanges: false,
     overtimeSec: 5,
     endless: false,
+    hints: false,
   });
 });
 
@@ -66,6 +67,7 @@ const INVALID: [string, Record<string, unknown>][] = [
   ['a scoring flag that is not a boolean', { scoring: { ...SCORING_PRESETS.classic, comeback: 'yes' } }],
   ['answer changes that are not a boolean', { answerChanges: 'on' }],
   ['an endless switch that is not a boolean', { endless: 1 }],
+  ['a hints switch that is not a boolean', { hints: 'on' }],
   ['an overtime under 3 s', { overtimeSec: 2 }],
   ['an overtime over 10 s', { overtimeSec: 11 }],
   ['an extra field', { extra: true }],

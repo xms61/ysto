@@ -1,6 +1,13 @@
 // The lobby and its game as this client knows them, folded from the server's messages by a pure reducer,
 // so tests can replay message sequences (docs/product-specs/game-flow.md). Times are server times.
-import type { LobbyState, OptionTitles, PlayerView, RoundReveal, ServerMessage } from '../../shared/protocol.ts';
+import type {
+  LobbyState,
+  OptionTitles,
+  PlayerView,
+  RoundHint,
+  RoundReveal,
+  ServerMessage,
+} from '../../shared/protocol.ts';
 import { answersCanChange } from '../../shared/settings.ts';
 
 export interface RoundStart {
@@ -19,6 +26,7 @@ export interface ClientRound {
   choice: number | null; // this player's answer, once sent; with answer changes on, the latest
   overtime: { startsAt: number; endsAt: number } | null; // with answer changes on, once everyone has answered
   nudge: { playerId: string; count: number } | null; // the last player to switch, and how many switches so far
+  hint: RoundHint | null; // when the anime aired, once this player has taken the hint
   reveal: RoundReveal | null;
 }
 
@@ -60,6 +68,7 @@ function onPrepare(state: GameState, message: Extract<ServerMessage, { type: 'ro
       choice: null,
       overtime: null,
       nudge: null,
+      hint: null,
       reveal: null,
     },
   };
@@ -82,6 +91,10 @@ function onRound(state: GameState, message: RoundMessage): GameState {
     return { ...state, round: { ...round, overtime: { startsAt, endsAt } } };
   }
   if (message.type === 'round:pick') return { ...state, round: { ...round, choice: message.option } };
+  if (message.type === 'round:hint') {
+    const { format, season, year } = message;
+    return { ...state, round: { ...round, hint: { format, season, year } } };
+  }
   if (message.type === 'round:reveal') return { ...state, round: { ...round, reveal: message } };
   return state;
 }
@@ -97,6 +110,7 @@ export function receive(state: GameState, message: ServerMessage): GameState {
     case 'round:switched':
     case 'round:overtime':
     case 'round:pick':
+    case 'round:hint':
     case 'round:reveal':
       return onRound(state, message);
     case 'game:results':

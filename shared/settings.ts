@@ -38,6 +38,7 @@ export interface LobbySettings {
   answerChanges: boolean; // players may pick another option until the round closes (not in First correct)
   overtimeSec: number; // with answer changes: how long the round stays open once everyone has answered
   endless: boolean; // rounds keep coming until the host ends the game; songsPerGame doesn't apply
+  hints: boolean; // halfway through a round, a player may ask when the anime aired, for 70% of the points
 }
 
 // What the catalog allows: its years, the genres the settings offer, and the largest popularity rank
@@ -71,6 +72,7 @@ export function defaultSettings(bounds: SettingsBounds): LobbySettings {
     answerChanges: false,
     overtimeSec: 5,
     endless: false,
+    hints: false,
   };
 }
 
@@ -88,6 +90,7 @@ const SETTINGS_KEYS = [
   'answerChanges',
   'overtimeSec',
   'endless',
+  'hints',
 ] as const;
 const RANGE_KEYS = ['from', 'to'] as const;
 const SCORING_KEYS = ['mode', 'streakBonus', 'comeback', 'wrongAnswerPenalty'] as const;
@@ -126,7 +129,7 @@ function isScoring(value: unknown): value is ScoringRules {
 export function validateSettings(value: unknown, bounds: SettingsBounds): LobbySettings | null {
   if (!isRecord(value) || !hasKeys(value, SETTINGS_KEYS)) return null;
   const { sampleLengthSec, songsPerGame, years, genres, kinds, formats, difficulty, popularityRanks } = value;
-  const { sampleStart, scoring, answerChanges, overtimeSec, endless } = value;
+  const { sampleStart, scoring, answerChanges, overtimeSec, endless, hints } = value;
   const { songsPerGame: songs, overtimeSec: overtime } = LIMITS;
   if (
     !isSampleLength(sampleLengthSec) ||
@@ -141,7 +144,8 @@ export function validateSettings(value: unknown, bounds: SettingsBounds): LobbyS
     !isScoring(scoring) ||
     typeof answerChanges !== 'boolean' ||
     !isIntegerIn(overtimeSec, overtime.min, overtime.max) ||
-    typeof endless !== 'boolean'
+    typeof endless !== 'boolean' ||
+    typeof hints !== 'boolean'
   ) {
     return null;
   }
@@ -159,6 +163,7 @@ export function validateSettings(value: unknown, bounds: SettingsBounds): LobbyS
     answerChanges,
     overtimeSec,
     endless,
+    hints,
   };
 }
 
