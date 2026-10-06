@@ -54,6 +54,13 @@ function difficultyMatches(theme: CatalogTheme, anime: CatalogAnime, settings: L
   return theme.difficulty <= DIFFICULTY_CUTS[settings.difficulty];
 }
 
+// A song title round needs the theme's title, an artist round its credits; a mixed game takes any theme and
+// draws a kind it has.
+function asksMatch(theme: CatalogTheme, settings: LobbySettings): boolean {
+  if (settings.questions === 'song') return theme.songTitle !== null;
+  return settings.questions !== 'artist' || theme.artists.length > 0;
+}
+
 export function eligibleThemes(catalog: Catalog, settings: LobbySettings): CatalogTheme[] {
   const minimum = minimumDurationMs(settings);
   return catalog.themes.filter((theme) => {
@@ -63,6 +70,7 @@ export function eligibleThemes(catalog: Catalog, settings: LobbySettings): Catal
       settings.kinds.includes(theme.kind) &&
       theme.durationMs >= minimum &&
       difficultyMatches(theme, anime, settings) &&
+      asksMatch(theme, settings) &&
       animeMatches(anime, settings, catalog)
     );
   });

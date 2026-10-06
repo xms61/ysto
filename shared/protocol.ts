@@ -185,6 +185,9 @@ export function parseClientMessage(text: string, bounds: SettingsBounds): Client
   return null;
 }
 
+// What a round's options name: the anime, the song's title, or its artists.
+export type RoundAsk = 'anime' | 'song' | 'artist';
+
 // The four options' titles in each title language, in option order. Each client shows one language.
 export type OptionTitles = Record<TitleLanguage, string[]>;
 
@@ -306,7 +309,7 @@ export type RoundReveal = {
 export type ServerMessage =
   | LobbyState
   | { type: 'round:prepare'; roundId: string; clipToken: string; number: number; rounds: number | null }
-  | { type: 'round:start'; roundId: string; startsAt: number; endsAt: number; options: OptionTitles }
+  | { type: 'round:start'; roundId: string; startsAt: number; endsAt: number; options: OptionTitles; ask?: RoundAsk }
   | { type: 'round:answered'; roundId: string; playerIds: string[] }
   // With answer changes on: someone picked another option (never which), the overtime once everyone has
   // answered, and a returning player's own pick.

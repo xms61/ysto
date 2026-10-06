@@ -42,6 +42,7 @@ export interface LobbySettings {
   play: Play;
   lives: number; // in Elimination: what each player starts with; a wrong or missed answer costs one
   teams: number; // in Teams: how many teams the players split into
+  questions: QuestionKind;
 }
 
 // What the catalog allows: its years, the genres the settings offer, and the largest popularity rank
@@ -56,6 +57,10 @@ export interface SettingsBounds {
 // standing wins; Teams scores each team by its members' average.
 export const PLAYS = ['classic', 'elimination', 'teams'] as const;
 export type Play = (typeof PLAYS)[number];
+
+// What the options name: the anime, the song's title, its artists, or a mix drawn round by round.
+export const QUESTION_KINDS = ['anime', 'song', 'artist', 'mixed'] as const;
+export type QuestionKind = (typeof QUESTION_KINDS)[number];
 
 export const LIMITS = {
   sampleLengthSec: { min: 10, max: 30, step: 5 },
@@ -86,6 +91,7 @@ export function defaultSettings(bounds: SettingsBounds): LobbySettings {
     play: 'classic',
     lives: 3,
     teams: 2,
+    questions: 'anime',
   };
 }
 
@@ -107,6 +113,7 @@ const SETTINGS_KEYS = [
   'play',
   'lives',
   'teams',
+  'questions',
 ] as const;
 const RANGE_KEYS = ['from', 'to'] as const;
 const SCORING_KEYS = ['mode', 'streakBonus', 'comeback', 'wrongAnswerPenalty'] as const;
@@ -145,7 +152,7 @@ function isScoring(value: unknown): value is ScoringRules {
 export function validateSettings(value: unknown, bounds: SettingsBounds): LobbySettings | null {
   if (!isRecord(value) || !hasKeys(value, SETTINGS_KEYS)) return null;
   const { sampleLengthSec, songsPerGame, years, genres, kinds, formats, difficulty, popularityRanks } = value;
-  const { sampleStart, scoring, answerChanges, overtimeSec, endless, hints, play, lives, teams } = value;
+  const { sampleStart, scoring, answerChanges, overtimeSec, endless, hints, play, lives, teams, questions } = value;
   const { songsPerGame: songs, overtimeSec: overtime } = LIMITS;
   if (
     !isSampleLength(sampleLengthSec) ||
@@ -165,6 +172,7 @@ export function validateSettings(value: unknown, bounds: SettingsBounds): LobbyS
     !isOneOf(play, PLAYS) ||
     !isIntegerIn(lives, LIMITS.lives.min, LIMITS.lives.max) ||
     !isIntegerIn(teams, LIMITS.teams.min, LIMITS.teams.max) ||
+    !isOneOf(questions, QUESTION_KINDS) ||
     // First correct gives everyone but the fastest nothing, which can't decide who loses a life.
     (play === 'elimination' && isScoring(scoring) && scoring.mode === 'firstCorrect')
   ) {
@@ -188,6 +196,7 @@ export function validateSettings(value: unknown, bounds: SettingsBounds): LobbyS
     play,
     lives,
     teams,
+    questions,
   };
 }
 

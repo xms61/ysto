@@ -1,6 +1,6 @@
 ---
 status: draft
-last-verified: 2026-10-05
+last-verified: 2026-10-06
 ---
 
 # Questions and options
@@ -39,6 +39,7 @@ When too few candidates match, the rules relax step by step (a wider band and er
 - Each preset is a cut over the themes' difficulty scores: Easy is the easiest 20%, Normal the easiest 50%, and Hard is all of them. Custom sets an anime popularity rank range instead.
 - The sample start is random on every play, uniform over `[3 s, duration − sample length − 5 s]`. Themes too short for that range are left out of the pool. The "intro" setting starts at 0 s, which suits easy lobbies.
 - Adult anime (AniList `isAdult`) are never in the pool.
+- **What the options name** (the lobby's Questions setting): the anime (the default), the song's title, its artists, or Mixed, which draws each round's kind at random from those its theme can answer. The round says which ("Pick the song's title.", "Pick who sings it."), and the clip and the reveal are as before. A song title or artist option reads the same in every title language, since a song has one title and one credit. Their wrong options are other themes' titles or credits from anime as popular as the answer's (searched in widening bands, the lobby's anime first, then the whole catalog), each from another franchise, never the answer's song, never the same title, and in artist rounds never a credit that shares an artist with another option, so a duet can't make two options right. A theme without a song title, or without artists, isn't in the pool for that kind, so the lobby's pool count follows the setting (`server/game/song-options.ts`).
 
 ## Acceptance criteria
 Over 10,000 seeded questions per difficulty:
@@ -47,8 +48,9 @@ Over 10,000 seeded questions per difficulty:
 - Every option passes the lobby's year, genre and format filters, while the lobby's anime can fill the question.
 - On Easy and Normal, the options come from four franchises. On Hard, they come from two franchises, two each, whenever the lobby's anime include another of the answer's franchise, and from four franchises otherwise.
 - The correct position is spread evenly over 0–3.
+- Over 2,000 song title and 2,000 artist questions, on a catalog with shared titles, shared artists and duets: four distinct options, the right one the answer's own title or credit, four franchises, and no artist on two options.
 - No anime appears twice in a game, and every sample offset is within bounds.
 
 ## Out of scope
-- Questions about the song title, the artist, or OP versus ED.
+- Questions about OP versus ED.
 - Free-text answers.

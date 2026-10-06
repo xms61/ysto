@@ -63,6 +63,7 @@ const FIELD_NAMES: Record<keyof LobbySettings, string> = {
   play: 'the way to play',
   lives: 'the lives',
   teams: 'the number of teams',
+  questions: 'what the options name',
 };
 
 // The setup as this lobby can play it, and what had to change: genres the catalog doesn't offer drop out,

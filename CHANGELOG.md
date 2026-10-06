@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.24.0] - 2026-10-06
+
+### Added
+- Song title and artist rounds: under Questions in the lobby settings, the options can name the song's title, its artists, or a mix that changes each round. Wrong options come from songs as popular as the answer's, never the same song or title, and never an artist two options share.
+
 ## [1.23.0] - 2026-10-06
 
 ### Added
@@ -32,8 +37,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Neon Rain's LED has its dark glass back, and its figures turn magenta in the overtime instead of vanishing.
-
-## [1.19.0] - 2026-10-06
-
-### Added
-- Sound effects in every world's own voice: the deal, a pick, the overtime's call, a right or wrong answer and the results, synthesized with Web Audio under the clip at the game's volume. A "Sound effects" switch in Preferences turns them off; they are on by default.

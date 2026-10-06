@@ -260,6 +260,29 @@ test('with Teams, shows the teams in the lobby, lets a player switch and the hos
   expect(socket.sentOfType('teams:shuffle')).toHaveLength(1);
 });
 
+test('asks for the song title or the artist when the round names them', async () => {
+  const { socket } = renderSeated(lobbyState({ game: PLAYING }));
+  const startsAt = Date.now() - 100;
+  const songs = {
+    english: ['Ame', 'Hana', 'Kaze', 'Yoru'],
+    romaji: ['Ame', 'Hana', 'Kaze', 'Yoru'],
+    japanese: ['Ame', 'Hana', 'Kaze', 'Yoru'],
+  };
+  act(() => {
+    socket.receive({ type: 'round:prepare', roundId: 'g.1', clipToken: 'c1', number: 1, rounds: 5 });
+    socket.receive({
+      type: 'round:start',
+      roundId: 'g.1',
+      startsAt,
+      endsAt: startsAt + 20_000,
+      options: songs,
+      ask: 'song',
+    });
+  });
+  expect(await screen.findByText("Pick the song's title.")).toBeTruthy();
+  expect(screen.getByRole('button', { name: 'Kaze' })).toBeTruthy();
+});
+
 test('runs an endless game without a round count, and lets the host end it', () => {
   const base = lobbyState();
   const endless = { ...base.settings, endless: true };

@@ -25,6 +25,7 @@ test('starts a lobby with the defaults of the settings spec', () => {
     play: 'classic',
     lives: 3,
     teams: 2,
+    questions: 'anime',
   });
 });
 
@@ -76,6 +77,7 @@ const INVALID: [string, Record<string, unknown>][] = [
   ['more than 5 lives', { play: 'elimination', lives: 6 }],
   ['one team', { play: 'teams', teams: 1 }],
   ['five teams', { play: 'teams', teams: 5 }],
+  ['an unknown kind of question', { questions: 'lyrics' }],
   ['Elimination with First correct', { play: 'elimination', scoring: { ...SCORING_PRESETS.buzzer } }],
   ['an overtime under 3 s', { overtimeSec: 2 }],
   ['an overtime over 10 s', { overtimeSec: 11 }],

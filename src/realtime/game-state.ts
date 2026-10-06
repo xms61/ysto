@@ -4,6 +4,7 @@ import type {
   LobbyState,
   OptionTitles,
   PlayerView,
+  RoundAsk,
   RoundHint,
   RoundReveal,
   ServerMessage,
@@ -14,6 +15,7 @@ export interface RoundStart {
   startsAt: number;
   endsAt: number;
   options: OptionTitles;
+  ask: RoundAsk; // what the options name
 }
 
 export interface ClientRound {
@@ -78,8 +80,8 @@ function onRound(state: GameState, message: RoundMessage): GameState {
   const round = state.round;
   if (!round || round.id !== message.roundId) return state;
   if (message.type === 'round:start') {
-    const { startsAt, endsAt, options } = message;
-    return { ...state, round: { ...round, start: { startsAt, endsAt, options } } };
+    const { startsAt, endsAt, options, ask = 'anime' } = message;
+    return { ...state, round: { ...round, start: { startsAt, endsAt, options, ask } } };
   }
   if (message.type === 'round:answered') return { ...state, round: { ...round, answeredIds: message.playerIds } };
   if (message.type === 'round:switched') {

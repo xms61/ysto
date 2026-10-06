@@ -3,8 +3,23 @@
 import type { InputHTMLAttributes, ReactNode } from 'react';
 import { POINTS, SCORING_MODES, SCORING_PRESETS } from '../../shared/scoring.ts';
 import type { ScoringMode, ScoringPreset, ScoringRules } from '../../shared/scoring.ts';
-import { DIFFICULTIES, LIMITS, MEDIA_FORMATS, PLAYS, SAMPLE_STARTS, THEME_KINDS } from '../../shared/settings.ts';
-import type { Difficulty, LobbySettings, Play, SampleStart, SettingsBounds } from '../../shared/settings.ts';
+import {
+  DIFFICULTIES,
+  LIMITS,
+  MEDIA_FORMATS,
+  PLAYS,
+  QUESTION_KINDS,
+  SAMPLE_STARTS,
+  THEME_KINDS,
+} from '../../shared/settings.ts';
+import type {
+  Difficulty,
+  LobbySettings,
+  Play,
+  QuestionKind,
+  SampleStart,
+  SettingsBounds,
+} from '../../shared/settings.ts';
 import { NumberField } from './NumberField.tsx';
 import { INPUT } from './ui.tsx';
 
@@ -201,6 +216,32 @@ function PlayGroup({ settings, set }: { settings: LobbySettings; set: (change: P
   );
 }
 
+const QUESTION_LABELS: Record<QuestionKind, string> = {
+  anime: 'Anime: name the anime',
+  song: "Song title: name the song's title",
+  artist: 'Artist: name who sings it',
+  mixed: 'Mixed: a different one each round',
+};
+
+// What the options name: the anime, the song's title, its artists, or a mix.
+function QuestionsGroup({ settings, set }: { settings: LobbySettings; set: (change: Partial<LobbySettings>) => void }) {
+  return (
+    <Group legend="Questions">
+      {QUESTION_KINDS.map((questions) => (
+        <Choice
+          key={questions}
+          type="radio"
+          name="questions"
+          checked={settings.questions === questions}
+          onChange={() => set({ questions })}
+        >
+          {QUESTION_LABELS[questions]}
+        </Choice>
+      ))}
+    </Group>
+  );
+}
+
 // Hints: from halfway through a round, a player may ask when the anime aired, for 70% of the points.
 function Hints({ settings, set }: { settings: LobbySettings; set: (change: Partial<LobbySettings>) => void }) {
   return (
@@ -250,6 +291,7 @@ export function SettingsForm({ settings, bounds, onChange }: SettingsFormProps) 
   return (
     <div className="flex flex-col gap-6">
       <PlayGroup settings={settings} set={set} />
+      <QuestionsGroup settings={settings} set={set} />
 
       <div className="grid gap-4 sm:grid-cols-2">
         {settings.endless ? (
