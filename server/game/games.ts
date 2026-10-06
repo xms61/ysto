@@ -87,12 +87,6 @@ export class Games {
     return run !== undefined && !run.game.finished && !run.game.participants.includes(playerId);
   }
 
-  // While a round is being prepared or answered, players can't react, so a reaction can't point at an option.
-  answering(code: string): boolean {
-    const phase = this.#runs.get(code)?.game.round?.phase;
-    return this.running(code) && (phase === 'preparing' || phase === 'playing');
-  }
-
   // The tally of the lobby's finished games, for the players still in it.
   tally(code: string, playerIds: string[]): TallyView | null {
     const tally = this.#tallies.get(code);
@@ -137,8 +131,8 @@ export class Games {
     this.#step(seat.code, { type: 'ready', playerId: seat.playerId, roundId, loaded });
   }
 
-  answer(seat: Seat, roundId: string, option: number, rttMs: number): void {
-    this.#step(seat.code, { type: 'answer', playerId: seat.playerId, roundId, option, rttMs });
+  answer(seat: Seat, roundId: string, option: number): void {
+    this.#step(seat.code, { type: 'answer', playerId: seat.playerId, roundId, option });
   }
 
   // A report of a round the lobby's current or last game has revealed. Each player reports a clip once; a
@@ -147,13 +141,21 @@ export class Games {
     const run = this.#runs.get(seat.code);
     const key = `${seat.playerId}:${number}`;
     if (!run || run.reported.has(key)) return;
-    const index = run.game.songs.findIndex((song) => song.number === number);
-    const themeId = run.game.playedThemeIds[index];
-    const question = run.game.questions.find((candidate) => candidate.themeId === themeId);
-    if (index < 0 || !question) return;
+    const question = this.#questionOf(run.game, number);
+    if (!question) return;
     run.reported.add(key);
     const at = this.#options.scheduler.now();
     this.#options.reports.add({ at, themeId: question.themeId, startMs: question.clip.startMs, reason });
+  }
+
+  // The question of a round already played, or of the round being played now, which a player may report while
+  // it runs.
+  #questionOf(game: Game, number: number): Question | undefined {
+    if (game.round && number === game.played) return game.round.question;
+    const index = game.songs.findIndex((song) => song.number === number);
+    if (index < 0) return undefined;
+    const themeId = game.playedThemeIds[index];
+    return game.questions.find((candidate) => candidate.themeId === themeId);
   }
 
   skip(seat: Seat): ErrorCode | null {

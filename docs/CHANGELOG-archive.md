@@ -2,6 +2,13 @@
 
 Releases moved out of `CHANGELOG.md` (which keeps about the latest 5). Newest first.
 
+## [1.10.0] - 2026-10-05
+
+### Changed
+- The cards never move from the deal to the reveal, on a phone or a desktop: the space above them keeps the height of the world's countdown and timer, and the verdict takes the timer's place.
+- From 64rem a side column sits beside the cards for the whole round: the scores and who has answered, then at the reveal the answer, the scoreboard, the reactions and the report, so the reveal needs no scroll. The cards' height follows the window, so a laptop shows both rows.
+- Who picked each card shows on the card's edge in larger name chips, and the scoreboard shows the card each player picked.
+
 ## [1.9.0] - 2026-10-05
 
 ### Changed

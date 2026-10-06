@@ -144,6 +144,31 @@ Each milestone is one PR on a `feat/…` branch (two where noted), with a versio
 - **Build:** a screen seat, which can fetch clips but never answers or scores. In party mode, the barrier waits only for the screens' clips; the phones report ready without loading, and they are never marked "no audio". Without a connected screen the game doesn't start, and if the screen drops mid-game the barrier waits for it as long as for any player.
 - **Tests:** registry (screen seats, caps, host rules unaffected), engine (the barrier in party mode, no-audio marks), e2e with one screen and two phones.
 
+#### M21 Infinite mode (added by the owner, 2026-10-06; to be shaped before it is built)
+- **Behavior:** a game with no set number of songs: rounds keep coming until the host ends the game, or the pool runs out of unplayed songs. The results then cover every round played.
+- **Open, for the owner:** whether the host ends it from a button in the round or between rounds; whether a player who joins mid-game plays from the next round, as now; whether the song list at the results and the anime log keep every round of a long game.
+- **Build (first thoughts):** `songsPerGame` takes an "infinite" value; the engine draws questions in batches as it goes rather than all at the start; a host's "End the game" message closes the current round and finishes.
+- **Tests:** engine (it keeps drawing, ends on the host's message, ends when the pool is spent), the setting's validation, client.
+
+#### M20 The round, polished (owner's notes from playing, 2026-10-06)
+Taken in this order, one step at a time; each step says how it shows.
+1. **The scores column's foot:** scores at the top left; the reactions and "Report this clip" pinned to the column's foot in every phase of the round, the same height throughout, so nothing moves at the reveal. The line "The next round starts in a few seconds" goes. A clip can be reported while its round plays.
+2. **Padding:** no text touches a rounded edge. A box of two lines (a score row, an animal tile, the cover) caps its corners at 0.75rem even where a world rounds its chips into pills (Blossom Map); score rows get 0.75rem at the sides.
+3. **Emoji reactions:** the six drawn icons become the platform's emoji (fire, tears of joy, screaming, facepalm, red heart, clapping hands), and a seventh, the game's "?!", set in the world's display face. Bare glyphs, no frame or circle, centered in their buttons.
+4. **Reactions any time, and spammable:** the bar shows through the round too (countdown, answering, reveal), and the server passes up to 8 a second per player (more are dropped without a strike), so a player can spam them.
+5. **Reactions float:** each appears at a random spot round where it came from (the button the sender pressed; for everyone else, the sender's name) and drifts up on its own random path, swaying from side to side in smooth curves (no zigzag), as it fades. At most 40 on screen.
+6. **No latency allowance:** an answer's time is when the server receives it; the round trip is no longer taken off, and First correct closes on the first right answer instead of waiting 150ms. Answers in the last 300ms after the timer still count (owner to confirm).
+7. **The answer column:** the answer runs the right column's full height, and the cover grows to fill the room it has.
+8. **Stamps:** each world draws the animals in one color with good contrast to its cards, instead of the shared paper and ink; at the reveal the stamps sit at random spots along the right side of the picked card, wholly inside it, never across two cards; a pick shows only as its stamp, without the "Your pick" pill.
+9. **Stamps clear of text:** a stamp never covers a card's text (its title, second title, or the back's label); the stamps keep to the free space on the card's right.
+10. **Title languages told apart:** where a title shows in more than one language or script (a card's second title, the answer's other titles), each language gets a slightly different color, so the eye can tell them apart.
+11. **No song details on the right card's back:** the turned card shows its label and title only, not "OP 1 · 2019"; the answer column already says which song it was.
+12. **A wider answer column:** the answer's column on the right a little wider, the stage giving up the room.
+13. **Scores on top:** in every layout the scores come first in their column, the reactions and the report after them; a score row is as tall during the round as at the reveal, so the reactions don't move.
+14. **The cards fill the middle:** on a wide screen the cards take the middle column's full height, down to the lines under them.
+15. **No scroll on a desktop:** at 1080p, 2K and 4K the whole round fits the window, with no scrolling, in every world. The verdict sits in a box of fixed height just above the cards; the cards fill the rest of the middle column at fixed, equal heights, and their titles scale their type down to fit rather than growing the card. The cards' foot is level with the foot of the scores column ("Report this clip"): the lines that sat under the cards (the status, who has answered, who switched, the clip's state) move into the slot above them, with the timer. A clear gap separates the verdict from the cards.
+16. **Check and ship:** no card, column or foot moves from the deal to the reveal in any world at 375, 1100, 1280 and 1440 wide; axe in every world; the specs, DESIGN.md and REALTIME.md updated; 1.15.0.
+
 ## Progress
 - [x] 2026-10-05 Features picked and shaped with the owner; plan written
 - [x] 2026-10-05 M1 Stale tabs reload (1.3.0)
@@ -151,17 +176,30 @@ Each milestone is one PR on a `feat/…` branch (two where noted), with a versio
 - [x] 2026-10-05 M16 Large screens (1.9.0)
 - [x] 2026-10-05 M17 A reveal that fits the screen (1.10.0)
 - [x] 2026-10-06 M17 follow-up (owner): the headphones and their rings removed, the space given to the cards; the clip's state is a line under the cards; the answer's cover above its title, set to the right; the scores in a 20rem column left of the cards and the answer in a column kept free right of them; no card or column moves from answering to the reveal, also with a long verdict or a tall answer card (1.14.0)
-- [ ] M17 follow-up (owner, 2026-10-06): some worlds leave no room between text and the edges of their rounded boxes, such as Blossom Map's pill-shaped score rows in the scores column; pad every world's rows and boxes so text clears the curve
-- [ ] M17 follow-up (owner, 2026-10-06): at the reveal the reactions, "Report this clip" and the line on what comes next move to the left column, under the scores
 - [x] 2026-10-05 M18 The anime log (1.13.0)
 - [x] 2026-10-05 M19 Player icons as stamps (1.11.0)
-- [ ] M19 follow-up (owner, 2026-10-06): each world draws the animals in one color with good contrast to its card, instead of the shared paper and ink; at the reveal the stamps sit at random spots along the card's right side, not along its bottom, each wholly inside the picked card, never across two; and a pick shows only as its stamp, without the "Your pick" pill
 - [x] 2026-10-05 M2 The game's songs at the results (1.4.0)
 - [x] 2026-10-05 M3 Report a broken clip (1.6.0)
 - [x] 2026-10-05 M4 The lobby's tally (1.7.0)
 - [x] 2026-10-05 M5 Reactions (1.8.0)
-- [ ] M5 follow-up (owner, 2026-10-06): the drawn reaction icons are hard to recognize; use the platform's emoji instead. This reverses M5's "original SVG icons, not emoji", and needs an exception in CODE_STYLE.md's no-emoji rule for the reaction table
 - [x] 2026-10-05 M6 Saved settings (1.12.0)
+- [x] 2026-10-06 M20.1 The scores column's foot
+- [x] 2026-10-06 M20.2 Padding
+- [x] 2026-10-06 M20.3 Emoji reactions
+- [x] 2026-10-06 M20.4 Reactions any time, and spammable
+- [x] 2026-10-06 M20.5 Reactions float (with curves instead of zigzags)
+- [x] 2026-10-06 M20.6 No latency allowance
+- [x] 2026-10-06 M20.7 The answer column
+- [x] 2026-10-06 M20.8 Stamps
+- [x] 2026-10-06 M20.9 Stamps clear of text
+- [x] 2026-10-06 M20.10 Title languages told apart
+- [x] 2026-10-06 M20.11 No song details on the right card's back
+- [x] 2026-10-06 M20.12 A wider answer column
+- [x] 2026-10-06 M20.13 Scores on top
+- [x] 2026-10-06 M20.14 The cards fill the middle
+- [x] 2026-10-06 M20.15 No scroll on a desktop
+- [x] 2026-10-06 M20.16 Check and ship (1.15.0)
+- [ ] M21 Infinite mode
 - [ ] M7 Sound effects per world
 - [ ] M8 Hints
 - [ ] M9 Elimination
@@ -182,6 +220,8 @@ Each milestone is one PR on a `feat/…` branch (two where noted), with a versio
 - 2026-10-05: The streak lives on the device, because the game has no accounts and keeps no personal data. Rejected: a server-side streak, which would need an identity.
 - 2026-10-05: Reports keep no names, addresses or lobby codes, because nothing about a report needs them, and SECURITY.md keeps no personal data. Rejected: free-text reports, which would need moderating.
 - 2026-10-06: The owner asked for the reveal to move nothing. The slot above the cards now holds a hidden copy of the longest verdict, and each card a hidden copy of the back it would show if it were the answer, built from its own title, so it tells nobody the answer. Face-down cards can't know their titles, so they hold a back with a typical title, and only a longer title grows its row as the cards turn face up. Splash Page's right panel no longer stays scaled up. Rejected: fixed card heights with clamped titles, which would cut long titles.
+- 2026-10-06: The owner asked for reactions during the round, which M5 had ruled out so a reaction can't point at an option. A reaction carries no option, and players in one room can talk anyway, so the risk is small; the owner chose fun over it. They also asked for the platform's emoji over the drawn icons, reversing M5: emoji read at a glance. The source keeps them as escapes, so the code stays plain text.
+- 2026-10-06: The owner asked to drop the latency allowance (half the round trip, up to 150ms, taken off an answer's time, and First correct's 150ms wait for a faster answer still on its way). Times are now plain server arrival. The 300ms grace after the timer stays, so an answer sent at the last moment isn't lost in transit, until the owner says otherwise.
 - 2026-10-05: The anime log (M18) learns which songs the player got right from the results' song list, which now names the players who picked each song right. It is sent only once the game is over, so it tells nobody an answer early. Rejected: collecting each round's reveal on the client, which a player who reconnects at the results would miss.
 
 ## Open questions

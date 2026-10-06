@@ -47,6 +47,7 @@ export function langOf(language: TitleLanguage): string | undefined {
 export interface Title {
   text: string;
   lang: string | undefined;
+  language: TitleLanguage; // which of the anime's titles this is, so each language can read in its own color
 }
 
 // The player's title languages: the first heads every title, and the second, if any, sits under it.
@@ -71,9 +72,9 @@ export function optionTitle(options: OptionTitles, index: number, languages: Tit
   const secondText = languages.second ? (options[languages.second][index] ?? '') : '';
   const second =
     languages.second && secondText && titleKey(secondText) !== titleKey(text)
-      ? { text: secondText, lang: langOf(languages.second) }
+      ? { text: secondText, lang: langOf(languages.second), language: languages.second }
       : null;
-  return { text, lang: langOf(languages.first), second };
+  return { text, lang: langOf(languages.first), language: languages.first, second };
 }
 
 type AnimeTitles = RevealDetails['anime'];
@@ -81,7 +82,9 @@ type AnimeTitles = RevealDetails['anime'];
 // The anime's title in the player's language, or romaji, which every anime has.
 export function animeTitle(anime: AnimeTitles, language: TitleLanguage): Title {
   const text = anime[language];
-  return text ? { text, lang: langOf(language) } : { text: anime.romaji, lang: undefined };
+  return text
+    ? { text, lang: langOf(language), language }
+    : { text: anime.romaji, lang: undefined, language: 'romaji' };
 }
 
 // The anime's page on AnimeThemes.
@@ -93,7 +96,11 @@ export function animeThemesUrl(slug: string): string {
 export function otherTitles(anime: AnimeTitles, shown: Title, second: TitleLanguage | null): Title[] {
   const seen = new Set([titleKey(shown.text)]);
   const order = second ? [second, ...TITLE_LANGUAGES.filter((language) => language !== second)] : TITLE_LANGUAGES;
-  const candidates = order.map((language): Title => ({ text: anime[language] ?? '', lang: langOf(language) }));
+  const candidates = order.map((language): Title => ({
+    text: anime[language] ?? '',
+    lang: langOf(language),
+    language,
+  }));
   return candidates.filter((title) => {
     if (title.text === '' || seen.has(titleKey(title.text))) return false;
     seen.add(titleKey(title.text));

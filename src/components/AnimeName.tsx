@@ -8,11 +8,15 @@ export function AnimeName({ anime, titles }: { anime: RevealDetails['anime']; ti
   const second = titles.second ? animeTitle(anime, titles.second) : null;
   return (
     <>
-      <span className="block font-semibold [overflow-wrap:anywhere]" lang={title.lang}>
+      <span className="block font-semibold [overflow-wrap:anywhere]" lang={title.lang} data-language={title.language}>
         {title.text}
       </span>
       {second && second.text !== title.text && (
-        <span className="block text-sm [overflow-wrap:anywhere]" lang={second.lang ?? 'en'}>
+        <span
+          className="block text-sm [overflow-wrap:anywhere]"
+          lang={second.lang ?? 'en'}
+          data-language={second.language}
+        >
           {second.text}
         </span>
       )}

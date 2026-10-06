@@ -43,7 +43,7 @@ export function OptionCard(props: OptionCardProps) {
         <span aria-hidden="true" className="card-index">
           {index + 1}
         </span>
-        <span className="card-title" lang={title.lang}>
+        <span className="card-title" lang={title.lang} data-language={title.language}>
           {title.text}
           {title.second && <SecondTitle title={title.second} />}
           {turned && <span className="sr-only"> (the right answer)</span>}
@@ -98,33 +98,33 @@ export function SecondTitle({ title }: { title: Title }) {
   return (
     <>
       <span className="sr-only">, </span>
-      <span className="card-second" lang={title.lang ?? 'en'}>
+      <span className="card-second" lang={title.lang ?? 'en'} data-language={title.language}>
         {title.text}
       </span>
     </>
   );
 }
 
-// The right card's back: what it says, the title with its second language, and the song's kind, number and year.
-export function AnswerBack({ label, title, meta }: { label: string; title: OptionTitle; meta: string }) {
+// The right card's back: what it says, and the title with its second language. Which song it was, the answer
+// column says.
+export function AnswerBack({ label, title }: { label: string; title: OptionTitle }) {
   return (
     <>
       <span className="card-back-label">
         <CheckIcon />
         {label}
       </span>
-      <span className="card-back-title" lang={title.lang}>
+      <span className="card-back-title" lang={title.lang} data-language={title.language}>
         {title.text}
         {title.second && <SecondTitle title={title.second} />}
       </span>
-      <span className="card-back-meta">{meta}</span>
     </>
   );
 }
 
-// The back at its longest for a title: the label with "your pick", and a two-digit song number.
+// The back at its longest for a title: the label with "your pick".
 export function AnswerSizer({ title }: { title: OptionTitle }) {
-  return <AnswerBack label="Right answer, your pick" title={title} meta="OP 10 · 2020" />;
+  return <AnswerBack label="Right answer, your pick" title={title} />;
 }
 
 function Sizer({ children }: { children: ReactNode }) {
@@ -149,10 +149,12 @@ function PrintedBack({ down = false }: { down?: boolean }) {
 // one after another, then idle until the clip starts and they turn face up together. The titles aren't known
 // yet, so each holds the height of a back with a title of typical length, and only a longer title grows its
 // row when they turn face up.
-const TYPICAL: OptionTitle = { text: 'A typical anime title', lang: undefined, second: null };
+const TYPICAL: OptionTitle = { text: 'A typical anime title', lang: undefined, language: 'english', second: null };
 
 export function FaceDownCards({ second }: { second: boolean }) {
-  const title = second ? { ...TYPICAL, second: { text: 'Its second title', lang: undefined } } : TYPICAL;
+  const title: OptionTitle = second
+    ? { ...TYPICAL, second: { text: 'Its second title', lang: undefined, language: 'romaji' } }
+    : TYPICAL;
   const columns = useOptionColumns();
   return (
     <ul aria-hidden="true" className={`options grid ${columns} gap-3`}>

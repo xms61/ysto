@@ -137,3 +137,15 @@ test.each(THEMES)('%s meets AA contrast for text and graphics', (theme) => {
   }
   for (const pair of GRAPHIC_PAIRS) expect(ratio(pair), `${theme}: ${pair.join(' on ')}`).toBeGreaterThanOrEqual(3);
 });
+
+// The picks' stamps at the reveal are one color, the world's stamp ink or else its card mark, on whichever
+// face a pick lands: the card's front, its dimmed front, or the right card's back.
+test.each(THEMES)('%s stamps picks in an ink that shows on every card face', (theme) => {
+  const colors = colorsOf(theme);
+  const ink = colors['stamp'] ?? colors['card-mark'];
+  for (const face of ['card', 'card-dim', 'card-back']) {
+    const background = colors[face];
+    if (!ink || !background) throw new Error(`${theme} has no stamp ink or ${face} color`);
+    expect(contrast(ink, background), `${theme}: stamp on ${face}`).toBeGreaterThanOrEqual(3);
+  }
+});

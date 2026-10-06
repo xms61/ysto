@@ -1,6 +1,6 @@
 // Whether this player can hear the round: the clip loading, playing, or failed to load. It tells "I can't hear
-// it" apart from "I don't know it". While the clip plays there is nothing to say on screen, so "Listen." is
-// left to screen readers.
+// it" apart from "I don't know it". It shows only while the clip loads or when it failed; a ready clip is
+// said to screen readers only.
 import type { ClipStatus } from '../realtime/store.ts';
 
 function wordsFor(status: ClipStatus | null, playing: boolean): string {
@@ -10,9 +10,12 @@ function wordsFor(status: ClipStatus | null, playing: boolean): string {
 }
 
 export function ClipLine({ status, playing }: { status: ClipStatus | null; playing: boolean }) {
-  const heard = status === 'ready' && playing;
   return (
-    <p role="status" className={heard ? 'sr-only' : 'clip-line text-sm text-muted'} data-status={status ?? 'loading'}>
+    <p
+      role="status"
+      className={status === 'ready' ? 'sr-only' : 'clip-line text-sm text-muted'}
+      data-status={status ?? 'loading'}
+    >
       {wordsFor(status, playing)}
     </p>
   );

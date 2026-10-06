@@ -163,7 +163,7 @@ export class GameStore {
     this.#onExit('left');
   }
 
-  // A clip reported as broken: once per round, and only a round already revealed.
+  // A clip reported as broken: once per round, while it plays or after.
   reportClip(number: number, reason: ReportReason): void {
     if (this.#game.reported.includes(number)) return;
     if (!this.#connection.send({ type: 'clip:report', number, reason })) return;

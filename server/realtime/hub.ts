@@ -22,14 +22,12 @@ export const REALTIME_LIMITS = {
   maxPayloadBytes: 4096,
   connectionsPerIp: 30,
   messagesPerSecond: 20,
-  reactionsPerSecond: 1, // per player; more are dropped without a strike
+  reactionsPerSecond: 8, // per player, enough to spam by hand; more are dropped without a strike
   strikes: 5,
   helloTimeoutMs: 10_000,
   heartbeatMs: 15_000,
   sweepMs: 5_000,
 } as const;
-// Answer times use the median of a socket's last few ping round trips.
-const ROUND_TRIPS_KEPT = 5;
 
 interface Connection {
   socket: WebSocket;
@@ -38,8 +36,6 @@ interface Connection {
   strikes: number;
   messages: RateLimit;
   alive: boolean;
-  pingSentAt: number | null;
-  roundTrips: number[];
 }
 
 export interface RealtimeOptions {
@@ -62,11 +58,6 @@ function pathnameOf(req: IncomingMessage): string {
 
 function send(connection: Connection, message: ServerMessage): void {
   if (connection.socket.readyState === WebSocket.OPEN) connection.socket.send(JSON.stringify(message));
-}
-
-function median(values: number[]): number {
-  const sorted = [...values].sort((a, b) => a - b);
-  return sorted[Math.floor(sorted.length / 2)] ?? 0;
 }
 
 export class Realtime {
@@ -140,35 +131,21 @@ export class Realtime {
       strikes: 0,
       messages,
       alive: true,
-      pingSentAt: null,
-      roundTrips: [],
     };
     this.#connections.add(connection);
     const helloTimer = setTimeout(() => {
       if (!connection.seat) socket.close(CLOSE_CODES.invalidMessages, 'expected hello');
     }, REALTIME_LIMITS.helloTimeoutMs);
     socket.on('message', (data: RawData, isBinary: boolean) => this.#receive(connection, data, isBinary));
-    socket.on('pong', () => this.#pong(connection));
+    socket.on('pong', () => {
+      connection.alive = true;
+    });
     // ws closes the socket itself after an error, such as a frame over maxPayload (1009).
     socket.on('error', (error: Error) => this.#log.debug('socket.error', { message: error.message }));
     socket.on('close', () => {
       clearTimeout(helloTimer);
       this.#closed(connection);
     });
-  }
-
-  // Browsers answer pings themselves, so a script can't shorten the round trip, and the engine caps what a
-  // long one is worth.
-  #ping(connection: Connection): void {
-    connection.pingSentAt = this.#now();
-    connection.socket.ping();
-  }
-
-  #pong(connection: Connection): void {
-    connection.alive = true;
-    if (connection.pingSentAt === null) return;
-    connection.roundTrips = [...connection.roundTrips, this.#now() - connection.pingSentAt].slice(-ROUND_TRIPS_KEPT);
-    connection.pingSentAt = null;
   }
 
   #receive(connection: Connection, data: RawData, isBinary: boolean): void {
@@ -202,7 +179,6 @@ export class Realtime {
     }
     connection.seat = seat;
     this.#bySeat.set(seat.playerId, connection);
-    this.#ping(connection);
     this.#registry.connect(sessionToken);
   }
 
@@ -226,7 +202,7 @@ export class Realtime {
       case 'round:ready':
         return this.#games.ready(seat, message.roundId, message.loaded);
       case 'answer':
-        return this.#games.answer(seat, message.roundId, message.option, median(connection.roundTrips));
+        return this.#games.answer(seat, message.roundId, message.option);
       case 'round:skip':
         return this.#report(connection, this.#games.skip(seat));
       case 'clip:report':
@@ -277,7 +253,6 @@ export class Realtime {
       const connection = this.#bySeat.get(playerId);
       if (!connection) continue;
       send(connection, event.message);
-      if (event.message.type === 'round:prepare') this.#ping(connection);
     }
   }
 
@@ -300,11 +275,10 @@ export class Realtime {
     }));
   }
 
-  // A reaction goes to everyone in the lobby, the sender too, outside a round's answering and at most once a
-  // second per player.
+  // A reaction goes to everyone in the lobby, the sender too, at any time, up to the per-player limit.
   #react(seat: Seat, kind: ReactionKind): void {
     const lobby = this.#registry.lobby(seat.code);
-    if (!lobby || this.#games.answering(seat.code) || !this.#reactions.take(seat.playerId)) return;
+    if (!lobby || !this.#reactions.take(seat.playerId)) return;
     const message: ServerMessage = { type: 'reaction', playerId: seat.playerId, kind };
     for (const player of lobby.players) {
       const connection = this.#bySeat.get(player.id);
@@ -344,7 +318,7 @@ export class Realtime {
         continue;
       }
       connection.alive = false;
-      this.#ping(connection);
+      connection.socket.ping();
     }
   }
 }
