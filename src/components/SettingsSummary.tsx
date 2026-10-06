@@ -31,6 +31,12 @@ function scoring(settings: LobbySettings): string {
   return preset ? `${PRESET_LABELS[preset]} (${rules})` : rules;
 }
 
+function playSummary(settings: LobbySettings): string {
+  if (settings.play === 'elimination')
+    return `Elimination, ${settings.lives} ${settings.lives === 1 ? 'life' : 'lives'}`;
+  return settings.play === 'teams' ? `Teams, ${settings.teams} of them` : 'Classic';
+}
+
 export function SettingsSummary({ settings, bounds }: { settings: LobbySettings; bounds: SettingsBounds }) {
   const rows: [string, string][] = [
     [
@@ -39,12 +45,7 @@ export function SettingsSummary({ settings, bounds }: { settings: LobbySettings;
         ? `Endless, ${settings.sampleLengthSec} s a song`
         : `${settings.songsPerGame} songs, ${settings.sampleLengthSec} s each`,
     ],
-    [
-      'Play',
-      settings.play === 'elimination'
-        ? `Elimination, ${settings.lives} ${settings.lives === 1 ? 'life' : 'lives'}`
-        : 'Classic',
-    ],
+    ['Play', playSummary(settings)],
     ['Difficulty', difficulty(settings)],
     ['Samples start at', SAMPLE_START_LABELS[settings.sampleStart].toLowerCase()],
     ['Songs', songsFrom(settings, bounds)],

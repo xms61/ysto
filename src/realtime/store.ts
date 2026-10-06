@@ -148,6 +148,14 @@ export class GameStore {
     this.#connection.send({ type: 'player:kick', playerId });
   }
 
+  setTeam(playerId: string, team: number): void {
+    this.#connection.send({ type: 'player:team', playerId, team });
+  }
+
+  shuffleTeams(): void {
+    this.#connection.send({ type: 'teams:shuffle' });
+  }
+
   chooseIcon(icon: PlayerIcon): void {
     this.#connection.send({ type: 'player:icon', icon });
   }

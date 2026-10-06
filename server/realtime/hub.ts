@@ -215,6 +215,12 @@ export class Realtime {
         return this.#react(seat, message.kind);
       case 'player:icon':
         return this.#report(connection, this.#registry.setIcon(seat, message.icon));
+      case 'player:team':
+        if (this.#games.running(seat.code)) return this.#report(connection, 'game-running');
+        return this.#report(connection, this.#registry.setTeam(seat, message.playerId, message.team));
+      case 'teams:shuffle':
+        if (this.#games.running(seat.code)) return this.#report(connection, 'game-running');
+        return this.#report(connection, this.#registry.shuffleTeams(seat));
     }
   }
 
@@ -269,7 +275,7 @@ export class Realtime {
   }
 
   #playerViews(lobby: Lobby): PlayerView[] {
-    return lobby.players.map(({ id, name, icon, connectedSince }) => {
+    return lobby.players.map(({ id, name, icon, connectedSince, team }) => {
       const lives = this.#games.lives(lobby.code, id);
       return {
         id,
@@ -279,6 +285,7 @@ export class Realtime {
         spectating: this.#games.spectating(lobby.code, id),
         score: this.#games.score(lobby.code, id),
         ...(lives === undefined ? {} : { lives }),
+        ...(lobby.settings.play === 'teams' ? { team } : {}),
       };
     });
   }

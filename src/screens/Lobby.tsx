@@ -6,6 +6,7 @@ import { LIMITS } from '../../shared/settings.ts';
 import type { LobbySettings } from '../../shared/settings.ts';
 import { PlayerList } from '../components/PlayerList.tsx';
 import { IconPicker } from '../components/IconPicker.tsx';
+import { LobbyTeams } from '../components/Teams.tsx';
 import { ReactionBar } from '../components/Reactions.tsx';
 import { SavedSetups } from '../components/SavedSetups.tsx';
 import { QrCode } from '../components/QrCode.tsx';
@@ -107,6 +108,7 @@ export function Lobby({ store, lobby, settings, isHost }: LobbyProps) {
           onKick={isHost ? (playerId) => store.kick(playerId) : null}
           showScores={lobby.game !== null}
         />
+        {settings.play === 'teams' && <LobbyTeams store={store} lobby={lobby} isHost={isHost} />}
         <IconPicker store={store} lobby={lobby} />
         <ReactionBar store={store} />
         {lobby.tally && (

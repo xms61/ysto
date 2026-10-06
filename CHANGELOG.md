@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.23.0] - 2026-10-06
+
+### Added
+- Teams: under Play in the lobby settings, 2 to 4 teams (Kitsune, Tanuki, Tengu, Kappa). Players pick a team in the lobby, and the host can move anyone or shuffle them evenly. Each round a team scores the average of its members' points, so a small team can beat a big one; the round, the reveal and the results show the teams' totals.
+
 ## [1.22.0] - 2026-10-06
 
 ### Added
@@ -32,14 +37,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Sound effects in every world's own voice: the deal, a pick, the overtime's call, a right or wrong answer and the results, synthesized with Web Audio under the clip at the game's volume. A "Sound effects" switch in Preferences turns them off; they are on by default.
-
-## [1.18.0] - 2026-10-06
-
-### Changed
-- Tokyo Rain and Konbini 2 a.m. merge into Neon Rain, the default: Tokyo at night in the rain, in neon magenta and cyan. The round's heading is a neon sign, the time left a cyan LED, and the options holographic street ads under scanlines with LED tags; the right answer locks in as a solid magenta ad and the others drop to "No signal". A player who had Konbini 2 a.m. gets Neon Rain.
-
-### Fixed
-- Fighter Select's and Back Issue's answer tags in the reveal lost their own style to a broken rule; they are slanted and inked again.
-
-### Removed
-- The display faces only the retired worlds used, and Konbini's marker face.

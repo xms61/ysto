@@ -2,6 +2,17 @@
 
 Releases moved out of `CHANGELOG.md` (which keeps about the latest 5). Newest first.
 
+## [1.18.0] - 2026-10-06
+
+### Changed
+- Tokyo Rain and Konbini 2 a.m. merge into Neon Rain, the default: Tokyo at night in the rain, in neon magenta and cyan. The round's heading is a neon sign, the time left a cyan LED, and the options holographic street ads under scanlines with LED tags; the right answer locks in as a solid magenta ad and the others drop to "No signal". A player who had Konbini 2 a.m. gets Neon Rain.
+
+### Fixed
+- Fighter Select's and Back Issue's answer tags in the reveal lost their own style to a broken rule; they are slanted and inked again.
+
+### Removed
+- The display faces only the retired worlds used, and Konbini's marker face.
+
 ## [1.17.0] - 2026-10-06
 
 ### Removed

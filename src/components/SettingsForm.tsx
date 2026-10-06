@@ -133,10 +133,13 @@ function AnswerChanges({ settings, set }: { settings: LobbySettings; set: (chang
 const PLAY_LABELS: Record<Play, string> = {
   classic: 'Classic: every round scores',
   elimination: 'Elimination: a wrong or missed answer costs a life, and the last one standing wins',
+  teams: "Teams: players split into teams, each scoring its members' average",
 };
 
 const { min: LIVES_MIN, max: LIVES_MAX } = LIMITS.lives;
 const LIVES = Array.from({ length: LIVES_MAX - LIVES_MIN + 1 }, (_, index) => LIVES_MIN + index);
+const { min: TEAMS_MIN, max: TEAMS_MAX } = LIMITS.teams;
+const TEAM_COUNTS = Array.from({ length: TEAMS_MAX - TEAMS_MIN + 1 }, (_, index) => TEAMS_MIN + index);
 
 // Elimination can't use First correct, so picking it moves a buzzer game to Classic scoring.
 function playChange(settings: LobbySettings, play: Play): Partial<LobbySettings> {
@@ -170,6 +173,22 @@ function PlayGroup({ settings, set }: { settings: LobbySettings; set: (change: P
             {LIVES.map((lives) => (
               <option key={lives} value={lives}>
                 {lives}
+              </option>
+            ))}
+          </select>
+        </label>
+      )}
+      {settings.play === 'teams' && (
+        <label className="flex flex-col gap-1.5">
+          Teams
+          <select
+            className={INPUT}
+            value={settings.teams}
+            onChange={(event) => set({ teams: Number(event.target.value) })}
+          >
+            {TEAM_COUNTS.map((count) => (
+              <option key={count} value={count}>
+                {count}
               </option>
             ))}
           </select>

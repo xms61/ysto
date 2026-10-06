@@ -30,6 +30,8 @@ const VALID: [string, unknown][] = [
   ['reaction', { type: 'reaction', kind: 'facepalm' }],
   ['player:icon', { type: 'player:icon', icon: 'tanuki' }],
   ['round:hint', { type: 'round:hint', roundId: 'g1.3' }],
+  ['player:team', { type: 'player:team', playerId: 'Abc_123-xyz', team: 3 }],
+  ['teams:shuffle', { type: 'teams:shuffle' }],
 ];
 
 for (const [name, message] of VALID) {
@@ -51,6 +53,8 @@ const INVALID: [string, string][] = [
   ['a player id with other characters', JSON.stringify({ type: 'player:kick', playerId: '../x' })],
   ['an icon outside the set', JSON.stringify({ type: 'player:icon', icon: 'dragon' })],
   ['a hint for a malformed round', JSON.stringify({ type: 'round:hint', roundId: '../x' })],
+  ['a team past the fourth', JSON.stringify({ type: 'player:team', playerId: 'abc', team: 4 })],
+  ['a team that is not a number', JSON.stringify({ type: 'player:team', playerId: 'abc', team: '1' })],
   ['a reaction outside the set', JSON.stringify({ type: 'reaction', kind: 'lol' })],
   ['a reaction with text', JSON.stringify({ type: 'reaction', kind: 'heart', text: 'gg' })],
   ['a report of round 0', JSON.stringify({ type: 'clip:report', number: 0, reason: 'silent' })],

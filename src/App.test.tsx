@@ -242,6 +242,24 @@ test("in Elimination shows each player's lives, and lets a player who is out onl
   expect(screen.getByText('out')).toBeTruthy();
 });
 
+test('with Teams, shows the teams in the lobby, lets a player switch and the host shuffle', () => {
+  const base = lobbyState();
+  const players = [
+    { ...base.players[0]!, team: 0 },
+    { ...base.players[1]!, team: 1 },
+  ];
+  const { socket } = renderSeated({ ...base, players, settings: { ...base.settings, play: 'teams' } });
+  const teams = screen.getByRole('region', { name: 'Teams' });
+  expect(within(teams).getByRole('heading', { name: /^Kitsune/ })).toBeTruthy();
+  expect(within(teams).getByRole('heading', { name: /^Tanuki/ })).toBeTruthy();
+  fireEvent.change(within(teams).getByLabelText('Your team'), { target: { value: '1' } });
+  expect(socket.sentOfType('player:team')).toEqual([{ type: 'player:team', playerId: 'p1', team: 1 }]);
+  fireEvent.change(within(teams).getByLabelText("Ben's team"), { target: { value: '0' } });
+  expect(socket.sentOfType('player:team').at(-1)).toEqual({ type: 'player:team', playerId: 'p2', team: 0 });
+  fireEvent.click(screen.getByRole('button', { name: 'Shuffle the teams' }));
+  expect(socket.sentOfType('teams:shuffle')).toHaveLength(1);
+});
+
 test('runs an endless game without a round count, and lets the host end it', () => {
   const base = lobbyState();
   const endless = { ...base.settings, endless: true };

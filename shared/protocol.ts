@@ -44,7 +44,8 @@ export type ErrorCode =
   | 'game-running'
   | 'pool-too-small'
   | 'server-busy'
-  | 'icon-taken';
+  | 'icon-taken'
+  | 'unknown-team';
 
 // Why the server closed a socket. The 4000s are this protocol's own.
 export const CLOSE_CODES = {
@@ -82,7 +83,9 @@ export type ClientMessage =
   | { type: 'game:end' } // the host ends the game now, with its results
   | { type: 'clip:report'; number: number; reason: ReportReason }
   | { type: 'reaction'; kind: ReactionKind }
-  | { type: 'player:icon'; icon: PlayerIcon };
+  | { type: 'player:icon'; icon: PlayerIcon }
+  | { type: 'player:team'; playerId: string; team: number } // a player joins a team; the host can move anyone
+  | { type: 'teams:shuffle' }; // the host deals the players out evenly at random
 
 // Each player's mark (docs/product-specs/lobby.md): an animal, drawn the same in every theme, that stamps their
 // picks at the reveal. Two players in a lobby share one only once all are taken.
@@ -156,6 +159,12 @@ export function parseClientMessage(text: string, bounds: SettingsBounds): Client
   if (type === 'round:ready' && hasKeys(value, ['type', 'roundId', 'loaded']) && isRoundId(value.roundId)) {
     return typeof value.loaded === 'boolean' ? { type, roundId: value.roundId, loaded: value.loaded } : null;
   }
+  if (type === 'teams:shuffle' && hasKeys(value, ['type'])) return { type };
+  if (type === 'player:team' && hasKeys(value, ['type', 'playerId', 'team'])) {
+    const { playerId, team } = value;
+    const valid = typeof playerId === 'string' && ID_SHAPE.test(playerId) && isIntegerIn(team, 0, LIMITS.teams.max - 1);
+    return valid ? { type, playerId, team } : null;
+  }
   if (type === 'player:icon' && hasKeys(value, ['type', 'icon'])) {
     return isOneOf(value.icon, PLAYER_ICONS) ? { type, icon: value.icon } : null;
   }
@@ -216,6 +225,7 @@ export interface PlayerView {
   spectating: boolean; // joined during a game: plays from the next round
   score: number;
   lives?: number; // in an Elimination game: the lives left, 0 once out
+  team?: number; // with Teams: the player's team, 0 to the number of teams less one
 }
 
 // Where the lobby's game stands: `number` is the round in progress, or the rounds played once it's over.
@@ -225,6 +235,7 @@ export interface GameView {
   number: number;
   rounds: number | null; // null while an endless game runs
   results: ResultView[] | null;
+  teams?: TeamStanding[]; // with Teams: the teams' totals so far, best first
   songs: PlayedSong[] | null; // with the results: the songs in the order they played
 }
 
@@ -266,6 +277,13 @@ export interface StandingView {
   lives?: number; // in an Elimination game
 }
 
+// A team's total: the sum of its rounds, each the average of its members' points. `points` is this round's.
+export interface TeamStanding {
+  team: number;
+  score: number;
+  points: number;
+}
+
 export interface ResultView {
   playerId: string;
   score: number;
@@ -282,6 +300,7 @@ export type RoundReveal = {
   correct: number;
   picks: Pick[];
   standings: StandingView[];
+  teams?: TeamStanding[]; // with Teams, by team number
 } & RevealDetails;
 
 export type ServerMessage =
@@ -296,7 +315,7 @@ export type ServerMessage =
   | { type: 'round:pick'; roundId: string; option: number }
   | ({ type: 'round:hint'; roundId: string } & RoundHint) // to the player who asked only
   | RoundReveal
-  | { type: 'game:results'; standings: ResultView[] }
+  | { type: 'game:results'; standings: ResultView[]; teams?: TeamStanding[] }
   | { type: 'reaction'; playerId: string; kind: ReactionKind }
   | { type: 'time:pong'; clientTime: number; serverTime: number }
   | { type: 'error'; code: ErrorCode }

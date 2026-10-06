@@ -14,6 +14,7 @@ export interface Player {
   name: string;
   icon: PlayerIcon;
   connectedSince: number | null; // null while not connected
+  team: number; // the player's team when the lobby plays Teams, kept in range of the settings' count
   disconnectedAt: number | null; // null while connected; a new seat counts from its creation
 }
 
@@ -28,6 +29,7 @@ export interface Lobby {
 }
 
 export type JoinError = 'lobby-full' | 'lobby-locked' | 'name-taken';
+export type TeamError = 'not-host' | 'unknown-player' | 'unknown-team';
 export type HostError = 'not-host' | 'unknown-player' | 'cannot-kick-self';
 export type Outcome<E> = { lobby: Lobby } | { error: E };
 
@@ -65,7 +67,13 @@ export function addPlayer(
   if (lobby.locked) return { error: 'lobby-locked' };
   if (lobby.players.length >= maxPlayers) return { error: 'lobby-full' };
   if (lobby.players.some((player) => nameKey(player.name) === nameKey(seat.name))) return { error: 'name-taken' };
-  const player: Player = { ...seat, icon: freeIcon(lobby, seat.id), connectedSince: null, disconnectedAt: now };
+  const player: Player = {
+    ...seat,
+    icon: freeIcon(lobby, seat.id),
+    team: smallestTeam(lobby.players, lobby.settings.teams),
+    connectedSince: null,
+    disconnectedAt: now,
+  };
   return { lobby: { ...lobby, players: [...lobby.players, player], hostId: lobby.hostId ?? seat.id } };
 }
 
@@ -76,6 +84,41 @@ function freeIcon(lobby: Lobby, playerId: string): PlayerIcon {
   const choices = free.length > 0 ? free : PLAYER_ICONS;
   const spread = [...playerId].reduce((sum, char) => sum + char.charCodeAt(0), 0);
   return choices[spread % choices.length] ?? 'fox';
+}
+
+// The team with the fewest players; the lowest number breaks a tie.
+function smallestTeam(players: Player[], teams: number): number {
+  const sizes = Array.from({ length: teams }, (_, team) => players.filter((player) => player.team === team).length);
+  return sizes.indexOf(Math.min(...sizes));
+}
+
+// Players on a team the settings no longer have move, one by one, to the smallest team left.
+function keepTeamsInRange(players: Player[], teams: number): Player[] {
+  const kept = players.filter((player) => player.team < teams);
+  const moved = players.filter((player) => player.team >= teams);
+  const placed = [...kept];
+  for (const player of moved) placed.push({ ...player, team: smallestTeam(placed, teams) });
+  return players.map((player) => placed.find((candidate) => candidate.id === player.id) ?? player);
+}
+
+// A player joins a team; the host can move anyone.
+export function setTeam(lobby: Lobby, actorId: string, targetId: string, team: number): Outcome<TeamError> {
+  if (actorId !== targetId && lobby.hostId !== actorId) return { error: 'not-host' };
+  if (!lobby.players.some((player) => player.id === targetId)) return { error: 'unknown-player' };
+  if (team >= lobby.settings.teams) return { error: 'unknown-team' };
+  return { lobby: updatePlayer(lobby, targetId, (player) => ({ ...player, team })) };
+}
+
+// The host deals the players out in the given order, one to each team in turn, so the teams differ by one at most.
+export function shuffleTeams(lobby: Lobby, actorId: string, order: string[]): Outcome<'not-host'> {
+  if (lobby.hostId !== actorId) return { error: 'not-host' };
+  const teamOf = new Map(order.map((id, index) => [id, index % lobby.settings.teams]));
+  return {
+    lobby: {
+      ...lobby,
+      players: lobby.players.map((player) => ({ ...player, team: teamOf.get(player.id) ?? player.team })),
+    },
+  };
 }
 
 export function setIcon(lobby: Lobby, id: string, icon: PlayerIcon): Outcome<'icon-taken'> {
@@ -113,7 +156,8 @@ export function lockLobby(lobby: Lobby, actorId: string, locked: boolean): Outco
 }
 
 export function changeSettings(lobby: Lobby, actorId: string, settings: LobbySettings): Outcome<'not-host'> {
-  return lobby.hostId === actorId ? { lobby: { ...lobby, settings } } : { error: 'not-host' };
+  if (lobby.hostId !== actorId) return { error: 'not-host' };
+  return { lobby: { ...lobby, settings, players: keepTeamsInRange(lobby.players, settings.teams) } };
 }
 
 // Seats whose player has been gone for the whole reconnect grace.

@@ -765,3 +765,69 @@ test('a classic game carries no lives', () => {
   playRound(sim, [{ playerId: 'p1', delayMs: 1000, correct: false }]);
   assert.deepEqual(livesOf(sim), { p1: undefined, p2: undefined });
 });
+
+function teamGame(teams: Record<string, number>, overrides: Partial<LobbySettings> = {}): Simulation {
+  const sim = new Simulation(
+    settings({ play: 'teams', teams: 2, scoring: { ...SCORING_PRESETS.chill }, ...overrides }),
+    [...Object.keys(teams)],
+  );
+  return sim;
+}
+
+test("with Teams, each team scores its members' average a round, so a small team can beat a big one", () => {
+  const players = ['p1', 'p2', 'p3', 'p4', 'p5', 'p6'];
+  const questions = buildGame(catalog, settings({ play: 'teams', teams: 2 }), seededRandom(1));
+  const teams = { p1: 0, p2: 0, p3: 1, p4: 1, p5: 1, p6: 1 };
+  const chill = settings({ play: 'teams', teams: 2, scoring: { ...SCORING_PRESETS.chill } });
+  const { game, effects } = startGame({ id: 'g1', settings: chill, questions, players, away: [], teams });
+  assert.deepEqual(game.teamScores, [0, 0]);
+  assert.ok(effects.length > 0);
+  const sim = teamGame(teams);
+  sim.game = { ...sim.game, teams };
+  playRound(sim, [
+    { playerId: 'p1', delayMs: 1000, correct: true },
+    { playerId: 'p2', delayMs: 1000, correct: true },
+    { playerId: 'p3', delayMs: 1000, correct: true },
+    { playerId: 'p4', delayMs: 1000, correct: true },
+    { playerId: 'p5', delayMs: 1000, correct: true },
+    { playerId: 'p6', delayMs: 1000, correct: false },
+  ]);
+  const reveal = sim.last('round:reveal');
+  assert.deepEqual(reveal.teams, [
+    { team: 0, score: 1000, points: 1000 },
+    { team: 1, score: 750, points: 750 },
+  ]);
+});
+
+test('a Teams average leaves out a member who dropped, and a late joiner plays for the team the lobby gave them', () => {
+  const sim = teamGame({ p1: 0, p2: 0, p3: 1 });
+  sim.game = { ...sim.game, teams: { p1: 0, p2: 0, p3: 1 } };
+  sim.event({ type: 'player-disconnected', playerId: 'p2' });
+  playRound(sim, [
+    { playerId: 'p1', delayMs: 1000, correct: true },
+    { playerId: 'p3', delayMs: 1000, correct: false },
+  ]);
+  assert.deepEqual(sim.last('round:reveal').teams, [
+    { team: 0, score: 1000, points: 1000 },
+    { team: 1, score: 0, points: 0 },
+  ]);
+  sim.event({ type: 'player-joined', playerId: 'p4', team: 1 });
+  assert.equal(sim.game.teams?.p4, 1);
+});
+
+test('the Teams results rank the teams by their totals', () => {
+  const sim = teamGame({ p1: 0, p2: 1 }, { songsPerGame: 5 });
+  sim.game = { ...sim.game, teams: { p1: 0, p2: 1 } };
+  for (let round = 0; round < 5; round++) {
+    playRound(sim, [
+      { playerId: 'p1', delayMs: 1000, correct: false },
+      { playerId: 'p2', delayMs: 1000, correct: true },
+    ]);
+  }
+  assert.equal(sim.finished, true);
+  assert.deepEqual(sim.last('game:results').teams, [
+    { team: 1, score: 5000, points: 0 },
+    { team: 0, score: 0, points: 0 },
+  ]);
+  assert.deepEqual(gameView(sim.game).teams?.[0], { team: 1, score: 5000, points: 0 });
+});

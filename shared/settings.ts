@@ -41,6 +41,7 @@ export interface LobbySettings {
   hints: boolean; // halfway through a round, a player may ask when the anime aired, for 70% of the points
   play: Play;
   lives: number; // in Elimination: what each player starts with; a wrong or missed answer costs one
+  teams: number; // in Teams: how many teams the players split into
 }
 
 // What the catalog allows: its years, the genres the settings offer, and the largest popularity rank
@@ -52,8 +53,8 @@ export interface SettingsBounds {
 }
 
 // Classic scores every round; Elimination takes a life for each wrong or missed answer, and the last player
-// standing wins.
-export const PLAYS = ['classic', 'elimination'] as const;
+// standing wins; Teams scores each team by its members' average.
+export const PLAYS = ['classic', 'elimination', 'teams'] as const;
 export type Play = (typeof PLAYS)[number];
 
 export const LIMITS = {
@@ -61,6 +62,7 @@ export const LIMITS = {
   songsPerGame: { min: 5, max: 50 },
   overtimeSec: { min: 3, max: 10 },
   lives: { min: 1, max: 5 },
+  teams: { min: 2, max: 4 },
 } as const;
 
 const DEFAULT_RANK_TO = 1000;
@@ -83,6 +85,7 @@ export function defaultSettings(bounds: SettingsBounds): LobbySettings {
     hints: false,
     play: 'classic',
     lives: 3,
+    teams: 2,
   };
 }
 
@@ -103,6 +106,7 @@ const SETTINGS_KEYS = [
   'hints',
   'play',
   'lives',
+  'teams',
 ] as const;
 const RANGE_KEYS = ['from', 'to'] as const;
 const SCORING_KEYS = ['mode', 'streakBonus', 'comeback', 'wrongAnswerPenalty'] as const;
@@ -141,7 +145,7 @@ function isScoring(value: unknown): value is ScoringRules {
 export function validateSettings(value: unknown, bounds: SettingsBounds): LobbySettings | null {
   if (!isRecord(value) || !hasKeys(value, SETTINGS_KEYS)) return null;
   const { sampleLengthSec, songsPerGame, years, genres, kinds, formats, difficulty, popularityRanks } = value;
-  const { sampleStart, scoring, answerChanges, overtimeSec, endless, hints, play, lives } = value;
+  const { sampleStart, scoring, answerChanges, overtimeSec, endless, hints, play, lives, teams } = value;
   const { songsPerGame: songs, overtimeSec: overtime } = LIMITS;
   if (
     !isSampleLength(sampleLengthSec) ||
@@ -160,6 +164,7 @@ export function validateSettings(value: unknown, bounds: SettingsBounds): LobbyS
     typeof hints !== 'boolean' ||
     !isOneOf(play, PLAYS) ||
     !isIntegerIn(lives, LIMITS.lives.min, LIMITS.lives.max) ||
+    !isIntegerIn(teams, LIMITS.teams.min, LIMITS.teams.max) ||
     // First correct gives everyone but the fastest nothing, which can't decide who loses a life.
     (play === 'elimination' && isScoring(scoring) && scoring.mode === 'firstCorrect')
   ) {
@@ -182,6 +187,7 @@ export function validateSettings(value: unknown, bounds: SettingsBounds): LobbyS
     hints,
     play,
     lives,
+    teams,
   };
 }
 
