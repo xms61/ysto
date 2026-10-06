@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.17.0] - 2026-10-06
+
+### Removed
+- Six worlds: Hanami, Tournament Arc, Splash Page, Night Arc, Model Kit and Gachapon, with their timers (the dango skewer, the referee's pennants, the focus lines, the nipper and the coin dial), icons and backdrop plates. A player who had one picked gets Tokyo Rain. The picker shows the nine that stay three by three.
+
 ## [1.16.0] - 2026-10-06
 
 ### Added
@@ -43,8 +48,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Your games: the home screen opens a log of the games this device finished, with the player's place, score and songs, and an anime log of every anime heard, how often, and how often the player got it, linked to AnimeThemes. Kept on the device, the last 100 games; "Clear the log" empties it.
 - The results' song list names the players who picked each song right, sent once the game is over.
-
-## [1.12.0] - 2026-10-05
-
-### Added
-- Saved setups: the host saves the lobby's settings under a name, up to eight on the device, and loads one in any lobby they host. Loading fits it to the lobby's catalog and says what changed.

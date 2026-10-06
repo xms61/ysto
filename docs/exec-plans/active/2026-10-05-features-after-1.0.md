@@ -8,7 +8,7 @@ Not in this plan, by the owner's choice: importing AniList or MyAnimeList lists,
 ## Context
 - Specs: [game flow](../../product-specs/game-flow.md), [questions](../../product-specs/questions.md), [scoring](../../product-specs/scoring.md), [lobby](../../product-specs/lobby.md), [settings](../../product-specs/settings.md). Each milestone updates the specs it changes, or adds one (rules in the [specs index](../../product-specs/index.md)).
 - Server: the engine and its rules ([GAME.md](../../../server/game/GAME.md)), the protocol and its limits ([REALTIME.md](../../../server/realtime/REALTIME.md)), the catalog ([CATALOG.md](../../../scripts/catalog/CATALOG.md); `anime.slug` and `synonyms_json` are in the database but not yet loaded by `server/catalog/load.ts`), clips ([CLIPS.md](../../../server/clips/CLIPS.md)).
-- Client: [FRONTEND.md](../../FRONTEND.md), [DESIGN.md](../../DESIGN.md) (fifteen worlds: every new surface takes each world's tokens, type and motion), `src/prefs/prefs.ts` (device settings; released `ysto_*` keys never change), `src/audio/engine.ts`.
+- Client: [FRONTEND.md](../../FRONTEND.md), [DESIGN.md](../../DESIGN.md) (nine worlds: every new surface takes each world's tokens, type and motion), `src/prefs/prefs.ts` (device settings; released `ysto_*` keys never change), `src/audio/engine.ts`.
 - Invariants that hold for every milestone: [anti-cheat](../../design-docs/anti-cheat.md) (no message tells a player the answer before the reveal); [SECURITY.md](../../SECURITY.md) (validated input, rate limits, no personal data kept); WCAG AA in every world, keys for every control, motion only under the motion setting; tests use no network and no real data ([TESTING.md](../../TESTING.md)).
 - Deploy: the game container is read-only with no writable volume ([DEPLOY.md](../../DEPLOY.md), `deploy/compose.yml`). Milestone 3 adds the first one.
 - Running alongside: the [answer changes plan](2026-10-05-answer-changes.md) still owes each world's own overtime animation.
@@ -199,6 +199,7 @@ Taken in this order, one step at a time; each step says how it shows.
 - [x] 2026-10-06 M20.15 No scroll on a desktop
 - [x] 2026-10-06 M20.16 Check and ship (1.15.0)
 - [x] 2026-10-06 M21 Infinite mode (1.16.0)
+- [x] 2026-10-06 Retire six worlds: Hanami, Tournament Arc, Splash Page, Night Arc, Model Kit, Gachapon (1.17.0)
 - [ ] M7 Sound effects per world
 - [ ] M8 Hints
 - [ ] M9 Elimination
@@ -223,6 +224,7 @@ Taken in this order, one step at a time; each step says how it shows.
 - 2026-10-06: The owner asked for reactions during the round, which M5 had ruled out so a reaction can't point at an option. A reaction carries no option, and players in one room can talk anyway, so the risk is small; the owner chose fun over it. They also asked for the platform's emoji over the drawn icons, reversing M5: emoji read at a glance. The source keeps them as escapes, so the code stays plain text.
 - 2026-10-06: The owner asked to drop the latency allowance (half the round trip, up to 150ms, taken off an answer's time, and First correct's 150ms wait for a faster answer still on its way). Times are now plain server arrival. The 300ms grace after the timer stays, so an answer sent at the last moment isn't lost in transit, until the owner says otherwise.
 - 2026-10-05: The anime log (M18) learns which songs the player got right from the results' song list, which now names the players who picked each song right. It is sent only once the game is over, so it tells nobody an answer early. Rejected: collecting each round's reveal on the client, which a player who reconnects at the results would miss.
+- 2026-10-06: The owner retired six worlds (Hanami, Tournament Arc, Splash Page, Night Arc, Model Kit, Gachapon), leaving nine; M7's sound tables and every later surface need only those nine. Their ids leave `THEMES`, so a stored one falls back to Tokyo Rain through the prefs validator, with no migration; the ids are not reused for new worlds, since an old device would land on the new world unasked.
 
 ## Open questions
 Each has a default the milestone builds unless the owner decides otherwise:

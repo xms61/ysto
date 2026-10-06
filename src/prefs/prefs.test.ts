@@ -17,7 +17,7 @@ test('a new device plays at 15% in Tokyo Rain with English titles, and follows i
 test('keeps the settings across a reload', () => {
   const prefs = {
     volume: 40,
-    theme: 'sakura',
+    theme: 'omikuji',
     titleLanguage: 'japanese',
     secondTitleLanguage: 'romaji',
     motion: 'reduced',

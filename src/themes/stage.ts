@@ -7,25 +7,10 @@ import { createContext, useContext } from 'react';
 import type { Theme } from '../prefs/prefs.ts';
 
 export interface ThemeStage {
-  // How the time left reads: a seven-segment display; a dango skewer eaten down; the seconds as
-  // huge arcade digits; a nipper cutting along a runner; a gachapon's coin dial turning; a candle burning down; a
+  // How the time left reads: a seven-segment display; the seconds as huge arcade digits; a candle burning down; a
   // printer's ruler; the round's heading sung like a lyric line; a shrine rope's paper streamers taken one by one;
-  // a walk on a park map toward a blossom tree; the referee's pennants taken down one by one; a manga panel's focus
-  // lines closing in on its center; or a cassette's tape winding from one reel to the other.
-  readout:
-    | 'segments'
-    | 'dango'
-    | 'digits'
-    | 'nipper'
-    | 'dial'
-    | 'candle'
-    | 'ruler'
-    | 'lyric'
-    | 'shide'
-    | 'route'
-    | 'pennants'
-    | 'focus'
-    | 'reels';
+  // a walk on a park map toward a blossom tree; or a cassette's tape winding from one reel to the other.
+  readout: 'segments' | 'digits' | 'candle' | 'ruler' | 'lyric' | 'shide' | 'route' | 'reels';
   wrongMark: string | null; // printed on each option that was not the answer, at the reveal
   scoreBars: boolean; // each final score also drawn as a bar against the winner's, like a health bar
   masthead: boolean; // the round's heading set as a magazine's issue number, "No. 03 / 15"
@@ -40,14 +25,8 @@ const STAGES: Record<Theme, Pick<ThemeStage, 'readout'> & Partial<ThemeStage>> =
   karaoke: { readout: 'lyric', rows: true },
   omikuji: { readout: 'shide' },
   'blossom-map': { readout: 'route' },
-  'tournament-arc': { readout: 'pennants' },
-  'splash-page': { readout: 'focus' },
-  'night-arc': { readout: 'focus' },
   'side-a': { readout: 'reels', rows: true },
-  sakura: { readout: 'dango' },
   shonen: { readout: 'digits', scoreBars: true },
-  mecha: { readout: 'nipper', wrongMark: 'Spare' },
-  'magical-girl': { readout: 'dial' },
   isekai: { readout: 'candle' },
   'retro-vhs': { readout: 'ruler', masthead: true },
 };

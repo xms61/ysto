@@ -1,5 +1,5 @@
 // The theme's backdrop behind every screen: its texture, and when motion is on, its weather: rain over Tokyo,
-// falling petals for Hanami, twinkling lights in the karaoke box, a tracking band on the tape, speed lines on
+// twinkling lights in the karaoke box, a tracking band on the tape, speed lines on
 // Fighter Select's page; the worlds indoors or in the sun keep still. The weather
 // follows the game's phase (data-phase on the page, set by usePagePhase): a second layer of it surges in while
 // the clip plays, and a flash marks the reveal and the results. It never follows the audio, so it can't give a
@@ -50,15 +50,9 @@ const SKIES: Record<Theme, Sky> = {
   'tokyo-rain': { calm: { kind: 'rain', count: 34 }, surge: { kind: 'rain', count: 30 } },
   konbini: { calm: { kind: 'rain', count: 24 }, surge: { kind: 'rain', count: 24 } },
   karaoke: { calm: { kind: 'twinkle', count: 14 }, surge: { kind: 'twinkle', count: 18 } },
-  sakura: { calm: { kind: 'petal', count: 18 }, surge: { kind: 'petal', count: 16 } },
   omikuji: { calm: { kind: 'petal', count: 10 }, surge: { kind: 'petal', count: 10 } },
   'blossom-map': { calm: { kind: 'petal', count: 12 }, surge: { kind: 'petal', count: 12 } },
   shonen: { calm: null, surge: { kind: 'speed-lines', count: 1 } },
-  'tournament-arc': { calm: null, surge: { kind: 'speed-lines', count: 1 } },
-  'splash-page': { calm: null, surge: { kind: 'speed-lines', count: 1 } },
-  'night-arc': { calm: null, surge: { kind: 'speed-lines', count: 1 } },
-  mecha: { calm: null, surge: null },
-  'magical-girl': { calm: null, surge: null },
   isekai: { calm: null, surge: null },
   'retro-vhs': { calm: null, surge: null },
   'side-a': { calm: { kind: 'tracking', count: 1 }, surge: { kind: 'tracking', count: 1 } },

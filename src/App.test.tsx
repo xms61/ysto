@@ -332,9 +332,9 @@ test('tries a world on from the picker, and keeps it only when the player uses i
   renderApp();
   expect(document.documentElement.dataset.theme).toBe('tokyo-rain');
   let sheet = openThemeSheet();
-  fireEvent.click(within(sheet).getByLabelText(/^Hanami/));
-  expect(document.documentElement.dataset.theme).toBe('sakura');
-  expect(within(sheet).getByText('A lacquer bento on the blue picnic tarp')).toBeTruthy();
+  fireEvent.click(within(sheet).getByLabelText(/^Omikuji/));
+  expect(document.documentElement.dataset.theme).toBe('omikuji');
+  expect(within(sheet).getByText('Shrine fortune slips in spring')).toBeTruthy();
   fireEvent.click(within(sheet).getByRole('button', { name: 'Back' }));
   expect(screen.queryByRole('dialog')).toBeNull();
   expect(document.documentElement.dataset.theme).toBe('tokyo-rain');
