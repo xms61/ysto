@@ -1,10 +1,12 @@
 // Builds a game's questions: which songs play, where each sample starts, and the four options
 // (docs/product-specs/questions.md). Everything here is decided on the server; a Question holds the answer
 // and must never be sent to a client as it is (docs/design-docs/anti-cheat.md).
-import type { OptionTitles, RevealDetails, RoundHint } from '../../shared/protocol.ts';
+import type { OptionTitles, RevealDetails, RoundAsk, RoundHint } from '../../shared/protocol.ts';
 import type { LobbySettings } from '../../shared/settings.ts';
 import type { Catalog, CatalogAnime, CatalogTheme } from '../catalog/load.ts';
 import { pickDistractors } from './distractors.ts';
+import { asks, optionText, songDistractors } from './song-options.ts';
+import type { SongAsk } from './song-options.ts';
 import { distinctAnime, eligibleThemes, LEAD_IN_MS, optionUniverse, sampleLengthMs, TAIL_MS } from './pool.ts';
 import { pick, shuffle } from './random.ts';
 import type { Random } from './random.ts';
@@ -15,6 +17,7 @@ export interface Question {
   animeId: number;
   clip: { relPath: string; startMs: number; lengthMs: number };
   options: { animeIds: number[]; titles: OptionTitles };
+  ask: RoundAsk; // what the options name
   correctIndex: number;
   reveal: RevealDetails;
   hint: RoundHint; // when the anime aired, for a player who asks; never more than the reveal shows
@@ -68,6 +71,55 @@ function sampleStartMs(theme: CatalogTheme, settings: LobbySettings, random: Ran
   return LEAD_IN_MS + random.int(latest - LEAD_IN_MS + 1);
 }
 
+// A mixed game draws each round's kind from those its theme can ask.
+function askOf(theme: CatalogTheme, settings: LobbySettings, random: Random): RoundAsk {
+  if (settings.questions !== 'mixed') return settings.questions;
+  const songAsks: SongAsk[] = ['song', 'artist'];
+  return pick(['anime', ...songAsks.filter((ask) => asks(theme, ask))], random);
+}
+
+// The same text in every title language: a song's title and its credits have only the one.
+function sameInEveryLanguage(texts: string[]): OptionTitles {
+  return { english: texts, romaji: [...texts], japanese: [...texts] };
+}
+
+function songOptions(
+  catalog: Catalog,
+  theme: CatalogTheme,
+  answer: CatalogAnime,
+  ask: SongAsk,
+  universe: CatalogAnime[],
+  random: Random,
+): Pick<Question, 'options' | 'correctIndex'> {
+  const lobbyAnime = new Set(universe.map((anime) => anime.id));
+  const wrong = songDistractors(catalog, { theme, anime: answer }, ask, lobbyAnime, random);
+  const options = shuffle([theme, ...wrong], random);
+  return {
+    options: {
+      animeIds: options.map((option) => option.animeId),
+      titles: sameInEveryLanguage(options.map((option) => optionText(option, ask))),
+    },
+    correctIndex: options.indexOf(theme),
+  };
+}
+
+function animeOptions(
+  catalog: Catalog,
+  theme: CatalogTheme,
+  answer: CatalogAnime,
+  settings: LobbySettings,
+  universe: CatalogAnime[],
+  random: Random,
+): Pick<Question, 'options' | 'correctIndex'> {
+  const song = { id: theme.songId, key: theme.songKey };
+  const wrong = pickDistractors(catalog, answer, song, settings.difficulty, universe, random);
+  const options = shuffle([answer, ...wrong], random);
+  return {
+    options: { animeIds: options.map((anime) => anime.id), titles: optionTitles(options) },
+    correctIndex: options.indexOf(answer),
+  };
+}
+
 function buildQuestion(
   catalog: Catalog,
   theme: CatalogTheme,
@@ -76,9 +128,11 @@ function buildQuestion(
   random: Random,
 ): Question {
   const answer = animeOf(catalog, theme.animeId);
-  const song = { id: theme.songId, key: theme.songKey };
-  const wrong = pickDistractors(catalog, answer, song, settings.difficulty, universe, random);
-  const options = shuffle([answer, ...wrong], random);
+  const ask = askOf(theme, settings, random);
+  const { options, correctIndex } =
+    ask === 'anime'
+      ? animeOptions(catalog, theme, answer, settings, universe, random)
+      : songOptions(catalog, theme, answer, ask, universe, random);
   return {
     themeId: theme.id,
     animeId: answer.id,
@@ -87,8 +141,9 @@ function buildQuestion(
       startMs: sampleStartMs(theme, settings, random),
       lengthMs: sampleLengthMs(settings),
     },
-    options: { animeIds: options.map((anime) => anime.id), titles: optionTitles(options) },
-    correctIndex: options.indexOf(answer),
+    options,
+    ask,
+    correctIndex,
     reveal: revealOf(answer, theme),
     hint: { format: answer.format, season: answer.season, year: answer.year },
   };

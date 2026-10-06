@@ -31,6 +31,13 @@ function scoring(settings: LobbySettings): string {
   return preset ? `${PRESET_LABELS[preset]} (${rules})` : rules;
 }
 
+const QUESTION_SUMMARY: Record<LobbySettings['questions'], string> = {
+  anime: 'Name the anime',
+  song: "Name the song's title",
+  artist: 'Name who sings it',
+  mixed: 'Anime, song title or artist, round by round',
+};
+
 function playSummary(settings: LobbySettings): string {
   if (settings.play === 'elimination')
     return `Elimination, ${settings.lives} ${settings.lives === 1 ? 'life' : 'lives'}`;
@@ -46,6 +53,7 @@ export function SettingsSummary({ settings, bounds }: { settings: LobbySettings;
         : `${settings.songsPerGame} songs, ${settings.sampleLengthSec} s each`,
     ],
     ['Play', playSummary(settings)],
+    ['Questions', QUESTION_SUMMARY[settings.questions]],
     ['Difficulty', difficulty(settings)],
     ['Samples start at', SAMPLE_START_LABELS[settings.sampleStart].toLowerCase()],
     ['Songs', songsFrom(settings, bounds)],

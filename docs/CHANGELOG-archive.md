@@ -2,6 +2,11 @@
 
 Releases moved out of `CHANGELOG.md` (which keeps about the latest 5). Newest first.
 
+## [1.19.0] - 2026-10-06
+
+### Added
+- Sound effects in every world's own voice: the deal, a pick, the overtime's call, a right or wrong answer and the results, synthesized with Web Audio under the clip at the game's volume. A "Sound effects" switch in Preferences turns them off; they are on by default.
+
 ## [1.18.0] - 2026-10-06
 
 ### Changed

@@ -195,7 +195,7 @@ function prepareMessage(game: Game, round: Round): ServerMessage {
 
 function startMessage(round: Round): ServerMessage {
   const { id: roundId, startsAt, endsAt, question } = round;
-  return { type: 'round:start', roundId, startsAt, endsAt, options: question.options.titles };
+  return { type: 'round:start', roundId, startsAt, endsAt, options: question.options.titles, ask: question.ask };
 }
 
 function answeredMessage(round: Round): ServerMessage {

@@ -15,6 +15,7 @@ The host shapes the game (pool, length, difficulty, scoring). Each player sets w
 | Songs per game | Lobby | 5–50; doesn't apply to an endless game | 15 |
 | Play | Lobby | Classic; Elimination: a wrong or missed answer costs a life, and the last one standing wins; or Teams: players split into teams, each scoring its members' average ([game flow](game-flow.md)). Elimination can't use First correct | Classic |
 | Lives | Lobby | 1–5, in Elimination | 3 |
+| Questions | Lobby | Anime, Song title, Artist, or Mixed (a different one each round) ([questions](questions.md)) | Anime |
 | Teams | Lobby | 2–4, in Teams | 2 |
 | Endless | Lobby | on or off: rounds keep coming until the host ends the game, or the pool runs out ([game flow](game-flow.md)) | off |
 | Hints | Lobby | on or off: from halfway through a round, a player can see when the anime aired, for 70% of the points ([game flow](game-flow.md)) | off |

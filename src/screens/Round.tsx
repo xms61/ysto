@@ -4,7 +4,7 @@
 // an overtime counts down before the reveal.
 import { useEffect, useState } from 'react';
 import type { CSSProperties, ReactNode } from 'react';
-import type { LobbyState } from '../../shared/protocol.ts';
+import type { LobbyState, RoundAsk } from '../../shared/protocol.ts';
 import { POINTS } from '../../shared/scoring.ts';
 import { answersCanChange } from '../../shared/settings.ts';
 import type { LobbySettings } from '../../shared/settings.ts';
@@ -241,6 +241,12 @@ function Nudge({ lobby, nudge }: { lobby: LobbyState; nudge: ClientRound['nudge'
   );
 }
 
+const ASK_LINES: Record<RoundAsk, string> = {
+  anime: 'Pick the anime.',
+  song: "Pick the song's title.",
+  artist: 'Pick who sings it.',
+};
+
 const HINT_SHARE = `${Math.round(POINTS.hintFactor * 100)}%`;
 
 // With hints on, the round's hint under the status: from halfway through, a button for when the anime aired, at
@@ -338,7 +344,7 @@ function Answering({ store, lobby, round, start, titles, clip, ghost, foot }: An
       <p aria-live="polite" className="text-muted">
         {status ?? (
           <>
-            Pick the anime.
+            {ASK_LINES[start.ask]}
             {/* Keys only help where there is a keyboard, which a mouse or trackpad suggests. */}
             <span className="hidden pointer-fine:inline"> Keys 1 to 4 work too.</span>
           </>
