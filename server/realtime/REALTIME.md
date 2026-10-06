@@ -51,7 +51,7 @@ A screen is a player in `lobby:state` with `screen: true`; it gets every game me
 
 ## Gotchas
 - Express's own 404 page sets its own CSP, so `createApp` ends with a JSON 404 that keeps the security headers.
-- The registry's sweep runs every 5 s, so a seat's grace and a lobby's expiry end up to 5 s late.
+- The registry's sweep runs every second, so a seat's grace and a lobby's expiry end up to 1 s late. A lobby with nobody connected closes after 15 s, before any seat's 60 s grace runs out.
 - The heartbeat pings every 15 s and drops a socket that missed a ping. That starts its seat's 60 s grace.
 - `server.kill('SIGTERM')` on Windows ends the process without running its handlers. Test shutdown through `Realtime.close`.
 

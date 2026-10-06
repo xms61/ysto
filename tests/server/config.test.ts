@@ -33,7 +33,7 @@ test('defaults the server settings', () => {
     ffmpegConcurrency: Math.max(1, availableParallelism() - 1),
     trustedProxyHops: 0,
     allowedOrigins: [],
-    maxLobbies: 100,
+    maxLobbies: 2000,
     maxPlayers: 12,
     maxGames: 30,
     stateDir: null,

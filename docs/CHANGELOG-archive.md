@@ -2,6 +2,11 @@
 
 Releases moved out of `CHANGELOG.md` (which keeps about the latest 5). Newest first.
 
+## [1.25.0] - 2026-10-06
+
+### Added
+- Typed answers: under Answer by in the lobby settings, players type the anime's title instead of tapping one of four options. Suggestions come from the whole catalog as they type, in every title language and with synonyms, each with its year so remakes can be told apart. Only the exact anime is right. The reveal lists what everyone typed.
+
 ## [1.24.0] - 2026-10-06
 
 ### Added

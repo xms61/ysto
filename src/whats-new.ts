@@ -4,6 +4,7 @@
 import { readItem, writeItem } from './storage.ts';
 
 const NOTES: { version: string; lines: string[] }[] = [
+  { version: '1.29.0', lines: ['Many more lobbies can be open at once, so "server full" should be rare.'] },
   { version: '1.28.0', lines: ["Today's challenge shares as colored squares, ready to paste into Discord."] },
   { version: '1.27.0', lines: ['Party mode: one screen plays the sound, and everyone answers on their phone.'] },
   { version: '1.26.0', lines: ["Today's challenge: ten songs a day, the same for everyone, and a streak to keep."] },

@@ -6,7 +6,7 @@ import type { PlayerIcon } from '../../shared/protocol.ts';
 import type { LobbySettings } from '../../shared/settings.ts';
 
 export const RECONNECT_GRACE_MS = 60_000;
-export const IDLE_LOBBY_MS = 15 * 60_000;
+export const IDLE_LOBBY_MS = 15_000;
 export const MAX_LOBBY_AGE_MS = 4 * 60 * 60_000;
 
 export interface Player {
