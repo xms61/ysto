@@ -12,10 +12,13 @@ services:
     environment:
       YSTO_AUDIO_DIR: /data/audio
       YSTO_CATALOG_DIR: /data/catalog
+      YSTO_STATE_DIR: /data/state
       YSTO_TRUST_PROXY: 1
     volumes:
       - ${YSTO_AUDIO_HOST_DIR:?set YSTO_AUDIO_HOST_DIR in .env}:/data/audio:ro
       - ${YSTO_CATALOG_HOST_DIR:?set YSTO_CATALOG_HOST_DIR in .env}:/data/catalog:ro
+      # The only place the game writes: the players' clip reports. Everything else stays read-only.
+      - ysto_state:/data/state
     read_only: true
     tmpfs: [/tmp]
     cap_drop: [ALL]
@@ -48,7 +51,9 @@ services:
       driver: json-file
       options: { max-size: 10m, max-file: '3' }
 
-# Caddy's certificates and keys. Never rename these once released: a new name starts empty.
+# The game's state (clip reports), and Caddy's certificates and keys. Never rename these once released: a new
+# name starts empty.
 volumes:
+  ysto_state:
   caddy_data:
   caddy_config:

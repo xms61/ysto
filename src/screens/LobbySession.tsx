@@ -5,6 +5,7 @@ import type { RefObject } from 'react';
 import type { AudioEngine } from '../audio/engine.ts';
 import { NoticeToast } from '../components/NoticeToast.tsx';
 import { PreferencesMenu } from '../components/PrefsPanel.tsx';
+import { ReactionLayer } from '../components/Reactions.tsx';
 import { SoundBanner } from '../components/SoundBanner.tsx';
 import { WhatsNew } from '../components/WhatsNew.tsx';
 import { ConfirmButton, Panel } from '../components/ui.tsx';
@@ -100,7 +101,10 @@ export function LobbySession(props: LobbySessionProps) {
   useFocusOnScreenChange(lobby && settings ? screen : 'connecting', page);
 
   return (
-    <div ref={page} className="mx-auto flex min-h-dvh w-full max-w-3xl flex-col gap-4 px-4 py-4">
+    <div
+      ref={page}
+      className={`mx-auto flex min-h-dvh w-full max-w-3xl flex-col gap-4 px-4 py-4 ${screen === 'round' ? 'lg:max-w-6xl' : ''}`}
+    >
       <header className="relative flex flex-wrap items-center gap-3">
         <h1 className="display text-lg">
           <span className="sr-only sm:not-sr-only">Lobby </span>
@@ -115,6 +119,7 @@ export function LobbySession(props: LobbySessionProps) {
         <ConfirmButton label="Leave" question="Leave the lobby?" onConfirm={() => store.leave()} />
       </header>
       <SoundBanner audio={audio} />
+      {lobby && <ReactionLayer store={store} lobby={lobby} />}
       {screen === 'lobby' && lobby && notes.length > 0 && <WhatsNew lines={notes} onClose={onNotesSeen} />}
       {!lobby || !settings ? (
         <Panel>
@@ -126,11 +131,12 @@ export function LobbySession(props: LobbySessionProps) {
           lobby={lobby}
           round={game.round}
           titles={titles}
+          reported={game.reported}
           isHost={host}
           clip={clip && clip.roundId === game.round?.id ? clip.status : null}
         />
       ) : screen === 'results' ? (
-        <Results store={store} lobby={lobby} isHost={host} titles={titles} />
+        <Results store={store} lobby={lobby} isHost={host} titles={titles} reported={game.reported} />
       ) : (
         <Lobby store={store} lobby={lobby} settings={settings} isHost={host} />
       )}

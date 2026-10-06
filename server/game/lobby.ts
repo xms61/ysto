@@ -1,6 +1,8 @@
 // A lobby's seats, host, lock and settings (docs/product-specs/lobby.md), as pure functions over plain data.
 // The registry keeps the lobbies and applies these; games join them in M5.
 import { nameKey } from '../../shared/names.ts';
+import { PLAYER_ICONS } from '../../shared/protocol.ts';
+import type { PlayerIcon } from '../../shared/protocol.ts';
 import type { LobbySettings } from '../../shared/settings.ts';
 
 export const RECONNECT_GRACE_MS = 60_000;
@@ -10,6 +12,7 @@ export const MAX_LOBBY_AGE_MS = 4 * 60 * 60_000;
 export interface Player {
   id: string;
   name: string;
+  icon: PlayerIcon;
   connectedSince: number | null; // null while not connected
   disconnectedAt: number | null; // null while connected; a new seat counts from its creation
 }
@@ -62,8 +65,22 @@ export function addPlayer(
   if (lobby.locked) return { error: 'lobby-locked' };
   if (lobby.players.length >= maxPlayers) return { error: 'lobby-full' };
   if (lobby.players.some((player) => nameKey(player.name) === nameKey(seat.name))) return { error: 'name-taken' };
-  const player: Player = { ...seat, connectedSince: null, disconnectedAt: now };
+  const player: Player = { ...seat, icon: freeIcon(lobby, seat.id), connectedSince: null, disconnectedAt: now };
   return { lobby: { ...lobby, players: [...lobby.players, player], hostId: lobby.hostId ?? seat.id } };
+}
+
+// A new player's icon: one nobody in the lobby has, picked by their random id, or any once all are taken.
+function freeIcon(lobby: Lobby, playerId: string): PlayerIcon {
+  const taken = new Set(lobby.players.map((player) => player.icon));
+  const free = PLAYER_ICONS.filter((icon) => !taken.has(icon));
+  const choices = free.length > 0 ? free : PLAYER_ICONS;
+  const spread = [...playerId].reduce((sum, char) => sum + char.charCodeAt(0), 0);
+  return choices[spread % choices.length] ?? 'fox';
+}
+
+export function setIcon(lobby: Lobby, id: string, icon: PlayerIcon): Outcome<'icon-taken'> {
+  if (lobby.players.some((player) => player.id !== id && player.icon === icon)) return { error: 'icon-taken' };
+  return { lobby: updatePlayer(lobby, id, (player) => ({ ...player, icon })) };
 }
 
 export function connectPlayer(lobby: Lobby, id: string, now: number): Lobby {

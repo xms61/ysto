@@ -26,6 +26,9 @@ const VALID: [string, unknown][] = [
   ['lobby:lock', { type: 'lobby:lock', locked: true }],
   ['player:kick', { type: 'player:kick', playerId: 'Abc_123-xyz' }],
   ['settings:update', { type: 'settings:update', settings }],
+  ['clip:report', { type: 'clip:report', number: 3, reason: 'wrong-song' }],
+  ['reaction', { type: 'reaction', kind: 'facepalm' }],
+  ['player:icon', { type: 'player:icon', icon: 'tanuki' }],
 ];
 
 for (const [name, message] of VALID) {
@@ -45,6 +48,12 @@ const INVALID: [string, string][] = [
   ['a time that is not a number', JSON.stringify({ type: 'time:ping', clientTime: '1' })],
   ['a lock that is not a boolean', JSON.stringify({ type: 'lobby:lock', locked: 'yes' })],
   ['a player id with other characters', JSON.stringify({ type: 'player:kick', playerId: '../x' })],
+  ['an icon outside the set', JSON.stringify({ type: 'player:icon', icon: 'dragon' })],
+  ['a reaction outside the set', JSON.stringify({ type: 'reaction', kind: 'lol' })],
+  ['a reaction with text', JSON.stringify({ type: 'reaction', kind: 'heart', text: 'gg' })],
+  ['a report of round 0', JSON.stringify({ type: 'clip:report', number: 0, reason: 'silent' })],
+  ['a report past the last round', JSON.stringify({ type: 'clip:report', number: 51, reason: 'silent' })],
+  ['a report with free text', JSON.stringify({ type: 'clip:report', number: 1, reason: 'it was loud' })],
   ['invalid settings', JSON.stringify({ type: 'settings:update', settings: { ...settings, songsPerGame: 500 } })],
 ];
 

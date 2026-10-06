@@ -182,8 +182,10 @@ test('with answer changes on, lets the player switch, runs the overtime and name
     socket.receive({ type: 'round:overtime', roundId: 'g.1', startsAt: Date.now(), endsAt: Date.now() + 5000 });
   });
   expect(screen.getByText('Ben switched')).toBeTruthy();
-  expect(screen.getByText('Overtime')).toBeTruthy();
-  expect(screen.getByText('Last chance to switch')).toBeTruthy();
+  // The stage's hidden timer copy holds the call too; only the shown one counts.
+  const shown = { ignore: '[aria-hidden="true"] *' };
+  expect(screen.getByText('Overtime', shown)).toBeTruthy();
+  expect(screen.getByText('Last chance to switch', shown)).toBeTruthy();
 });
 
 test('sets the round as a masthead number in Back Issue, still named as the round', () => {
@@ -240,6 +242,37 @@ test('answers with the number keys, then shows the reveal with words as well as 
   expect(options[2]?.textContent).toContain('Picked by Ann');
   expect(options[0]?.textContent).toContain('Picked by Ben');
   expect(options[1]?.textContent).not.toContain('Picked by');
+});
+
+test('keeps the scores beside the round, with who has answered, and each pick on the board at the reveal', async () => {
+  const { socket } = renderSeated(lobbyState({ game: PLAYING }));
+  act(() => {
+    socket.receive({ type: 'round:prepare', roundId: 'g.1', clipToken: 'c1', number: 1, rounds: 5 });
+    const startsAt = Date.now() - 100;
+    socket.receive({ type: 'round:start', roundId: 'g.1', startsAt, endsAt: startsAt + 20_000, options: OPTIONS });
+    socket.receive({ type: 'round:answered', roundId: 'g.1', playerIds: ['p2'] });
+  });
+  await screen.findByText('Rain Song');
+  const live = within(screen.getByRole('complementary', { name: 'Scores and answer' }));
+  expect(live.getByText('answered')).toBeTruthy();
+  expect(live.getByText('thinking')).toBeTruthy();
+  act(() => socket.receive(revealOf('g.1')));
+  const board = within(screen.getByRole('list', { name: 'Scores' }));
+  expect(board.getByText('picked 3')).toBeTruthy();
+  expect(board.getByText('picked 1')).toBeTruthy();
+});
+
+test('reports a broken clip from the reveal once, with a fixed reason', () => {
+  const { socket } = renderSeated(lobbyState({ game: PLAYING }));
+  act(() => {
+    socket.receive({ type: 'round:prepare', roundId: 'g.1', clipToken: 'c1', number: 1, rounds: 5 });
+    socket.receive(revealOf('g.1'));
+  });
+  fireEvent.click(screen.getByText('Report this clip'));
+  fireEvent.click(screen.getByRole('button', { name: 'Cut badly' }));
+  expect(socket.sentOfType('clip:report')).toEqual([{ type: 'clip:report', number: 1, reason: 'bad-cut' }]);
+  expect(screen.getByText('Reported. Thanks.')).toBeTruthy();
+  expect(screen.queryByText('Report this clip')).toBeNull();
 });
 
 test("greets a missed opening with the game's own line, with the penalty when there is one", async () => {
@@ -348,6 +381,60 @@ const SONG = {
   season: 'Spring',
   slug: 'speed_line',
 };
+
+const TALLY = {
+  games: 3,
+  players: [
+    { playerId: 'p1', wins: 2, points: 6100 },
+    { playerId: 'p2', wins: 1, points: 4800 },
+  ],
+};
+
+test("picks the player's animal in the lobby, never one another player has", () => {
+  const { socket } = renderSeated();
+  fireEvent.click(screen.getByText('Your animal: Fox'));
+  const animals = screen.getByRole('group', { name: 'Animals' });
+  expect(within(animals).getByRole('button', { name: 'Owl, taken by Ben' })).toHaveProperty('disabled', true);
+  expect(within(animals).getByRole('button', { name: 'Fox' }).getAttribute('aria-pressed')).toBe('true');
+  fireEvent.click(within(animals).getByRole('button', { name: 'Tanuki' }));
+  expect(socket.sentOfType('player:icon')).toEqual([{ type: 'player:icon', icon: 'tanuki' }]);
+});
+
+test("stamps each pick at the reveal with the picker's animal, named for screen readers", () => {
+  const { socket } = renderSeated(lobbyState({ game: PLAYING }));
+  act(() => {
+    socket.receive({ type: 'round:prepare', roundId: 'g.1', clipToken: 'c1', number: 1, rounds: 5 });
+    const startsAt = Date.now() - 20_000;
+    socket.receive({ type: 'round:start', roundId: 'g.1', startsAt, endsAt: startsAt + 20_000, options: OPTIONS });
+    socket.receive(revealOf('g.1'));
+  });
+  const stamps = document.querySelectorAll('.picker-stamp');
+  expect([...stamps].map((stamp) => stamp.getAttribute('title'))).toEqual(['Ben', 'Ann']);
+});
+
+test('sends a reaction from the lobby, and shows who reacted with what', () => {
+  const { socket } = renderSeated();
+  const bar = screen.getByRole('group', { name: 'React' });
+  fireEvent.click(within(bar).getByRole('button', { name: 'Laugh' }));
+  expect(socket.sentOfType('reaction')).toEqual([{ type: 'reaction', kind: 'laugh' }]);
+  act(() => socket.receive({ type: 'reaction', playerId: 'p2', kind: 'heart' }));
+  expect(screen.getByText('Ben: Heart')).toBeTruthy();
+});
+
+test("keeps the lobby's tally across games, in the lobby and on the results", () => {
+  const { socket } = renderSeated(lobbyState({ tally: TALLY }));
+  const players = screen.getByRole('list', { name: 'Players' });
+  expect(within(players).getByText('2 wins')).toBeTruthy();
+  expect(within(players).getByText('1 win')).toBeTruthy();
+  expect(screen.getByText('3 games played in this lobby')).toBeTruthy();
+  const results = [{ playerId: 'p1', score: 900, correct: 1, averageMs: null, bestStreak: 1 }];
+  act(() =>
+    socket.receive(
+      lobbyState({ tally: TALLY, game: { phase: 'results', number: 1, rounds: 1, results, songs: [SONG] } }),
+    ),
+  );
+  expect(screen.getByText('Game 3 in this lobby. Ann has won 2.')).toBeTruthy();
+});
 
 test('shows the final results, also to a player who reconnects after the game', () => {
   renderSeated(

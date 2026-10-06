@@ -12,6 +12,8 @@
 # The clip benchmark, which runs in the image on the VPS (docs/DEPLOY.md).
 !scripts/clips/bench.ts
 !scripts/catalog/cli.ts
+# The owner's list of clip reports, which runs in the image that keeps them (docs/DEPLOY.md).
+!scripts/clip-reports/
 # Tests and docs stay out of the image.
 **/*.test.ts
 **/*.test.tsx

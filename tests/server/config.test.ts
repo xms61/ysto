@@ -36,6 +36,7 @@ test('defaults the server settings', () => {
     maxLobbies: 100,
     maxPlayers: 12,
     maxGames: 30,
+    stateDir: null,
   });
 });
 
@@ -52,6 +53,7 @@ test('reads the server settings', () => {
       YSTO_FFMPEG_PATH: 'tools/ffmpeg',
       YSTO_FFMPEG_CONCURRENCY: '2',
       YSTO_MAX_GAMES: '4',
+      YSTO_STATE_DIR: 'state',
     },
     CWD,
   );
@@ -67,6 +69,7 @@ test('reads the server settings', () => {
     maxLobbies: 20,
     maxPlayers: 8,
     maxGames: 4,
+    stateDir: resolve(CWD, 'state'),
   });
 });
 

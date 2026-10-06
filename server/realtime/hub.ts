@@ -8,7 +8,7 @@ import type { Duplex } from 'node:stream';
 import { WebSocket, WebSocketServer } from 'ws';
 import type { RawData } from 'ws';
 import { CLOSE_CODES, parseClientMessage } from '../../shared/protocol.ts';
-import type { ClientMessage, ErrorCode, PlayerView, ServerMessage } from '../../shared/protocol.ts';
+import type { ClientMessage, ErrorCode, PlayerView, ReactionKind, ServerMessage } from '../../shared/protocol.ts';
 import { clientIp } from '../client-ip.ts';
 import type { Games, GamesEvent } from '../game/games.ts';
 import type { Lobby } from '../game/lobby.ts';
@@ -22,6 +22,7 @@ export const REALTIME_LIMITS = {
   maxPayloadBytes: 4096,
   connectionsPerIp: 30,
   messagesPerSecond: 20,
+  reactionsPerSecond: 1, // per player; more are dropped without a strike
   strikes: 5,
   helloTimeoutMs: 10_000,
   heartbeatMs: 15_000,
@@ -72,6 +73,7 @@ export class Realtime {
   readonly #wss = new WebSocketServer({ noServer: true, maxPayload: REALTIME_LIMITS.maxPayloadBytes });
   readonly #connections = new Set<Connection>();
   readonly #bySeat = new Map<string, Connection>(); // by player id
+  readonly #reactions: RateLimit;
   readonly #registry: LobbyRegistry;
   readonly #games: Games;
   readonly #allowedOrigins: readonly string[];
@@ -87,6 +89,7 @@ export class Realtime {
     this.#trustedHops = trustedHops;
     this.#log = log;
     this.#now = now;
+    this.#reactions = new RateLimit(REALTIME_LIMITS.reactionsPerSecond, 1000, now);
     server.on('upgrade', (req: IncomingMessage, socket: Duplex, head: Buffer) => this.#upgrade(req, socket, head));
     registry.subscribe((event) => this.#onRegistryEvent(event));
     games.subscribe((event) => this.#onGamesEvent(event));
@@ -226,6 +229,12 @@ export class Realtime {
         return this.#games.answer(seat, message.roundId, message.option, median(connection.roundTrips));
       case 'round:skip':
         return this.#report(connection, this.#games.skip(seat));
+      case 'clip:report':
+        return this.#games.report(seat, message.number, message.reason);
+      case 'reaction':
+        return this.#react(seat, message.kind);
+      case 'player:icon':
+        return this.#report(connection, this.#registry.setIcon(seat, message.icon));
     }
   }
 
@@ -281,13 +290,26 @@ export class Realtime {
   }
 
   #playerViews(lobby: Lobby): PlayerView[] {
-    return lobby.players.map(({ id, name, connectedSince }) => ({
+    return lobby.players.map(({ id, name, icon, connectedSince }) => ({
       id,
       name,
+      icon,
       connected: connectedSince !== null,
       spectating: this.#games.spectating(lobby.code, id),
       score: this.#games.score(lobby.code, id),
     }));
+  }
+
+  // A reaction goes to everyone in the lobby, the sender too, outside a round's answering and at most once a
+  // second per player.
+  #react(seat: Seat, kind: ReactionKind): void {
+    const lobby = this.#registry.lobby(seat.code);
+    if (!lobby || this.#games.answering(seat.code) || !this.#reactions.take(seat.playerId)) return;
+    const message: ServerMessage = { type: 'reaction', playerId: seat.playerId, kind };
+    for (const player of lobby.players) {
+      const connection = this.#bySeat.get(player.id);
+      if (connection) send(connection, message);
+    }
   }
 
   #broadcast(lobby: Lobby): void {
@@ -304,6 +326,10 @@ export class Realtime {
       pool: this.#registry.pool(lobby),
       bounds: this.#registry.bounds,
       game: this.#games.view(code),
+      tally: this.#games.tally(
+        code,
+        lobby.players.map((player) => player.id),
+      ),
     };
     for (const connection of connections) {
       send(connection, { type: 'lobby:state', ...shared, you: connection.seat?.playerId ?? '' });

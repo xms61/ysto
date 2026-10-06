@@ -24,7 +24,10 @@ RUN apk add --no-cache ffmpeg tini  && rm -rf /usr/local/lib/node_modules/npm /u
 WORKDIR /app
 ENV NODE_ENV=production \
     YSTO_AUDIO_DIR=/data/audio \
-    YSTO_CATALOG_DIR=/data/catalog
+    YSTO_CATALOG_DIR=/data/catalog \
+    YSTO_STATE_DIR=/data/state
+# The state volume's mount point, owned by node, so a new named volume starts out writable for the server.
+RUN mkdir -p /data/state && chown node:node /data/state
 COPY package.json ./
 COPY --from=deps /app/node_modules node_modules
 COPY server server
@@ -32,6 +35,8 @@ COPY shared shared
 # The clip benchmark, so the host's clip timing can be measured in the image that serves the game.
 COPY scripts/clips/bench.ts scripts/clips/
 COPY scripts/catalog/cli.ts scripts/catalog/
+# The owner's list of clip reports, run in the image that keeps them.
+COPY scripts/clip-reports scripts/clip-reports
 COPY --from=build /app/dist dist
 USER node
 EXPOSE 3000

@@ -18,6 +18,7 @@ import { Realtime } from '../../server/realtime/hub.ts';
 import type { Scheduler } from '../../server/scheduler.ts';
 import type { LobbyState, ServerMessage } from '../../shared/protocol.ts';
 import { syntheticCatalog } from '../game/fixtures.ts';
+import type { ClipReport } from '../../server/reports.ts';
 
 const catalog = syntheticCatalog();
 const WAIT_MS = 2000;
@@ -65,6 +66,7 @@ export interface TestServer {
   games: Games;
   realtime: Realtime;
   scheduler: ManualScheduler;
+  reports: ClipReport[]; // what players reported, in order
   post: (path: string, body: unknown, headers?: Record<string, string>) => Promise<Response>;
   close: () => Promise<void>;
 }
@@ -80,7 +82,10 @@ export async function startServer({
   const registry = new LobbyRegistry({ catalog, maxLobbies: 100, maxPlayers, log, now: scheduler.now });
   const tokens = new ClipTokens(scheduler.now);
   const clips = { cut, tokens };
-  const games = new Games({ registry, catalog, clips, maxGames: 2, scheduler, random: seededRandom(1), log });
+  const reports: ClipReport[] = [];
+  const reportsStore = { add: (report: ClipReport) => void reports.push(report), close: () => {} };
+  const random = seededRandom(1);
+  const games = new Games({ registry, catalog, clips, maxGames: 2, scheduler, random, log, reports: reportsStore });
   const lobbyOfSession = (token: string) => registry.seatOf(token)?.code;
   // The folders hold no client build and no covers, so only the API, the clips and the checks answer.
   const app = createApp({
@@ -111,7 +116,7 @@ export async function startServer({
     await once(server, 'close');
   };
   const wsUrl = `ws://127.0.0.1:${port}/ws`;
-  return { baseUrl, wsUrl, origin: baseUrl, registry, games, realtime, scheduler, post, close };
+  return { baseUrl, wsUrl, origin: baseUrl, registry, games, realtime, scheduler, reports, post, close };
 }
 
 export interface Seat {
@@ -141,13 +146,16 @@ export async function joinLobby(server: TestServer, code: string, name: string):
 export class TestClient {
   readonly socket: WebSocket;
   readonly closed: Promise<{ code: number; reason: string }>;
+  readonly received: ServerMessage[] = []; // every message so far, in order, whether next() took it or not
   readonly #queue: ServerMessage[] = [];
   #wake: () => void = () => {};
 
   constructor(url: string, options: ClientOptions) {
     this.socket = new WebSocket(url, options);
     this.socket.on('message', (data) => {
-      this.#queue.push(JSON.parse(String(data)) as ServerMessage);
+      const message = JSON.parse(String(data)) as ServerMessage;
+      this.received.push(message);
+      this.#queue.push(message);
       this.#wake();
     });
     this.closed = new Promise((resolve) => {

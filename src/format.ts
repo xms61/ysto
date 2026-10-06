@@ -27,6 +27,10 @@ export function points(value: number): string {
   return value > 0 ? `+${score(value)}` : score(value);
 }
 
+export function wins(count: number): string {
+  return count === 1 ? '1 win' : `${count} wins`;
+}
+
 export function seconds(ms: number): string {
   return `${(ms / 1000).toFixed(1)} s`;
 }

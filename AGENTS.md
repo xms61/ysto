@@ -44,6 +44,7 @@ This file is the map, not the manual. The repository is the system of record: wh
 | One test file | `node --test tests/server/app.test.ts` |
 | Browser tests (smoke, clip decode, a whole game) | `npm run build && npm run test:e2e` (needs ffmpeg) |
 | Clip timing | `npm run clips:bench` (reads the real library) |
+| Clip reports | `npm run reports` (reads `YSTO_STATE_DIR`'s `reports.sqlite` and the catalog) |
 | Load test | `npm run load` against `node e2e/fixture-server.ts` (25 lobbies of 8 bots; never against a server players use) |
 | Catalog | `npm run catalog:build`, then `npm run catalog:check` (all steps: [CATALOG.md](scripts/catalog/CATALOG.md)) |
 | Image | `docker build -t ysto .`; releases and the VPS: [DEPLOY.md](docs/DEPLOY.md) |

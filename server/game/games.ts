@@ -1,7 +1,7 @@
 // Runs the lobbies' games (docs/product-specs/game-flow.md). It starts a game for the host, feeds the engine
 // its events, and carries out the engine's effects: timers on the scheduler, each clip cut a round ahead,
 // clip tokens, and messages through its listener, the realtime layer.
-import type { ErrorCode, GameView, ServerMessage } from '../../shared/protocol.ts';
+import type { ErrorCode, GameView, ReportReason, ServerMessage, TallyView } from '../../shared/protocol.ts';
 import type { Catalog } from '../catalog/load.ts';
 import type { CutClip } from '../clips/cut.ts';
 import { prepareClip } from '../clips/prepare.ts';
@@ -17,6 +17,7 @@ import { buildGame, replacementQuestion } from './questions.ts';
 import type { Question } from './questions.ts';
 import type { Random } from './random.ts';
 import type { LobbyRegistry, RegistryEvent, Seat } from './registry.ts';
+import type { Reports } from '../reports.ts';
 
 // A clip token whose reveal never comes (the game ended early) still expires after this long.
 const CLIP_TOKEN_MAX_MS = 10 * 60_000;
@@ -26,6 +27,7 @@ interface Run {
   game: Game;
   timers: Map<string, () => void>; // cancel functions, by timer name and round
   known: Map<string, boolean>; // the lobby's players as the game last saw them, and whether connected
+  reported: Set<string>; // player and round number of each clip report, so a player reports a clip once
 }
 
 export type GamesEvent =
@@ -40,6 +42,13 @@ export interface GamesOptions {
   scheduler: Scheduler;
   random: Random;
   log: Logger;
+  reports: Reports;
+}
+
+// A lobby's games so far, and each player's wins and points across them.
+interface Tally {
+  games: number;
+  players: Map<string, { wins: number; points: number }>;
 }
 
 function connectionsOf(lobby: Lobby): Map<string, boolean> {
@@ -50,6 +59,7 @@ export class Games {
   readonly #options: GamesOptions;
   readonly #runs = new Map<string, Run>();
   readonly #played = new Map<string, Set<number>>(); // theme ids each lobby has played
+  readonly #tallies = new Map<string, Tally>();
   #listener: (event: GamesEvent) => void = () => {};
 
   constructor(options: GamesOptions) {
@@ -77,6 +87,23 @@ export class Games {
     return run !== undefined && !run.game.finished && !run.game.participants.includes(playerId);
   }
 
+  // While a round is being prepared or answered, players can't react, so a reaction can't point at an option.
+  answering(code: string): boolean {
+    const phase = this.#runs.get(code)?.game.round?.phase;
+    return this.running(code) && (phase === 'preparing' || phase === 'playing');
+  }
+
+  // The tally of the lobby's finished games, for the players still in it.
+  tally(code: string, playerIds: string[]): TallyView | null {
+    const tally = this.#tallies.get(code);
+    if (!tally) return null;
+    const players = playerIds.flatMap((playerId) => {
+      const line = tally.players.get(playerId);
+      return line ? [{ playerId, ...line }] : [];
+    });
+    return { games: tally.games, players };
+  }
+
   score(code: string, playerId: string): number {
     const run = this.#runs.get(code);
     return run ? scoreOf(run.game, playerId) : 0;
@@ -98,7 +125,7 @@ export class Games {
     const away = players.filter((id) => !known.get(id));
     const started = startGame({ id: newToken().slice(0, 8), settings: lobby.settings, questions, players, away });
     this.#runs.get(lobby.code)?.timers.forEach((cancel) => cancel());
-    const run: Run = { code: lobby.code, game: started.game, timers: new Map(), known };
+    const run: Run = { code: lobby.code, game: started.game, timers: new Map(), known, reported: new Set() };
     this.#runs.set(lobby.code, run);
     log.info('game.started', { code: lobby.code, rounds: questions.length });
     this.#listener({ type: 'lobby-changed', code: lobby.code });
@@ -112,6 +139,21 @@ export class Games {
 
   answer(seat: Seat, roundId: string, option: number, rttMs: number): void {
     this.#step(seat.code, { type: 'answer', playerId: seat.playerId, roundId, option, rttMs });
+  }
+
+  // A report of a round the lobby's current or last game has revealed. Each player reports a clip once; a
+  // second report, or one of a round not yet revealed, is dropped without a word.
+  report(seat: Seat, number: number, reason: ReportReason): void {
+    const run = this.#runs.get(seat.code);
+    const key = `${seat.playerId}:${number}`;
+    if (!run || run.reported.has(key)) return;
+    const index = run.game.songs.findIndex((song) => song.number === number);
+    const themeId = run.game.playedThemeIds[index];
+    const question = run.game.questions.find((candidate) => candidate.themeId === themeId);
+    if (index < 0 || !question) return;
+    run.reported.add(key);
+    const at = this.#options.scheduler.now();
+    this.#options.reports.add({ at, themeId: question.themeId, startMs: question.clip.startMs, reason });
   }
 
   skip(seat: Seat): ErrorCode | null {
@@ -180,8 +222,26 @@ export class Games {
     const played = this.#played.get(run.code) ?? new Set<number>();
     for (const themeId of run.game.playedThemeIds) played.add(themeId);
     this.#played.set(run.code, played);
+    this.#count(run);
     this.#options.log.info('game.finished', { code: run.code, rounds: run.game.played - run.game.dropped });
     this.#listener({ type: 'lobby-changed', code: run.code });
+  }
+
+  // Adds a finished game to the lobby's tally, unless no round could be played. Everyone on the top score
+  // wins, if it is above zero.
+  #count(run: Run): void {
+    const results = gameView(run.game).results ?? [];
+    if (gameView(run.game).rounds === 0 || results.length === 0) return;
+    const tally = this.#tallies.get(run.code) ?? { games: 0, players: new Map() };
+    const top = Math.max(...results.map((result) => result.score));
+    tally.games++;
+    for (const { playerId, score } of results) {
+      const line = tally.players.get(playerId) ?? { wins: 0, points: 0 };
+      line.points += score;
+      if (score === top && top > 0) line.wins++;
+      tally.players.set(playerId, line);
+    }
+    this.#tallies.set(run.code, tally);
   }
 
   #onRegistryEvent(event: RegistryEvent): void {
@@ -189,6 +249,7 @@ export class Games {
       this.#runs.get(event.code)?.timers.forEach((cancel) => cancel());
       this.#runs.delete(event.code);
       this.#played.delete(event.code);
+      this.#tallies.delete(event.code);
     } else if (event.type === 'changed' && this.running(event.lobby.code)) {
       this.#syncPlayers(event.lobby);
     }

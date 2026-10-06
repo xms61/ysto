@@ -12,6 +12,7 @@ const SERVER_TYPES = [
   'round:pick',
   'round:reveal',
   'game:results',
+  'reaction',
   'time:pong',
   'error',
   'server:closing',

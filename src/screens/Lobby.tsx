@@ -4,6 +4,8 @@ import { useState } from 'react';
 import type { LobbyState } from '../../shared/protocol.ts';
 import type { LobbySettings } from '../../shared/settings.ts';
 import { PlayerList } from '../components/PlayerList.tsx';
+import { IconPicker } from '../components/IconPicker.tsx';
+import { ReactionBar } from '../components/Reactions.tsx';
 import { QrCode } from '../components/QrCode.tsx';
 import { SettingsForm } from '../components/SettingsForm.tsx';
 import { SettingsSummary } from '../components/SettingsSummary.tsx';
@@ -99,6 +101,13 @@ export function Lobby({ store, lobby, settings, isHost }: LobbyProps) {
           onKick={isHost ? (playerId) => store.kick(playerId) : null}
           showScores={lobby.game !== null}
         />
+        <IconPicker store={store} lobby={lobby} />
+        <ReactionBar store={store} />
+        {lobby.tally && (
+          <p className="mt-2 text-sm text-muted">
+            {lobby.tally.games === 1 ? '1 game' : `${lobby.tally.games} games`} played in this lobby
+          </p>
+        )}
         {isHost ? (
           <label className="mt-3 flex items-center gap-2">
             <input

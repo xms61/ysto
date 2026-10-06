@@ -87,6 +87,21 @@ test('plays a whole game over the sockets, from the host start to the results', 
       results.standings.map((standing) => standing.score).sort(),
     );
     assert.deepEqual(over.game?.results, results.standings, 'the lobby state carries the results for reconnects');
+    const top = Math.max(...results.standings.map((standing) => standing.score));
+    assert.deepEqual(over.tally, {
+      games: 1,
+      players: over.players.map((player) => {
+        const points = results.standings.find((standing) => standing.playerId === player.id)?.score ?? 0;
+        return { playerId: player.id, wins: points === top && top > 0 ? 1 : 0, points };
+      }),
+    });
+    benClient.send({ type: 'lobby:leave' });
+    const without = await annClient.state((state) => state.players.length === 1);
+    assert.deepEqual(
+      without.tally?.players.map((line) => line.playerId),
+      [ann.playerId],
+      'a player who leaves takes their line',
+    );
   });
 });
 
@@ -122,6 +137,62 @@ test('with answer changes on, sends a switch to the others and runs the overtime
         [ben.playerId, 1],
       ],
     );
+  });
+});
+
+test('keeps one report per player for each revealed clip, and none for a round not yet revealed', async () => {
+  await withServer(async (server) => {
+    const { annClient, benClient } = await twoPlayerLobby(server);
+    annClient.send({ type: 'game:start' });
+    const prepare = await nextOf(annClient, 'round:prepare');
+    for (const client of [annClient, benClient])
+      client.send({ type: 'round:ready', roundId: prepare.roundId, loaded: true });
+    const start = await nextOf(annClient, 'round:start');
+    server.scheduler.advance(start.startsAt - server.scheduler.now() + 1000);
+    annClient.send({ type: 'clip:report', number: 1, reason: 'silent' });
+    for (const client of [annClient, benClient]) client.send({ type: 'answer', roundId: start.roundId, option: 0 });
+    await nextOf(annClient, 'round:reveal');
+    annClient.send({ type: 'clip:report', number: 1, reason: 'bad-cut' });
+    annClient.send({ type: 'clip:report', number: 1, reason: 'other' });
+    annClient.send({ type: 'clip:report', number: 2, reason: 'silent' });
+    benClient.send({ type: 'clip:report', number: 1, reason: 'wrong-song' });
+    for (const client of [annClient, benClient]) {
+      client.send({ type: 'time:ping', clientTime: 1 });
+      await nextOf(client, 'time:pong');
+    }
+    assert.deepEqual(
+      server.reports.map((report) => report.reason),
+      ['bad-cut', 'wrong-song'],
+    );
+    assert.ok(server.reports.every((report) => report.themeId > 0 && report.startMs >= 0));
+  });
+});
+
+test('sends reactions to the whole lobby, once a second per player, and never while a round takes answers', async () => {
+  await withServer(async (server) => {
+    const { ann, annClient, benClient } = await twoPlayerLobby(server);
+    const flush = async () => {
+      for (const client of [annClient, benClient]) {
+        client.send({ type: 'time:ping', clientTime: 1 });
+        await nextOf(client, 'time:pong');
+      }
+    };
+    annClient.send({ type: 'reaction', kind: 'hype' });
+    annClient.send({ type: 'reaction', kind: 'laugh' });
+    await flush();
+    for (const client of [annClient, benClient]) {
+      const reactions = client.received.filter((message) => message.type === 'reaction');
+      assert.deepEqual(reactions, [{ type: 'reaction', playerId: ann.playerId, kind: 'hype' }]);
+    }
+    annClient.send({ type: 'game:start' });
+    const prepare = await nextOf(annClient, 'round:prepare');
+    benClient.send({ type: 'reaction', kind: 'shock' });
+    for (const client of [annClient, benClient])
+      client.send({ type: 'round:ready', roundId: prepare.roundId, loaded: true });
+    await nextOf(benClient, 'round:start');
+    benClient.send({ type: 'reaction', kind: 'clap' });
+    await flush();
+    assert.equal(annClient.received.filter((message) => message.type === 'reaction').length, 1);
   });
 });
 

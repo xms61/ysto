@@ -43,7 +43,7 @@ Every external input is validated once, at the boundary ([CODE_STYLE.md](CODE_ST
 - **The running server calls no third-party service.** Covers and fonts are served from our own origin, so players' browsers talk only to it.
 
 ## User data
-Nothing about players is stored on disk. Names and session tokens live in memory for as long as the lobby lasts. Logs never contain session tokens, clip tokens or player names, and IP addresses stay in memory for rate limiting only. There are no accounts, cookies or analytics.
+Nothing about players is stored on disk. The one thing the game writes is a clip report (`server/reports.ts`): the theme, where its clip started, a fixed reason and the time, with no name, address, session or lobby code, and no free text to moderate. A player reports each clip of a game once. Names and session tokens live in memory for as long as the lobby lasts. Logs never contain session tokens, clip tokens or player names, and IP addresses stay in memory for rate limiting only. There are no accounts, cookies or analytics.
 
 ## Review
 The 1.0 review (2026-10-05), against this doc and the running VPS. No high or critical findings.

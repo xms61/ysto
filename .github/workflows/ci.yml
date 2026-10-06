@@ -142,6 +142,18 @@ jobs:
           exit 1
       - name: Clips cut in the image
         run: docker run --rm $HARDENING $FIXTURE ysto:ci node scripts/clips/bench.ts --count 3 --length 10
+      - name: Reports kept in the state volume
+        run: |
+          docker volume create ysto-ci-state
+          STATE="-v ysto-ci-state:/data/state"
+          docker run --rm $HARDENING $FIXTURE $STATE ysto:ci node --input-type=module -e "
+            const { openReports } = await import('./server/reports.ts');
+            const { createLogger } = await import('./server/log.ts');
+            const reports = openReports('/data/state', createLogger('error'));
+            reports.add({ at: 1, themeId: 1, startMs: 0, reason: 'silent' });
+            reports.close();"
+          docker run --rm $HARDENING $FIXTURE $STATE ysto:ci node scripts/clip-reports/list.ts | tee "$RUNNER_TEMP/reports.txt"
+          grep -q '^1 reports on 1 clips' "$RUNNER_TEMP/reports.txt"
       - name: No audio, database or .env file in the image
         run: |
           # Root, so find can read every folder; the server itself runs as node.

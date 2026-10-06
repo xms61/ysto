@@ -1,8 +1,8 @@
 // The protocol (docs/design-docs/system-design.md#decision): the HTTP bodies, the messages each side sends
 // over the socket, the error and close codes, and one validator per message the server receives.
-import { validateSettings } from './settings.ts';
+import { LIMITS, validateSettings } from './settings.ts';
 import type { LobbySettings, SettingsBounds, ThemeKind, TitleLanguage } from './settings.ts';
-import { hasKeys, isIntegerIn, isRecord } from './validate.ts';
+import { hasKeys, isIntegerIn, isOneOf, isRecord } from './validate.ts';
 
 // A raw name longer than this can't clean down to a valid one worth keeping.
 const RAW_NAME_MAX = 200;
@@ -43,7 +43,8 @@ export type ErrorCode =
   | 'cannot-kick-self'
   | 'game-running'
   | 'pool-too-small'
-  | 'server-busy';
+  | 'server-busy'
+  | 'icon-taken';
 
 // Why the server closed a socket. The 4000s are this protocol's own.
 export const CLOSE_CODES = {
@@ -76,7 +77,41 @@ export type ClientMessage =
   | { type: 'game:start' }
   | { type: 'round:ready'; roundId: string; loaded: boolean }
   | { type: 'answer'; roundId: string; option: number }
-  | { type: 'round:skip' };
+  | { type: 'round:skip' }
+  | { type: 'clip:report'; number: number; reason: ReportReason }
+  | { type: 'reaction'; kind: ReactionKind }
+  | { type: 'player:icon'; icon: PlayerIcon };
+
+// Each player's mark (docs/product-specs/lobby.md): an animal, drawn the same in every theme, that stamps their
+// picks at the reveal. Two players in a lobby share one only once all are taken.
+export const PLAYER_ICONS = [
+  'fox',
+  'cat',
+  'owl',
+  'frog',
+  'panda',
+  'rabbit',
+  'bear',
+  'penguin',
+  'tanuki',
+  'octopus',
+  'crane',
+  'koi',
+  'dog',
+  'turtle',
+  'hamster',
+  'chick',
+] as const;
+export type PlayerIcon = (typeof PLAYER_ICONS)[number];
+
+// What a player can react with, outside a round's answering (docs/product-specs/lobby.md): a fixed set,
+// drawn as icons, with no free text.
+export const REACTION_KINDS = ['hype', 'laugh', 'shock', 'facepalm', 'heart', 'clap'] as const;
+export type ReactionKind = (typeof REACTION_KINDS)[number];
+
+// Why a player reports a round's clip: fixed reasons, no free text, so nothing needs moderating.
+export const REPORT_REASONS = ['silent', 'wrong-song', 'bad-cut', 'other'] as const;
+export type ReportReason = (typeof REPORT_REASONS)[number];
 
 function parseRecord(text: string): Record<string, unknown> | null {
   try {
@@ -118,6 +153,17 @@ export function parseClientMessage(text: string, bounds: SettingsBounds): Client
   if (type === 'round:ready' && hasKeys(value, ['type', 'roundId', 'loaded']) && isRoundId(value.roundId)) {
     return typeof value.loaded === 'boolean' ? { type, roundId: value.roundId, loaded: value.loaded } : null;
   }
+  if (type === 'player:icon' && hasKeys(value, ['type', 'icon'])) {
+    return isOneOf(value.icon, PLAYER_ICONS) ? { type, icon: value.icon } : null;
+  }
+  if (type === 'reaction' && hasKeys(value, ['type', 'kind'])) {
+    return isOneOf(value.kind, REACTION_KINDS) ? { type, kind: value.kind } : null;
+  }
+  if (type === 'clip:report' && hasKeys(value, ['type', 'number', 'reason'])) {
+    const { number, reason } = value;
+    const valid = isIntegerIn(number, 1, LIMITS.songsPerGame.max) && isOneOf(reason, REPORT_REASONS);
+    return valid ? { type, number, reason } : null;
+  }
   if (type === 'answer' && hasKeys(value, ['type', 'roundId', 'option']) && isRoundId(value.roundId)) {
     return isIntegerIn(value.option, 0, 3) ? { type, roundId: value.roundId, option: value.option } : null;
   }
@@ -150,6 +196,7 @@ export type PlayedSong = Omit<RevealDetails, 'cover'> & { number: number; skippe
 export interface PlayerView {
   id: string;
   name: string;
+  icon: PlayerIcon;
   connected: boolean;
   spectating: boolean; // joined during a game: plays from the next round
   score: number;
@@ -165,6 +212,13 @@ export interface GameView {
   songs: PlayedSong[] | null; // with the results: the songs in the order they played
 }
 
+// The lobby's tally across its games: how many were played, and each player's wins (a shared first place
+// counts for each) and points. Players who left are not in it.
+export interface TallyView {
+  games: number;
+  players: { playerId: string; wins: number; points: number }[];
+}
+
 // Sent to each player whenever the lobby changes. `you` is the receiving player.
 export interface LobbyState {
   type: 'lobby:state';
@@ -178,6 +232,7 @@ export interface LobbyState {
   pool: { themes: number; anime: number };
   bounds: SettingsBounds;
   game: GameView | null;
+  tally: TallyView | null; // null until the lobby finishes a game
 }
 
 export interface Pick {
@@ -222,6 +277,7 @@ export type ServerMessage =
   | { type: 'round:pick'; roundId: string; option: number }
   | RoundReveal
   | { type: 'game:results'; standings: ResultView[] }
+  | { type: 'reaction'; playerId: string; kind: ReactionKind }
   | { type: 'time:pong'; clientTime: number; serverTime: number }
   | { type: 'error'; code: ErrorCode }
   | { type: 'server:closing' };

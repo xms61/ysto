@@ -3,12 +3,15 @@
 // to 4 answer too. With answer changes on, the cards stay open after a pick, and once everyone has answered
 // an overtime counts down before the reveal.
 import { useEffect, useState } from 'react';
-import type { CSSProperties } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
 import type { LobbyState } from '../../shared/protocol.ts';
 import { POINTS } from '../../shared/scoring.ts';
 import { answersCanChange } from '../../shared/settings.ts';
 import type { LobbySettings } from '../../shared/settings.ts';
 import { Listening } from '../components/Listening.tsx';
+import { PlayerBadge } from '../components/PlayerIcon.tsx';
+import { ReactionBar } from '../components/Reactions.tsx';
+import { ReportClip } from '../components/ReportClip.tsx';
 import { FaceDownCards, OptionCard } from '../components/OptionCard.tsx';
 import type { CardState } from '../components/OptionCard.tsx';
 import { MODE_LABELS } from '../components/SettingsForm.tsx';
@@ -23,9 +26,9 @@ import { FocusLines } from '../components/FocusLines.tsx';
 import { Nipper } from '../components/Nipper.tsx';
 import { Pennants } from '../components/Pennants.tsx';
 import { Segments } from '../components/Segments.tsx';
-import { Stage } from '../components/Stage.tsx';
+import { RoundBody, Stage } from '../components/Stage.tsx';
 import { ConfirmButton, Panel } from '../components/ui.tsx';
-import { optionTitle } from '../format.ts';
+import { optionTitle, score } from '../format.ts';
 import type { TitleLanguages } from '../format.ts';
 import { motionAllowed, usePagePhase, useReached, useTicker } from '../hooks.ts';
 import type { ClientRound, RoundStart } from '../realtime/game-state.ts';
@@ -49,6 +52,7 @@ interface RoundProps {
   lobby: LobbyState;
   round: ClientRound | null;
   titles: TitleLanguages;
+  reported: number[]; // the rounds whose clip this player reported
   isHost: boolean;
   clip: ClipStatus | null; // this player's clip for the round in progress
 }
@@ -107,13 +111,20 @@ export function Round(props: RoundProps) {
 // every second.
 function Countdown({ store, startsAt }: { store: GameStore; startsAt: number }) {
   const now = useTicker(store.serverNow, TICK_MS);
+  return <CountdownFace seconds={Math.max(1, Math.ceil((startsAt - now) / 1000))} />;
+}
+
+// The countdown's digits, with "Get ready" beside them unless it's the stage's hidden copy, which only needs
+// their height.
+function CountdownFace({ seconds, labelled = true }: { seconds: number; labelled?: boolean }) {
   const { readout } = useStage();
-  const seconds = Math.max(1, Math.ceil((startsAt - now) / 1000));
   return (
     <p className="flex items-baseline gap-4">
-      <span aria-live="polite" className="text-muted">
-        Get ready
-      </span>
+      {labelled && (
+        <span aria-live="polite" className="text-muted">
+          Get ready
+        </span>
+      )}
       {readout === 'segments' ? (
         <span className="readout countdown-readout">
           <Segments value={seconds} digits={2} />
@@ -292,7 +303,7 @@ function statusLine(spectating: boolean, answered: boolean, canSwitch: boolean, 
   return null;
 }
 
-function Answering({ store, lobby, round, start, titles, clip }: AnsweringProps) {
+function Answering({ store, lobby, round, start, titles, clip, ghost }: AnsweringProps & { ghost: ReactNode }) {
   const now = useTicker(store.serverNow, TICK_MS);
   const spectating = lobby.players.find((player) => player.id === lobby.you)?.spectating ?? false;
   const answered = round.choice !== null || round.answeredIds.includes(lobby.you);
@@ -354,7 +365,67 @@ function Answering({ store, lobby, round, start, titles, clip }: AnsweringProps)
       </div>
     </>
   );
-  return <Stage slot={slot} cards={cards} below={below} />;
+  return (
+    <RoundBody
+      main={<Stage slot={slot} ghost={ghost} cards={cards} below={below} />}
+      side={<LiveScores lobby={lobby} round={round} />}
+    />
+  );
+}
+
+// The slot at its tallest, for the stage to hold that height in every phase, so the cards never move: the
+// countdown, and the answering slot with the overtime's call when answers can change, laid over each other.
+function TimerGhost({ lobby, clip }: { lobby: LobbyState; clip: ClipStatus | null }) {
+  return (
+    <div className="grid items-end">
+      <div className="flex flex-col justify-end gap-4 [grid-area:1/1]">
+        <Listening status={clip} playing={false} />
+        <CountdownFace seconds={3} labelled={false} />
+      </div>
+      <div className="flex flex-col justify-end gap-4 [grid-area:1/1]">
+        <Listening status={clip} playing={false} />
+        {answersCanChange(lobby.settings) && <OvertimeCall secondsLeft={0} />}
+        <div className="time-left">
+          <TimeLeft elapsed={0} secondsLeft={20} />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// The side column while the round runs: everyone's score so far, and who has answered once the options are
+// out. Who picked what stays hidden until the reveal.
+function LiveScores({ lobby, round }: { lobby: LobbyState; round: ClientRound }) {
+  const players = lobby.players.filter((player) => !player.spectating).sort((a, b) => b.score - a.score);
+  return (
+    <section aria-labelledby="live-scores" className="side-scores">
+      <h3 id="live-scores" className="side-heading">
+        Scores
+      </h3>
+      <ol className="board">
+        {players.map((player) => {
+          const answered = round.start !== null && round.answeredIds.includes(player.id);
+          return (
+            <li
+              key={player.id}
+              className="live-row"
+              data-player={player.id}
+              data-you={player.id === lobby.you || undefined}
+            >
+              <span className="board-name">
+                <PlayerBadge icon={player.icon} />
+                {player.name}
+              </span>
+              <span className="live-state" data-answered={answered || undefined}>
+                {round.start && (answered ? 'answered' : 'thinking')}
+              </span>
+              <span className="board-total">{score(player.score)}</span>
+            </li>
+          );
+        })}
+      </ol>
+    </section>
+  );
 }
 
 interface RoundHeadingProps {
@@ -410,11 +481,12 @@ function LyricHeading({ number, rounds, store, start, revealed }: RoundHeadingPr
   );
 }
 
-function RoundView({ store, lobby, round, titles, isHost, clip }: RoundProps & { round: ClientRound }) {
+function RoundView({ store, lobby, round, titles, reported, isHost, clip }: RoundProps & { round: ClientRound }) {
   const { start, reveal } = round;
   const started = useReached(store.serverNow, start?.startsAt ?? null);
   const solo = lobby.players.length === 1;
   usePagePhase(reveal ? 'reveal' : started ? 'playing' : 'countdown');
+  const ghost = <TimerGhost lobby={lobby} clip={clip} />;
   return (
     <Panel className="round-panel">
       <div className="round-head flex flex-wrap items-center justify-between gap-x-3 gap-y-2">
@@ -425,39 +497,50 @@ function RoundView({ store, lobby, round, titles, isHost, clip }: RoundProps & {
           start={start}
           revealed={reveal !== null}
         />
-        {isHost && !reveal && (
-          <ConfirmButton
-            label="Skip round"
-            question={solo ? 'Skip this round?' : 'Skip this round for everyone?'}
-            onConfirm={() => store.skipRound()}
-          />
+        {/* Kept in place but hidden at the reveal, so the heading keeps its height and the cards their place. */}
+        {isHost && (
+          <div className={reveal ? 'invisible' : undefined}>
+            <ConfirmButton
+              label="Skip round"
+              question={solo ? 'Skip this round?' : 'Skip this round for everyone?'}
+              onConfirm={() => store.skipRound()}
+            />
+          </div>
         )}
       </div>
       <p className="mt-1 text-sm text-muted">{scoringLine(lobby.settings)}</p>
       {reveal ? (
-        <Reveal round={round} reveal={reveal} lobby={lobby} titles={titles} />
-      ) : !start ? (
-        <Stage
-          slot={
+        <Reveal
+          round={round}
+          reveal={reveal}
+          lobby={lobby}
+          titles={titles}
+          ghost={ghost}
+          actions={
             <>
-              <Listening status={clip} playing={false} />
-              <p aria-live="polite">Get ready…</p>
+              <ReactionBar store={store} />
+              <ReportClip store={store} number={round.number} reported={reported.includes(round.number)} />
             </>
           }
-          cards={<FaceDownCards />}
         />
-      ) : !started ? (
-        <Stage
-          slot={
-            <>
-              <Listening status={clip} playing={false} />
-              <Countdown store={store} startsAt={start.startsAt} />
-            </>
+      ) : !start || !started ? (
+        <RoundBody
+          main={
+            <Stage
+              slot={
+                <>
+                  <Listening status={clip} playing={false} />
+                  {start ? <Countdown store={store} startsAt={start.startsAt} /> : <p aria-live="polite">Get ready…</p>}
+                </>
+              }
+              ghost={ghost}
+              cards={<FaceDownCards />}
+            />
           }
-          cards={<FaceDownCards />}
+          side={<LiveScores lobby={lobby} round={round} />}
         />
       ) : (
-        <Answering store={store} lobby={lobby} round={round} start={start} titles={titles} clip={clip} />
+        <Answering store={store} lobby={lobby} round={round} start={start} titles={titles} clip={clip} ghost={ghost} />
       )}
     </Panel>
   );

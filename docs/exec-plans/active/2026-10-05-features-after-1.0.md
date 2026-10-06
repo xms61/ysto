@@ -1,7 +1,7 @@
 # Features after 1.0
 
 ## Purpose
-Thirteen features the owner picked on 2026-10-05, and a fourteenth added the same day (M15, What's new), from the list after 1.0, built one milestone at a time. When they are done, a group can react to a reveal, look back at the game's songs and play on in the same lobby with a running tally. A host can save their favorite setups and pick from new ways to play: hints, elimination, teams, song title and artist rounds, and typed answers. A solo player can come back every day for the daily challenge and keep a streak going. A living room can put the audio on one TV while phones only answer. Each milestone says how to see it working.
+Thirteen features the owner picked on 2026-10-05, and more added the same day (M15 What's new, M16 large screens, M17 a reveal that fits the screen, M18 the anime log, M19 player icons as stamps), from the list after 1.0, built one milestone at a time. When they are done, a group can react to a reveal, look back at the game's songs and play on in the same lobby with a running tally. A host can save their favorite setups and pick from new ways to play: hints, elimination, teams, song title and artist rounds, and typed answers. A solo player can come back every day for the daily challenge and keep a streak going. A living room can put the audio on one TV while phones only answer. Each milestone says how to see it working.
 
 Not in this plan, by the owner's choice: importing AniList or MyAnimeList lists, and translations of the interface.
 
@@ -45,6 +45,30 @@ Each milestone is one PR on a `feat/…` branch (two where noted), with a versio
 - **Build:** the notes are written for players in `src/whats-new.ts`, by version, separately from the CHANGELOG, which is written for developers. A version with nothing a player would notice has no note, and then nothing shows. The device keeps the last version it saw under `ysto_seen_version`. Coming back after several versions shows the newest three lines across them.
 - **Tests:** shown once for a newer version with notes; not on a first visit, not for a version without notes, never during a round; storage that is blocked doesn't show it on every load.
 
+#### M16 Large screens (S, added 2026-10-05)
+- **Why:** the owner's 4K screen showed the round as a small panel in the middle: every size is fixed in rem from a 16px root, so a large screen only adds empty space.
+- **Behavior:** past 1920 x 1080 the page scales with the window, to twice the size on a 4K screen; up to 1080p nothing changes. Phones and the breakpoints are untouched.
+- **Build:** one rule on `html`, scaling the root font size by the smaller of width and height; rem media queries keep the browser's size.
+- **Tests:** screenshots at 375 x 812, 1920 x 1080, 2560 x 1440 and 3840 x 2160 (root 16, 16, 21.3 and 32 px).
+
+#### M17 A reveal that fits the screen (M, added 2026-10-05)
+- **Why (owner):** the points sat below the cards, so players scrolled; the picks were hard to see; the cards jumped when the round ended.
+- **Behavior:** the cards never move between the countdown, the round, the overtime and the reveal: the space above them keeps the height of the timer, and the verdict takes the timer's place. From 64rem wide the round gets a side column beside the cards, there for the whole round: the scores with who has answered, then at the reveal the answer, the scoreboard with each player's pick and points, the reactions and the report. Below 64rem the same parts follow the cards, as now. Who picked what sits on each card's bottom edge as larger name chips, the player's own in the accent, and each scoreboard row names the option the player picked.
+- **Build:** `Stage` lays a hidden copy of the round's timer (with the overtime call when answers can change) under whatever fills the space above the cards, so it always takes the timer's height. A `RoundBody` puts the main column and the side column side by side from 64rem, and the page widens to 72rem for a round there. The pickers overlay the card's bottom edge instead of adding a row.
+- **Tests:** client tests for the side scores and the pick column; the first card's position measured in every world at the countdown, the round and the reveal (equal on a 375 x 812 phone and a 1280 x 800 laptop), and the reveal's bottom edge on the laptop (inside the window).
+- **Built differently:** on a phone the cards no longer sit at the foot of the first screen. Pinned there, a card that grew (a wrapped title, the turned card) moved the whole row up; now they hang under the timer like on a desktop. From 40rem the cards' height follows the window's, so a 1280 x 800 laptop shows both rows.
+
+#### M19 Player icons as stamps (M, added 2026-10-05)
+- **Why (owner):** names under the cards are still easy to miss; a picture reads at a glance.
+- **Behavior:** in the lobby each player picks an icon from a set of animals (fox, cat, owl, frog, panda, rabbit, bear, penguin, tanuki, octopus, crane, koi and so on), drawn for this game and the same in every world. A player who joins gets a free one at random, and two players in a lobby never share one. At the reveal each pick lands on its card's bottom right corner as that player's stamp, tilted a little, the player's own ringed in the accent, with the name for screen readers and on hover. The icon also marks the player in the lobby's list, the scores beside the round, the bill at the results and their reactions.
+- **Build:** `PlayerView.icon`; `player:icon { icon }` from the player, refused when taken (`icon-taken`); the registry hands out a free icon on join. The stamps replace the name chips, in the same place on the card's edge, so the cards still keep still. Original SVGs in two inks, the stamp's paper and ink (`--stamp-paper`, `--stamp-ink`), the same in every theme as the owner asked, so a stamp reads as the player's on any world's cards. The free animal on join is picked by the player's random id, which keeps `addPlayer` pure. The name chips under the cards, and their per-world styles, are gone.
+- **Tests:** registry (a free icon on join, refused when taken, freed on leave), protocol, client (the picker in the lobby, stamps at the reveal), screenshots in every world.
+
+#### M18 The anime log (M, added 2026-10-05)
+- **Behavior:** a "Your games" screen from the home screen: each game this device played, newest first, with its date, the player's place and score, and the songs. A second view, "Anime log", lists every anime the player has heard, how often, and how often they got it right, with links to AnimeThemes, so a player can look up the shows they missed. "Clear the log" empties it.
+- **Build:** device storage only (`ysto_history`), written from the results' songs and standings when a game ends, capped at the last 100 games. No accounts and nothing on the server, like the daily streak.
+- **Tests:** writing, the cap, blocked storage, the anime counts, clearing.
+
 #### M2 The game's songs at the results (S)
 - **Behavior:** below the standings, a "Songs this game" list: round number, the anime in the player's title languages, OP or ED and its number, song title and artists, and a link to the anime on AnimeThemes (`https://animethemes.moe/anime/<slug>`, new tab, `rel="noreferrer"`). A player who reconnects to the results sees it too.
 - **Build:** load `anime.slug` in `server/catalog/load.ts`; the engine keeps each played round's reveal details; `game:results` and the results kept in `gameView` carry them. No catalog schema change.
@@ -52,13 +76,13 @@ Each milestone is one PR on a `feat/…` branch (two where noted), with a versio
 
 #### M3 Report a broken clip (S)
 - **Behavior:** at the reveal and in the song list, "Report this clip" with fixed reasons: silent or too quiet, wrong song, bad cut, other. No free text, so nothing needs moderating. One report per player per song per lobby; the button then reads "Reported".
-- **Build:** the first writable volume: `ysto_state` mounted at `/data/state` (`YSTO_STATE_DIR`), never renamed once released. Reports go into `reports.sqlite` there: time, theme id, clip offset, reason. No names, addresses or lobby codes. A rate limit per session. `npm run reports` lists them grouped by theme for the owner. DEPLOY.md gets the volume and the command, and the owner copies the new `compose.yml` to the VPS.
+- **Build:** the first writable volume: `ysto_state` mounted at `/data/state` (`YSTO_STATE_DIR`), never renamed once released. Reports go into `reports.sqlite` there: time, theme id, clip offset, reason. No names, addresses or lobby codes. One report per player and round in each game, on top of the socket's message limit (built that way instead of a separate rate limit). `npm run reports` lists them grouped by theme for the owner. DEPLOY.md gets the volume and the command, and the owner copies the new `compose.yml` to the VPS.
 - **Tests:** the route's validation, limits and deduplication on a temp directory; the store; the image check writes a report into its volume.
 - **Later, not here:** an exclusion list the catalog gate reads, built from reports the owner confirms.
 
 #### M4 The lobby's tally (S)
 - **Behavior:** a lobby that plays several games keeps a tally: games played, wins per player (a shared first place counts for everyone in it), and total points. It shows in the lobby and on the results ("Ann has won 2 of 3"). It lasts as long as the lobby. A player who drops keeps their line, and one who leaves takes it with them.
-- **Build:** the registry keeps the tally per lobby and updates it when a game finishes; `lobby:state` carries it.
+- **Build:** `Games` keeps the tally per lobby, next to the themes it has played, and updates it when a game finishes; `lobby:state` carries it for the players still in the lobby. Everyone on the top score wins, if it is above zero.
 - **Tests:** registry (wins, ties, leave, drop), client.
 
 #### M5 Reactions (S)
@@ -124,10 +148,14 @@ Each milestone is one PR on a `feat/…` branch (two where noted), with a versio
 - [x] 2026-10-05 Features picked and shaped with the owner; plan written
 - [x] 2026-10-05 M1 Stale tabs reload (1.3.0)
 - [x] 2026-10-05 M15 What's new (1.5.0)
+- [x] 2026-10-05 M16 Large screens (1.9.0)
+- [x] 2026-10-05 M17 A reveal that fits the screen (1.10.0)
+- [ ] M18 The anime log
+- [x] 2026-10-05 M19 Player icons as stamps (1.11.0)
 - [x] 2026-10-05 M2 The game's songs at the results (1.4.0)
-- [ ] M3 Report a broken clip
-- [ ] M4 The lobby's tally
-- [ ] M5 Reactions
+- [x] 2026-10-05 M3 Report a broken clip (1.6.0)
+- [x] 2026-10-05 M4 The lobby's tally (1.7.0)
+- [x] 2026-10-05 M5 Reactions (1.8.0)
 - [ ] M6 Saved settings
 - [ ] M7 Sound effects per world
 - [ ] M8 Hints
@@ -142,6 +170,7 @@ Each milestone is one PR on a `feat/…` branch (two where noted), with a versio
 - 2026-10-05: The owner picked thirteen of the fifteen suggestions, leaving out list imports and interface translations. Typed answers become an alternative way to answer, not a replacement for the four options. Hints exist only when the lobby turns them on. The daily challenge shows a streak of the days played in a row.
 - 2026-10-05: The order runs from small changes that improve a session with friends (M1–M6) to sound, then new modes, then the daily and party mode, because a playtest can start after phase 1 and its findings may reshape the modes. Rejected: building the daily first (it needs the most new parts: a seed secret, a solo lobby, device storage).
 - 2026-10-05: The owner added M15, a short "What's new" dialog on a player's first visit after an update. It follows M1, which gives the page its version. Its notes are written for players, apart from the CHANGELOG, because the CHANGELOG is written for developers and is too long for a dialog.
+- 2026-10-05: The owner added M16, large screens, after a 4K screen showed the round too small. The whole page scales from the root font size past 1080p, rather than a separate large layout, because every size is already in rem and the worlds keep their proportions. Rejected: a wider container alone (the type would stay small).
 - 2026-10-05: Stale tabs reload (M1) comes first, because nearly every later milestone changes the settings or the protocol, and the validator refuses an old tab's settings.
 - 2026-10-05: Sound effects are synthesized with Web Audio rather than shipped as files, because files would need licensing and space, and a table per world is easy to tune. Rejected: CC0 sample packs.
 - 2026-10-05: The daily's seed takes a server secret, because the code and the catalog's sources are public. Rejected: a seed from the date alone.

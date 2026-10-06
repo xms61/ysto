@@ -5,6 +5,7 @@ import { randomBytes, randomInt } from 'node:crypto';
 import { CODE_ALPHABET, CODE_LENGTH } from '../../shared/protocol.ts';
 import { defaultSettings } from '../../shared/settings.ts';
 import type { LobbySettings, SettingsBounds } from '../../shared/settings.ts';
+import type { PlayerIcon } from '../../shared/protocol.ts';
 import type { Catalog } from '../catalog/load.ts';
 import type { Logger } from '../log.ts';
 import { newToken } from '../tokens.ts';
@@ -19,6 +20,7 @@ import {
   lockLobby,
   newLobby,
   removePlayer,
+  setIcon,
 } from './lobby.ts';
 import type { HostError, JoinError, Lobby, Outcome } from './lobby.ts';
 import { poolSize, settingsBounds } from './pool.ts';
@@ -145,6 +147,15 @@ export class LobbyRegistry {
 
   lock(seat: Seat, locked: boolean): 'not-host' | null {
     return this.#applyAsHost(seat, (lobby) => lockLobby(lobby, seat.playerId, locked));
+  }
+
+  setIcon(seat: Seat, icon: PlayerIcon): 'icon-taken' | null {
+    const lobby = this.#lobbies.get(seat.code);
+    if (!lobby) return null;
+    const outcome = setIcon(lobby, seat.playerId, icon);
+    if ('error' in outcome) return outcome.error;
+    this.#store(outcome.lobby);
+    return null;
   }
 
   updateSettings(seat: Seat, settings: LobbySettings): 'not-host' | null {

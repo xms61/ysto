@@ -11,6 +11,7 @@ import type { ConnectionStatus, ExitReason, SocketLike } from './connection.ts';
 import { INITIAL_GAME, choose, receive } from './game-state.ts';
 import type { ClientRound, GameState } from './game-state.ts';
 import type { Session } from './session.ts';
+import type { PlayerIcon, ReactionKind, ReportReason } from '../../shared/protocol.ts';
 
 export type NoticeCode = ErrorCode | 'server-closing';
 
@@ -28,6 +29,11 @@ export interface Snapshot {
   settings: LobbySettings | null; // the host's edit on its way to the server, or the lobby's settings
   notice: Notice | null;
   clip: { roundId: string; status: ClipStatus } | null;
+}
+
+export interface Reaction {
+  playerId: string;
+  kind: ReactionKind;
 }
 
 export interface StoreOptions {
@@ -63,6 +69,7 @@ export class GameStore {
   readonly #clock: ServerClock;
   readonly #connection: Connection;
   readonly #listeners = new Set<() => void>();
+  readonly #reactionListeners = new Set<(reaction: Reaction) => void>();
   #game: GameState = INITIAL_GAME;
   #pendingSettings: LobbySettings | null = null;
   #notice: Notice | null = null;
@@ -131,6 +138,10 @@ export class GameStore {
     this.#connection.send({ type: 'player:kick', playerId });
   }
 
+  chooseIcon(icon: PlayerIcon): void {
+    this.#connection.send({ type: 'player:icon', icon });
+  }
+
   setLocked(locked: boolean): void {
     this.#connection.send({ type: 'lobby:lock', locked });
   }
@@ -152,6 +163,23 @@ export class GameStore {
     this.#onExit('left');
   }
 
+  // A clip reported as broken: once per round, and only a round already revealed.
+  reportClip(number: number, reason: ReportReason): void {
+    if (this.#game.reported.includes(number)) return;
+    if (!this.#connection.send({ type: 'clip:report', number, reason })) return;
+    this.#setGame({ ...this.#game, reported: [...this.#game.reported, number] });
+  }
+
+  react(kind: ReactionKind): void {
+    this.#connection.send({ type: 'reaction', kind });
+  }
+
+  // Reactions pass by: listeners hear each one as it arrives, and nothing keeps them.
+  onReaction(listener: (reaction: Reaction) => void): () => void {
+    this.#reactionListeners.add(listener);
+    return () => this.#reactionListeners.delete(listener);
+  }
+
   closeResults(): void {
     this.#setGame({ ...this.#game, resultsClosed: true });
   }
@@ -171,6 +199,9 @@ export class GameStore {
       this.#showNotice(message.code);
     }
     if (message.type === 'server:closing') this.#showNotice('server-closing');
+    if (message.type === 'reaction') {
+      for (const listener of this.#reactionListeners) listener({ playerId: message.playerId, kind: message.kind });
+    }
     this.#publish();
     this.#driveAudio(before, this.#game, message);
   }

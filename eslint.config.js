@@ -15,7 +15,11 @@ const NO_NODE_BUILTINS = {
 const SRC_NOT_SERVER = { regex: '(^|/)server/', message: 'src/ never imports server/; share code through shared/.' };
 const SHARED_ALONE = { regex: '(^|/)(server|src)/', message: 'shared/ imports neither server/ nor src/.' };
 const SERVER_NOT_SRC = { regex: '(^|/)src/', message: 'server/ never imports src/; share code through shared/.' };
-const NO_SQLITE = { name: 'node:sqlite', message: 'Only server/catalog/ and scripts/catalog/ open SQLite.' };
+const NO_SQLITE = {
+  name: 'node:sqlite',
+  message:
+    'Only the catalog (server/catalog/, scripts/catalog/) and the clip reports (server/reports.ts, scripts/clip-reports/) open SQLite.',
+};
 
 export default defineConfig([
   globalIgnores([
@@ -48,16 +52,16 @@ export default defineConfig([
   },
   {
     files: ['server/**/*.ts'],
-    ignores: ['server/catalog/**'],
+    ignores: ['server/catalog/**', 'server/reports.ts'],
     rules: restrictImports({ patterns: [SERVER_NOT_SRC], paths: [NO_SQLITE] }),
   },
   {
-    files: ['server/catalog/**/*.ts'],
+    files: ['server/catalog/**/*.ts', 'server/reports.ts'],
     rules: restrictImports({ patterns: [SERVER_NOT_SRC] }),
   },
   {
     files: ['scripts/**/*.ts'],
-    ignores: ['scripts/catalog/**'],
+    ignores: ['scripts/catalog/**', 'scripts/clip-reports/**'],
     rules: restrictImports({ paths: [NO_SQLITE] }),
   },
   // One place reads env vars, so every variable is validated once and listed in .env.example.

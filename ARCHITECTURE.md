@@ -24,11 +24,12 @@ You Skipped The OP?! is a browser quiz. Players join a lobby with a code, hear a
 - `scripts/`: the repo checks (`check-docs.mjs`, `check-tracked-files.mjs`) and their tests, and `check-plate-contrast.mjs`, which checks the page's text over each theme's backdrop plate ([DESIGN.md](docs/DESIGN.md)).
   - `scripts/catalog/`: the offline catalog build, from AnimeThemes, AniList and the audio library to `catalog.sqlite` ([CATALOG.md](scripts/catalog/CATALOG.md)). It may import `server/config.ts`, `server/catalog/`, the seeded generator in `server/game/random.ts`, and `pool.ts`'s genre threshold.
   - `scripts/clips/bench.ts`: times clip cuts from the real library with the server's cutter. The image ships it, so it also runs on the VPS.
+  - `scripts/clip-reports/`: `npm run reports`, the owner's list of the players' clip reports, which `server/reports.ts` keeps in `YSTO_STATE_DIR`. The image ships it.
   - `scripts/load/`: the load test (`npm run load`): bots that play whole games over the API and sockets against a running server, and the verdict against the targets in [RELIABILITY.md](docs/RELIABILITY.md#performance).
 - `docs/`: the knowledge base ([KNOWLEDGE_BASE.md](docs/KNOWLEDGE_BASE.md)).
 
 ## Layers
-`server/` and `src/` may import `shared/`. `shared/` imports neither of them, nor any Node built-in, and `src/` never imports `server/`. Only `server/catalog/` and `scripts/catalog/` open SQLite (`node:sqlite`). `eslint.config.js` enforces all of this with `no-restricted-imports`, so `npm run lint` fails on a wrong import.
+`server/` and `src/` may import `shared/`. `shared/` imports neither of them, nor any Node built-in, and `src/` never imports `server/`. Only the catalog (`server/catalog/`, `scripts/catalog/`) and the clip reports (`server/reports.ts`, `scripts/clip-reports/`) open SQLite (`node:sqlite`). `eslint.config.js` enforces all of this with `no-restricted-imports`, so `npm run lint` fails on a wrong import.
 
 ## Invariants
 - Only `server/config.ts` reads environment variables. It validates each one at startup, and each one is listed in `.env.example`. ESLint's `no-restricted-properties` rejects `process.env` anywhere else in `server/`, `shared/`, `src/` and the TypeScript scripts.

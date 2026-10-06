@@ -4,6 +4,12 @@
 import { readItem, writeItem } from './storage.ts';
 
 const NOTES: { version: string; lines: string[] }[] = [
+  { version: '1.11.0', lines: ['Pick your animal in the lobby: it stamps your picks at the reveal.'] },
+  { version: '1.10.0', lines: ['The cards stay put at the reveal, and the scores sit beside them on a wide screen.'] },
+  { version: '1.9.0', lines: ['Big screens, such as 4K monitors and TVs, show the game larger.'] },
+  { version: '1.8.0', lines: ['React to a reveal: six reactions rise from your name for everyone to see.'] },
+  { version: '1.7.0', lines: ['Play again in the same lobby: it keeps count of who has won.'] },
+  { version: '1.6.0', lines: ['A clip sounds broken? Report it from the reveal or the song list.'] },
   { version: '1.4.0', lines: ['The results list every song of the game, with a link to AnimeThemes.'] },
   { version: '1.2.0', lines: ['Answers can change until the round closes, if your host turns it on.'] },
   { version: '1.1.0', lines: ['Titles can show in two languages: pick a second one in Preferences.'] },
