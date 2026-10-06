@@ -11,7 +11,7 @@ How the UI code is built. How it should look is in [DESIGN.md](DESIGN.md), and w
 - React 19 and TypeScript 6.0, bundled by Vite 8 (`vite.config.ts`).
 - Tailwind CSS 4 through `@tailwindcss/vite`. It is configured in CSS (`src/styles.css`), with no config file.
 - `uqr` draws the join link's QR code. It is the only runtime library besides React.
-- The themes' display fonts come from Fontsource packages (`@fontsource/zen-kaku-gothic-new`, `zen-antique`, `bangers`, `saira-stencil-one`, `mochiy-pop-one`, `press-start-2p` and `vt323`, plus `pixelify-sans` for Isekai's card titles, Latin subsets only), which Vite copies into `dist/` so they're served from our own origin. A page loads only the fonts it shows. Japanese titles use the device's Japanese fonts (`--ja-font`), never a display face's fallback.
+- The themes' display fonts come from Fontsource packages (the `@fontsource/*` imports at the top of `src/styles.css`, one per face a world uses, Latin subsets only), which Vite copies into `dist/` so they're served from our own origin. A page loads only the fonts it shows. Japanese titles use the device's Japanese fonts (`--ja-font`), never a display face's fallback.
 - The client libraries are devDependencies: Vite bundles them into `dist/`, and the production image installs only what the server needs at runtime.
 
 ## Structure
