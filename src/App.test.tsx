@@ -557,6 +557,7 @@ const SONG = {
   number: 1,
   skipped: false,
   right: ['p1'],
+  quick: [],
   anime: { english: 'Speed Line', romaji: 'Supiido Rain', japanese: 'スピードライン' },
   theme: { kind: 'OP' as const, sequence: 2 },
   song: { title: 'Full Throttle', artists: [{ name: 'Singer', as: 'Heroine' }] },

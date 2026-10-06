@@ -59,18 +59,36 @@ export function badgeOf(streak: number): number | null {
   return [100, 30, 7].find((days) => streak >= days) ?? null;
 }
 
-// The rounds as plain block characters, never emoji: right, missed, or skipped.
-export function dailyGrid(songs: PlayedSong[], playerId: string): string {
-  return songs.map((song) => (song.skipped ? '·' : song.right.includes(playerId) ? '■' : '□')).join('');
+// The share grid's squares, in the Neon Rain colors, written as escapes to keep emoji out of the code.
+const SQUARE = {
+  quick: '\u{1F7EA}', // purple: right in the window's first third
+  right: '\u{1F7E6}', // blue: right
+  missed: '\u{2B1B}', // black: wrong or no answer
+  skipped: '\u{2B1C}', // white: the host skipped the round
+};
+const HEADPHONES = '\u{1F3A7}';
+const FIRE = '\u{1F525}';
+const ROW = 5;
+
+function squareOf(song: PlayedSong, playerId: string): string {
+  if (song.skipped) return SQUARE.skipped;
+  if (song.quick.includes(playerId)) return SQUARE.quick;
+  return song.right.includes(playerId) ? SQUARE.right : SQUARE.missed;
 }
 
-export function shareText(
-  day: number,
-  right: number,
-  rounds: number,
-  score: string,
-  streak: number,
-  grid: string,
-): string {
-  return `You Skipped The OP?! Daily No. ${day} · ${right}/${rounds} · ${score} · day ${streak}\n${grid}`;
+// The rounds as rows of five colored squares, as Wordle shares its guesses. It names no song.
+export function dailyGrid(songs: PlayedSong[], playerId: string): string[] {
+  const squares = songs.map((song) => squareOf(song, playerId));
+  return Array.from({ length: Math.ceil(squares.length / ROW) }, (_, row) =>
+    squares.slice(row * ROW, row * ROW + ROW).join(''),
+  );
+}
+
+// The line to paste into a chat such as Discord: the day, the grid, then the right answers, the score and the
+// streak.
+export function shareText(day: number, right: number, rounds: number, score: string, streak: number, grid: string[]) {
+  const days = streak > 1 ? ` · ${FIRE} ${streak}` : '';
+  return [`You Skipped The OP?! ${HEADPHONES} Daily #${day}`, ...grid, `${right}/${rounds} · ${score} pts${days}`].join(
+    '\n',
+  );
 }

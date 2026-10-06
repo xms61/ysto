@@ -36,11 +36,12 @@ test('gives badges at 7, 30 and 100 days', () => {
   expect([6, 7, 29, 30, 99, 100, 250].map(badgeOf)).toEqual([null, 7, 7, 30, 30, 100, 100]);
 });
 
-function song(number: number, right: string[], skipped = false): PlayedSong {
+function song(number: number, right: string[], skipped = false, quick: string[] = []): PlayedSong {
   return {
     number,
     skipped,
     right,
+    quick,
     anime: { english: null, romaji: 'X', japanese: null },
     theme: { kind: 'OP', sequence: 1 },
     song: { title: null, artists: [] },
@@ -50,10 +51,24 @@ function song(number: number, right: string[], skipped = false): PlayedSong {
   };
 }
 
-test('shares the result as plain blocks that name no song', () => {
-  const grid = dailyGrid([song(1, ['p1']), song(2, []), song(3, ['p1'], true), song(4, ['p2'])], 'p1');
-  expect(grid).toBe('■□·□');
-  expect(shareText(42, 8, 10, '7,450', 12, '■■□■■■·■■■')).toBe(
-    'You Skipped The OP?! Daily No. 42 · 8/10 · 7,450 · day 12\n■■□■■■·■■■',
+const QUICK = '\u{1F7EA}';
+const RIGHT = '\u{1F7E6}';
+const MISSED = '\u{2B1B}';
+const SKIPPED = '\u{2B1C}';
+
+test('shares the result as rows of five squares that name no song', () => {
+  const songs = [
+    song(1, ['p1'], false, ['p1']),
+    song(2, []),
+    song(3, ['p1'], true),
+    song(4, ['p2']),
+    song(5, ['p1']),
+    song(6, ['p1', 'p2'], false, ['p2']),
+  ];
+  const grid = dailyGrid(songs, 'p1');
+  expect(grid).toEqual([QUICK + MISSED + SKIPPED + MISSED + RIGHT, RIGHT]);
+  expect(shareText(42, 8, 10, '7,450', 12, ['ab', 'cd'])).toBe(
+    'You Skipped The OP?! \u{1F3A7} Daily #42\nab\ncd\n8/10 · 7,450 pts · \u{1F525} 12',
   );
+  expect(shareText(1, 3, 10, '900', 1, ['ab'])).toBe('You Skipped The OP?! \u{1F3A7} Daily #1\nab\n3/10 · 900 pts');
 });

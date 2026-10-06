@@ -71,7 +71,9 @@ export function DailyResult({ lobby, storage }: { lobby: LobbyState; storage: St
         {outcome.practice && <span className="ml-2 text-sm text-muted">practice</span>}
       </p>
       <p aria-hidden="true" className="daily-grid">
-        {grid}
+        {grid.map((row, index) => (
+          <span key={index}>{row}</span>
+        ))}
       </p>
       <p className="flex flex-wrap items-center gap-2 text-sm">
         {streakLine(outcome.record.streak, outcome.record.best)} <Badge streak={outcome.record.streak} />

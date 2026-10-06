@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.28.0] - 2026-10-06
+
+### Changed
+- The daily's result shares like Wordle's: two rows of five colored squares (purple right and quick, blue right, black missed, white skipped) under a header with the day, then the score and the streak, ready to paste into Discord. The results' song list now marks who answered each song in the first third of the sample.
+
 ## [1.27.1] - 2026-10-06
 
 ### Changed
@@ -26,8 +31,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Typed answers: under Answer by in the lobby settings, players type the anime's title instead of tapping one of four options. Suggestions come from the whole catalog as they type, in every title language and with synonyms, each with its year so remakes can be told apart. Only the exact anime is right. The reveal lists what everyone typed.
-
-## [1.24.0] - 2026-10-06
-
-### Added
-- Song title and artist rounds: under Questions in the lobby settings, the options can name the song's title, its artists, or a mix that changes each round. Wrong options come from songs as popular as the answer's, never the same song or title, and never an artist two options share.
