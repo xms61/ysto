@@ -2,6 +2,7 @@
 // and the time, and returns the next game and the effects for the shell to run: messages, timers, clip cuts
 // and clip expiries. Nothing here reads a clock, a socket or a file, so a fake clock can drive whole games.
 import type {
+  TitleMatch,
   GameView,
   Pick,
   PlayedSong,
@@ -38,7 +39,8 @@ export interface Standing {
 
 interface AnswerRecord {
   playerId: string;
-  option: number;
+  option: number | null; // null for a typed answer
+  typed: TitleMatch | null;
   correct: boolean;
   responseMs: number;
 }
@@ -92,7 +94,8 @@ type ClipEvent =
 // An endless game's next batch; none left in the pool when it is empty.
 type QuestionsEvent = { type: 'questions'; questions: Question[] };
 type ReadyEvent = { type: 'ready'; playerId: string; roundId: string; loaded: boolean };
-type AnswerEvent = { type: 'answer'; playerId: string; roundId: string; option: number };
+// An option tapped, or with typing an anime typed: `typed` is the anime as the catalog names it.
+type AnswerEvent = { type: 'answer'; playerId: string; roundId: string; option: number | null; typed?: TitleMatch };
 type HintEvent = { type: 'hint'; playerId: string; roundId: string };
 type TimerEvent = { type: 'timer'; name: TimerName; roundId: string };
 type PlayerEvent = {
@@ -193,9 +196,15 @@ function prepareMessage(game: Game, round: Round): ServerMessage {
   };
 }
 
-function startMessage(round: Round): ServerMessage {
+// With typing, an anime round sends no options: the player names the anime themselves.
+function startMessage(game: Game, round: Round): ServerMessage {
   const { id: roundId, startsAt, endsAt, question } = round;
-  return { type: 'round:start', roundId, startsAt, endsAt, options: question.options.titles, ask: question.ask };
+  const options = typing(game, round) ? { english: [], romaji: [], japanese: [] } : question.options.titles;
+  return { type: 'round:start', roundId, startsAt, endsAt, options, ask: question.ask };
+}
+
+function typing(game: Game, round: Round): boolean {
+  return game.settings.answerBy === 'typing' && round.question.ask === 'anime';
 }
 
 function answeredMessage(round: Round): ServerMessage {
@@ -262,7 +271,7 @@ function startRound(draft: Draft, round: Round): void {
   round.closeAt = round.endsAt + GAME_TIMING.graceMs;
   round.noAudio.push(...inPlay(game).filter((id) => !round.ready.includes(id) && !round.noAudio.includes(id)));
   round.phase = 'playing';
-  send(draft, startMessage(round));
+  send(draft, startMessage(game, round));
   draft.effects.push({ type: 'timer', name: 'close', roundId: round.id, at: round.closeAt });
 }
 
@@ -339,6 +348,7 @@ function closeRound(draft: Draft, round: Round, skipped: boolean): void {
     return {
       playerId,
       option: answer?.option ?? null,
+      ...(answer?.typed ? { typed: answer.typed } : {}),
       points: award?.points ?? 0,
       noAudio: round.noAudio.includes(playerId),
       hinted: round.hinted.includes(playerId),
@@ -357,6 +367,7 @@ function closeRound(draft: Draft, round: Round, skipped: boolean): void {
     roundId: round.id,
     skipped,
     correct: question.correctIndex,
+    animeId: question.animeId,
     ...question.reveal,
     picks,
     standings: standingViews(game),
@@ -428,16 +439,21 @@ function everyoneAnswered(draft: Draft, round: Round): void {
 
 // An answer's time is when the server received it, with no allowance for the player's connection.
 function pickOf(round: Round, event: AnswerEvent, now: number): AnswerRecord {
-  const correct = event.option === round.question.correctIndex;
+  const typed = event.typed ?? null;
+  const correct = typed ? typed.animeId === round.question.animeId : event.option === round.question.correctIndex;
   const responseMs = Math.max(0, Math.round(now - round.startsAt));
-  return { playerId: event.playerId, option: event.option, correct, responseMs };
+  return { playerId: event.playerId, option: event.option, typed, correct, responseMs };
+}
+
+function sameAnswer(record: AnswerRecord, event: AnswerEvent): boolean {
+  return record.option === event.option && record.typed?.animeId === event.typed?.animeId;
 }
 
 // A switch takes the time it was made, so in Speed it costs points as a late answer does. The others hear
 // who switched, never to what.
 function switchAnswer(draft: Draft, round: Round, previous: AnswerRecord, event: AnswerEvent): void {
   const { game, now } = draft;
-  if (!answersCanChange(game.settings) || previous.option === event.option) return;
+  if (!answersCanChange(game.settings) || sameAnswer(previous, event)) return;
   Object.assign(previous, pickOf(round, event, now));
   const others = game.players.filter((id) => id !== event.playerId);
   send(draft, { type: 'round:switched', roundId: round.id, playerId: event.playerId }, others);
@@ -448,6 +464,8 @@ function onAnswer(draft: Draft, event: AnswerEvent): void {
   const round = game.round;
   if (!round || round.id !== event.roundId || round.phase !== 'playing') return;
   if (!game.participants.includes(event.playerId) || !alive(game, event.playerId)) return;
+  // A typed answer only in a typing round, and a tapped option only outside one.
+  if ((event.typed !== undefined) !== typing(game, round)) return;
   const answersEndAt = round.overtime?.endsAt ?? round.endsAt;
   if (now < round.startsAt || now > answersEndAt + GAME_TIMING.graceMs) return;
   const previous = round.answers.find((answer) => answer.playerId === event.playerId);
@@ -505,12 +523,14 @@ function catchUp(draft: Draft, playerId: string): void {
   if (!round) return;
   send(draft, prepareMessage(draft.game, round), [playerId]);
   if (round.phase === 'playing') {
-    send(draft, startMessage(round), [playerId]);
+    send(draft, startMessage(draft.game, round), [playerId]);
     send(draft, answeredMessage(round), [playerId]);
     if (round.overtime) send(draft, overtimeMessage(round, round.overtime), [playerId]);
     if (round.hinted.includes(playerId)) send(draft, hintMessage(round), [playerId]);
     const pick = round.answers.find((answer) => answer.playerId === playerId);
-    if (pick) send(draft, { type: 'round:pick', roundId: round.id, option: pick.option }, [playerId]);
+    if (pick?.typed) send(draft, { type: 'round:typed', roundId: round.id, match: pick.typed }, [playerId]);
+    else if (pick?.option != null)
+      send(draft, { type: 'round:pick', roundId: round.id, option: pick.option }, [playerId]);
   }
   if (round.reveal) send(draft, round.reveal, [playerId]);
 }

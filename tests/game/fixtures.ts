@@ -22,6 +22,7 @@ export function animeEntry(id: number, overrides: Partial<CatalogAnime> = {}): C
     songIds: new Set([id * 10]),
     songKeys: new Set([`song-${id}`]),
     coverFile: null,
+    synonyms: [],
     ...overrides,
   };
 }

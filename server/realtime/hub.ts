@@ -23,6 +23,7 @@ export const REALTIME_LIMITS = {
   connectionsPerIp: 30,
   messagesPerSecond: 20,
   reactionsPerSecond: 8, // per player, enough to spam by hand; more are dropped without a strike
+  searchesPerSecond: 5, // per player, typed answers' suggestions; more are dropped without a strike
   strikes: 5,
   helloTimeoutMs: 10_000,
   heartbeatMs: 15_000,
@@ -65,6 +66,7 @@ export class Realtime {
   readonly #connections = new Set<Connection>();
   readonly #bySeat = new Map<string, Connection>(); // by player id
   readonly #reactions: RateLimit;
+  readonly #searches: RateLimit;
   readonly #registry: LobbyRegistry;
   readonly #games: Games;
   readonly #allowedOrigins: readonly string[];
@@ -81,6 +83,7 @@ export class Realtime {
     this.#log = log;
     this.#now = now;
     this.#reactions = new RateLimit(REALTIME_LIMITS.reactionsPerSecond, 1000, now);
+    this.#searches = new RateLimit(REALTIME_LIMITS.searchesPerSecond, 1000, now);
     server.on('upgrade', (req: IncomingMessage, socket: Duplex, head: Buffer) => this.#upgrade(req, socket, head));
     registry.subscribe((event) => this.#onRegistryEvent(event));
     games.subscribe((event) => this.#onGamesEvent(event));
@@ -203,6 +206,10 @@ export class Realtime {
         return this.#games.ready(seat, message.roundId, message.loaded);
       case 'answer':
         return this.#games.answer(seat, message.roundId, message.option);
+      case 'answer:typed':
+        return this.#games.answerTyped(seat, message.roundId, message.animeId);
+      case 'titles:search':
+        return this.#search(connection, seat, message.query);
       case 'round:hint':
         return this.#games.hint(seat, message.roundId);
       case 'round:skip':
@@ -288,6 +295,12 @@ export class Realtime {
         ...(lobby.settings.play === 'teams' ? { team } : {}),
       };
     });
+  }
+
+  // A typed answer's suggestions go to the player who searched, at most a few times a second.
+  #search(connection: Connection, seat: Seat, query: string): void {
+    if (!this.#searches.take(seat.playerId)) return;
+    send(connection, { type: 'titles:found', query, matches: this.#games.search(query) });
   }
 
   // A reaction goes to everyone in the lobby, the sender too, at any time, up to the per-player limit.

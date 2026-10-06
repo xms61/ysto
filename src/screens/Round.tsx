@@ -23,6 +23,7 @@ import { Shide } from '../components/Shide.tsx';
 import { Segments } from '../components/Segments.tsx';
 import { RoundBody, ScoresPanel, Stage } from '../components/Stage.tsx';
 import { TeamBoard, teamName } from '../components/Teams.tsx';
+import { TypedAnswer } from '../components/TypedAnswer.tsx';
 import { ConfirmButton, Panel, buttonClass } from '../components/ui.tsx';
 import { hintText, livesText, optionTitle, score } from '../format.ts';
 import type { TitleLanguages } from '../format.ts';
@@ -304,20 +305,24 @@ function Answering({ store, lobby, round, start, titles, clip, ghost, foot }: An
   const you = lobby.players.find((player) => player.id === lobby.you);
   const spectating = you?.spectating ?? false;
   const out = you?.lives === 0;
-  const answered = round.choice !== null || round.answeredIds.includes(lobby.you);
+  const answered = round.choice !== null || round.typed !== null || round.answeredIds.includes(lobby.you);
   const canSwitch = answersCanChange(lobby.settings);
   const { overtime } = round;
   const countdown = overtime ?? start;
   const closed = now >= countdown.endsAt;
   const canAnswer = !spectating && !out && !closed && (!answered || canSwitch);
-  useAnswerKeys(store, canAnswer);
+  // A typing round shows a field in place of the options, so its keys type rather than pick.
+  const typing = start.options[titles.first].length === 0;
+  useAnswerKeys(store, canAnswer && !typing);
   const elapsed = Math.min(1, Math.max(0, (now - countdown.startsAt) / (countdown.endsAt - countdown.startsAt)));
   const secondsLeft = Math.max(0, Math.ceil((countdown.endsAt - now) / 1000));
   const players = lobby.players.filter((player) => !player.spectating).length;
 
   const columns = useOptionColumns();
   const timer = <TimeLeft elapsed={elapsed} secondsLeft={secondsLeft} />;
-  const cards = (
+  const cards = typing ? (
+    <TypedAnswer store={store} round={round} titles={titles} canAnswer={canAnswer} />
+  ) : (
     <ol aria-label="Options" className={`options grid ${columns} gap-3`}>
       {start.options[titles.first].map((_, index) => (
         <li key={index}>
@@ -344,9 +349,9 @@ function Answering({ store, lobby, round, start, titles, clip, ghost, foot }: An
       <p aria-live="polite" className="text-muted">
         {status ?? (
           <>
-            {ASK_LINES[start.ask]}
+            {typing ? 'Name the anime: type, then pick a suggestion.' : ASK_LINES[start.ask]}
             {/* Keys only help where there is a keyboard, which a mouse or trackpad suggests. */}
-            <span className="hidden pointer-fine:inline"> Keys 1 to 4 work too.</span>
+            {!typing && <span className="hidden pointer-fine:inline"> Keys 1 to 4 work too.</span>}
           </>
         )}
       </p>

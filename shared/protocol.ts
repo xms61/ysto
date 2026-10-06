@@ -78,6 +78,8 @@ export type ClientMessage =
   | { type: 'game:start' }
   | { type: 'round:ready'; roundId: string; loaded: boolean }
   | { type: 'answer'; roundId: string; option: number }
+  | { type: 'answer:typed'; roundId: string; animeId: number } // with typing: the anime a suggestion named
+  | { type: 'titles:search'; query: string } // with typing: the suggestions for what the player typed
   | { type: 'round:hint'; roundId: string } // asks for the round's hint, from halfway through
   | { type: 'round:skip' }
   | { type: 'game:end' } // the host ends the game now, with its results
@@ -179,10 +181,27 @@ export function parseClientMessage(text: string, bounds: SettingsBounds): Client
   if (type === 'round:hint' && hasKeys(value, ['type', 'roundId']) && isRoundId(value.roundId)) {
     return { type, roundId: value.roundId };
   }
+  if (type === 'answer:typed' && hasKeys(value, ['type', 'roundId', 'animeId']) && isRoundId(value.roundId)) {
+    return isIntegerIn(value.animeId, 1, Number.MAX_SAFE_INTEGER)
+      ? { type, roundId: value.roundId, animeId: value.animeId }
+      : null;
+  }
+  if (type === 'titles:search' && hasKeys(value, ['type', 'query']) && typeof value.query === 'string') {
+    return value.query.length <= 80 ? { type, query: value.query } : null;
+  }
   if (type === 'answer' && hasKeys(value, ['type', 'roundId', 'option']) && isRoundId(value.roundId)) {
     return isIntegerIn(value.option, 0, 3) ? { type, roundId: value.roundId, option: value.option } : null;
   }
   return null;
+}
+
+// An anime as a typed answer's suggestion names it: its titles, and its year, so remakes can be told apart.
+export interface TitleMatch {
+  animeId: number;
+  english: string | null;
+  romaji: string;
+  japanese: string | null;
+  year: number | null;
 }
 
 // What a round's options name: the anime, the song's title, or its artists.
@@ -271,6 +290,7 @@ export interface Pick {
   points: number;
   noAudio: boolean;
   hinted: boolean; // took the round's hint, so a right answer scored 70%
+  typed?: TitleMatch; // with typing: the anime the player typed
 }
 
 export interface StandingView {
@@ -301,6 +321,7 @@ export type RoundReveal = {
   roundId: string;
   skipped: boolean;
   correct: number;
+  animeId?: number; // the answer's anime, which a typed answer is checked against
   picks: Pick[];
   standings: StandingView[];
   teams?: TeamStanding[]; // with Teams, by team number
@@ -316,6 +337,8 @@ export type ServerMessage =
   | { type: 'round:switched'; roundId: string; playerId: string }
   | { type: 'round:overtime'; roundId: string; startsAt: number; endsAt: number }
   | { type: 'round:pick'; roundId: string; option: number }
+  | { type: 'round:typed'; roundId: string; match: TitleMatch } // a returning player's typed answer
+  | { type: 'titles:found'; query: string; matches: TitleMatch[] } // to the player who searched
   | ({ type: 'round:hint'; roundId: string } & RoundHint) // to the player who asked only
   | RoundReveal
   | { type: 'game:results'; standings: ResultView[]; teams?: TeamStanding[] }

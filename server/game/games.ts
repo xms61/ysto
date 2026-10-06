@@ -1,7 +1,7 @@
 // Runs the lobbies' games (docs/product-specs/game-flow.md). It starts a game for the host, feeds the engine
 // its events, and carries out the engine's effects: timers on the scheduler, each clip cut a round ahead,
 // clip tokens, and messages through its listener, the realtime layer.
-import type { ErrorCode, GameView, ReportReason, ServerMessage, TallyView } from '../../shared/protocol.ts';
+import type { ErrorCode, GameView, ReportReason, ServerMessage, TallyView, TitleMatch } from '../../shared/protocol.ts';
 import { LIMITS } from '../../shared/settings.ts';
 import type { Catalog } from '../catalog/load.ts';
 import type { CutClip } from '../clips/cut.ts';
@@ -16,6 +16,7 @@ import type { Lobby } from './lobby.ts';
 import { poolSize } from './pool.ts';
 import { buildGame, moreQuestions, replacementQuestion } from './questions.ts';
 import type { Question } from './questions.ts';
+import { matchOf, searchTitles } from './title-index.ts';
 import type { Random } from './random.ts';
 import type { LobbyRegistry, RegistryEvent, Seat } from './registry.ts';
 import type { Reports } from '../reports.ts';
@@ -155,6 +156,17 @@ export class Games {
 
   answer(seat: Seat, roundId: string, option: number): void {
     this.#step(seat.code, { type: 'answer', playerId: seat.playerId, roundId, option });
+  }
+
+  // A typed answer: the anime must be a playable one, named as the catalog names it.
+  answerTyped(seat: Seat, roundId: string, animeId: number): void {
+    const anime = this.#options.catalog.anime.get(animeId);
+    if (!anime) return;
+    this.#step(seat.code, { type: 'answer', playerId: seat.playerId, roundId, option: null, typed: matchOf(anime) });
+  }
+
+  search(query: string): TitleMatch[] {
+    return searchTitles(this.#options.catalog, query);
   }
 
   hint(seat: Seat, roundId: string): void {

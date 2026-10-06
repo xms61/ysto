@@ -2,6 +2,14 @@
 
 Releases moved out of `CHANGELOG.md` (which keeps about the latest 5). Newest first.
 
+## [1.20.0] - 2026-10-06
+
+### Added
+- Each world shows the overtime in its own way: the call printed on the world's material (a magenta neon tube, the lyric screen, a shrine seal, a pin flag, an arcade banner, a guild notice, a magazine's extra, a tape label) and, with motion on, its own beat in place of the shared pulse.
+
+### Fixed
+- Neon Rain's LED has its dark glass back, and its figures turn magenta in the overtime instead of vanishing.
+
 ## [1.19.0] - 2026-10-06
 
 ### Added

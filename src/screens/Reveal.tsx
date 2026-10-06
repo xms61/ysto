@@ -7,6 +7,7 @@ import type { CSSProperties, ReactNode } from 'react';
 import type { LobbyState, PlayerIcon, RoundReveal, StandingView } from '../../shared/protocol.ts';
 import { AnswerBack, AnswerSizer, OptionCard } from '../components/OptionCard.tsx';
 import { TeamBoard, teamName } from '../components/Teams.tsx';
+import { TypedReveal } from '../components/TypedAnswer.tsx';
 import { PlayerBadge, PlayerStamp } from '../components/PlayerIcon.tsx';
 import { RoundBody, ScoresPanel, Stage } from '../components/Stage.tsx';
 import type { CardState } from '../components/OptionCard.tsx';
@@ -50,12 +51,17 @@ function iconOf(lobby: LobbyState, playerId: string): PlayerIcon {
   return lobby.players.find((player) => player.id === playerId)?.icon ?? 'fox';
 }
 
+// A typed answer is right when it names the answer's anime; a tapped one when it is the right option.
+function pickedRight(reveal: RoundReveal, pick: RoundReveal['picks'][number]): boolean {
+  return pick.typed ? pick.typed.animeId === reveal.animeId : pick.option === reveal.correct;
+}
+
 // A missed song, wrong or unanswered, earns the game's own line (docs/PRODUCT_SENSE.md#tone).
 function verdictOf(reveal: RoundReveal, playerId: string): Verdict | null {
   if (reveal.skipped) return { text: 'The host skipped this round, so nobody scores.', right: null };
   const pick = reveal.picks.find((candidate) => candidate.playerId === playerId);
   if (!pick) return null;
-  if (pick.option === reveal.correct) {
+  if (pickedRight(reveal, pick)) {
     // Only First correct gives a right answer nothing.
     return pick.points > 0
       ? { text: `Right: ${points(pick.points)}`, right: true }
@@ -112,8 +118,8 @@ type Outcome = 'right' | 'wrong' | 'none';
 
 function outcomeOf(reveal: RoundReveal, playerId: string): Outcome {
   const pick = reveal.picks.find((candidate) => candidate.playerId === playerId);
-  if (!pick || pick.option === null) return 'none';
-  return pick.option === reveal.correct ? 'right' : 'wrong';
+  if (!pick || (pick.option === null && !pick.typed)) return 'none';
+  return pickedRight(reveal, pick) ? 'right' : 'wrong';
 }
 
 function pointsOf(reveal: RoundReveal, playerId: string): number {
@@ -305,13 +311,15 @@ export function Reveal({ round, reveal, lobby, titles, foot, ghost }: RevealProp
   const title = animeTitle(reveal.anime, titles.first);
   const when = aired(reveal.season, reveal.year);
   const options = round.start?.options;
-  const optionTitles = options ? [0, 1, 2, 3].map((index) => optionTitle(options, index, titles)) : [];
+  const typing = options !== undefined && options[titles.first].length === 0;
+  const optionTitles = options && !typing ? [0, 1, 2, 3].map((index) => optionTitle(options, index, titles)) : [];
   const right = optionTitles[reveal.correct];
   const mine = reveal.picks.find((pick) => pick.playerId === lobby.you)?.option ?? round.choice;
   const verdict = verdictOf(reveal, lobby.you);
   const standing = standingLine(reveal, lobby.you);
   const streak = streakOf(reveal, lobby.you);
-  const heat = mine === reveal.correct ? heatOf(streak) : 1;
+  const myPick = reveal.picks.find((pick) => pick.playerId === lobby.you);
+  const heat = myPick && pickedRight(reveal, myPick) ? heatOf(streak) : 1;
   const { wrongMark } = useStage();
   const columns = useOptionColumns();
 
@@ -326,7 +334,9 @@ export function Reveal({ round, reveal, lobby, titles, foot, ghost }: RevealProp
       title={right ?? { ...title, second: null }}
     />
   );
-  const cards = (
+  const cards = typing ? (
+    <TypedReveal reveal={reveal} lobby={lobby} titles={titles} />
+  ) : (
     <ol aria-label="Options" className={`options options-picked grid ${columns} gap-3`}>
       {optionTitles.map((option, index) => (
         <li key={index}>

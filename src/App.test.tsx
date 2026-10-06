@@ -283,6 +283,44 @@ test('asks for the song title or the artist when the round names them', async ()
   expect(screen.getByRole('button', { name: 'Kaze' })).toBeTruthy();
 });
 
+test('with typing, answers from the suggestions and shows what each player typed at the reveal', async () => {
+  vi.useFakeTimers({ shouldAdvanceTime: true });
+  const lobby = lobbyState({ game: PLAYING });
+  const { socket } = renderSeated({ ...lobby, settings: { ...lobby.settings, answerBy: 'typing' } });
+  const startsAt = Date.now() - 100;
+  const none = { english: [], romaji: [], japanese: [] };
+  act(() => {
+    socket.receive({ type: 'round:prepare', roundId: 'g.1', clipToken: 'c1', number: 1, rounds: 5 });
+    socket.receive({
+      type: 'round:start',
+      roundId: 'g.1',
+      startsAt,
+      endsAt: startsAt + 20_000,
+      options: none,
+      ask: 'anime',
+    });
+  });
+  const field = await screen.findByLabelText('Type the anime');
+  fireEvent.change(field, { target: { value: 'speed' } });
+  act(() => vi.advanceTimersByTime(200));
+  expect(socket.sentOfType('titles:search')).toEqual([{ type: 'titles:search', query: 'speed' }]);
+  const speed = { animeId: 7, english: 'Speed Line', romaji: 'Supiido Rain', japanese: null, year: 2019 };
+  act(() => socket.receive({ type: 'titles:found', query: 'speed', matches: [speed] }));
+  fireEvent.click(screen.getByRole('button', { name: 'Speed Line (2019)' }));
+  expect(socket.sentOfType('answer:typed')).toEqual([{ type: 'answer:typed', roundId: 'g.1', animeId: 7 }]);
+  expect(socket.sentOfType('answer')).toEqual([]);
+  expect(screen.getByText('Speed Line (2019)', SHOWN)).toBeTruthy();
+  const picks = [
+    { playerId: 'p1', option: null, points: 900, noAudio: false, hinted: false, typed: speed },
+    { playerId: 'p2', option: null, points: 0, noAudio: false, hinted: false },
+  ];
+  act(() => socket.receive(revealOf('g.1', { picks, animeId: 7 })));
+  const typed = screen.getByRole('list', { name: 'Typed answers' });
+  expect(within(typed).getByText('Speed Line (2019)')).toBeTruthy();
+  expect(within(typed).getByText('no answer')).toBeTruthy();
+  vi.useRealTimers();
+});
+
 test('runs an endless game without a round count, and lets the host end it', () => {
   const base = lobbyState();
   const endless = { ...base.settings, endless: true };

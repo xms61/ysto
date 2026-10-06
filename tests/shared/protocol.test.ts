@@ -32,6 +32,8 @@ const VALID: [string, unknown][] = [
   ['round:hint', { type: 'round:hint', roundId: 'g1.3' }],
   ['player:team', { type: 'player:team', playerId: 'Abc_123-xyz', team: 3 }],
   ['teams:shuffle', { type: 'teams:shuffle' }],
+  ['answer:typed', { type: 'answer:typed', roundId: 'g1.3', animeId: 42 }],
+  ['titles:search', { type: 'titles:search', query: 'attack on' }],
 ];
 
 for (const [name, message] of VALID) {
@@ -54,6 +56,8 @@ const INVALID: [string, string][] = [
   ['an icon outside the set', JSON.stringify({ type: 'player:icon', icon: 'dragon' })],
   ['a hint for a malformed round', JSON.stringify({ type: 'round:hint', roundId: '../x' })],
   ['a team past the fourth', JSON.stringify({ type: 'player:team', playerId: 'abc', team: 4 })],
+  ['a typed answer without an anime', JSON.stringify({ type: 'answer:typed', roundId: 'g1.3', animeId: 0 })],
+  ['an overlong search', JSON.stringify({ type: 'titles:search', query: 'a'.repeat(81) })],
   ['a team that is not a number', JSON.stringify({ type: 'player:team', playerId: 'abc', team: '1' })],
   ['a reaction outside the set', JSON.stringify({ type: 'reaction', kind: 'lol' })],
   ['a reaction with text', JSON.stringify({ type: 'reaction', kind: 'heart', text: 'gg' })],

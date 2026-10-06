@@ -54,6 +54,7 @@ export function SettingsSummary({ settings, bounds }: { settings: LobbySettings;
     ],
     ['Play', playSummary(settings)],
     ['Questions', QUESTION_SUMMARY[settings.questions]],
+    ['Answer by', settings.answerBy === 'typing' ? "Typing the anime's title" : 'Tapping one of four options'],
     ['Difficulty', difficulty(settings)],
     ['Samples start at', SAMPLE_START_LABELS[settings.sampleStart].toLowerCase()],
     ['Songs', songsFrom(settings, bounds)],

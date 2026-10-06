@@ -15,10 +15,12 @@ function roundCues(before: GameState, after: GameState): Cue[] {
   const previous = before.round?.id === round.id ? before.round : null;
   if (!previous) return ['deal'];
   const cues: Cue[] = [];
-  if (round.choice !== null && round.choice !== previous.choice) cues.push('pick');
+  const picked = round.choice !== previous.choice || round.typed?.animeId !== previous.typed?.animeId;
+  if ((round.choice !== null || round.typed !== null) && picked) cues.push('pick');
   if (round.overtime && !previous.overtime) cues.push('overtime');
   if (round.reveal && !previous.reveal && !round.reveal.skipped) {
-    cues.push(round.choice === round.reveal.correct ? 'right' : 'wrong');
+    const right = round.typed ? round.typed.animeId === round.reveal.animeId : round.choice === round.reveal.correct;
+    cues.push(right ? 'right' : 'wrong');
   }
   return cues;
 }
