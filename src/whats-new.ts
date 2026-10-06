@@ -4,6 +4,10 @@
 import { readItem, writeItem } from './storage.ts';
 
 const NOTES: { version: string; lines: string[] }[] = [
+  {
+    version: '1.18.0',
+    lines: ['Neon Rain: Tokyo at night in the rain, holographic ads and all, replaces Tokyo Rain and Konbini.'],
+  },
   { version: '1.17.0', lines: ['Nine worlds now: six were retired, and their players start back in Tokyo Rain.'] },
   { version: '1.16.0', lines: ['Endless games: the songs keep coming until the host ends the game.'] },
   {

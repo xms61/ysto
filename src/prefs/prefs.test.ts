@@ -3,7 +3,7 @@ import { DEFAULT_PREFS, readPrefs, writePrefs } from './prefs.ts';
 
 beforeEach(() => localStorage.clear());
 
-test('a new device plays at 15% in Tokyo Rain with English titles, and follows its motion setting', () => {
+test('a new device plays at 15% in Neon Rain with English titles, and follows its motion setting', () => {
   expect(readPrefs(localStorage)).toEqual({
     volume: 15,
     theme: 'tokyo-rain',
@@ -48,4 +48,11 @@ test('works on when storage is blocked', () => {
   } as unknown as Storage; // only the two methods the prefs use
   expect(() => writePrefs(blocked, DEFAULT_PREFS)).not.toThrow();
   expect(readPrefs(blocked)).toEqual(DEFAULT_PREFS);
+});
+
+test('a retired world falls back to the default, keeping the rest', () => {
+  for (const theme of ['konbini', 'sakura', 'mecha']) {
+    localStorage.setItem('ysto_prefs', JSON.stringify({ volume: 40, theme }));
+    expect(readPrefs(localStorage)).toEqual({ ...DEFAULT_PREFS, volume: 40 });
+  }
 });

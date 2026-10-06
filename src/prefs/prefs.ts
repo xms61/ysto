@@ -9,7 +9,6 @@ import { readJson, writeItem } from '../storage.ts';
 // Stored by id, so an id is permanent once released; the names players see live in src/themes/names.ts.
 export const THEMES = [
   'tokyo-rain',
-  'konbini',
   'karaoke',
   'omikuji',
   'blossom-map',

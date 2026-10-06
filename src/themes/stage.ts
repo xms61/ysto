@@ -20,8 +20,7 @@ export interface ThemeStage {
 const SHARED_STAGE: Omit<ThemeStage, 'readout'> = { wrongMark: null, scoreBars: false, masthead: false, rows: false };
 
 const STAGES: Record<Theme, Pick<ThemeStage, 'readout'> & Partial<ThemeStage>> = {
-  'tokyo-rain': { readout: 'segments', wrongMark: 'Sold out' },
-  konbini: { readout: 'segments', wrongMark: 'Sold out' },
+  'tokyo-rain': { readout: 'segments', wrongMark: 'No signal' },
   karaoke: { readout: 'lyric', rows: true },
   omikuji: { readout: 'shide' },
   'blossom-map': { readout: 'route' },

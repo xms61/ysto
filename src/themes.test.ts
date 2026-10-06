@@ -62,25 +62,13 @@ const GRAPHIC_PAIRS: [graphic: string, background: string][] = [
   ['page', 'bad'],
 ];
 
-// Pairs only a theme's own world draws: Tokyo Rain's heading on its noren and the round's text on the machine's
-// cabinet, Konbini's heading on its sign and its receipt's grey and inverse print, Karaoke Box's lyric screen,
+// Pairs only a theme's own world draws: Neon Rain's "No signal" tag on a dark panel, Karaoke Box's lyric screen,
 // Omikuji's heading on its torii beam and its brushed numerals, Side A's heading on its tape label and its titles
 // under the highlighter, Fighter Select's titles on their plates, Quest Board's heading on its plank, the round's
 // text on the board and the rank and completed stamps in red ink, Back Issue's ink on its yellow slab and screened
 // text over its halftone.
 const WORLD_TEXT_PAIRS: Partial<Record<(typeof THEMES)[number], [text: string, background: string][]>> = {
-  'tokyo-rain': [
-    ['noren-ink', 'noren'],
-    ['ink', 'machine'],
-    ['muted', 'machine'],
-    ['bad', 'machine'],
-    ['good', 'machine'],
-  ],
-  konbini: [
-    ['sign-ink', 'sign'],
-    ['receipt-muted', 'card-back'],
-    ['card-back', 'card-back-ink'],
-  ],
+  'tokyo-rain': [['card', 'card-alert']],
   karaoke: [
     ['screen-ink', 'screen'],
     ['screen-muted', 'screen'],

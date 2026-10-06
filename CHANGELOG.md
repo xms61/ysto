@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.18.0] - 2026-10-06
+
+### Changed
+- Tokyo Rain and Konbini 2 a.m. merge into Neon Rain, the default: Tokyo at night in the rain, in neon magenta and cyan. The round's heading is a neon sign, the time left a cyan LED, and the options holographic street ads under scanlines with LED tags; the right answer locks in as a solid magenta ad and the others drop to "No signal". A player who had Konbini 2 a.m. gets Neon Rain.
+
+### Fixed
+- Fighter Select's and Back Issue's answer tags in the reveal lost their own style to a broken rule; they are slanted and inked again.
+
+### Removed
+- The display faces only the retired worlds used, and Konbini's marker face.
+
 ## [1.17.0] - 2026-10-06
 
 ### Removed
@@ -42,9 +53,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 - The headphones and their rings above the cards. A line under the cards says when the clip is loading or failed to load.
-
-## [1.13.0] - 2026-10-05
-
-### Added
-- Your games: the home screen opens a log of the games this device finished, with the player's place, score and songs, and an anime log of every anime heard, how often, and how often the player got it, linked to AnimeThemes. Kept on the device, the last 100 games; "Clear the log" empties it.
-- The results' song list names the players who picked each song right, sent once the game is over.

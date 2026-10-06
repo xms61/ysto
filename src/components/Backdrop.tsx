@@ -1,4 +1,4 @@
-// The theme's backdrop behind every screen: its texture, and when motion is on, its weather: rain over Tokyo,
+// The theme's backdrop behind every screen: its texture, and when motion is on, its weather: neon rain over Tokyo,
 // twinkling lights in the karaoke box, a tracking band on the tape, speed lines on
 // Fighter Select's page; the worlds indoors or in the sun keep still. The weather
 // follows the game's phase (data-phase on the page, set by usePagePhase): a second layer of it surges in while
@@ -48,7 +48,6 @@ interface Sky {
 
 const SKIES: Record<Theme, Sky> = {
   'tokyo-rain': { calm: { kind: 'rain', count: 34 }, surge: { kind: 'rain', count: 30 } },
-  konbini: { calm: { kind: 'rain', count: 24 }, surge: { kind: 'rain', count: 24 } },
   karaoke: { calm: { kind: 'twinkle', count: 14 }, surge: { kind: 'twinkle', count: 18 } },
   omikuji: { calm: { kind: 'petal', count: 10 }, surge: { kind: 'petal', count: 10 } },
   'blossom-map': { calm: { kind: 'petal', count: 12 }, surge: { kind: 'petal', count: 12 } },
