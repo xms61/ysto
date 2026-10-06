@@ -150,11 +150,14 @@ Taken in this order, one step at a time; each step says how it shows.
 2. **Padding:** no text touches a rounded edge. A box of two lines (a score row, an animal tile, the cover) caps its corners at 0.75rem even where a world rounds its chips into pills (Blossom Map); score rows get 0.75rem at the sides.
 3. **Emoji reactions:** the six drawn icons become the platform's emoji (fire, tears of joy, screaming, facepalm, red heart, clapping hands), and a seventh, the game's "?!", set in the world's display face. Bare glyphs, no frame or circle, centered in their buttons.
 4. **Reactions any time, and spammable:** the bar shows through the round too (countdown, answering, reveal), and the server passes up to 8 a second per player (more are dropped without a strike), so a player can spam them.
-5. **Reactions float:** each appears at a random spot round where it came from (the button the sender pressed; for everyone else, the sender's name) and drifts up on its own random path, swaying, as it fades. At most 40 on screen.
+5. **Reactions float:** each appears at a random spot round where it came from (the button the sender pressed; for everyone else, the sender's name) and drifts up on its own random path, swaying from side to side in smooth curves (no zigzag), as it fades. At most 40 on screen.
 6. **No latency allowance:** an answer's time is when the server receives it; the round trip is no longer taken off, and First correct closes on the first right answer instead of waiting 150ms. Answers in the last 300ms after the timer still count (owner to confirm).
 7. **The answer column:** the answer runs the right column's full height, and the cover grows to fill the room it has.
 8. **Stamps:** each world draws the animals in one color with good contrast to its cards, instead of the shared paper and ink; at the reveal the stamps sit at random spots along the right side of the picked card, wholly inside it, never across two cards; a pick shows only as its stamp, without the "Your pick" pill.
-9. **Check and ship:** no card, column or foot moves from the deal to the reveal in any world at 375, 1100, 1280 and 1440 wide; axe in every world; the specs, DESIGN.md and REALTIME.md updated; 1.15.0.
+9. **Stamps clear of text:** a stamp never covers a card's text (its title, second title, or the back's label); the stamps keep to the free space on the card's right.
+10. **Title languages told apart:** where a title shows in more than one language or script (a card's second title, the answer's other titles), each language gets a slightly different color, so the eye can tell them apart.
+11. **No song details on the right card's back:** the turned card shows its label and title only, not "OP 1 · 2019"; the answer column already says which song it was.
+12. **Check and ship:** no card, column or foot moves from the deal to the reveal in any world at 375, 1100, 1280 and 1440 wide; axe in every world; the specs, DESIGN.md and REALTIME.md updated; 1.15.0.
 
 ## Progress
 - [x] 2026-10-05 Features picked and shaped with the owner; plan written
@@ -174,11 +177,14 @@ Taken in this order, one step at a time; each step says how it shows.
 - [x] 2026-10-06 M20.2 Padding
 - [x] 2026-10-06 M20.3 Emoji reactions
 - [x] 2026-10-06 M20.4 Reactions any time, and spammable
-- [x] 2026-10-06 M20.5 Reactions float
-- [ ] M20.6 No latency allowance
-- [ ] M20.7 The answer column
-- [ ] M20.8 Stamps
-- [ ] M20.9 Check and ship
+- [x] 2026-10-06 M20.5 Reactions float (with curves instead of zigzags)
+- [x] 2026-10-06 M20.6 No latency allowance
+- [x] 2026-10-06 M20.7 The answer column
+- [x] 2026-10-06 M20.8 Stamps
+- [ ] M20.9 Stamps clear of text
+- [ ] M20.10 Title languages told apart
+- [ ] M20.11 No song details on the right card's back
+- [ ] M20.12 Check and ship
 - [ ] M7 Sound effects per world
 - [ ] M8 Hints
 - [ ] M9 Elimination
