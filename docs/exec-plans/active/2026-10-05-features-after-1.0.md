@@ -151,6 +151,7 @@ Each milestone is one PR on a `feat/…` branch (two where noted), with a versio
 - [x] 2026-10-05 M16 Large screens (1.9.0)
 - [x] 2026-10-05 M17 A reveal that fits the screen (1.10.0)
 - [x] 2026-10-06 M17 follow-up (owner): the headphones and their rings removed, the space given to the cards; the clip's state is a line under the cards; the answer's cover above its title, set to the right; the scores in a 20rem column left of the cards and the answer in a column kept free right of them; no card or column moves from answering to the reveal, also with a long verdict or a tall answer card (1.14.0)
+- [ ] M17 follow-up (owner, 2026-10-06): some worlds leave no room between text and the edges of their rounded boxes, such as Blossom Map's pill-shaped score rows in the scores column; pad every world's rows and boxes so text clears the curve
 - [ ] M17 follow-up (owner, 2026-10-06): at the reveal the reactions, "Report this clip" and the line on what comes next move to the left column, under the scores
 - [x] 2026-10-05 M18 The anime log (1.13.0)
 - [x] 2026-10-05 M19 Player icons as stamps (1.11.0)
