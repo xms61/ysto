@@ -1232,6 +1232,16 @@
 
   /* The round's standings at the reveal, as a scoreboard: place, who moved, the name, the round's points and the
      total, the numbers in the display face and tabular. */
+  /* Party mode's screen (LobbySession.tsx): the join code's QR in the corner all through the game, so latecomers
+     can join from the couch. It sits over the backdrop's corner, clear of the round's panel on a wide screen. */
+  .screen-qr {
+    position: fixed;
+    right: 1rem;
+    bottom: 1rem;
+    z-index: 20;
+    box-shadow: var(--panel-shadow);
+  }
+
   /* The daily challenge (Daily.tsx): its panel on the home screen, the streak's badge on the accent, and at the
      results the rounds as a grid of plain blocks in the display face. */
   .daily-panel,

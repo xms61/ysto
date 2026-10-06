@@ -27,6 +27,7 @@ test('starts a lobby with the defaults of the settings spec', () => {
     teams: 2,
     questions: 'anime',
     answerBy: 'options',
+    party: false,
   });
 });
 

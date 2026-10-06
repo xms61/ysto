@@ -44,6 +44,7 @@ export interface LobbySettings {
   teams: number; // in Teams: how many teams the players split into
   questions: QuestionKind;
   answerBy: AnswerBy; // typing names the anime, so it goes with anime questions, or their rounds in a mix
+  party: boolean; // sound on one screen: a TV or laptop joins as the screen and plays the clips; phones only answer
 }
 
 // What the catalog allows: its years, the genres the settings offer, and the largest popularity rank
@@ -98,6 +99,7 @@ export function defaultSettings(bounds: SettingsBounds): LobbySettings {
     teams: 2,
     questions: 'anime',
     answerBy: 'options',
+    party: false,
   };
 }
 
@@ -121,6 +123,7 @@ const SETTINGS_KEYS = [
   'teams',
   'questions',
   'answerBy',
+  'party',
 ] as const;
 const RANGE_KEYS = ['from', 'to'] as const;
 const SCORING_KEYS = ['mode', 'streakBonus', 'comeback', 'wrongAnswerPenalty'] as const;
@@ -159,8 +162,20 @@ function isScoring(value: unknown): value is ScoringRules {
 export function validateSettings(value: unknown, bounds: SettingsBounds): LobbySettings | null {
   if (!isRecord(value) || !hasKeys(value, SETTINGS_KEYS)) return null;
   const { sampleLengthSec, songsPerGame, years, genres, kinds, formats, difficulty, popularityRanks } = value;
-  const { sampleStart, scoring, answerChanges, overtimeSec, endless, hints, play, lives, teams, questions, answerBy } =
-    value;
+  const {
+    sampleStart,
+    scoring,
+    answerChanges,
+    overtimeSec,
+    endless,
+    hints,
+    play,
+    lives,
+    teams,
+    questions,
+    answerBy,
+    party,
+  } = value;
   const { songsPerGame: songs, overtimeSec: overtime } = LIMITS;
   if (
     !isSampleLength(sampleLengthSec) ||
@@ -182,6 +197,7 @@ export function validateSettings(value: unknown, bounds: SettingsBounds): LobbyS
     !isIntegerIn(teams, LIMITS.teams.min, LIMITS.teams.max) ||
     !isOneOf(questions, QUESTION_KINDS) ||
     !isOneOf(answerBy, ANSWER_BYS) ||
+    typeof party !== 'boolean' ||
     // A typed answer names an anime, so song title and artist games can't use it.
     (answerBy === 'typing' && (questions === 'song' || questions === 'artist')) ||
     // First correct gives everyone but the fastest nothing, which can't decide who loses a life.
@@ -209,6 +225,7 @@ export function validateSettings(value: unknown, bounds: SettingsBounds): LobbyS
     teams,
     questions,
     answerBy,
+    party,
   };
 }
 

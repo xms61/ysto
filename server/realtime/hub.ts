@@ -282,7 +282,7 @@ export class Realtime {
   }
 
   #playerViews(lobby: Lobby): PlayerView[] {
-    return lobby.players.map(({ id, name, icon, connectedSince, team }) => {
+    return lobby.players.map(({ id, name, icon, connectedSince, team, screen }) => {
       const lives = this.#games.lives(lobby.code, id);
       return {
         id,
@@ -292,7 +292,8 @@ export class Realtime {
         spectating: this.#games.spectating(lobby.code, id),
         score: this.#games.score(lobby.code, id),
         ...(lives === undefined ? {} : { lives }),
-        ...(lobby.settings.play === 'teams' ? { team } : {}),
+        ...(lobby.settings.play === 'teams' && !screen ? { team } : {}),
+        ...(screen ? { screen: true as const } : {}),
       };
     });
   }

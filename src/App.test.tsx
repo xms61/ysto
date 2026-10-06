@@ -321,6 +321,34 @@ test('with typing, answers from the suggestions and shows what each player typed
   vi.useRealTimers();
 });
 
+test('joins a lobby as its party screen from the join link, with no name', async () => {
+  const fetch = vi.fn(async () => Response.json({ playerId: 'tv', sessionToken: 'b'.repeat(43) }, { status: 201 }));
+  vi.stubGlobal('fetch', fetch);
+  window.history.replaceState(null, '', '/j/abc234');
+  const { sockets } = renderApp();
+  fireEvent.click(screen.getByRole('button', { name: 'Use as the screen' }));
+  await vi.waitFor(() => sockets.latest());
+  expect(fetch).toHaveBeenCalledWith('/api/lobbies/ABC234/screens', expect.anything());
+});
+
+test("a party screen shows the round but can't answer, and a phone in party mode loads no clip", async () => {
+  const base = lobbyState({ game: PLAYING });
+  const players = [{ ...base.players[0]!, screen: true as const }, base.players[1]!];
+  const party = { ...base.settings, party: true };
+  const { socket } = renderSeated({ ...base, players, settings: party });
+  const startsAt = Date.now() - 100;
+  act(() => {
+    socket.receive({ type: 'round:prepare', roundId: 'g.1', clipToken: 'c1', number: 1, rounds: 5 });
+    socket.receive({ type: 'round:start', roundId: 'g.1', startsAt, endsAt: startsAt + 20_000, options: OPTIONS });
+  });
+  expect(await screen.findByText('This screen plays the sound. Answer on your phones.')).toBeTruthy();
+  expect((screen.getByRole('button', { name: 'Rain Song' }) as HTMLButtonElement).disabled).toBe(true);
+  cleanup();
+  const phone = renderSeated({ ...base, settings: party });
+  act(() => phone.socket.receive({ type: 'round:prepare', roundId: 'g.2', clipToken: 'c2', number: 1, rounds: 5 }));
+  expect(phone.socket.sentOfType('round:ready')).toEqual([{ type: 'round:ready', roundId: 'g.2', loaded: true }]);
+});
+
 test('runs an endless game without a round count, and lets the host end it', () => {
   const base = lobbyState();
   const endless = { ...base.settings, endless: true };

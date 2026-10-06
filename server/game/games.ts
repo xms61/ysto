@@ -123,6 +123,10 @@ export class Games {
     if (lobby.hostId !== seat.playerId) return 'not-host';
     if (this.running(lobby.code)) return 'game-running';
     if (!clips) return 'not-ready';
+    // A party game plays its sound on a screen, so it needs one connected.
+    if (lobby.settings.party && !lobby.players.some((player) => player.screen && player.connectedSince !== null)) {
+      return 'no-screen';
+    }
     if ([...this.#runs.keys()].filter((code) => this.running(code)).length >= maxGames) return 'server-busy';
     // An endless game starts with one batch and draws the next as it goes.
     const firstBatch = lobby.settings.endless
@@ -134,7 +138,8 @@ export class Games {
       ? dailyQuestions(catalog, firstBatch, this.#options.dailySecret ?? '', lobby.daily.number)
       : buildGame(catalog, firstBatch, random, played);
     const known = connectionsOf(lobby);
-    const players = [...known.keys()];
+    const screens = lobby.players.filter((player) => player.screen).map((player) => player.id);
+    const players = [...known.keys()].filter((id) => !screens.includes(id));
     const away = players.filter((id) => !known.get(id));
     const teams = Object.fromEntries(lobby.players.map((player) => [player.id, player.team]));
     const started = startGame({
@@ -144,6 +149,7 @@ export class Games {
       players,
       away,
       teams,
+      screens,
     });
     this.#runs.get(lobby.code)?.timers.forEach((cancel) => cancel());
     const run: Run = { code: lobby.code, game: started.game, timers: new Map(), known, reported: new Set() };
@@ -332,8 +338,8 @@ export class Games {
     }
     for (const [playerId, isConnected] of now) {
       if (run.known.has(playerId)) continue;
-      const team = lobby.players.find((player) => player.id === playerId)?.team;
-      events.push({ type: 'player-joined', playerId, ...(team === undefined ? {} : { team }) });
+      const joined = lobby.players.find((player) => player.id === playerId);
+      events.push({ type: 'player-joined', playerId, team: joined?.team, screen: joined?.screen ?? false });
       if (isConnected) events.push({ type: 'player-connected', playerId });
     }
     run.known = now;

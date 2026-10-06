@@ -4,6 +4,7 @@
 import { readItem, writeItem } from './storage.ts';
 
 const NOTES: { version: string; lines: string[] }[] = [
+  { version: '1.27.0', lines: ['Party mode: one screen plays the sound, and everyone answers on their phone.'] },
   { version: '1.26.0', lines: ["Today's challenge: ten songs a day, the same for everyone, and a streak to keep."] },
   { version: '1.25.0', lines: ['Type your answer: hosts can swap the four options for a title field.'] },
   { version: '1.24.0', lines: ['Name the song title or the artist instead of the anime, or mix them up.'] },

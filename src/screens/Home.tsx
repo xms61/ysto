@@ -8,7 +8,7 @@ import { PreferencesMenu } from '../components/PrefsPanel.tsx';
 import { Button, INPUT, Panel } from '../components/ui.tsx';
 import { ERROR_MESSAGES } from '../copy.ts';
 import type { Prefs } from '../prefs/prefs.ts';
-import { createDaily, createLobby, joinLobby } from '../realtime/api.ts';
+import { createDaily, createLobby, joinAsScreen, joinLobby } from '../realtime/api.ts';
 import { DailyPanel } from '../components/Daily.tsx';
 import type { Seated } from '../realtime/api.ts';
 import type { Session } from '../realtime/session.ts';
@@ -66,6 +66,17 @@ export function Home({ joinCode, notice, prefs, onPrefs, unlockAudio, onSeated, 
     void seat((cleaned) => createLobby(cleaned));
   };
   const playDaily = () => void seat((cleaned) => createDaily(cleaned));
+  // A TV or laptop joins as the lobby's screen for party mode: it needs no name.
+  const seatScreen = async () => {
+    unlockAudio();
+    const normalized = normalizeCode(code);
+    if (normalized === null) return setError(CODE_MESSAGE);
+    setBusy(true);
+    const result = await joinAsScreen(normalized);
+    setBusy(false);
+    if ('error' in result) return setError(ERROR_MESSAGES[result.error]);
+    onSeated(result.session);
+  };
   const join = (event: FormEvent) => {
     event.preventDefault();
     void seat((cleaned) => {
@@ -112,6 +123,10 @@ export function Home({ joinCode, notice, prefs, onPrefs, unlockAudio, onSeated, 
               Join lobby {normalizeCode(code) ?? code}
             </Button>
           </form>
+          <Button variant="quiet" className="mt-4 w-full" disabled={busy} onClick={() => void seatScreen()}>
+            Use as the screen
+          </Button>
+          <p className="mt-1 text-sm text-muted">For party mode: this device plays the sound and shows the game.</p>
           <button
             type="button"
             className="mt-4 text-sm text-muted underline"
