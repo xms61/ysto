@@ -54,7 +54,7 @@ const RIGHT = '\u{1F7E9}';
 const MISSED = '\u{1F7E5}';
 const SKIPPED = '\u{2B1B}';
 
-test('shares the result as rows of five squares that name no song', () => {
+test('shares the result as one line of squares that names no song', () => {
   const songs = [
     song(1, ['p1']),
     song(2, []),
@@ -64,9 +64,9 @@ test('shares the result as rows of five squares that name no song', () => {
     song(6, ['p1', 'p2']),
   ];
   const grid = dailyGrid(songs, 'p1');
-  expect(grid).toEqual([RIGHT + MISSED + SKIPPED + MISSED + RIGHT, RIGHT]);
-  expect(shareText(42, 8, 10, '7,450', 12, ['ab', 'cd'])).toBe(
-    'You Skipped The OP?! \u{1F3A7} Daily #42\nab\ncd\n8/10 · 7,450 pts · \u{1F525} 12',
+  expect(grid).toBe(RIGHT + MISSED + SKIPPED + MISSED + RIGHT + RIGHT);
+  expect(shareText(42, 7, 10, '6,850', 12, 'abcd')).toBe(
+    'You Skipped The OP?!\nDaily #42\n\nabcd\n\n7/10 · 6,850 pts · \u{1F525} 12',
   );
-  expect(shareText(1, 3, 10, '900', 1, ['ab'])).toBe('You Skipped The OP?! \u{1F3A7} Daily #1\nab\n3/10 · 900 pts');
+  expect(shareText(1, 3, 10, '900', 1, 'ab')).toBe('You Skipped The OP?!\nDaily #1\n\nab\n\n3/10 · 900 pts');
 });

@@ -65,28 +65,21 @@ const SQUARE = {
   missed: '\u{1F7E5}', // red: wrong or no answer
   skipped: '\u{2B1B}', // grey: the host skipped the round
 };
-const HEADPHONES = '\u{1F3A7}';
 const FIRE = '\u{1F525}';
-const ROW = 5;
 
 function squareOf(song: PlayedSong, playerId: string): string {
   if (song.skipped) return SQUARE.skipped;
   return song.right.includes(playerId) ? SQUARE.right : SQUARE.missed;
 }
 
-// The rounds as rows of five colored squares, as Wordle shares its guesses. It names no song.
-export function dailyGrid(songs: PlayedSong[], playerId: string): string[] {
-  const squares = songs.map((song) => squareOf(song, playerId));
-  return Array.from({ length: Math.ceil(squares.length / ROW) }, (_, row) =>
-    squares.slice(row * ROW, row * ROW + ROW).join(''),
-  );
+// The rounds as one line of colored squares, as Wordle shares its guesses. It names no song.
+export function dailyGrid(songs: PlayedSong[], playerId: string): string {
+  return songs.map((song) => squareOf(song, playerId)).join('');
 }
 
-// The line to paste into a chat such as Discord: the day, the grid, then the right answers, the score and the
-// streak.
-export function shareText(day: number, right: number, rounds: number, score: string, streak: number, grid: string[]) {
+// The text to paste into a chat such as Discord: the game and the day, the grid, then the right answers, the score
+// and the streak, with a blank line between them.
+export function shareText(day: number, right: number, rounds: number, score: string, streak: number, grid: string) {
   const days = streak > 1 ? ` · ${FIRE} ${streak}` : '';
-  return [`You Skipped The OP?! ${HEADPHONES} Daily #${day}`, ...grid, `${right}/${rounds} · ${score} pts${days}`].join(
-    '\n',
-  );
+  return `You Skipped The OP?!\nDaily #${day}\n\n${grid}\n\n${right}/${rounds} · ${score} pts${days}`;
 }
