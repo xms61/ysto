@@ -11,7 +11,6 @@ function played(number: number, slug: string, right: string[]): PlayedSong {
     number,
     skipped: false,
     right,
-    quick: [],
     anime: { english: null, romaji: slug, japanese: null },
     theme: { kind: 'OP', sequence: 1 },
     song: { title: 'Song', artists: [] },

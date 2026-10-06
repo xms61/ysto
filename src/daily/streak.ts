@@ -59,12 +59,11 @@ export function badgeOf(streak: number): number | null {
   return [100, 30, 7].find((days) => streak >= days) ?? null;
 }
 
-// The share grid's squares, in the Neon Rain colors, written as escapes to keep emoji out of the code.
+// The share grid's squares, written as escapes to keep emoji out of the code. Black shows as grey in Discord.
 const SQUARE = {
-  quick: '\u{1F7EA}', // purple: right in the window's first third
-  right: '\u{1F7E6}', // blue: right
-  missed: '\u{2B1B}', // black: wrong or no answer
-  skipped: '\u{2B1C}', // white: the host skipped the round
+  right: '\u{1F7E9}', // green
+  missed: '\u{1F7E5}', // red: wrong or no answer
+  skipped: '\u{2B1B}', // grey: the host skipped the round
 };
 const HEADPHONES = '\u{1F3A7}';
 const FIRE = '\u{1F525}';
@@ -72,7 +71,6 @@ const ROW = 5;
 
 function squareOf(song: PlayedSong, playerId: string): string {
   if (song.skipped) return SQUARE.skipped;
-  if (song.quick.includes(playerId)) return SQUARE.quick;
   return song.right.includes(playerId) ? SQUARE.right : SQUARE.missed;
 }
 

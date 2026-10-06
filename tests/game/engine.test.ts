@@ -334,16 +334,6 @@ test('names the players who picked each song right, only in the finished list', 
   );
 });
 
-test("marks a right answer in the window's first third as quick", () => {
-  const sim = new Simulation(settings({ songsPerGame: 1 }), ['p1', 'p2']);
-  playRound(sim, [
-    { playerId: 'p1', delayMs: 1000, correct: true },
-    { playerId: 'p2', delayMs: 5000, correct: true },
-  ]);
-  const songs = gameView(sim.game).songs ?? assert.fail();
-  assert.deepEqual(songs[0]?.quick, ['p1']);
-});
-
 test('lets a late joiner watch the round in progress, then play from the next one at 0 points', () => {
   const sim = new Simulation(settings(), ['p1']);
   allReady(sim);

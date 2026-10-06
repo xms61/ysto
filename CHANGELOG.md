@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.28.0] - 2026-10-06
 
 ### Changed
-- The daily's result shares like Wordle's: two rows of five colored squares (purple right and quick, blue right, black missed, white skipped) under a header with the day, then the score and the streak, ready to paste into Discord. The results' song list now marks who answered each song in the first third of the sample.
+- The daily's result shares like Wordle's: two rows of five colored squares (green right, red missed, grey skipped) under a header with the day, then the score and the streak, ready to paste into Discord.
 
 ## [1.27.1] - 2026-10-06
 

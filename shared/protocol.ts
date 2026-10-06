@@ -241,14 +241,7 @@ export interface RevealDetails {
 
 // A song the game played, for the list at the results. A skipped round's song is listed too. `right` names the
 // players who picked the anime, sent only once the game is over.
-// `right` names the players who picked it right, and `quick` those of them who answered in the window's first
-// third (the daily's share grid, docs/product-specs/daily.md).
-export type PlayedSong = Omit<RevealDetails, 'cover'> & {
-  number: number;
-  skipped: boolean;
-  right: string[];
-  quick: string[];
-};
+export type PlayedSong = Omit<RevealDetails, 'cover'> & { number: number; skipped: boolean; right: string[] };
 
 export interface PlayerView {
   id: string;
