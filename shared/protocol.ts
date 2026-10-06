@@ -215,6 +215,7 @@ export interface PlayerView {
   connected: boolean;
   spectating: boolean; // joined during a game: plays from the next round
   score: number;
+  lives?: number; // in an Elimination game: the lives left, 0 once out
 }
 
 // Where the lobby's game stands: `number` is the round in progress, or the rounds played once it's over.
@@ -262,6 +263,7 @@ export interface StandingView {
   playerId: string;
   score: number;
   streak: number;
+  lives?: number; // in an Elimination game
 }
 
 export interface ResultView {
@@ -270,6 +272,7 @@ export interface ResultView {
   correct: number;
   averageMs: number | null; // average response time of correct answers
   bestStreak: number;
+  lives?: number; // in an Elimination game, which ranks by lives first
 }
 
 export type RoundReveal = {

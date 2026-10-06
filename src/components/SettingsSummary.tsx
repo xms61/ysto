@@ -39,6 +39,12 @@ export function SettingsSummary({ settings, bounds }: { settings: LobbySettings;
         ? `Endless, ${settings.sampleLengthSec} s a song`
         : `${settings.songsPerGame} songs, ${settings.sampleLengthSec} s each`,
     ],
+    [
+      'Play',
+      settings.play === 'elimination'
+        ? `Elimination, ${settings.lives} ${settings.lives === 1 ? 'life' : 'lives'}`
+        : 'Classic',
+    ],
     ['Difficulty', difficulty(settings)],
     ['Samples start at', SAMPLE_START_LABELS[settings.sampleStart].toLowerCase()],
     ['Songs', songsFrom(settings, bounds)],

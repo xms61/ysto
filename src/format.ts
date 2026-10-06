@@ -13,8 +13,14 @@ export function place(rank: number): string {
 }
 
 // Places for scores sorted from highest, shared on a tie: 10, 10, 7 place 1st, 1st and 3rd.
-export function sharedPlaces(sortedScores: readonly number[]): number[] {
+export function sharedPlaces(sortedScores: readonly (number | string)[]): number[] {
   return sortedScores.map((value) => sortedScores.indexOf(value) + 1);
+}
+
+// An Elimination player's lives as they read: "2 lives", "1 life", or "out".
+export function livesText(lives: number): string {
+  if (lives === 0) return 'out';
+  return lives === 1 ? '1 life' : `${lives} lives`;
 }
 
 export function score(value: number): string {

@@ -2,6 +2,11 @@
 
 Releases moved out of `CHANGELOG.md` (which keeps about the latest 5). Newest first.
 
+## [1.17.0] - 2026-10-06
+
+### Removed
+- Six worlds: Hanami, Tournament Arc, Splash Page, Night Arc, Model Kit and Gachapon, with their timers (the dango skewer, the referee's pennants, the focus lines, the nipper and the coin dial), icons and backdrop plates. A player who had one picked gets Tokyo Rain. The picker shows the nine that stay three by three.
+
 ## [1.16.0] - 2026-10-06
 
 ### Added

@@ -13,6 +13,8 @@ The host shapes the game (pool, length, difficulty, scoring). Each player sets w
 | :-- | :-- | :-- | :-- |
 | Sample length | Lobby (host) | 10–30 s, in 5 s steps | 20 s |
 | Songs per game | Lobby | 5–50; doesn't apply to an endless game | 15 |
+| Play | Lobby | Classic, or Elimination: a wrong or missed answer costs a life, and the last one standing wins ([game flow](game-flow.md)); Elimination can't use First correct | Classic |
+| Lives | Lobby | 1–5, in Elimination | 3 |
 | Endless | Lobby | on or off: rounds keep coming until the host ends the game, or the pool runs out ([game flow](game-flow.md)) | off |
 | Hints | Lobby | on or off: from halfway through a round, a player can see when the anime aired, for 70% of the points ([game flow](game-flow.md)) | off |
 | Years | Lobby | 1963–2026 (taken from the catalog) | all |

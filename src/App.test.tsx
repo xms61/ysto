@@ -1,5 +1,6 @@
 import { act, cleanup, fireEvent, render, screen, within } from '@testing-library/react';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
+import { SCORING_PRESETS } from '../shared/scoring.ts';
 import { App } from './App.tsx';
 import { AudioEngine } from './audio/engine.ts';
 import { writeSession } from './realtime/session.ts';
@@ -208,6 +209,37 @@ test('with hints on, offers the hint from halfway, shows it, and marks who took 
   ];
   act(() => socket.receive(revealOf('g.1', { picks })));
   expect(screen.getAllByText('hint', SHOWN)).toHaveLength(1);
+});
+
+test('switching a buzzer game to Elimination moves it to Classic scoring, and offers its lives', () => {
+  const base = lobbyState();
+  const { socket } = renderSeated({ ...base, settings: { ...base.settings, scoring: { ...SCORING_PRESETS.buzzer } } });
+  fireEvent.click(screen.getByLabelText(/^Elimination:/));
+  expect(socket.sentOfType('settings:update').at(-1)?.settings).toMatchObject({
+    play: 'elimination',
+    scoring: SCORING_PRESETS.classic,
+  });
+  act(() => socket.receive({ ...base, settings: { ...base.settings, play: 'elimination' } }));
+  expect((screen.getByLabelText('Lives') as HTMLSelectElement).value).toBe('3');
+  expect((screen.getByLabelText(/^Buzzer/) as HTMLInputElement).disabled).toBe(true);
+});
+
+test("in Elimination shows each player's lives, and lets a player who is out only watch", async () => {
+  const base = lobbyState({ game: PLAYING });
+  const players = [
+    { ...base.players[0]!, lives: 0 },
+    { ...base.players[1]!, lives: 2 },
+  ];
+  const { socket } = renderSeated({ ...base, players, settings: { ...base.settings, play: 'elimination' } });
+  const startsAt = Date.now() - 100;
+  act(() => {
+    socket.receive({ type: 'round:prepare', roundId: 'g.1', clipToken: 'c1', number: 1, rounds: 5 });
+    socket.receive({ type: 'round:start', roundId: 'g.1', startsAt, endsAt: startsAt + 20_000, options: OPTIONS });
+  });
+  expect(await screen.findByText("You're out. Watch who lasts.")).toBeTruthy();
+  expect((screen.getByRole('button', { name: 'Rain Song' }) as HTMLButtonElement).disabled).toBe(true);
+  expect(screen.getByText('2 lives')).toBeTruthy();
+  expect(screen.getByText('out')).toBeTruthy();
 });
 
 test('runs an endless game without a round count, and lets the host end it', () => {

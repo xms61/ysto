@@ -10,7 +10,7 @@ import type { ClipTokens } from '../clips/tokens.ts';
 import type { Logger } from '../log.ts';
 import type { Scheduler } from '../scheduler.ts';
 import { newToken } from '../tokens.ts';
-import { gameView, scoreOf, startGame, step } from './engine.ts';
+import { gameView, livesOf, scoreOf, startGame, step } from './engine.ts';
 import type { Game, GameEffect, GameEvent, TimerName } from './engine.ts';
 import type { Lobby } from './lobby.ts';
 import { poolSize } from './pool.ts';
@@ -100,6 +100,12 @@ export class Games {
       return line ? [{ playerId, ...line }] : [];
     });
     return { games: tally.games, players };
+  }
+
+  // A player's lives in a running or last Elimination game, undefined otherwise.
+  lives(code: string, playerId: string): number | undefined {
+    const run = this.#runs.get(code);
+    return run ? livesOf(run.game, playerId) : undefined;
   }
 
   score(code: string, playerId: string): number {

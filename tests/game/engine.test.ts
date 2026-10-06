@@ -677,3 +677,91 @@ test('catches up a returning player with the hint they took', () => {
   assert.equal(sent.length, 2);
   assert.deepEqual(sent[1]?.to, ['p1']);
 });
+
+const ELIMINATION = { play: 'elimination', lives: 2 } as const;
+
+function livesOf(sim: Simulation): Record<string, number | undefined> {
+  return Object.fromEntries(sim.last('round:reveal').standings.map((standing) => [standing.playerId, standing.lives]));
+}
+
+test('in Elimination a wrong or missed answer costs a life, and a skipped round or a failed clip none', () => {
+  const sim = new Simulation(settings({ ...ELIMINATION, songsPerGame: 10 }), ['p1', 'p2', 'p3']);
+  playRound(sim, [
+    { playerId: 'p1', delayMs: 1000, correct: true },
+    { playerId: 'p2', delayMs: 1000, correct: false },
+  ]);
+  assert.deepEqual(livesOf(sim), { p1: 2, p2: 1, p3: 1 });
+  allReady(sim);
+  sim.event({ type: 'skip' });
+  assert.deepEqual(livesOf(sim), { p1: 2, p2: 1, p3: 1 });
+  sim.advanceTo(sim.now + GAME_TIMING.revealMs);
+  const { roundId } = sim.last('round:prepare');
+  sim.event({ type: 'ready', playerId: 'p1', roundId, loaded: true });
+  sim.event({ type: 'ready', playerId: 'p2', roundId, loaded: false });
+  sim.event({ type: 'ready', playerId: 'p3', roundId, loaded: true });
+  const start = sim.last('round:start');
+  sim.advanceTo(start.endsAt + GAME_TIMING.graceMs);
+  assert.deepEqual(livesOf(sim), { p1: 1, p2: 1, p3: 0 }, "p2's clip failed, so the miss costs nothing");
+});
+
+test('an Elimination player who is out can no longer answer, and the round no longer waits for them', () => {
+  const sim = new Simulation(settings({ ...ELIMINATION, lives: 1, songsPerGame: 10 }), ['p1', 'p2', 'p3']);
+  playRound(sim, [
+    { playerId: 'p1', delayMs: 1000, correct: true },
+    { playerId: 'p2', delayMs: 1000, correct: true },
+  ]);
+  assert.equal(livesOf(sim).p3, 0);
+  allReady(sim, ['p1', 'p2']);
+  const start = sim.last('round:start');
+  assert.ok(start.startsAt > 0, 'the barrier waits only for the players still in');
+  sim.advanceTo(start.startsAt + 500);
+  const answered = sim.count('round:answered');
+  sim.event({ type: 'answer', playerId: 'p3', roundId: start.roundId, option: optionFor(sim, true) });
+  assert.equal(sim.count('round:answered'), answered, "an out player's answer is dropped");
+  for (const playerId of ['p1', 'p2']) {
+    sim.event({ type: 'answer', playerId, roundId: start.roundId, option: optionFor(sim, true) });
+  }
+  assert.equal(sim.last('round:reveal').roundId, start.roundId, 'the round closes once the players still in answer');
+});
+
+test('Elimination ends when one player is left, and ranks by lives before points', () => {
+  const sim = new Simulation(settings({ ...ELIMINATION, lives: 1, songsPerGame: 10 }), ['p1', 'p2', 'p3']);
+  playRound(sim, [
+    { playerId: 'p1', delayMs: 1000, correct: true },
+    { playerId: 'p2', delayMs: 1000, correct: true },
+  ]);
+  assert.equal(sim.finished, false);
+  playRound(sim, [
+    { playerId: 'p1', delayMs: 9000, correct: true },
+    { playerId: 'p2', delayMs: 100, correct: false },
+  ]);
+  assert.equal(sim.finished, true);
+  const { standings } = sim.last('game:results');
+  assert.deepEqual(
+    standings.map((result) => [result.playerId, result.lives]),
+    [
+      ['p1', 1],
+      ['p2', 0],
+      ['p3', 0],
+    ],
+  );
+  assert.ok((standings[1]?.score ?? 0) > (standings[2]?.score ?? 0), 'among the players out, points decide');
+  assert.equal(gameView(sim.game).rounds, 2, 'the results count the rounds played');
+});
+
+test('solo Elimination is survival: it runs until the lives run out', () => {
+  // Late answers keep each round open to its end, so the next one waits for its ready barrier as in play.
+  const sim = new Simulation(settings({ ...ELIMINATION, lives: 2, songsPerGame: 10 }), ['p1']);
+  playRound(sim, [{ playerId: 'p1', delayMs: 9000, correct: true }]);
+  playRound(sim, [{ playerId: 'p1', delayMs: 9000, correct: false }]);
+  assert.equal(sim.finished, false);
+  playRound(sim, [{ playerId: 'p1', delayMs: 9000, correct: false }]);
+  assert.equal(sim.finished, true);
+  assert.equal(sim.last('game:results').standings[0]?.lives, 0);
+});
+
+test('a classic game carries no lives', () => {
+  const sim = new Simulation(settings(), ['p1', 'p2']);
+  playRound(sim, [{ playerId: 'p1', delayMs: 1000, correct: false }]);
+  assert.deepEqual(livesOf(sim), { p1: undefined, p2: undefined });
+});

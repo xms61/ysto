@@ -10,7 +10,18 @@ import { PlayerBadge, PlayerStamp } from '../components/PlayerIcon.tsx';
 import { RoundBody, ScoresPanel, Stage } from '../components/Stage.tsx';
 import type { CardState } from '../components/OptionCard.tsx';
 import { CheckIcon, CrossIcon } from '../components/ui.tsx';
-import { aired, animeTitle, credits, optionTitle, otherTitles, place, points, score, sharedPlaces } from '../format.ts';
+import {
+  aired,
+  animeTitle,
+  credits,
+  livesText,
+  optionTitle,
+  otherTitles,
+  place,
+  points,
+  score,
+  sharedPlaces,
+} from '../format.ts';
 import type { Title, TitleLanguages } from '../format.ts';
 import type { ClientRound } from '../realtime/game-state.ts';
 import { useOptionColumns, useStage } from '../themes/stage.ts';
@@ -53,12 +64,13 @@ function verdictOf(reveal: RoundReveal, playerId: string): Verdict | null {
   return { text: pick.points < 0 ? `${missed} ${points(pick.points)}` : missed, right: false };
 }
 
+// Most points first; in Elimination, most lives first.
 function ranked(standings: StandingView[]): StandingView[] {
-  return [...standings].sort((a, b) => b.score - a.score);
+  return [...standings].sort((a, b) => (b.lives ?? 0) - (a.lives ?? 0) || b.score - a.score);
 }
 
 function placesOf(order: StandingView[]): number[] {
-  return sharedPlaces(order.map((standing) => standing.score));
+  return sharedPlaces(order.map((standing) => `${standing.lives ?? 0}:${standing.score}`));
 }
 
 function streakOf(reveal: RoundReveal, playerId: string): number {
@@ -218,6 +230,9 @@ function Lineup({ reveal, lobby }: { reveal: RoundReveal; lobby: LobbyState }) {
               {standing.playerId === lobby.you && <span className="ml-2 text-xs text-muted">you</span>}
               {pick?.noAudio && <span className="ml-2 text-xs text-muted">no audio</span>}
               {pick?.hinted && <span className="ml-2 text-xs text-muted">hint</span>}
+              {standing.lives !== undefined && (
+                <span className="ml-2 text-xs text-muted">{livesText(standing.lives)}</span>
+              )}
             </span>
             <span className="board-delta" data-outcome={outcome}>
               {outcome === 'none' ? (
