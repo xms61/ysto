@@ -151,7 +151,14 @@ export function LobbySession(props: LobbySessionProps) {
           clip={clip && clip.roundId === game.round?.id ? clip.status : null}
         />
       ) : screen === 'results' ? (
-        <Results store={store} lobby={lobby} isHost={host} titles={titles} reported={game.reported} />
+        <Results
+          store={store}
+          lobby={lobby}
+          isHost={host}
+          titles={titles}
+          reported={game.reported}
+          storage={props.log}
+        />
       ) : (
         <Lobby store={store} lobby={lobby} settings={settings} isHost={host} />
       )}

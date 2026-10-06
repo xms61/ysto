@@ -45,7 +45,9 @@ export type ErrorCode =
   | 'pool-too-small'
   | 'server-busy'
   | 'icon-taken'
-  | 'unknown-team';
+  | 'unknown-team'
+  | 'daily-off'
+  | 'daily-fixed';
 
 // Why the server closed a socket. The 4000s are this protocol's own.
 export const CLOSE_CODES = {
@@ -282,6 +284,7 @@ export interface LobbyState {
   bounds: SettingsBounds;
   game: GameView | null;
   tally: TallyView | null; // null until the lobby finishes a game
+  daily?: { number: number }; // a daily challenge's private lobby: its day
 }
 
 export interface Pick {

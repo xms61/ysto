@@ -28,6 +28,7 @@ export interface ServerOptions {
   cut?: CutClip;
   trustedProxyHops?: number;
   allowedOrigins?: string[];
+  dailySecret?: string | null;
 }
 
 // Timers run only when a test moves the clock with `advance`.
@@ -76,6 +77,7 @@ export async function startServer({
   cut = async (clip) => Buffer.from(`clip of ${clip.relPath}`),
   trustedProxyHops = 0,
   allowedOrigins = [],
+  dailySecret = null,
 }: ServerOptions = {}): Promise<TestServer> {
   const scheduler = new ManualScheduler();
   const log = createLogger('error', () => {});
@@ -85,7 +87,17 @@ export async function startServer({
   const reports: ClipReport[] = [];
   const reportsStore = { add: (report: ClipReport) => void reports.push(report), close: () => {} };
   const random = seededRandom(1);
-  const games = new Games({ registry, catalog, clips, maxGames: 2, scheduler, random, log, reports: reportsStore });
+  const games = new Games({
+    registry,
+    catalog,
+    clips,
+    maxGames: 2,
+    scheduler,
+    random,
+    log,
+    reports: reportsStore,
+    dailySecret,
+  });
   const lobbyOfSession = (token: string) => registry.seatOf(token)?.code;
   // The folders hold no client build and no covers, so only the API, the clips and the checks answer.
   const app = createApp({
@@ -94,6 +106,7 @@ export async function startServer({
     registry,
     ready: true,
     trustedProxyHops,
+    dailyOn: dailySecret !== null,
     log,
     clips: { tokens, lobbyOfSession },
   });

@@ -1,6 +1,6 @@
 ---
 status: draft
-last-verified: 2026-10-05
+last-verified: 2026-10-06
 ---
 
 # Product specs
@@ -15,6 +15,7 @@ What a player can do, one spec per feature, with the acceptance criteria that sh
 | [Lobby](lobby.md) | draft | Codes, names, host rights, late joins, reconnects and expiry |
 | [Settings](settings.md) | draft | Lobby settings for the host, and device settings for each player |
 | [Game log](game-log.md) | draft | The games this device played and every anime heard in them |
+| [Daily challenge](daily.md) | draft | The same ten songs for everyone each day, a streak on the device, a result to share |
 
 ## Adding a spec
 Create `docs/product-specs/<feature>.md` with the frontmatter from [KNOWLEDGE_BASE.md](../KNOWLEDGE_BASE.md#doc-metadata) and these sections: Goal, Behavior, Acceptance criteria, Out of scope. Add a row above with the same status as the spec; the doc checks fail when a spec has no row or the statuses differ.

@@ -37,6 +37,7 @@ test('defaults the server settings', () => {
     maxPlayers: 12,
     maxGames: 30,
     stateDir: null,
+    dailySecret: null,
   });
 });
 
@@ -54,6 +55,7 @@ test('reads the server settings', () => {
       YSTO_FFMPEG_CONCURRENCY: '2',
       YSTO_MAX_GAMES: '4',
       YSTO_STATE_DIR: 'state',
+      YSTO_DAILY_SECRET: 's'.repeat(32),
     },
     CWD,
   );
@@ -70,7 +72,12 @@ test('reads the server settings', () => {
     maxPlayers: 8,
     maxGames: 4,
     stateDir: resolve(CWD, 'state'),
+    dailySecret: 's'.repeat(32),
   });
+});
+
+test('rejects a daily secret shorter than 32 characters', () => {
+  assert.throws(() => loadConfig({ YSTO_DAILY_SECRET: 'short' }), { message: /YSTO_DAILY_SECRET is shorter than 32/ });
 });
 
 test('names the variable when a server setting is invalid', () => {

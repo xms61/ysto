@@ -219,7 +219,7 @@ Taken in this order, one step at a time; each step says how it shows.
 - [x] 2026-10-06 M10 Teams (1.23.0)
 - [x] 2026-10-06 M11 Song title and artist rounds (1.24.0)
 - [x] 2026-10-06 M12 Typed answers (1.25.0)
-- [ ] M13 Daily challenge with a streak
+- [x] 2026-10-06 M13 Daily challenge with a streak (1.26.0)
 - [ ] M14 Party mode
 
 ## Decision log
@@ -244,6 +244,7 @@ Taken in this order, one step at a time; each step says how it shows.
 - 2026-10-06: Teams (M10) built with the average. The teams are named Kitsune, Tanuki, Tengu and Kappa and marked by a dot in the world's accent, good and edge colors (the fourth a ring of the accent), which all hold 3:1 on the panel in every world, so no new tokens. A dropped member counts for neither side of the average, so a team isn't punished for a lost connection. Teams are a play of their own, not combined with Elimination.
 - 2026-10-06: Song title and artist rounds (M11) shipped as one PR rather than two, since the distractors and the round's prompt are small together. Their options read the same in every title language. The settings form gains its "Questions" group. The catalog gate needs no new rule: the pool count already follows the setting, and a lobby with too few themes for a kind is refused as for any filter.
 - 2026-10-06: Typed answers (M12): the measurement the plan asked for came out at 4,879 playable anime and 876 KB of titles and synonyms as JSON, 383 KB gzipped and 276 KB with Brotli, too much to send every phone before it can answer. The server searches instead (`titles:search`, 5 a second per player), from an index cached per catalog. It ships as one PR. The e2e test on a phone keyboard is left for the tech-debt tracker; the client test covers the flow and the screenshots the phone layout.
+- 2026-10-06: The daily challenge (M13) built with the defaults; Daily No. 1 is 1 October 2026. The badge is the accent's chip with the run's length rather than a drawing per world, kept small until the owner wants more. The fixture catalog grew from 12 to 24 anime so a ten-song daily can play in the browser tests, and the browser tests' server gets a fixture-only secret.
 
 ## Open questions
 Each has a default the milestone builds unless the owner decides otherwise:
@@ -252,7 +253,7 @@ Each has a default the milestone builds unless the owner decides otherwise:
 - M9 (built 2026-10-06 with the default): the lives. Default: 3, and a missed answer costs one, as a wrong one does.
 - M10 (built 2026-10-06 with the default): a team's round score. Default: the average of its members' points; the alternative is the sum.
 - M12 (built 2026-10-06 with the default): whether a sibling season counts as right ("Attack on Titan" for "Attack on Titan Season 3"). Default: only the exact anime.
-- M13: the daily's settings and the day's boundary. Default: Normal, 10 songs of 15 s, a new day at 00:00 UTC (01:00 or 02:00 in Germany).
+- M13 (built 2026-10-06 with the default): the daily's settings and the day's boundary. Default: Normal, 10 songs of 15 s, a new day at 00:00 UTC (01:00 or 02:00 in Germany).
 - M14: whether phones show the titles too. Default: yes, for accessibility and for players who sit far from the screen.
 
 ## Surprises

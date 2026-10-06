@@ -16,6 +16,7 @@ import type { Lobby } from './lobby.ts';
 import { poolSize } from './pool.ts';
 import { buildGame, moreQuestions, replacementQuestion } from './questions.ts';
 import type { Question } from './questions.ts';
+import { dailyQuestions } from './daily.ts';
 import { matchOf, searchTitles } from './title-index.ts';
 import type { Random } from './random.ts';
 import type { LobbyRegistry, RegistryEvent, Seat } from './registry.ts';
@@ -44,6 +45,7 @@ export interface GamesOptions {
   scheduler: Scheduler;
   random: Random;
   log: Logger;
+  dailySecret?: string | null; // the daily's seed secret; without it the daily is off
   reports: Reports;
 }
 
@@ -128,7 +130,9 @@ export class Games {
       : lobby.settings;
     if (poolSize(catalog, firstBatch).anime < firstBatch.songsPerGame) return 'pool-too-small';
     const played = this.#played.get(lobby.code) ?? new Set<number>();
-    const questions = buildGame(catalog, firstBatch, random, played);
+    const questions = lobby.daily
+      ? dailyQuestions(catalog, firstBatch, this.#options.dailySecret ?? '', lobby.daily.number)
+      : buildGame(catalog, firstBatch, random, played);
     const known = connectionsOf(lobby);
     const players = [...known.keys()];
     const away = players.filter((id) => !known.get(id));

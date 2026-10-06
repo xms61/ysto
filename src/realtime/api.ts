@@ -42,6 +42,23 @@ async function seat(fetchFn: Fetch, path: string, name: string, code: (body: unk
   }
 }
 
+// Today's daily challenge: whether the server offers it, and its number. Off when the server can't be reached.
+export async function fetchDaily(fetchFn: Fetch = fetch): Promise<{ on: boolean; number: number }> {
+  try {
+    const response = await fetchFn('/api/daily', { cache: 'no-store' });
+    const body: unknown = await response.json();
+    if (!isRecord(body)) return { on: false, number: 0 };
+    const { on, number } = body;
+    return typeof on === 'boolean' && typeof number === 'number' ? { on, number } : { on: false, number: 0 };
+  } catch {
+    return { on: false, number: 0 };
+  }
+}
+
+export function createDaily(name: string, fetchFn: Fetch = fetch): Promise<Seated> {
+  return seat(fetchFn, '/api/daily', name, (body) => (isRecord(body) ? body.code : null));
+}
+
 export function createLobby(name: string, fetchFn: Fetch = fetch): Promise<Seated> {
   return seat(fetchFn, '/api/lobbies', name, (body) => (isRecord(body) ? body.code : null));
 }

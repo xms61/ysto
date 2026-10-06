@@ -1232,6 +1232,39 @@
 
   /* The round's standings at the reveal, as a scoreboard: place, who moved, the name, the round's points and the
      total, the numbers in the display face and tabular. */
+  /* The daily challenge (Daily.tsx): its panel on the home screen, the streak's badge on the accent, and at the
+     results the rounds as a grid of plain blocks in the display face. */
+  .daily-panel,
+  .daily-result {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 1rem 1.25rem;
+    border: 1px solid var(--line);
+    border-radius: min(var(--radius-2xl), 1rem);
+    background: var(--panel);
+  }
+
+  .daily-result {
+    margin-bottom: 1.5rem;
+    border-color: var(--accent);
+  }
+
+  .daily-badge {
+    padding: 0.125rem 0.5rem;
+    border-radius: var(--radius-lg);
+    background: var(--accent);
+    color: var(--accent-ink);
+    font-size: 0.75rem;
+    font-weight: 700;
+  }
+
+  .daily-grid {
+    font-family: var(--display-font);
+    font-size: 1.5rem;
+    letter-spacing: 0.15em;
+  }
+
   /* Typed answers (TypedAnswer.tsx): the field where the cards would be, its suggestions as a list of buttons
      on the panel, and at the reveal each player's answer on a row, the right ones rimmed in the good color. */
   .typed-answer {

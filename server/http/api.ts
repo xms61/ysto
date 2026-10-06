@@ -3,6 +3,7 @@
 // (docs/SECURITY.md#input). Responses carry session tokens, so nothing here may be cached.
 import express, { Router } from 'express';
 import type { NextFunction, Request, Response } from 'express';
+import { dailyNumber } from '../../shared/daily.ts';
 import { cleanName } from '../../shared/names.ts';
 import { normalizeCode, parseNameBody } from '../../shared/protocol.ts';
 import type { ErrorCode } from '../../shared/protocol.ts';
@@ -30,12 +31,14 @@ const STATUS: Partial<Record<ErrorCode, number>> = {
   'rate-limited': 429,
   'server-full': 503,
   'not-ready': 503,
+  'daily-off': 404,
 };
 
 export interface ApiOptions {
   // Null while the catalog isn't loaded: the routes then answer 503.
   registry: LobbyRegistry | null;
   trustedHops: number;
+  dailyOn?: boolean; // the daily challenge has its secret
   now?: () => number;
 }
 
@@ -59,7 +62,7 @@ function bodyErrors(error: unknown, _req: Request, res: Response, next: NextFunc
   else next(error);
 }
 
-export function apiRouter({ registry, trustedHops, now = Date.now }: ApiOptions): Router {
+export function apiRouter({ registry, trustedHops, dailyOn = false, now = Date.now }: ApiOptions): Router {
   const creations = new RateLimit(API_LIMITS.creationsPerMinute, MINUTE_MS, now);
   const joins = new RateLimit(API_LIMITS.joinsPerMinute, MINUTE_MS, now);
   const unknownCodes = new RateLimit(API_LIMITS.unknownCodesPerMinute, MINUTE_MS, now);
@@ -78,6 +81,24 @@ export function apiRouter({ registry, trustedHops, now = Date.now }: ApiOptions)
     const named = nameFrom(req.body);
     if ('error' in named) return fail(res, named.error);
     const created = registry.create(named.name, ip);
+    if ('error' in created) return fail(res, created.error);
+    res.status(201).json(created);
+  });
+
+  // Today's daily challenge: whether it is on, and its number, for the home screen.
+  router.get('/api/daily', (_req, res) => {
+    res.json({ on: dailyOn && registry !== null, number: dailyNumber(now()) });
+  });
+
+  // A private one-player lobby for today's daily. It counts as a lobby created, against the same limit.
+  router.post('/api/daily', (req, res) => {
+    if (!registry) return fail(res, 'not-ready');
+    if (!dailyOn) return fail(res, 'daily-off');
+    const ip = ipOf(req);
+    if (!creations.take(ip)) return fail(res, 'rate-limited', creations.retryAfterSec(ip));
+    const named = nameFrom(req.body);
+    if ('error' in named) return fail(res, named.error);
+    const created = registry.createDaily(named.name, ip, dailyNumber(now()));
     if ('error' in created) return fail(res, created.error);
     res.status(201).json(created);
   });

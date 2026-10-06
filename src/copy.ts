@@ -28,6 +28,8 @@ export const ERROR_MESSAGES: Record<ErrorCode | ClientErrorCode, string> = {
   'server-busy': 'The server is running as many games as it can. Try again in a few minutes.',
   'icon-taken': 'Someone just took that icon. Pick another one.',
   'unknown-team': 'That team is gone now. Pick another one.',
+  'daily-off': "Today's challenge isn't available on this server.",
+  'daily-fixed': "The daily challenge's settings can't change.",
   offline: "Couldn't reach the server. Check your connection and try again.",
 };
 

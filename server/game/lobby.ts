@@ -26,6 +26,7 @@ export interface Lobby {
   locked: boolean;
   settings: LobbySettings;
   idleSince: number | null; // since when nobody has been connected; null while somebody is
+  daily: { number: number } | null; // a daily challenge's private lobby: locked, its settings fixed
 }
 
 export type JoinError = 'lobby-full' | 'lobby-locked' | 'name-taken';
@@ -34,7 +35,7 @@ export type HostError = 'not-host' | 'unknown-player' | 'cannot-kick-self';
 export type Outcome<E> = { lobby: Lobby } | { error: E };
 
 export function newLobby(code: string, settings: LobbySettings, now: number): Lobby {
-  return { code, createdAt: now, hostId: null, players: [], locked: false, settings, idleSince: now };
+  return { code, createdAt: now, hostId: null, players: [], locked: false, settings, idleSince: now, daily: null };
 }
 
 function isConnected(player: Player): boolean {
@@ -151,12 +152,18 @@ export function kickPlayer(lobby: Lobby, actorId: string, targetId: string, now:
   return { lobby: removePlayer(lobby, targetId, now) };
 }
 
-export function lockLobby(lobby: Lobby, actorId: string, locked: boolean): Outcome<'not-host'> {
+export function lockLobby(lobby: Lobby, actorId: string, locked: boolean): Outcome<'not-host' | 'daily-fixed'> {
+  if (lobby.daily) return { error: 'daily-fixed' };
   return lobby.hostId === actorId ? { lobby: { ...lobby, locked } } : { error: 'not-host' };
 }
 
-export function changeSettings(lobby: Lobby, actorId: string, settings: LobbySettings): Outcome<'not-host'> {
+export function changeSettings(
+  lobby: Lobby,
+  actorId: string,
+  settings: LobbySettings,
+): Outcome<'not-host' | 'daily-fixed'> {
   if (lobby.hostId !== actorId) return { error: 'not-host' };
+  if (lobby.daily) return { error: 'daily-fixed' };
   return { lobby: { ...lobby, settings, players: keepTeamsInRange(lobby.players, settings.teams) } };
 }
 

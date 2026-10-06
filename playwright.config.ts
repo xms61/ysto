@@ -28,7 +28,8 @@ export default defineConfig({
   ],
   webServer: {
     command: 'node e2e/fixture-server.ts',
-    env: { PORT: String(PORT), LOG_LEVEL: 'warn', YSTO_TRUST_PROXY: '1' },
+    // A daily secret for the fixture only, so the daily can be played.
+    env: { PORT: String(PORT), LOG_LEVEL: 'warn', YSTO_TRUST_PROXY: '1', YSTO_DAILY_SECRET: 'e2e-'.padEnd(32, 'x') },
     url: `http://localhost:${PORT}/readyz`,
     reuseExistingServer: !isCI,
     timeout: 60_000,
