@@ -1,8 +1,9 @@
 // The round's stage: a slot above the cards, the cards, and what follows them. The cards never move from the
-// deal to the reveal: the slot lays a hidden copy of the round's countdown and timer (the ghost) under what it
-// shows, so it always takes their height, and the cards hang from its foot, so a card that grows (a title that
-// wraps, the right card turned over) grows downward. RoundBody puts the stage beside the round's side column
-// on a wide screen.
+// deal to the reveal: the slot lays a hidden copy of the round's countdown, timer and verdict (the ghost) under
+// what it shows, so it always takes the tallest of their heights, and the cards hang from its foot, so a card
+// that grows (a title that wraps) grows downward. The lines below the cards keep a fixed height, empty at
+// the reveal, so on a phone the scores under the stage stay put too. RoundBody sets the stage between the
+// scores and the answer on a wide screen.
 import type { ReactNode } from 'react';
 
 interface StageProps {
@@ -24,19 +25,33 @@ export function Stage({ slot, ghost, cards, below }: StageProps) {
         </div>
         {cards}
       </div>
-      {below && <div className="mt-5 flex flex-col gap-2">{below}</div>}
+      <div className="stage-below">{below}</div>
     </>
   );
 }
 
-// The round's main column and its side column: side by side from 64rem, the side below on a narrower screen.
-export function RoundBody({ main, side }: { main: ReactNode; side: ReactNode }) {
+// The round's three parts: the stage in the middle, the scores on its left, and on its right the answer at the
+// reveal, in a column kept free for it from the start, so it shows up without moving anything. Between 64rem
+// and 72rem the answer comes under the stage; on a narrower screen the scores follow the stage and the answer
+// comes last.
+export function RoundBody({ main, scores, answer }: { main: ReactNode; scores: ReactNode; answer?: ReactNode }) {
   return (
     <div className="round-body">
       <div className="round-main">{main}</div>
-      <aside aria-label="Scores and answer" className="round-side">
-        {side}
-      </aside>
+      <div className="round-scores">{scores}</div>
+      <div className="round-answer">{answer}</div>
     </div>
+  );
+}
+
+// The scores column's frame, the same while the round runs and at the reveal.
+export function ScoresPanel({ children }: { children: ReactNode }) {
+  return (
+    <section aria-labelledby="round-scores" className="side-scores">
+      <h3 id="round-scores" className="side-heading">
+        Scores
+      </h3>
+      {children}
+    </section>
   );
 }

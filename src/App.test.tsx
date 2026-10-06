@@ -5,6 +5,9 @@ import { AudioEngine } from './audio/engine.ts';
 import { writeSession } from './realtime/session.ts';
 import { FakeAudioContext, OPTIONS, SESSION, lobbyState, revealOf, socketFactory } from './testing/fakes.ts';
 
+// The stage's hidden copies (the slot's timer and verdict, each card's back) repeat text; only what shows counts.
+const SHOWN = { ignore: '[aria-hidden="true"] *' };
+
 const PLAYING = { phase: 'playing', number: 1, rounds: 5, results: null, songs: null } as const;
 
 function renderApp(reload = () => {}) {
@@ -182,10 +185,8 @@ test('with answer changes on, lets the player switch, runs the overtime and name
     socket.receive({ type: 'round:overtime', roundId: 'g.1', startsAt: Date.now(), endsAt: Date.now() + 5000 });
   });
   expect(screen.getByText('Ben switched')).toBeTruthy();
-  // The stage's hidden timer copy holds the call too; only the shown one counts.
-  const shown = { ignore: '[aria-hidden="true"] *' };
-  expect(screen.getByText('Overtime', shown)).toBeTruthy();
-  expect(screen.getByText('Last chance to switch', shown)).toBeTruthy();
+  expect(screen.getByText('Overtime', SHOWN)).toBeTruthy();
+  expect(screen.getByText('Last chance to switch', SHOWN)).toBeTruthy();
 });
 
 test('sets the round as a masthead number in Back Issue, still named as the round', () => {
@@ -222,7 +223,7 @@ test('answers with the number keys, then shows the reveal with words as well as 
     const startsAt = Date.now() - 100;
     socket.receive({ type: 'round:start', roundId: 'g.1', startsAt, endsAt: startsAt + 20_000, options: OPTIONS });
   });
-  await screen.findByText('Rain Song');
+  await screen.findByText('Rain Song', SHOWN);
   // The options can render from a timer outside act, so flush the effects that attach the number keys.
   await act(async () => {});
   fireEvent.keyDown(screen.getByLabelText(/^Volume/), { key: '2' });
@@ -234,7 +235,9 @@ test('answers with the number keys, then shows the reveal with words as well as 
   act(() => socket.receive(revealOf('g.1')));
   expect(screen.getByRole('heading', { name: 'The answer' })).toBeTruthy();
   expect(screen.getByText('Right: +850')).toBeTruthy();
-  expect(screen.getByText('Right answer, your pick')).toBeTruthy();
+  expect(document.querySelector('.card[data-turned] .card-back:not(.card-sizer)')?.textContent).toMatch(
+    /^Right answer, your pick/,
+  );
   expect(screen.getByText('no audio')).toBeTruthy();
   expect(screen.getByText('by Singer (as Heroine)')).toBeTruthy();
   // Who picked what shows only now, under each card.
@@ -252,8 +255,8 @@ test('keeps the scores beside the round, with who has answered, and each pick on
     socket.receive({ type: 'round:start', roundId: 'g.1', startsAt, endsAt: startsAt + 20_000, options: OPTIONS });
     socket.receive({ type: 'round:answered', roundId: 'g.1', playerIds: ['p2'] });
   });
-  await screen.findByText('Rain Song');
-  const live = within(screen.getByRole('complementary', { name: 'Scores and answer' }));
+  await screen.findByText('Rain Song', SHOWN);
+  const live = within(screen.getByRole('region', { name: 'Scores' }));
   expect(live.getByText('answered')).toBeTruthy();
   expect(live.getByText('thinking')).toBeTruthy();
   act(() => socket.receive(revealOf('g.1')));
@@ -282,7 +285,7 @@ test("greets a missed opening with the game's own line, with the penalty when th
     const startsAt = Date.now() - 100;
     socket.receive({ type: 'round:start', roundId: 'g.1', startsAt, endsAt: startsAt + 20_000, options: OPTIONS });
   });
-  await screen.findByText('Rain Song');
+  await screen.findByText('Rain Song', SHOWN);
   const picks = [
     { playerId: 'p1', option: 0, points: -250, noAudio: false },
     { playerId: 'p2', option: null, points: 0, noAudio: false },
@@ -349,7 +352,7 @@ test('shows the titles in the language the player picked', async () => {
     const startsAt = Date.now() - 100;
     socket.receive({ type: 'round:start', roundId: 'g.1', startsAt, endsAt: startsAt + 20_000, options: OPTIONS });
   });
-  expect((await screen.findByText('雨の歌')).getAttribute('lang')).toBe('ja');
+  expect((await screen.findByText('雨の歌', SHOWN)).getAttribute('lang')).toBe('ja');
 });
 
 test('shows a second title language under the first', async () => {
@@ -361,7 +364,7 @@ test('shows a second title language under the first', async () => {
     const startsAt = Date.now() - 100;
     socket.receive({ type: 'round:start', roundId: 'g.1', startsAt, endsAt: startsAt + 20_000, options: OPTIONS });
   });
-  expect((await screen.findByText('雨の歌')).getAttribute('lang')).toBe('ja');
+  expect((await screen.findByText('雨の歌', SHOWN)).getAttribute('lang')).toBe('ja');
   expect(screen.getByRole('button', { name: /^Rain Song,\s?雨の歌$/ })).toBeTruthy();
 });
 

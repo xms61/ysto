@@ -5,9 +5,9 @@
 // grows with this player's streak.
 import type { CSSProperties, ReactNode } from 'react';
 import type { LobbyState, PlayerIcon, RoundReveal, StandingView } from '../../shared/protocol.ts';
-import { OptionCard, SecondTitle } from '../components/OptionCard.tsx';
+import { AnswerBack, AnswerSizer, OptionCard } from '../components/OptionCard.tsx';
 import { PlayerBadge } from '../components/PlayerIcon.tsx';
-import { RoundBody, Stage } from '../components/Stage.tsx';
+import { RoundBody, ScoresPanel, Stage } from '../components/Stage.tsx';
 import type { CardState } from '../components/OptionCard.tsx';
 import { CheckIcon, CrossIcon } from '../components/ui.tsx';
 import { aired, animeTitle, credits, optionTitle, otherTitles, place, points, score, sharedPlaces } from '../format.ts';
@@ -215,13 +215,21 @@ function Lineup({ reveal, lobby }: { reveal: RoundReveal; lobby: LobbyState }) {
   );
 }
 
-function VerdictLine({ verdict, standing, streak }: { verdict: Verdict; standing: string | null; streak: number }) {
+interface VerdictLineProps {
+  verdict: Verdict;
+  standing: string | null;
+  streak: number;
+  ghost?: boolean; // the stage's hidden copy, which only needs its height
+}
+
+// A skipped round's line is a note rather than a verdict, so it reads smaller and fits where a verdict does.
+function VerdictLine({ verdict, standing, streak, ghost = false }: VerdictLineProps) {
   const mood = verdict.right === true ? 'right' : verdict.right === false ? 'wrong' : 'none';
   return (
     <div>
       <p
-        aria-live="polite"
-        className="verdict display flex items-center gap-3 text-3xl leading-tight"
+        aria-live={ghost ? undefined : 'polite'}
+        className={`verdict display flex items-center gap-3 leading-tight ${mood === 'none' ? 'text-xl' : 'text-3xl'}`}
         data-verdict={mood}
       >
         {verdict.right !== null && (
@@ -239,6 +247,13 @@ function VerdictLine({ verdict, standing, streak }: { verdict: Verdict; standing
       </p>
     </div>
   );
+}
+
+// The verdict at its tallest, for the stage to keep its height before the reveal: the longest line, with a
+// standing and a streak under it.
+export function VerdictGhost() {
+  const verdict = { text: 'Right, but someone was faster.', right: true };
+  return <VerdictLine verdict={verdict} standing="1st of 8 · 10,000 points" streak={5} ghost />;
 }
 
 export function Reveal({ round, reveal, lobby, titles, actions, ghost }: RevealProps) {
@@ -261,19 +276,11 @@ export function Reveal({ round, reveal, lobby, titles, actions, ghost }: RevealP
     standing && <p className="motion-rise text-sm text-muted">{standing}</p>
   );
   const back = (
-    <>
-      <span className="card-back-label">
-        <CheckIcon />
-        {mine === reveal.correct ? 'Right answer, your pick' : 'Right answer'}
-      </span>
-      <span className="card-back-title" lang={right?.lang ?? title.lang}>
-        {right?.text ?? title.text}
-        {right?.second && <SecondTitle title={right.second} />}
-      </span>
-      <span className="card-back-meta">
-        {[`${reveal.theme.kind} ${reveal.theme.sequence}`, reveal.year].filter(Boolean).join(' · ')}
-      </span>
-    </>
+    <AnswerBack
+      label={mine === reveal.correct ? 'Right answer, your pick' : 'Right answer'}
+      title={right ?? { ...title, second: null }}
+      meta={[`${reveal.theme.kind} ${reveal.theme.sequence}`, reveal.year].filter(Boolean).join(' · ')}
+    />
   );
   const cards = (
     <ol aria-label="Options" className={`options options-picked grid ${columns} gap-3`}>
@@ -292,6 +299,7 @@ export function Reveal({ round, reveal, lobby, titles, actions, ghost }: RevealP
             }
             mark={index === reveal.correct ? undefined : (wrongMark ?? undefined)}
             back={index === reveal.correct ? back : undefined}
+            sizer={<AnswerSizer title={option} />}
             heat={heat}
           />
           <Pickers reveal={reveal} lobby={lobby} option={index} />
@@ -326,12 +334,21 @@ export function Reveal({ round, reveal, lobby, titles, actions, ghost }: RevealP
           </p>
         </div>
       </div>
-      <Lineup reveal={reveal} lobby={lobby} />
       {actions}
       <p className="text-sm text-muted">
         {round.number === round.rounds ? 'The results come next.' : 'The next round starts in a few seconds.'}
       </p>
     </section>
   );
-  return <RoundBody main={<Stage slot={slot} ghost={ghost} cards={cards} />} side={below} />;
+  return (
+    <RoundBody
+      main={<Stage slot={slot} ghost={ghost} cards={cards} />}
+      scores={
+        <ScoresPanel>
+          <Lineup reveal={reveal} lobby={lobby} />
+        </ScoresPanel>
+      }
+      answer={below}
+    />
+  );
 }

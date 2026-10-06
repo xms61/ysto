@@ -1092,7 +1092,7 @@
     /* As tall as the window allows, so both rows of cards fit under the timer without a scroll: 11.5rem on a
        tall screen, down to 6rem on a short one. */
     .card-turn {
-      min-height: clamp(6rem, calc((100dvh - 34rem) / 2), 11.5rem);
+      min-height: clamp(6rem, calc((100dvh - 28rem) / 2), 11.5rem);
     }
 
     .card-front {
@@ -1112,6 +1112,11 @@
     background: var(--card-back);
     color: var(--card-back-ink);
     transform: rotateY(180deg);
+  }
+
+  /* A card's hidden copy of the back it would show (OptionCard.tsx): it only lends the card its height. */
+  .card-sizer {
+    visibility: hidden;
   }
 
   /* Dealt face down: the back without its turn. It must come after .card-back, which turns every back away. */
@@ -1416,15 +1421,16 @@
     }
   }
 
-  /* The answer under the cards: its cover sharp on a blurred wash of itself, the title large beside it. */
+  /* The answer: its cover sharp on a blurred wash of itself, the title large under it, all set to the right. */
   .reveal-band {
     position: relative;
     isolation: isolate;
     overflow: hidden;
     display: grid;
-    grid-template-columns: auto minmax(0, 1fr);
-    align-items: end;
-    gap: 1.25rem;
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: end;
+    gap: 1rem;
+    text-align: right;
     padding: 1.25rem;
     border: 1px solid var(--line);
     border-radius: var(--radius-xl);
@@ -1454,6 +1460,7 @@
 
   .reveal-titles {
     display: flex;
+    width: 100%;
     min-width: 0;
     flex-direction: column;
     gap: 0.25rem;
@@ -1480,6 +1487,7 @@
   .reveal-song {
     display: flex;
     flex-wrap: wrap;
+    justify-content: flex-end;
     align-items: baseline;
     gap: 0.25rem 0.625rem;
     margin-top: 0.75rem;
@@ -1500,7 +1508,7 @@
 
   @media (min-width: 40rem) {
     .reveal-band {
-      gap: 1.75rem;
+      gap: 1.25rem;
       padding: 1.75rem;
     }
 
@@ -1576,45 +1584,142 @@
     color: var(--muted);
   }
 
-  /* The round's two columns (Stage.tsx): the stage, and beside it from 64rem the scores, and at the reveal
-     the answer; below the stage on a narrower screen. */
-  .round-side {
-    margin-top: 1.5rem;
+  /* The round's three parts (Stage.tsx): the scores on the left, the stage in the middle, and the answer on the
+     right in a column kept free for it, so the reveal moves nothing. Between 64rem and 72rem the answer comes
+     under the stage; below 64rem the scores follow the stage and the answer comes last. */
+  .round-body {
+    display: grid;
+    grid-template-areas: 'main' 'scores' 'answer';
+    gap: 1.5rem;
+  }
+
+  .round-main {
+    grid-area: main;
+    min-width: 0;
+  }
+
+  /* Room for the clip's line, the status, who has answered and who switched, kept at the reveal too. */
+  .stage-below {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    min-height: 7rem;
+    margin-top: 1.25rem;
+  }
+
+  .round-scores {
+    grid-area: scores;
+    min-width: 0;
+  }
+
+  .round-answer {
+    grid-area: answer;
+    min-width: 0;
+  }
+
+  .round-answer:empty {
+    display: none;
   }
 
   @media (min-width: 64rem) {
     .round-body {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) 23rem;
-      gap: 2rem;
+      grid-template-columns: 20rem minmax(0, 1fr);
+      grid-template-rows: auto 1fr;
+      grid-template-areas: 'scores main' 'scores answer';
+      column-gap: 1.75rem;
+      row-gap: 1.5rem;
       align-items: start;
     }
 
-    .round-side {
-      margin-top: 1rem;
+    .round-scores {
+      padding-top: 1rem;
     }
 
-    /* In the side column the answer box is narrower: a smaller cover, and a title sized for it that breaks only
-       between words. */
-    .round-side .reveal-band {
-      gap: 1rem;
+    /* In the narrow scores column a row takes two lines: the place, the name and the total, then under the name
+       who moved, the card picked and the round's points. Who is answering sits under the name the same way. */
+    .round-scores .board-row {
+      grid-template-columns: 2rem 1.25rem 1.75rem minmax(0, 1fr) auto;
+      grid-template-areas: 'place name name name total' '. move pick delta delta';
+      row-gap: 0.25rem;
+    }
+
+    .round-scores .board-place {
+      grid-area: place;
+    }
+
+    .round-scores .board-row .board-name {
+      grid-area: name;
+    }
+
+    .round-scores .board-row .board-total {
+      grid-area: total;
+    }
+
+    .round-scores .board-move {
+      grid-area: move;
+    }
+
+    .round-scores .board-pick {
+      grid-area: pick;
+    }
+
+    .round-scores .board-delta {
+      grid-area: delta;
+    }
+
+    .round-scores .live-row {
+      grid-template-columns: minmax(0, 1fr) auto;
+      grid-template-areas: 'name total' 'state state';
+      row-gap: 0.125rem;
+    }
+
+    .round-scores .live-row .board-name {
+      grid-area: name;
+    }
+
+    .round-scores .live-row .board-total {
+      grid-area: total;
+    }
+
+    .round-scores .live-state {
+      grid-area: state;
+    }
+
+    .round-answer:empty {
+      display: block;
+    }
+  }
+
+  @media (min-width: 72rem) {
+    .round-body {
+      grid-template-columns: 20rem minmax(0, 1fr) 20rem;
+      grid-template-rows: auto;
+      grid-template-areas: 'scores main answer';
+    }
+
+    .round-answer {
+      padding-top: 1rem;
+    }
+
+    /* In the answer column the box is narrower: a title sized for it that breaks only between words. */
+    .round-answer .reveal-band {
       padding: 1.25rem;
     }
 
-    .round-side .reveal-cover {
-      width: 4.5rem;
+    .round-answer .reveal-cover {
+      width: 6.5rem;
     }
 
-    .round-side .reveal-title {
+    .round-answer .reveal-title {
       font-size: 1.875rem;
       overflow-wrap: break-word;
     }
 
-    .round-side .reveal-title[data-length='mid'] {
+    .round-answer .reveal-title[data-length='mid'] {
       font-size: 1.5rem;
     }
 
-    .round-side .reveal-title[data-length='long'] {
+    .round-answer .reveal-title[data-length='long'] {
       font-size: 1.1875rem;
     }
   }
@@ -1770,14 +1875,6 @@
     border-radius: 0.25rem;
     background: var(--glass);
     box-shadow: 0 0 0 4px var(--machine-rim);
-  }
-
-  /* The listening light is the machine's speaker: the headphones inside a perforated grille. */
-  :root[data-theme='tokyo-rain'] .sonar-core,
-  :root:not([data-theme]) .sonar-core {
-    background:
-      radial-gradient(circle, var(--glass) 1.2px, transparent 1.6px) 0 0 / 6px 6px,
-      var(--machine);
   }
 
   /* The button bank is recessed into the cabinet's face. */
@@ -2295,13 +2392,6 @@
     background-color: var(--line);
   }
 
-  /* The listening light is a paint pot's lid seen from above: a ridged grip round a flat top. */
-  :root[data-theme='mecha'] .sonar-core {
-    background:
-      radial-gradient(circle, var(--panel) 0 60%, transparent 61%),
-      repeating-conic-gradient(var(--line) 0 6deg, var(--raised) 6deg 12deg);
-  }
-
   /* ---- Gachapon: a capsule toy machine. The round's heading is the machine's red head under a row of bulbs;
      the options are four alike capsules in the clear dome, each title on a paper slip inside. A pick drops its
      capsule toward the tray; at the reveal the wrong capsules drop out of the dome and the right one opens on a
@@ -2464,11 +2554,6 @@
     height: 0.75rem;
     border-radius: 0;
     clip-path: polygon(50% 0, 61% 39%, 100% 50%, 61% 61%, 50% 100%, 39% 61%, 0 50%, 39% 39%);
-  }
-
-  /* The listening light is a capsule seen end on: its colored half over its clear half. */
-  :root[data-theme='magical-girl'] .sonar-core {
-    background: linear-gradient(var(--dome) 0 50%, var(--panel) 50%);
   }
 
   /* ---- Quest Board: the guild's notice board. The round's heading is carved into a plank across the top; the
@@ -2715,11 +2800,6 @@
   }
 
   /* Who picked a notice: their names on small paper slips, this player's lit by the candle. */
-  /* The listening light is a lantern's lens, warm at its heart. */
-  :root[data-theme='isekai'] .sonar-core {
-    background: radial-gradient(circle, rgb(234 165 58 / 0.35), transparent 70%), var(--panel);
-  }
-
   /* The candle (Candle.tsx): wax burning down in a brass holder, its flame on top. */
   .candle {
     width: 1.75rem;
@@ -2882,24 +2962,11 @@
     border: 2px solid var(--ink);
   }
 
-  /* Magenta stays on what can be tapped: the lit listening light is ink, and the name's "?!" is ink on a swipe of
-     the slab's yellow. */
-  :root[data-theme='retro-vhs'] .listening[data-status='ready'] .sonar {
-    color: var(--ink);
-  }
-
+  /* Magenta stays on what can be tapped: the name's "?!" is ink on a swipe of the slab's yellow. */
   :root[data-theme='retro-vhs'] .title-bang {
     padding-inline: 0.125em;
     background: var(--slab);
     color: var(--ink);
-  }
-
-  /* The listening light is a registration mark: a ring crossed by hairlines. */
-  :root[data-theme='retro-vhs'] .sonar-core {
-    background:
-      linear-gradient(var(--ink), var(--ink)) center / 100% 1px no-repeat,
-      linear-gradient(var(--ink), var(--ink)) center / 1px 100% no-repeat,
-      var(--panel);
   }
 
   /* The printer's ruler (Ruler.tsx): a steel rule ticked in millimetres, the time left as a cyan bar along it. */
@@ -2984,13 +3051,6 @@
       inset 0 0 0 2px var(--register-rim),
       inset 0 0.25rem 0.5rem rgb(0 0 0 / 0.8);
     color: var(--vfd);
-  }
-
-  /* The listening light is the scanner's window: dark glass with its red line across. */
-  :root[data-theme='konbini'] .sonar-core {
-    background:
-      linear-gradient(var(--laser), var(--laser)) center / 70% 1px no-repeat,
-      var(--glass);
   }
 
   /* The shelf: bright under the shop's lights, each card standing on a clear price rail. */
@@ -3172,13 +3232,6 @@
     color: var(--muted);
   }
 
-  /* The listening light is the microphone's head: a silver grille. */
-  :root[data-theme='karaoke'] .sonar-core {
-    background:
-      radial-gradient(circle, var(--grille-holes) 1px, transparent 1.4px) 0 0 / 5px 5px,
-      var(--grille);
-  }
-
   /* The remote: dark plastic round the song list. */
   :root[data-theme='karaoke'] .options {
     padding: 0.75rem;
@@ -3278,13 +3331,6 @@
 
   :root[data-theme='omikuji'] .round-head .button-quiet:hover:not(:disabled) {
     background: rgb(255 255 255 / 0.12);
-  }
-
-  /* The listening light is the shrine's brass bell, its slit across the middle. */
-  :root[data-theme='omikuji'] .sonar-core {
-    background:
-      radial-gradient(circle at 35% 30%, rgb(255 255 255 / 0.55) 0 12%, transparent 30%),
-      linear-gradient(transparent 60%, rgb(80 50 10 / 0.6) 60% 66%, transparent 66%), var(--brass);
   }
 
   /* A folded slip: washi with one corner folded down, its numeral brushed in vermilion. */
@@ -3438,12 +3484,6 @@
     border: 2px solid var(--card-mark-ink);
     background: transparent;
     color: var(--card-mark-ink);
-  }
-
-  /* The listening light is the map's "you are here" mark: a white disc in a pink ring. */
-  :root[data-theme='blossom-map'] .sonar-core {
-    background: var(--panel);
-    box-shadow: inset 0 0 0 0.25rem var(--blossom);
   }
 
   /* The map: flat lawns, a pond and sand paths, inside the sheet's white margin. */
@@ -3609,13 +3649,6 @@
     border: 2px solid var(--banner-ink);
     background: transparent;
     color: var(--banner-ink);
-  }
-
-  /* The listening light is the ring's bronze gong, its rings hammered in. */
-  :root[data-theme='tournament-arc'] .sonar-core {
-    background:
-      repeating-radial-gradient(circle, rgb(60 40 10 / 0.25) 0 1px, transparent 1px 5px),
-      radial-gradient(circle at 35% 30%, var(--gong-light), var(--gong));
   }
 
   /* The bracket: a spine down the middle that joins the two matches to the final at its center. */
@@ -3793,13 +3826,6 @@
     box-shadow: 4px 4px 0 var(--ink);
   }
 
-  /* The listening light is a disc of screentone in an ink ring. */
-  :root[data-theme='splash-page'] .sonar-core {
-    background:
-      radial-gradient(circle, var(--tone) 1px, transparent 1.4px) 0 0 / 5px 5px,
-      var(--panel);
-  }
-
   /* The page reads right to left: the first panel is the top right. Each panel's own content reads left to right. */
   :root[data-theme='splash-page'] .options {
     direction: rtl;
@@ -3877,10 +3903,9 @@
   }
 
   /* The splash: the right panel bursts out of its frame in focus lines, its words on white, a sound effect over its
-     corner. */
+     corner, and settles back to its own size, so the reveal moves no card. */
   :root[data-theme='splash-page'] .card[data-turned] {
     z-index: 2;
-    scale: 1.04;
   }
 
   :root[data-theme='splash-page'] .card-back:not(.card-printed) {
@@ -3959,11 +3984,6 @@
     padding-block: 0.75rem;
     border-block: 2px solid var(--ink);
     text-align: center;
-  }
-
-  /* The listening light is a white-ringed disc of black ink. */
-  :root[data-theme='night-arc'] .sonar-core {
-    background: var(--page);
   }
 
   /* A panel: solid black in a white frame. Its number sits in the gutter on its top corner, so the face lets it out. */
@@ -4087,13 +4107,6 @@
     border: 2px solid var(--label-ink);
     background: transparent;
     color: var(--label-ink);
-  }
-
-  /* The listening light is a reel's hub: white teeth round a dark spindle. */
-  :root[data-theme='side-a'] .sonar-core {
-    background:
-      radial-gradient(circle, var(--shell) 0 30%, transparent 31%),
-      repeating-conic-gradient(var(--label) 0 20deg, var(--shell) 20deg 60deg);
   }
 
   /* The insert: lined paper with its red margin, the four tracks written one under the other. */
@@ -4442,86 +4455,16 @@
     opacity: 0.12;
   }
 
-  /* ---- The listening panel: headphones in a ring, dim while the clip loads, lit when ready, sending out rings
-     while it plays. ---- */
-  .listening {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    gap: 0.5rem;
+  /* A clip that failed to load is said plainly, in the ink, so the player knows why they hear nothing. */
+  .clip-line[data-status='failed'] {
+    color: var(--ink);
+    font-weight: 600;
   }
 
-  /* Not positioned, so the ring field inside it lays out over the whole round panel. */
-  .sonar {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 7rem;
-    color: var(--line);
-    transition:
-      color 300ms,
-      opacity 300ms;
-  }
-
-  .listening[data-status='ready'] .sonar {
-    color: var(--accent);
-  }
-
-  .listening[data-status='failed'] .sonar {
-    opacity: 0.4;
-  }
-
-  .sonar-core {
-    position: relative;
-    z-index: 1;
-    display: grid;
-    place-items: center;
-    width: 4rem;
-    height: 4rem;
-    border: 2px solid currentColor;
-    border-radius: 50%;
-    background: var(--panel);
-  }
-
-  .sonar-core svg {
-    width: 1.75rem;
-    height: 1.75rem;
-  }
-
-  /* Behind the panel's content and above its background, clipped to the panel's corners. */
+  /* The frame for the worlds' drawn edges (its ::before and ::after), which sit behind its content. */
   .round-panel {
     position: relative;
     isolation: isolate;
-  }
-
-  .sonar-field {
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    overflow: hidden;
-    border-radius: var(--radius-2xl);
-    pointer-events: none;
-  }
-
-  .sonar-ring {
-    position: absolute;
-    top: var(--ring-y, 50%);
-    left: var(--ring-x, 50%);
-    width: 4rem;
-    height: 4rem;
-    border: 2px solid currentColor;
-    border-radius: 50%;
-    opacity: 0;
-    transform: translate(-50%, -50%);
-  }
-
-  /* A ready clip holds one faint ring, the rest of the wave still to come. */
-  .listening[data-status='ready'] .sonar-ring:first-child {
-    width: 6rem;
-    height: 6rem;
-    opacity: 0.35;
   }
 
   /* ---- Backdrop decorations, drawn only while motion is full (Backdrop.tsx). ---- */
@@ -6148,30 +6091,6 @@
   }
 }
 
-/* A ring leaves the headphones and fades as it spreads to the panel's farthest corner; the headphones beat
-   three times to each ring. Width and height grow rather than a scale, so the 2px rim stays 2px all the way out. */
-@keyframes sonar-out {
-  from {
-    width: 4rem;
-    height: 4rem;
-    opacity: 0.7;
-  }
-  to {
-    width: var(--ring-reach, 40rem);
-    height: var(--ring-reach, 40rem);
-    opacity: 0;
-  }
-}
-
-@keyframes sonar-beat {
-  from {
-    transform: scale(1.08);
-  }
-  to {
-    transform: none;
-  }
-}
-
 @keyframes card-turn {
   from {
     transform: rotateY(0deg);
@@ -6205,22 +6124,6 @@
 /* The reveal: the right card turns over while the verdict and the answer rise in behind it. */
 :root[data-motion='full'] .card[data-turned] .card-turn {
   animation: card-turn 700ms cubic-bezier(0.2, 0.7, 0.2, 1) 200ms both;
-}
-
-:root[data-motion='full'] .listening[data-status='ready'][data-playing] .sonar-ring {
-  animation: sonar-out 4.2s cubic-bezier(0.16, 1, 0.3, 1) infinite;
-}
-
-:root[data-motion='full'] .listening[data-status='ready'][data-playing] .sonar-ring:nth-child(2) {
-  animation-delay: -1.4s;
-}
-
-:root[data-motion='full'] .listening[data-status='ready'][data-playing] .sonar-ring:nth-child(3) {
-  animation-delay: -2.8s;
-}
-
-:root[data-motion='full'] .listening[data-status='ready'][data-playing] .sonar-core {
-  animation: sonar-beat 1.4s cubic-bezier(0.16, 1, 0.3, 1) infinite;
 }
 
 :root[data-motion='full'] .motion-rise {
