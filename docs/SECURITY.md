@@ -16,10 +16,10 @@ The answer to a round is protected by the [anti-cheat design](design-docs/anti-c
 Every external input is validated once, at the boundary ([CODE_STYLE.md](CODE_STYLE.md#errors-and-boundaries)):
 - There is one hand-written validator per message and request body, in `shared/protocol.ts`, from M4 on. Settings are checked against the catalog's bounds (year range, genre list).
 - Player names are normalized and cleaned as the [lobby spec](product-specs/lobby.md) describes. React escapes all text, and the app never uses `dangerouslySetInnerHTML`.
-- The client never sends a file path or catalog ID for audio ([audio clips](design-docs/audio-clips.md)). ffmpeg gets an argument array, never a shell, and only files inside `YSTO_AUDIO_DIR`.
+- The client never sends a file path or catalog ID for audio ([audio clips](design-docs/audio-clips.md)). A typed answer sends an anime ID, which the server looks up in its catalog and drops when it isn't there; a title search sends at most 80 characters, at most 5 times a second per player. ffmpeg gets an argument array, never a shell, and only files inside `YSTO_AUDIO_DIR`.
 - Limits: anyone who has the URL can create lobbies, so these limits carry the abuse protection.
   - WebSocket frames over 4 KiB are refused (`maxPayload`), and JSON bodies over 4 KiB get a 413.
-  - Per IP: 5 lobby creations per minute and at most 3 open lobbies, 30 joins per minute, and 10 unknown codes per minute. Players in one home share an IP, so the connection cap per IP (30) stays above the lobby size.
+  - Per IP: 5 lobby creations per minute (a daily challenge counts as one) and at most 3 open lobbies, 30 joins per minute (a party screen counts as one), and 10 unknown codes per minute. Players in one home share an IP, so the connection cap per IP (30) stays above the lobby size.
   - Per socket: 20 messages per second, and `hello` within 10 s. Invalid or excess messages each get an error, and the fifth closes the socket with code 1008.
   - Global caps: `YSTO_MAX_LOBBIES`, `YSTO_MAX_GAMES`, `YSTO_MAX_PLAYERS` and the ffmpeg concurrency. Clips are cut only for running games with connected players.
 
@@ -43,7 +43,7 @@ Every external input is validated once, at the boundary ([CODE_STYLE.md](CODE_ST
 - **The running server calls no third-party service.** Covers and fonts are served from our own origin, so players' browsers talk only to it.
 
 ## User data
-Nothing about players is stored on disk. The one thing the game writes is a clip report (`server/reports.ts`): the theme, where its clip started, a fixed reason and the time, with no name, address, session or lobby code, and no free text to moderate. A player reports each clip of a game once. Names and session tokens live in memory for as long as the lobby lasts. Logs never contain session tokens, clip tokens or player names, and IP addresses stay in memory for rate limiting only. There are no accounts, cookies or analytics.
+Nothing about players is stored on disk. The one thing the game writes is a clip report (`server/reports.ts`): the theme, where its clip started, a fixed reason and the time, with no name, address, session or lobby code, and no free text to moderate. A player reports each clip of a game once. Names and session tokens live in memory for as long as the lobby lasts. Logs never contain session tokens, clip tokens or player names, and IP addresses stay in memory for rate limiting only. There are no accounts, cookies or analytics. Each browser keeps its own settings, game log, saved setups and daily streak in `localStorage`; none of it is sent to the server.
 
 ## Review
 The 1.0 review (2026-10-05), against this doc and the running VPS. No high or critical findings.
