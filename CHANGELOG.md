@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.27.1] - 2026-10-06
+
+### Changed
+- The docs catch up with 1.17 to 1.27 before the release: the code map, the client's file map and storage keys, the security notes on typed answers, title searches and the per-address limits, and the README's summary of what the game offers.
+
 ## [1.27.0] - 2026-10-06
 
 ### Added
@@ -26,8 +31,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Song title and artist rounds: under Questions in the lobby settings, the options can name the song's title, its artists, or a mix that changes each round. Wrong options come from songs as popular as the answer's, never the same song or title, and never an artist two options share.
-
-## [1.23.0] - 2026-10-06
-
-### Added
-- Teams: under Play in the lobby settings, 2 to 4 teams (Kitsune, Tanuki, Tengu, Kappa). Players pick a team in the lobby, and the host can move anyone or shuffle them evenly. Each round a team scores the average of its members' points, so a small team can beat a big one; the round, the reveal and the results show the teams' totals.

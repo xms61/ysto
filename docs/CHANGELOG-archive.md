@@ -2,6 +2,11 @@
 
 Releases moved out of `CHANGELOG.md` (which keeps about the latest 5). Newest first.
 
+## [1.23.0] - 2026-10-06
+
+### Added
+- Teams: under Play in the lobby settings, 2 to 4 teams (Kitsune, Tanuki, Tengu, Kappa). Players pick a team in the lobby, and the host can move anyone or shuffle them evenly. Each round a team scores the average of its members' points, so a small team can beat a big one; the round, the reveal and the results show the teams' totals.
+
 ## [1.22.0] - 2026-10-06
 
 ### Added
