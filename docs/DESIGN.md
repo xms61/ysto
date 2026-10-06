@@ -744,6 +744,7 @@ The page pairs (`ink`, `muted` and `bad` at 4.5:1, `edge` and `accent` at 3:1) m
 **Title font:** the face of the card titles, the stamp and the back's title (`<theme>-title`). Model Kit sets its titles in the semibold of its condensed face and Quest Board in the lowercase of its old printer's face; the others reuse their display face.
 
 **Emoji font:** the reactions' emoji only, in the platform's own color emoji (Apple Color Emoji, Segoe UI Emoji, Noto Color Emoji), so each reads as players know it.
+
 **Body font:** the system sans. Japanese titles (`lang="ja"`) use the device's Japanese fonts (`--ja-font`) wherever they appear, never a display face's fallback.
 
 **Character:** the display face is the theme's voice: a station gothic, a woodblock antique, a manga letterer, a kit manual's condensed sans, a pop rounded face, carved capitals over an old printer's face on a bounty notice, a magazine's heavy coverline sans. The body stays plain so the long text reads the same everywhere.
