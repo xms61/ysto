@@ -2,6 +2,11 @@
 
 Releases moved out of `CHANGELOG.md` (which keeps about the latest 5). Newest first.
 
+## [1.24.0] - 2026-10-06
+
+### Added
+- Song title and artist rounds: under Questions in the lobby settings, the options can name the song's title, its artists, or a mix that changes each round. Wrong options come from songs as popular as the answer's, never the same song or title, and never an artist two options share.
+
 ## [1.23.0] - 2026-10-06
 
 ### Added

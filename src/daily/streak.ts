@@ -59,18 +59,27 @@ export function badgeOf(streak: number): number | null {
   return [100, 30, 7].find((days) => streak >= days) ?? null;
 }
 
-// The rounds as plain block characters, never emoji: right, missed, or skipped.
-export function dailyGrid(songs: PlayedSong[], playerId: string): string {
-  return songs.map((song) => (song.skipped ? '·' : song.right.includes(playerId) ? '■' : '□')).join('');
+// The share grid's squares, written as escapes to keep emoji out of the code. Black shows as grey in Discord.
+const SQUARE = {
+  right: '\u{1F7E9}', // green
+  missed: '\u{1F7E5}', // red: wrong or no answer
+  skipped: '\u{2B1B}', // grey: the host skipped the round
+};
+const FIRE = '\u{1F525}';
+
+function squareOf(song: PlayedSong, playerId: string): string {
+  if (song.skipped) return SQUARE.skipped;
+  return song.right.includes(playerId) ? SQUARE.right : SQUARE.missed;
 }
 
-export function shareText(
-  day: number,
-  right: number,
-  rounds: number,
-  score: string,
-  streak: number,
-  grid: string,
-): string {
-  return `You Skipped The OP?! Daily No. ${day} · ${right}/${rounds} · ${score} · day ${streak}\n${grid}`;
+// The rounds as one line of colored squares, as Wordle shares its guesses. It names no song.
+export function dailyGrid(songs: PlayedSong[], playerId: string): string {
+  return songs.map((song) => squareOf(song, playerId)).join('');
+}
+
+// The text to paste into a chat such as Discord: the game and the day, the grid, then the right answers, the score
+// and the streak, with a blank line between them.
+export function shareText(day: number, right: number, rounds: number, score: string, streak: number, grid: string) {
+  const days = streak > 1 ? ` · ${FIRE} ${streak}` : '';
+  return `You Skipped The OP?!\nDaily #${day}\n\n${grid}\n\n${right}/${rounds} · ${score} pts${days}`;
 }

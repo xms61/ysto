@@ -13,7 +13,7 @@ A reason to come back every day: the same ten songs for everyone, played alone i
 - **The day** changes at 00:00 UTC (01:00 or 02:00 in Germany). Daily No. 1 was 1 October 2026 (`shared/daily.ts`).
 - **The game** is the same for everyone that day: the same ten songs, the same sample starts and the same options, from a seed of the server's secret `YSTO_DAILY_SECRET` and the day's number (`server/game/daily.ts`). The code and the catalog's sources are public, so a seed from the date alone would let anyone list the day's answers in advance. The settings are fixed: Normal, ten songs of 15 s, Classic scoring (Speed with the streak bonus), four options, the anime named. Without the secret the daily is off: the home screen doesn't offer it, and `POST /api/daily` answers `daily-off`.
 - **It runs as a private lobby** with one seat, locked so no one can join, whose settings and lock can't change (`daily-fixed`). It starts on its own as soon as its player is in. It counts as a lobby created, against the same limit per address.
-- **The result**, above the usual results: the day, the right answers out of ten, the rounds as a grid of plain block characters (■ right, □ missed, · skipped), the streak, and a button that copies the line to share, such as "You Skipped The OP?! Daily No. 42 · 8/10 · 7,450 · day 12" with the grid on the next line. No emoji, and no song named.
+- **The result**, above the usual results: the day, the right answers out of ten, the rounds as one line of colored square emoji (green right, red wrong or unanswered, grey skipped), the streak, and a button that copies the text to share, made to paste into a chat such as Discord the way Wordle's results are: "You Skipped The OP?!" and "Daily #42" on the next line, a blank line, the line of squares, a blank line, then "7/10 · 6,850 pts" with a fire emoji and the streak from two days in a row. No song is named.
 - **The streak** lives on this device (`ysto_daily`), since the game has no accounts: the last day played, the run of days in a row up to it, and the best run. The next day in a row extends it, a missed day starts it again from 1, and only the first play of a day counts; a replay is marked "practice". Showing a result again (a reload at the results) doesn't count it twice. Clearing the browser's data resets the streak.
 
 ## Acceptance criteria
@@ -21,7 +21,7 @@ A reason to come back every day: the same ten songs for everyone, played alone i
 - The day's number changes at 00:00 UTC.
 - A daily's lobby is locked with the fixed settings, and a join is refused.
 - The streak counts consecutive days, starts again after a missed day, keeps the best, marks a second play of a day as practice, and works without storage.
-- The share line is plain text with block characters and names no song.
+- The share text is the header, the rounds as one line of squares (right, missed, skipped), and the score line, and names no song.
 - In a browser, one player plays a whole daily from the home screen and sees a streak of one day, then the home screen offers the day as practice (`e2e/daily.spec.ts`).
 
 ## Out of scope

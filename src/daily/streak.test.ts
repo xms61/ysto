@@ -50,10 +50,23 @@ function song(number: number, right: string[], skipped = false): PlayedSong {
   };
 }
 
-test('shares the result as plain blocks that name no song', () => {
-  const grid = dailyGrid([song(1, ['p1']), song(2, []), song(3, ['p1'], true), song(4, ['p2'])], 'p1');
-  expect(grid).toBe('■□·□');
-  expect(shareText(42, 8, 10, '7,450', 12, '■■□■■■·■■■')).toBe(
-    'You Skipped The OP?! Daily No. 42 · 8/10 · 7,450 · day 12\n■■□■■■·■■■',
+const RIGHT = '\u{1F7E9}';
+const MISSED = '\u{1F7E5}';
+const SKIPPED = '\u{2B1B}';
+
+test('shares the result as one line of squares that names no song', () => {
+  const songs = [
+    song(1, ['p1']),
+    song(2, []),
+    song(3, ['p1'], true),
+    song(4, ['p2']),
+    song(5, ['p1']),
+    song(6, ['p1', 'p2']),
+  ];
+  const grid = dailyGrid(songs, 'p1');
+  expect(grid).toBe(RIGHT + MISSED + SKIPPED + MISSED + RIGHT + RIGHT);
+  expect(shareText(42, 7, 10, '6,850', 12, 'abcd')).toBe(
+    'You Skipped The OP?!\nDaily #42\n\nabcd\n\n7/10 · 6,850 pts · \u{1F525} 12',
   );
+  expect(shareText(1, 3, 10, '900', 1, 'ab')).toBe('You Skipped The OP?!\nDaily #1\n\nab\n\n3/10 · 900 pts');
 });

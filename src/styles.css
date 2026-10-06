@@ -1270,9 +1270,9 @@
   }
 
   .daily-grid {
-    font-family: var(--display-font);
     font-size: 1.5rem;
-    letter-spacing: 0.15em;
+    letter-spacing: 0.1em;
+    overflow-wrap: anywhere;
   }
 
   /* Typed answers (TypedAnswer.tsx): the field where the cards would be, its suggestions as a list of buttons
