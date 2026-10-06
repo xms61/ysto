@@ -217,6 +217,7 @@ function Lineup({ reveal, lobby }: { reveal: RoundReveal; lobby: LobbyState }) {
               {nameOf(lobby, standing.playerId)}
               {standing.playerId === lobby.you && <span className="ml-2 text-xs text-muted">you</span>}
               {pick?.noAudio && <span className="ml-2 text-xs text-muted">no audio</span>}
+              {pick?.hinted && <span className="ml-2 text-xs text-muted">hint</span>}
             </span>
             <span className="board-delta" data-outcome={outcome}>
               {outcome === 'none' ? (

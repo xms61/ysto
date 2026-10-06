@@ -143,6 +143,10 @@ export class Games {
     this.#step(seat.code, { type: 'answer', playerId: seat.playerId, roundId, option });
   }
 
+  hint(seat: Seat, roundId: string): void {
+    this.#step(seat.code, { type: 'hint', playerId: seat.playerId, roundId });
+  }
+
   // A report of a round the lobby's current or last game has revealed. Each player reports a clip once; a
   // second report, or one of a round not yet revealed, is dropped without a word.
   report(seat: Seat, number: number, reason: ReportReason): void {

@@ -189,6 +189,27 @@ test('with answer changes on, lets the player switch, runs the overtime and name
   expect(screen.getByText('Last chance to switch', SHOWN)).toBeTruthy();
 });
 
+test('with hints on, offers the hint from halfway, shows it, and marks who took it at the reveal', async () => {
+  const lobby = lobbyState({ game: PLAYING });
+  const { socket } = renderSeated({ ...lobby, settings: { ...lobby.settings, hints: true } });
+  const startsAt = Date.now() - 11_000;
+  act(() => {
+    socket.receive({ type: 'round:prepare', roundId: 'g.1', clipToken: 'c1', number: 1, rounds: 5 });
+    socket.receive({ type: 'round:start', roundId: 'g.1', startsAt, endsAt: startsAt + 20_000, options: OPTIONS });
+  });
+  fireEvent.click(await screen.findByRole('button', { name: /^Hint: when it aired/ }));
+  expect(socket.sentOfType('round:hint')).toEqual([{ type: 'round:hint', roundId: 'g.1' }]);
+  act(() => socket.receive({ type: 'round:hint', roundId: 'g.1', format: 'TV', season: 'Spring', year: 2013 }));
+  expect(screen.getByText('TV, Spring 2013')).toBeTruthy();
+  expect(screen.queryByRole('button', { name: /^Hint: when it aired/ })).toBeNull();
+  const picks = [
+    { playerId: 'p1', option: 2, points: 700, noAudio: false, hinted: true },
+    { playerId: 'p2', option: 0, points: 0, noAudio: false, hinted: false },
+  ];
+  act(() => socket.receive(revealOf('g.1', { picks })));
+  expect(screen.getAllByText('hint', SHOWN)).toHaveLength(1);
+});
+
 test('runs an endless game without a round count, and lets the host end it', () => {
   const base = lobbyState();
   const endless = { ...base.settings, endless: true };
@@ -298,8 +319,8 @@ test("greets a missed opening with the game's own line, with the penalty when th
   });
   await screen.findByText('Rain Song', SHOWN);
   const picks = [
-    { playerId: 'p1', option: 0, points: -250, noAudio: false },
-    { playerId: 'p2', option: null, points: 0, noAudio: false },
+    { playerId: 'p1', option: 0, points: -250, noAudio: false, hinted: false },
+    { playerId: 'p2', option: null, points: 0, noAudio: false, hinted: false },
   ];
   act(() => socket.receive(revealOf('g.1', { picks })));
   expect(screen.getByText('You skipped the OP?! −250')).toBeTruthy();

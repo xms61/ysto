@@ -2,6 +2,11 @@
 
 Releases moved out of `CHANGELOG.md` (which keeps about the latest 5). Newest first.
 
+## [1.16.0] - 2026-10-06
+
+### Added
+- Endless games: with "Endless" on in the lobby settings, rounds keep coming until the host ends the game with "End the game", in any phase (a round still running doesn't count), or until the pool has no unplayed anime left. The heading shows the round without a total, and the results count the rounds played. Endless games stay out of the anime log. The server deals the questions five at a time as the game goes.
+
 ## [1.15.0] - 2026-10-06
 
 ### Changed

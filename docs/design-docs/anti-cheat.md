@@ -17,6 +17,7 @@ Players have devtools and can modify the client. The answer to the current round
    - The clip is re-encoded, so its bytes and length don't match the source file.
    - Metadata is stripped, and every clip is exactly the chosen length ([audio clips](audio-clips.md)).
 3. **The options arrive with `round:start`**, not with the prepare message, so nobody can research them while the clip loads.
+   A hint (with hints on) is only when the anime aired, its format, season and year, which the reveal shows anyway; it goes to the player who asked alone, from halfway through the round, and costs them 30% of a right answer's points.
 4. **One answer per player per round.** It's accepted between `startsAt` and `endsAt`, plus 300 ms of grace. Early, late and repeated answers are dropped. With answer changes on, a later answer for another option replaces the first and takes its own time, and the overtime's end replaces `endsAt`. The other players learn only who switched, never the option; a reconnecting player gets back only their own pick.
 5. **The server measures response time:** from `startsAt` to the answer's arrival at the server, with no allowance for the player's connection. Clients never report times. In First correct, the first correct answer to arrive wins, and the round closes on it.
 6. **The reveal is sent only after the round has closed for everyone.**

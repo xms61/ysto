@@ -1,7 +1,7 @@
 // Builds a game's questions: which songs play, where each sample starts, and the four options
 // (docs/product-specs/questions.md). Everything here is decided on the server; a Question holds the answer
 // and must never be sent to a client as it is (docs/design-docs/anti-cheat.md).
-import type { OptionTitles, RevealDetails } from '../../shared/protocol.ts';
+import type { OptionTitles, RevealDetails, RoundHint } from '../../shared/protocol.ts';
 import type { LobbySettings } from '../../shared/settings.ts';
 import type { Catalog, CatalogAnime, CatalogTheme } from '../catalog/load.ts';
 import { pickDistractors } from './distractors.ts';
@@ -17,6 +17,7 @@ export interface Question {
   options: { animeIds: number[]; titles: OptionTitles };
   correctIndex: number;
   reveal: RevealDetails;
+  hint: RoundHint; // when the anime aired, for a player who asks; never more than the reveal shows
 }
 
 function animeOf(catalog: Catalog, id: number): CatalogAnime {
@@ -89,6 +90,7 @@ function buildQuestion(
     options: { animeIds: options.map((anime) => anime.id), titles: optionTitles(options) },
     correctIndex: options.indexOf(answer),
     reveal: revealOf(answer, theme),
+    hint: { format: answer.format, season: answer.season, year: answer.year },
   };
 }
 

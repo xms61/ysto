@@ -49,6 +49,7 @@ export function SettingsSummary({ settings, bounds }: { settings: LobbySettings;
         ? `Can change until the round closes, with ${settings.overtimeSec} s of overtime`
         : 'Locked once picked',
     ],
+    ['Hints', settings.hints ? 'From halfway, when the anime aired, for 70% of the points' : 'Off'],
   ];
   return (
     <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2">

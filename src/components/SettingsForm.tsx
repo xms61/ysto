@@ -130,6 +130,15 @@ function AnswerChanges({ settings, set }: { settings: LobbySettings; set: (chang
   );
 }
 
+// Hints: from halfway through a round, a player may ask when the anime aired, for 70% of the points.
+function Hints({ settings, set }: { settings: LobbySettings; set: (change: Partial<LobbySettings>) => void }) {
+  return (
+    <Choice type="checkbox" checked={settings.hints} onChange={(event) => set({ hints: event.target.checked })}>
+      Hints: from halfway, a player can ask when the anime aired, for 70% of the points
+    </Choice>
+  );
+}
+
 function YearSelect({
   label,
   value,
@@ -250,6 +259,7 @@ export function SettingsForm({ settings, bounds, onChange }: SettingsFormProps) 
       </Group>
 
       <AnswerChanges settings={settings} set={set} />
+      <Hints settings={settings} set={set} />
 
       <details className="adjust">
         <summary className="adjust-summary">Adjust the song pool and scoring rules</summary>

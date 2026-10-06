@@ -14,6 +14,7 @@ The host shapes the game (pool, length, difficulty, scoring). Each player sets w
 | Sample length | Lobby (host) | 10–30 s, in 5 s steps | 20 s |
 | Songs per game | Lobby | 5–50; doesn't apply to an endless game | 15 |
 | Endless | Lobby | on or off: rounds keep coming until the host ends the game, or the pool runs out ([game flow](game-flow.md)) | off |
+| Hints | Lobby | on or off: from halfway through a round, a player can see when the anime aired, for 70% of the points ([game flow](game-flow.md)) | off |
 | Years | Lobby | 1963–2026 (taken from the catalog) | all |
 | Genres | Lobby | AniList genres with at least 50 playable themes, match any; empty means all | all |
 | OP / ED | Lobby | OP, ED or both | both |

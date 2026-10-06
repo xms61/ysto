@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.21.0] - 2026-10-06
+
+### Added
+- Hints: with "Hints" on in the lobby, from halfway through a round a player can see when the anime aired ("TV, Spring 2013"); a right answer after a hint scores 70%, streak bonus included. One per round, only to the player who asks, and not once an answer is locked in. The reveal marks who took one.
+
 ## [1.20.0] - 2026-10-06
 
 ### Added
@@ -35,8 +40,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 - Six worlds: Hanami, Tournament Arc, Splash Page, Night Arc, Model Kit and Gachapon, with their timers (the dango skewer, the referee's pennants, the focus lines, the nipper and the coin dial), icons and backdrop plates. A player who had one picked gets Tokyo Rain. The picker shows the nine that stay three by three.
-
-## [1.16.0] - 2026-10-06
-
-### Added
-- Endless games: with "Endless" on in the lobby settings, rounds keep coming until the host ends the game with "End the game", in any phase (a round still running doesn't count), or until the pool has no unplayed anime left. The heading shows the round without a total, and the results count the rounds played. Endless games stay out of the anime log. The server deals the questions five at a time as the game goes.

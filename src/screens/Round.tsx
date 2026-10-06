@@ -22,8 +22,8 @@ import { Ruler } from '../components/Ruler.tsx';
 import { Shide } from '../components/Shide.tsx';
 import { Segments } from '../components/Segments.tsx';
 import { RoundBody, ScoresPanel, Stage } from '../components/Stage.tsx';
-import { ConfirmButton, Panel } from '../components/ui.tsx';
-import { optionTitle, score } from '../format.ts';
+import { ConfirmButton, Panel, buttonClass } from '../components/ui.tsx';
+import { hintText, optionTitle, score } from '../format.ts';
 import type { TitleLanguages } from '../format.ts';
 import { motionAllowed, usePagePhase, useReached, useTicker } from '../hooks.ts';
 import type { ClientRound, RoundStart } from '../realtime/game-state.ts';
@@ -240,6 +240,30 @@ function Nudge({ lobby, nudge }: { lobby: LobbyState; nudge: ClientRound['nudge'
   );
 }
 
+const HINT_SHARE = `${Math.round(POINTS.hintFactor * 100)}%`;
+
+// With hints on, the round's hint under the status: from halfway through, a button for when the anime aired, at
+// 70% of the points; once taken, the hint itself. Before halfway the line holds its height empty, so nothing
+// moves when the button comes.
+function HintLine({ store, round, open }: { store: GameStore; round: ClientRound; open: boolean }) {
+  if (round.hint) {
+    return (
+      <p className="hint-line" role="status">
+        <span className="text-muted">Aired:</span> <strong>{hintText(round.hint)}</strong>
+      </p>
+    );
+  }
+  return (
+    <p className="hint-line">
+      {open && (
+        <button type="button" className={buttonClass('quiet')} onClick={() => store.takeHint()}>
+          Hint: when it aired <span className="text-muted">({HINT_SHARE} of the points)</span>
+        </button>
+      )}
+    </p>
+  );
+}
+
 // The overtime's call above the time left: the round stays open a few seconds more, for a last switch.
 function OvertimeCall({ secondsLeft }: { secondsLeft: number }) {
   return (
@@ -310,6 +334,13 @@ function Answering({ store, lobby, round, start, titles, clip, ghost, foot }: An
         )}
       </p>
       {canSwitch && players > 1 && <Nudge lobby={lobby} nudge={round.nudge} />}
+      {lobby.settings.hints && !spectating && (
+        <HintLine
+          store={store}
+          round={round}
+          open={canAnswer && now >= (start.startsAt + start.endsAt) / 2 && now < start.endsAt}
+        />
+      )}
       {overtime && !closed && <OvertimeCall secondsLeft={secondsLeft} />}
       <div className="time-left" data-overtime={overtime ? '' : undefined}>
         {timer}
@@ -343,6 +374,11 @@ function SlotGhost({ lobby }: { lobby: LobbyState }) {
         <ClipLine status="failed" playing={false} />
         <p className="text-muted">Everyone has answered. Keep your pick, or switch now.</p>
         {canSwitch && <p className="nudge-line" />}
+        {lobby.settings.hints && (
+          <p className="hint-line">
+            <span className={buttonClass('quiet')}>Hint: when it aired ({HINT_SHARE} of the points)</span>
+          </p>
+        )}
         {canSwitch && <OvertimeCall secondsLeft={0} />}
         <div className="time-left">
           <TimeLeft elapsed={0} secondsLeft={20} />

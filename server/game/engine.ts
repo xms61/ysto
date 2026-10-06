@@ -46,6 +46,7 @@ export interface Round {
   closeAt: number; // the earliest close timer set so far
   overtime: { startsAt: number; endsAt: number } | null; // with answer changes on, once everyone has answered
   answers: AnswerRecord[]; // in arrival order; a switch replaces the player's record in place
+  hinted: string[]; // the players who took the round's hint
   reveal: ServerMessage | null; // kept for players who reconnect during the reveal
 }
 
@@ -81,13 +82,22 @@ type ClipEvent =
 type QuestionsEvent = { type: 'questions'; questions: Question[] };
 type ReadyEvent = { type: 'ready'; playerId: string; roundId: string; loaded: boolean };
 type AnswerEvent = { type: 'answer'; playerId: string; roundId: string; option: number };
+type HintEvent = { type: 'hint'; playerId: string; roundId: string };
 type TimerEvent = { type: 'timer'; name: TimerName; roundId: string };
 type PlayerEvent = {
   type: 'player-joined' | 'player-connected' | 'player-disconnected' | 'player-left';
   playerId: string;
 };
 export type GameEvent =
-  ClipEvent | QuestionsEvent | ReadyEvent | AnswerEvent | TimerEvent | { type: 'skip' } | { type: 'end' } | PlayerEvent;
+  | ClipEvent
+  | QuestionsEvent
+  | ReadyEvent
+  | AnswerEvent
+  | HintEvent
+  | TimerEvent
+  | { type: 'skip' }
+  | { type: 'end' }
+  | PlayerEvent;
 
 export type GameEffect =
   | { type: 'send'; to: string[]; message: ServerMessage }
@@ -186,6 +196,7 @@ function beginRound(draft: Draft, index: number, clip: { question: Question; cli
     closeAt: 0,
     overtime: null,
     answers: [],
+    hinted: [],
     reveal: null,
   };
   game.round = round;
@@ -234,6 +245,7 @@ function closeRound(draft: Draft, round: Round, skipped: boolean): void {
     playerId,
     correct,
     responseMs,
+    hinted: round.hinted.includes(playerId),
   }));
   const windowMs = game.settings.sampleLengthSec * 1000;
   const current = game.participants.map((playerId) => ({ playerId, ...(game.standings[playerId] ?? EMPTY_STANDING) }));
@@ -257,6 +269,7 @@ function closeRound(draft: Draft, round: Round, skipped: boolean): void {
       option: answer?.option ?? null,
       points: award?.points ?? 0,
       noAudio: round.noAudio.includes(playerId),
+      hinted: round.hinted.includes(playerId),
     };
   });
   round.phase = 'revealing';
@@ -367,6 +380,25 @@ function onAnswer(draft: Draft, event: AnswerEvent): void {
   if (game.settings.scoring.mode === 'firstCorrect' && pick.correct) closeRound(draft, round, false);
 }
 
+function hintMessage(round: Round): ServerMessage {
+  return { type: 'round:hint', roundId: round.id, ...round.question.hint };
+}
+
+// From halfway through the answer window until it ends, a player may take the round's hint, once; it goes to
+// them alone. A player whose answer is locked in can't, since it could only cost them points.
+function onHint(draft: Draft, event: HintEvent): void {
+  const { game, now } = draft;
+  const round = game.round;
+  if (!game.settings.hints || !round || round.id !== event.roundId || round.phase !== 'playing') return;
+  if (!game.participants.includes(event.playerId) || round.hinted.includes(event.playerId)) return;
+  const halfway = round.startsAt + (round.endsAt - round.startsAt) / 2;
+  if (now < halfway || now > round.endsAt) return;
+  const answered = round.answers.some((answer) => answer.playerId === event.playerId);
+  if (answered && !answersCanChange(game.settings)) return;
+  round.hinted.push(event.playerId);
+  send(draft, hintMessage(round), [event.playerId]);
+}
+
 function onTimer(draft: Draft, event: TimerEvent): void {
   const { game, now } = draft;
   const round = game.round;
@@ -395,6 +427,7 @@ function catchUp(draft: Draft, playerId: string): void {
     send(draft, startMessage(round), [playerId]);
     send(draft, answeredMessage(round), [playerId]);
     if (round.overtime) send(draft, overtimeMessage(round, round.overtime), [playerId]);
+    if (round.hinted.includes(playerId)) send(draft, hintMessage(round), [playerId]);
     const pick = round.answers.find((answer) => answer.playerId === playerId);
     if (pick) send(draft, { type: 'round:pick', roundId: round.id, option: pick.option }, [playerId]);
   }
@@ -467,6 +500,7 @@ export function step(game: Game, event: GameEvent, now: number): Step {
   else if (event.type === 'end') onEnd(draft);
   else if (event.type === 'ready') onReady(draft, event);
   else if (event.type === 'answer') onAnswer(draft, event);
+  else if (event.type === 'hint') onHint(draft, event);
   else if (event.type === 'timer') onTimer(draft, event);
   else if (event.type === 'skip') onSkip(draft);
   else onPlayer(draft, event);

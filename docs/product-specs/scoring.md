@@ -22,6 +22,7 @@ The host sets the scoring in the lobby, and presets bundle common combinations. 
 | Streak bonus | +100 for each correct answer in a row after the first, up to +500 | on |
 | Comeback | while a player is behind the leader, their streak bonus is doubled | off |
 | Wrong-answer penalty | −250, or −500 in First correct | off; on in First correct |
+| Hint (with hints on, per player) | a right answer after the player took the round's hint scores 70% of its points, streak bonus included, rounded | taken by the player |
 
 - There are three presets:
   - Classic: Speed with the streak bonus
@@ -34,6 +35,7 @@ The host sets the scoring in the lobby, and presets bundle common combinations. 
 - The streak bonus only adds to points a correct answer earned, so in First correct only the winner gets it. Comeback compares the scores from before the round.
 - In First correct, the fastest correct answer wins, and an exact tie goes to the answer that arrived first.
 - Each player locks in one answer per round, unless the host turns on answer changes ([game flow](game-flow.md)). Then the last pick counts, and its response time is the time of the switch, so in Speed a late switch scores like a late answer. First correct always keeps the first answer. Ties in the final ranking go to the player with less total response time on correct answers.
+- A hint never softens a penalty: a wrong answer after a hint costs as much as one without.
 - Response times are measured by the server ([anti-cheat](../design-docs/anti-cheat.md)).
 
 ## Acceptance criteria

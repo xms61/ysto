@@ -77,6 +77,7 @@ export type ClientMessage =
   | { type: 'game:start' }
   | { type: 'round:ready'; roundId: string; loaded: boolean }
   | { type: 'answer'; roundId: string; option: number }
+  | { type: 'round:hint'; roundId: string } // asks for the round's hint, from halfway through
   | { type: 'round:skip' }
   | { type: 'game:end' } // the host ends the game now, with its results
   | { type: 'clip:report'; number: number; reason: ReportReason }
@@ -166,6 +167,9 @@ export function parseClientMessage(text: string, bounds: SettingsBounds): Client
     const valid = isIntegerIn(number, 1, LIMITS.songsPerGame.max) && isOneOf(reason, REPORT_REASONS);
     return valid ? { type, number, reason } : null;
   }
+  if (type === 'round:hint' && hasKeys(value, ['type', 'roundId']) && isRoundId(value.roundId)) {
+    return { type, roundId: value.roundId };
+  }
   if (type === 'answer' && hasKeys(value, ['type', 'roundId', 'option']) && isRoundId(value.roundId)) {
     return isIntegerIn(value.option, 0, 3) ? { type, roundId: value.roundId, option: value.option } : null;
   }
@@ -179,6 +183,14 @@ export type OptionTitles = Record<TitleLanguage, string[]>;
 export interface SongCredit {
   name: string;
   as: string | null;
+}
+
+// When the anime aired: its format (TV, Movie, ...), season and year, which the reveal shows anyway, so a hint
+// never names the answer.
+export interface RoundHint {
+  format: string;
+  season: string | null;
+  year: number | null;
 }
 
 // What the reveal teaches about the answer (docs/product-specs/game-flow.md).
@@ -243,6 +255,7 @@ export interface Pick {
   option: number | null; // null when the player didn't answer
   points: number;
   noAudio: boolean;
+  hinted: boolean; // took the round's hint, so a right answer scored 70%
 }
 
 export interface StandingView {
@@ -278,6 +291,7 @@ export type ServerMessage =
   | { type: 'round:switched'; roundId: string; playerId: string }
   | { type: 'round:overtime'; roundId: string; startsAt: number; endsAt: number }
   | { type: 'round:pick'; roundId: string; option: number }
+  | ({ type: 'round:hint'; roundId: string } & RoundHint) // to the player who asked only
   | RoundReveal
   | { type: 'game:results'; standings: ResultView[] }
   | { type: 'reaction'; playerId: string; kind: ReactionKind }

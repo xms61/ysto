@@ -268,8 +268,8 @@ export function revealOf(roundId: string, overrides: Partial<RoundReveal> = {}):
     skipped: false,
     correct: 2,
     picks: [
-      { playerId: 'p1', option: 2, points: 850, noAudio: false },
-      { playerId: 'p2', option: 0, points: 0, noAudio: true },
+      { playerId: 'p1', option: 2, points: 850, noAudio: false, hinted: false },
+      { playerId: 'p2', option: 0, points: 0, noAudio: true, hinted: false },
     ],
     standings: [
       { playerId: 'p1', score: 850, streak: 1 },

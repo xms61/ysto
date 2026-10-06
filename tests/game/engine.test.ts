@@ -605,3 +605,75 @@ test("the host's end finishes the game at once, without the round still running"
   );
   assert.equal(view.results?.[0]?.correct, 1);
 });
+
+test('gives a hint from halfway, once, to the player who asked alone, and scores their right answer at 70%', () => {
+  const sim = new Simulation(settings({ hints: true, scoring: { ...SCORING_PRESETS.chill } }), ['p1', 'p2']);
+  allReady(sim);
+  const start = sim.last('round:start');
+  const hint = (playerId: string) => sim.event({ type: 'hint', playerId, roundId: start.roundId });
+  sim.advanceTo(start.startsAt + 4000);
+  hint('p1');
+  assert.equal(sim.count('round:hint'), 0, 'no hint before halfway');
+  sim.advanceTo(start.startsAt + 5000);
+  hint('p1');
+  hint('p1');
+  const sent = sim.sent.filter((entry) => entry.message.type === 'round:hint');
+  assert.equal(sent.length, 1, 'one hint a round');
+  assert.deepEqual(sent[0]?.to, ['p1']);
+  const { format, season, year } = sim.game.round?.question.hint ?? {};
+  assert.deepEqual(sent[0]?.message, { type: 'round:hint', roundId: start.roundId, format, season, year });
+  for (const playerId of ['p1', 'p2']) {
+    sim.event({ type: 'answer', playerId, roundId: start.roundId, option: optionFor(sim, true) });
+  }
+  const reveal = sim.last('round:reveal');
+  assert.deepEqual(pointsOf(reveal), { p1: 700, p2: 1000 });
+  assert.deepEqual(
+    reveal.picks.filter((pick) => pick.hinted).map((pick) => pick.playerId),
+    ['p1'],
+  );
+});
+
+test('gives no hint when hints are off, after the answer window, or to a player not in the round', () => {
+  const off = new Simulation(settings(), ['p1']);
+  allReady(off);
+  const start = off.last('round:start');
+  off.advanceTo(start.startsAt + 6000);
+  off.event({ type: 'hint', playerId: 'p1', roundId: start.roundId });
+  assert.equal(off.count('round:hint'), 0);
+
+  const late = new Simulation(settings({ hints: true }), ['p1', 'p2']);
+  allReady(late);
+  const round = late.last('round:start');
+  late.advanceTo(round.endsAt + 100);
+  late.event({ type: 'hint', playerId: 'p1', roundId: round.roundId });
+  late.event({ type: 'hint', playerId: 'p9', roundId: round.roundId });
+  assert.equal(late.count('round:hint'), 0);
+});
+
+test('gives no hint to a player whose answer is locked in, but does when answers can change', () => {
+  for (const [overrides, hints] of [
+    [{}, 0],
+    [{ answerChanges: true, overtimeSec: 5 }, 1],
+  ] as const) {
+    const sim = new Simulation(settings({ hints: true, ...overrides }), ['p1', 'p2']);
+    allReady(sim);
+    const start = sim.last('round:start');
+    sim.advanceTo(start.startsAt + 6000);
+    sim.event({ type: 'answer', playerId: 'p1', roundId: start.roundId, option: optionFor(sim, false) });
+    sim.event({ type: 'hint', playerId: 'p1', roundId: start.roundId });
+    assert.equal(sim.count('round:hint'), hints);
+  }
+});
+
+test('catches up a returning player with the hint they took', () => {
+  const sim = new Simulation(settings({ hints: true }), ['p1', 'p2']);
+  allReady(sim);
+  const start = sim.last('round:start');
+  sim.advanceTo(start.startsAt + 6000);
+  sim.event({ type: 'hint', playerId: 'p1', roundId: start.roundId });
+  sim.event({ type: 'player-disconnected', playerId: 'p1' });
+  sim.event({ type: 'player-connected', playerId: 'p1' });
+  const sent = sim.sent.filter((entry) => entry.message.type === 'round:hint');
+  assert.equal(sent.length, 2);
+  assert.deepEqual(sent[1]?.to, ['p1']);
+});
