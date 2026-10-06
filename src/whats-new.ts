@@ -4,6 +4,7 @@
 import { readItem, writeItem } from './storage.ts';
 
 const NOTES: { version: string; lines: string[] }[] = [
+  { version: '1.22.0', lines: ['Elimination: lose a life for each miss, and the last one standing wins.'] },
   { version: '1.21.0', lines: ['Hints: hosts can let players see when the anime aired, for 70% of the points.'] },
   { version: '1.20.0', lines: ['The overtime looks different in every world.'] },
   { version: '1.19.0', lines: ['Sound effects in every world, with a switch in Preferences.'] },

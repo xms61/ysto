@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.22.0] - 2026-10-06
+
+### Added
+- Elimination: under Play in the lobby settings, a game where a wrong or missed answer costs a life (1 to 5, 3 by default) and the last one standing wins; ranked by lives, then points. Players who are out watch; alone, it is survival. A skipped round or a clip that failed to load costs no life. Elimination can't use First correct.
+
+### Changed
+- The lobby settings open with a Play group: Classic or Elimination, the lives, and Endless.
+
 ## [1.21.0] - 2026-10-06
 
 ### Added
@@ -35,8 +43,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 - The display faces only the retired worlds used, and Konbini's marker face.
-
-## [1.17.0] - 2026-10-06
-
-### Removed
-- Six worlds: Hanami, Tournament Arc, Splash Page, Night Arc, Model Kit and Gachapon, with their timers (the dango skewer, the referee's pennants, the focus lines, the nipper and the coin dial), icons and backdrop plates. A player who had one picked gets Tokyo Rain. The picker shows the nine that stay three by three.

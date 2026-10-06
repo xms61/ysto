@@ -22,6 +22,8 @@ test('starts a lobby with the defaults of the settings spec', () => {
     overtimeSec: 5,
     endless: false,
     hints: false,
+    play: 'classic',
+    lives: 3,
   });
 });
 
@@ -68,6 +70,10 @@ const INVALID: [string, Record<string, unknown>][] = [
   ['answer changes that are not a boolean', { answerChanges: 'on' }],
   ['an endless switch that is not a boolean', { endless: 1 }],
   ['a hints switch that is not a boolean', { hints: 'on' }],
+  ['an unknown way to play', { play: 'battle' }],
+  ['no lives', { play: 'elimination', lives: 0 }],
+  ['more than 5 lives', { play: 'elimination', lives: 6 }],
+  ['Elimination with First correct', { play: 'elimination', scoring: { ...SCORING_PRESETS.buzzer } }],
   ['an overtime under 3 s', { overtimeSec: 2 }],
   ['an overtime over 10 s', { overtimeSec: 11 }],
   ['an extra field', { extra: true }],

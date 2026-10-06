@@ -3,8 +3,8 @@
 import type { InputHTMLAttributes, ReactNode } from 'react';
 import { POINTS, SCORING_MODES, SCORING_PRESETS } from '../../shared/scoring.ts';
 import type { ScoringMode, ScoringPreset, ScoringRules } from '../../shared/scoring.ts';
-import { DIFFICULTIES, LIMITS, MEDIA_FORMATS, SAMPLE_STARTS, THEME_KINDS } from '../../shared/settings.ts';
-import type { Difficulty, LobbySettings, SampleStart, SettingsBounds } from '../../shared/settings.ts';
+import { DIFFICULTIES, LIMITS, MEDIA_FORMATS, PLAYS, SAMPLE_STARTS, THEME_KINDS } from '../../shared/settings.ts';
+import type { Difficulty, LobbySettings, Play, SampleStart, SettingsBounds } from '../../shared/settings.ts';
 import { NumberField } from './NumberField.tsx';
 import { INPUT } from './ui.tsx';
 
@@ -130,6 +130,58 @@ function AnswerChanges({ settings, set }: { settings: LobbySettings; set: (chang
   );
 }
 
+const PLAY_LABELS: Record<Play, string> = {
+  classic: 'Classic: every round scores',
+  elimination: 'Elimination: a wrong or missed answer costs a life, and the last one standing wins',
+};
+
+const { min: LIVES_MIN, max: LIVES_MAX } = LIMITS.lives;
+const LIVES = Array.from({ length: LIVES_MAX - LIVES_MIN + 1 }, (_, index) => LIVES_MIN + index);
+
+// Elimination can't use First correct, so picking it moves a buzzer game to Classic scoring.
+function playChange(settings: LobbySettings, play: Play): Partial<LobbySettings> {
+  const buzzer = settings.scoring.mode === 'firstCorrect';
+  return play === 'elimination' && buzzer ? { play, scoring: { ...SCORING_PRESETS.classic } } : { play };
+}
+
+// How the game is played: Classic or Elimination with its lives, and whether it runs until the host ends it.
+function PlayGroup({ settings, set }: { settings: LobbySettings; set: (change: Partial<LobbySettings>) => void }) {
+  return (
+    <Group legend="Play">
+      {PLAYS.map((play) => (
+        <Choice
+          key={play}
+          type="radio"
+          name="play"
+          checked={settings.play === play}
+          onChange={() => set(playChange(settings, play))}
+        >
+          {PLAY_LABELS[play]}
+        </Choice>
+      ))}
+      {settings.play === 'elimination' && (
+        <label className="flex flex-col gap-1.5">
+          Lives
+          <select
+            className={INPUT}
+            value={settings.lives}
+            onChange={(event) => set({ lives: Number(event.target.value) })}
+          >
+            {LIVES.map((lives) => (
+              <option key={lives} value={lives}>
+                {lives}
+              </option>
+            ))}
+          </select>
+        </label>
+      )}
+      <Choice type="checkbox" checked={settings.endless} onChange={(event) => set({ endless: event.target.checked })}>
+        Endless: play until the host ends the game
+      </Choice>
+    </Group>
+  );
+}
+
 // Hints: from halfway through a round, a player may ask when the anime aired, for 70% of the points.
 function Hints({ settings, set }: { settings: LobbySettings; set: (change: Partial<LobbySettings>) => void }) {
   return (
@@ -172,11 +224,14 @@ export function SettingsForm({ settings, bounds, onChange }: SettingsFormProps) 
   const set = (change: Partial<LobbySettings>) => onChange({ ...settings, ...change });
   const setScoring = (change: Partial<ScoringRules>) => set({ scoring: { ...settings.scoring, ...change } });
   const preset = presetOf(settings.scoring);
+  const elimination = settings.play === 'elimination';
   const years = yearOptions(bounds);
   const { popularityRanks: ranks, years: range } = settings;
 
   return (
     <div className="flex flex-col gap-6">
+      <PlayGroup settings={settings} set={set} />
+
       <div className="grid gap-4 sm:grid-cols-2">
         {settings.endless ? (
           <p className="self-end text-muted">Songs keep coming until the host ends the game.</p>
@@ -204,10 +259,6 @@ export function SettingsForm({ settings, bounds, onChange }: SettingsFormProps) 
           </select>
         </label>
       </div>
-
-      <Choice type="checkbox" checked={settings.endless} onChange={(event) => set({ endless: event.target.checked })}>
-        Endless: play until the host ends the game
-      </Choice>
 
       <Group legend="Difficulty">
         {DIFFICULTIES.map((difficulty) => (
@@ -249,6 +300,7 @@ export function SettingsForm({ settings, bounds, onChange }: SettingsFormProps) 
               type="radio"
               name="preset"
               checked={preset === name}
+              disabled={elimination && SCORING_PRESETS[name].mode === 'firstCorrect'}
               onChange={() => set({ scoring: { ...SCORING_PRESETS[name] } })}
             >
               {PRESET_LABELS[name]}
@@ -355,6 +407,7 @@ export function SettingsForm({ settings, bounds, onChange }: SettingsFormProps) 
                 type="radio"
                 name="mode"
                 checked={settings.scoring.mode === mode}
+                disabled={elimination && mode === 'firstCorrect'}
                 onChange={() => setScoring({ mode })}
               >
                 {MODE_LABELS[mode]}: {MODE_HINTS[mode]}

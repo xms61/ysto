@@ -23,7 +23,7 @@ import { Shide } from '../components/Shide.tsx';
 import { Segments } from '../components/Segments.tsx';
 import { RoundBody, ScoresPanel, Stage } from '../components/Stage.tsx';
 import { ConfirmButton, Panel, buttonClass } from '../components/ui.tsx';
-import { hintText, optionTitle, score } from '../format.ts';
+import { hintText, livesText, optionTitle, score } from '../format.ts';
 import type { TitleLanguages } from '../format.ts';
 import { motionAllowed, usePagePhase, useReached, useTicker } from '../hooks.ts';
 import type { ClientRound, RoundStart } from '../realtime/game-state.ts';
@@ -275,8 +275,16 @@ function OvertimeCall({ secondsLeft }: { secondsLeft: number }) {
   );
 }
 
-function statusLine(spectating: boolean, answered: boolean, canSwitch: boolean, closed: boolean, overtime: boolean) {
+function statusLine(
+  spectating: boolean,
+  out: boolean,
+  answered: boolean,
+  canSwitch: boolean,
+  closed: boolean,
+  overtime: boolean,
+) {
   if (spectating) return "You joined during this round. You'll play from the next one.";
+  if (out) return "You're out. Watch who lasts.";
   if (closed) return answered ? 'Locked in.' : "Time's up.";
   if (overtime) return answered ? 'Everyone has answered. Keep your pick, or switch now.' : 'Pick the anime, quick.';
   if (answered && canSwitch) return 'Locked in for now. Tap another card to switch.';
@@ -286,13 +294,15 @@ function statusLine(spectating: boolean, answered: boolean, canSwitch: boolean, 
 
 function Answering({ store, lobby, round, start, titles, clip, ghost, foot }: AnsweringProps) {
   const now = useTicker(store.serverNow, TICK_MS);
-  const spectating = lobby.players.find((player) => player.id === lobby.you)?.spectating ?? false;
+  const you = lobby.players.find((player) => player.id === lobby.you);
+  const spectating = you?.spectating ?? false;
+  const out = you?.lives === 0;
   const answered = round.choice !== null || round.answeredIds.includes(lobby.you);
   const canSwitch = answersCanChange(lobby.settings);
   const { overtime } = round;
   const countdown = overtime ?? start;
   const closed = now >= countdown.endsAt;
-  const canAnswer = !spectating && !closed && (!answered || canSwitch);
+  const canAnswer = !spectating && !out && !closed && (!answered || canSwitch);
   useAnswerKeys(store, canAnswer);
   const elapsed = Math.min(1, Math.max(0, (now - countdown.startsAt) / (countdown.endsAt - countdown.startsAt)));
   const secondsLeft = Math.max(0, Math.ceil((countdown.endsAt - now) / 1000));
@@ -318,7 +328,7 @@ function Answering({ store, lobby, round, start, titles, clip, ghost, foot }: An
       ))}
     </ol>
   );
-  const status = statusLine(spectating, answered, canSwitch, closed, overtime !== null);
+  const status = statusLine(spectating, out, answered, canSwitch, closed, overtime !== null);
   // Above the cards with the timer, so the cards reach the round's foot: the clip's state when it isn't
   // playing, the status, and who just switched. Who has answered shows in the scores column.
   const slot = (
@@ -334,7 +344,7 @@ function Answering({ store, lobby, round, start, titles, clip, ghost, foot }: An
         )}
       </p>
       {canSwitch && players > 1 && <Nudge lobby={lobby} nudge={round.nudge} />}
-      {lobby.settings.hints && !spectating && (
+      {lobby.settings.hints && !spectating && !out && (
         <HintLine
           store={store}
           round={round}
@@ -391,7 +401,9 @@ function SlotGhost({ lobby }: { lobby: LobbyState }) {
 // The scores column while the round runs: everyone's score so far, who has answered once the options are out,
 // and the round's foot. Who picked what stays hidden until the reveal.
 function LiveScores({ lobby, round, foot }: { lobby: LobbyState; round: ClientRound; foot: ReactNode }) {
-  const players = lobby.players.filter((player) => !player.spectating).sort((a, b) => b.score - a.score);
+  const players = lobby.players
+    .filter((player) => !player.spectating)
+    .sort((a, b) => (b.lives ?? 0) - (a.lives ?? 0) || b.score - a.score);
   return (
     <>
       <ScoresPanel>
@@ -408,9 +420,12 @@ function LiveScores({ lobby, round, foot }: { lobby: LobbyState; round: ClientRo
                 <span className="board-name">
                   <PlayerBadge icon={player.icon} />
                   {player.name}
+                  {player.lives !== undefined && player.lives > 0 && (
+                    <span className="ml-2 text-xs text-muted">{livesText(player.lives)}</span>
+                  )}
                 </span>
                 <span className="live-state" data-answered={answered || undefined}>
-                  {round.start && (answered ? 'answered' : 'thinking')}
+                  {player.lives === 0 ? 'out' : round.start && (answered ? 'answered' : 'thinking')}
                 </span>
                 <span className="board-total">{score(player.score)}</span>
               </li>

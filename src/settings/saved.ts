@@ -60,6 +60,8 @@ const FIELD_NAMES: Record<keyof LobbySettings, string> = {
   overtimeSec: 'the overtime',
   endless: 'endless play',
   hints: 'hints',
+  play: 'the way to play',
+  lives: 'the lives',
 };
 
 // The setup as this lobby can play it, and what had to change: genres the catalog doesn't offer drop out,

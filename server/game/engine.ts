@@ -25,6 +25,7 @@ export interface Standing {
   correct: number;
   correctMs: number; // total response time of correct answers
   bestStreak: number;
+  lives: number | null; // in Elimination; null in a classic game
 }
 
 interface AnswerRecord {
@@ -112,7 +113,25 @@ export interface Step {
   effects: GameEffect[];
 }
 
-const EMPTY_STANDING: Standing = { score: 0, streak: 0, correct: 0, correctMs: 0, bestStreak: 0 };
+const EMPTY_STANDING: Standing = { score: 0, streak: 0, correct: 0, correctMs: 0, bestStreak: 0, lives: null };
+
+function eliminating(game: Game): boolean {
+  return game.settings.play === 'elimination';
+}
+
+// A player still in the game: every participant in a classic game, one with a life left in Elimination.
+function alive(game: Game, playerId: string): boolean {
+  const lives = game.standings[playerId]?.lives;
+  return lives === null || lives === undefined || lives > 0;
+}
+
+function inPlay(game: Game): string[] {
+  return game.participants.filter((id) => alive(game, id));
+}
+
+function livesView(lives: number | null): { lives?: number } {
+  return lives === null ? {} : { lives };
+}
 
 // A draft of the game that one event may change, and the effects it produces.
 interface Draft {
@@ -129,9 +148,11 @@ function connected(game: Game, ids: string[]): string[] {
   return ids.filter((id) => !game.away.includes(id));
 }
 
-// An endless game has no count until it ends, and then counts the rounds it played.
+// An endless game has no count until it ends, and then counts the rounds it played; so does an Elimination
+// game, which can end before its songs run out.
 function rounds(game: Game): number | null {
-  if (game.settings.endless) return game.finished ? game.songs.length : null;
+  if (game.finished && (game.settings.endless || eliminating(game))) return game.songs.length;
+  if (game.settings.endless) return null;
   return game.questions.length - game.dropped;
 }
 
@@ -177,9 +198,12 @@ function overtimeMessage(round: Round, overtime: { startsAt: number; endsAt: num
 // Everyone in the lobby plays from this round on: late joiners start at 0.
 function beginRound(draft: Draft, index: number, clip: { question: Question; clipToken: string }): void {
   const { game, now } = draft;
+  const firstRound = game.played === 0;
   for (const id of game.players) {
     if (!game.participants.includes(id)) game.participants.push(id);
-    game.standings[id] ??= { ...EMPTY_STANDING };
+    // In Elimination a player who joins after the first round watches: they start with no lives.
+    const lives = eliminating(game) ? (firstRound ? game.settings.lives : 0) : null;
+    game.standings[id] ??= { ...EMPTY_STANDING, lives };
   }
   game.played++;
   game.nextIndex = index + 1;
@@ -225,7 +249,7 @@ function startRound(draft: Draft, round: Round): void {
   round.startsAt = now + (game.played === 1 ? GAME_TIMING.firstLeadMs : GAME_TIMING.leadMs);
   round.endsAt = round.startsAt + game.settings.sampleLengthSec * 1000;
   round.closeAt = round.endsAt + GAME_TIMING.graceMs;
-  round.noAudio.push(...game.participants.filter((id) => !round.ready.includes(id) && !round.noAudio.includes(id)));
+  round.noAudio.push(...inPlay(game).filter((id) => !round.ready.includes(id) && !round.noAudio.includes(id)));
   round.phase = 'playing';
   send(draft, startMessage(round));
   draft.effects.push({ type: 'timer', name: 'close', roundId: round.id, at: round.closeAt });
@@ -233,9 +257,26 @@ function startRound(draft: Draft, round: Round): void {
 
 function standingViews(game: Game): StandingView[] {
   return game.participants.map((playerId) => {
-    const { score, streak } = game.standings[playerId] ?? EMPTY_STANDING;
-    return { playerId, score, streak };
+    const { score, streak, lives } = game.standings[playerId] ?? EMPTY_STANDING;
+    return { playerId, score, streak, ...livesView(lives) };
   });
+}
+
+// In Elimination a wrong or missed answer costs a life, but not a player whose clip failed to load.
+function takeLives(game: Game, round: Round): void {
+  if (!eliminating(game)) return;
+  for (const playerId of inPlay(game)) {
+    const right = round.answers.some((answer) => answer.playerId === playerId && answer.correct);
+    const standing = game.standings[playerId];
+    if (!right && !round.noAudio.includes(playerId) && standing?.lives) standing.lives--;
+  }
+}
+
+// The game is over in Elimination once one player is left, or none when they played alone or went out together.
+function lastStanding(game: Game): boolean {
+  if (!eliminating(game)) return false;
+  const left = inPlay(game).length;
+  return left === 0 || (left === 1 && game.participants.length > 1);
 }
 
 // Scores the round (a skipped one scores nothing and keeps streaks), then reveals the answer.
@@ -272,6 +313,7 @@ function closeRound(draft: Draft, round: Round, skipped: boolean): void {
       hinted: round.hinted.includes(playerId),
     };
   });
+  if (!skipped) takeLives(game, round);
   round.phase = 'revealing';
   game.playedThemeIds.push(round.question.themeId);
   const { question } = round;
@@ -301,9 +343,13 @@ function results(game: Game): ResultView[] {
     const standing = game.standings[playerId] ?? EMPTY_STANDING;
     return { playerId, score: standing.score, correctResponseMs: standing.correctMs };
   });
-  return rankPlayers(tallies).map(({ playerId, score }) => {
-    const { correct, correctMs, bestStreak } = game.standings[playerId] ?? EMPTY_STANDING;
-    return { playerId, score, correct, averageMs: correct > 0 ? Math.round(correctMs / correct) : null, bestStreak };
+  const livesOf = (playerId: string) => game.standings[playerId]?.lives ?? 0;
+  // Elimination ranks by lives left first; the sort is stable, so equal lives keep the score order.
+  const ranked = rankPlayers(tallies).sort((a, b) => livesOf(b.playerId) - livesOf(a.playerId));
+  return ranked.map(({ playerId, score }) => {
+    const { correct, correctMs, bestStreak, lives } = game.standings[playerId] ?? EMPTY_STANDING;
+    const averageMs = correct > 0 ? Math.round(correctMs / correct) : null;
+    return { playerId, score, correct, averageMs, bestStreak, ...livesView(lives) };
   });
 }
 
@@ -317,7 +363,7 @@ function finish(draft: Draft): void {
 
 // A round waits for connected players only, and never starts or ends early with nobody connected.
 function allConnectedDone(game: Game, done: string[]): boolean {
-  const waiting = connected(game, game.participants);
+  const waiting = connected(game, inPlay(game));
   return waiting.length > 0 && waiting.every((id) => done.includes(id));
 }
 
@@ -367,7 +413,7 @@ function onAnswer(draft: Draft, event: AnswerEvent): void {
   const { game, now } = draft;
   const round = game.round;
   if (!round || round.id !== event.roundId || round.phase !== 'playing') return;
-  if (!game.participants.includes(event.playerId)) return;
+  if (!game.participants.includes(event.playerId) || !alive(game, event.playerId)) return;
   const answersEndAt = round.overtime?.endsAt ?? round.endsAt;
   if (now < round.startsAt || now > answersEndAt + GAME_TIMING.graceMs) return;
   const previous = round.answers.find((answer) => answer.playerId === event.playerId);
@@ -390,7 +436,7 @@ function onHint(draft: Draft, event: HintEvent): void {
   const { game, now } = draft;
   const round = game.round;
   if (!game.settings.hints || !round || round.id !== event.roundId || round.phase !== 'playing') return;
-  if (!game.participants.includes(event.playerId) || round.hinted.includes(event.playerId)) return;
+  if (!inPlay(game).includes(event.playerId) || round.hinted.includes(event.playerId)) return;
   const halfway = round.startsAt + (round.endsAt - round.startsAt) / 2;
   if (now < halfway || now > round.endsAt) return;
   const answered = round.answers.some((answer) => answer.playerId === event.playerId);
@@ -413,6 +459,7 @@ function onTimer(draft: Draft, event: TimerEvent): void {
   }
   if (event.name === 'reveal' && round.phase === 'revealing') {
     game.round = null;
+    if (lastStanding(game)) return finish(draft);
     advance(draft);
   }
 }
@@ -467,7 +514,7 @@ function onClip(draft: Draft, event: ClipEvent): void {
 function onReady(draft: Draft, event: ReadyEvent): void {
   const round = draft.game.round;
   if (!round || round.id !== event.roundId || round.phase !== 'preparing') return;
-  if (!draft.game.participants.includes(event.playerId) || round.ready.includes(event.playerId)) return;
+  if (!inPlay(draft.game).includes(event.playerId) || round.ready.includes(event.playerId)) return;
   round.ready.push(event.playerId);
   if (!event.loaded) round.noAudio.push(event.playerId);
   recheck(draft);
@@ -550,6 +597,10 @@ export function gameView(game: Game): GameView {
     results: game.finished ? results(game) : null,
     songs: game.finished ? game.songs : null,
   };
+}
+
+export function livesOf(game: Game, playerId: string): number | undefined {
+  return game.standings[playerId]?.lives ?? undefined;
 }
 
 export function scoreOf(game: Game, playerId: string): number {

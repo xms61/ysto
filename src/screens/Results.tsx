@@ -11,7 +11,17 @@ import { PlayerBadge } from '../components/PlayerIcon.tsx';
 import { ReactionBar } from '../components/Reactions.tsx';
 import { ReportClip } from '../components/ReportClip.tsx';
 import { Button, Panel } from '../components/ui.tsx';
-import { aired, animeThemesUrl, animeTitle, credits, place, score, seconds, sharedPlaces } from '../format.ts';
+import {
+  aired,
+  animeThemesUrl,
+  animeTitle,
+  credits,
+  livesText,
+  place,
+  score,
+  seconds,
+  sharedPlaces,
+} from '../format.ts';
 import type { TitleLanguages } from '../format.ts';
 import { useCountUp, usePagePhase } from '../hooks.ts';
 import type { GameStore } from '../realtime/store.ts';
@@ -42,6 +52,7 @@ function statsOf(result: ResultView, rounds: number): string {
     `${result.correct} of ${rounds} right`,
     result.averageMs !== null && `${seconds(result.averageMs)} on average`,
     result.bestStreak > 0 && `best streak ${result.bestStreak}`,
+    result.lives !== undefined && (result.lives > 0 ? `${livesText(result.lives)} left` : 'out'),
   ]
     .filter((part) => part !== false)
     .join(' · ');
@@ -75,7 +86,8 @@ function shareOf(value: number, top: number): number {
 }
 
 function Bill({ lobby, results, rounds }: { lobby: LobbyState; results: ResultView[]; rounds: number }) {
-  const places = sharedPlaces(results.map((result) => result.score));
+  // In Elimination players share a place only with the same lives and score.
+  const places = sharedPlaces(results.map((result) => `${result.lives ?? 0}:${result.score}`));
   const { scoreBars } = useStage();
   const top = results[0]?.score ?? 0;
   return (

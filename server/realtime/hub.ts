@@ -269,14 +269,18 @@ export class Realtime {
   }
 
   #playerViews(lobby: Lobby): PlayerView[] {
-    return lobby.players.map(({ id, name, icon, connectedSince }) => ({
-      id,
-      name,
-      icon,
-      connected: connectedSince !== null,
-      spectating: this.#games.spectating(lobby.code, id),
-      score: this.#games.score(lobby.code, id),
-    }));
+    return lobby.players.map(({ id, name, icon, connectedSince }) => {
+      const lives = this.#games.lives(lobby.code, id);
+      return {
+        id,
+        name,
+        icon,
+        connected: connectedSince !== null,
+        spectating: this.#games.spectating(lobby.code, id),
+        score: this.#games.score(lobby.code, id),
+        ...(lives === undefined ? {} : { lives }),
+      };
+    });
   }
 
   // A reaction goes to everyone in the lobby, the sender too, at any time, up to the per-player limit.
