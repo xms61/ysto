@@ -41,7 +41,7 @@ A screen is a player in `lobby:state` with `screen: true`; it gets every game me
 - The session token travels only in the first message or the clip route's `Authorization` header, never in a URL, and never in a log.
 - Upgrades need an Origin with the request's own host, or one listed in `YSTO_ALLOWED_ORIGINS`. Other paths get 404, and other origins 403.
 - Limits (`API_LIMITS`, `REALTIME_LIMITS`, `OPEN_LOBBIES_PER_IP`), all per IP unless noted:
-  - HTTP: 5 creations and 30 joins a minute, 10 unknown codes a minute, 3 open lobbies, and a 4 KiB body limit
+  - HTTP: 5 creations and 30 joins a minute, 10 unknown codes a minute, 10 open lobbies, and a 4 KiB body limit
   - sockets: 30 per IP; per socket, 20 messages a second, 4 KiB frames, and `hello` within 10 s
 - Invalid or excess messages each get an error. The fifth closes the socket with 1008. Host-rights errors don't count.
 - A newer socket for the same seat replaces the older one, as when a tab reloads.

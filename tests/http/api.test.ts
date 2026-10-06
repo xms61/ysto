@@ -88,12 +88,11 @@ test('throttles an address that guesses lobby codes', async () => {
   assert.equal(elsewhere.status, 201, 'another address still joins');
 });
 
-test('caps the open lobbies and the creations of one address', async () => {
+// The open lobbies' cap per address (OPEN_LOBBIES_PER_IP) is above the creations a minute; registry.test covers it.
+test('caps the creations of one address', async () => {
   const headers = fromNewAddress();
   const create = () => server.post('/api/lobbies', { name: 'Ann' }, headers);
-  for (let lobby = 0; lobby < 3; lobby++) assert.equal((await create()).status, 201);
-  assert.deepEqual(await errorOf(await create()), [429, 'too-many-lobbies']);
-  assert.deepEqual(await errorOf(await create()), [429, 'too-many-lobbies']);
+  for (let lobby = 0; lobby < API_LIMITS.creationsPerMinute; lobby++) assert.equal((await create()).status, 201);
   assert.deepEqual(
     await errorOf(await create()),
     [429, 'rate-limited'],

@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - The server keeps up to 2000 lobbies open by default (`YSTO_MAX_LOBBIES`, up to 100000), up from 100.
 - A lobby closes 15 s after its last player left or lost the connection, unless someone comes back first, instead of after 15 minutes. The registry sweeps every second instead of every 5 s.
+- One address can have 10 lobbies open at once instead of 3, for homes and events that share a connection.
 
 ## [1.28.0] - 2026-10-06
 
