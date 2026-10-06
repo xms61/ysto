@@ -28,6 +28,7 @@ colors:
   tokyo-rain-card-back-ink: "#16000b"
   tokyo-rain-stamp: "#ffffff"
   tokyo-rain-neon-cyan: "#22e6ff"
+  tokyo-rain-glass: "#020207"
   shonen-page: "#0a0a12"
   shonen-panel: "#12121c"
   shonen-raised: "#1d1d2e"
@@ -679,6 +680,9 @@ The Preferences panel shows the current theme as one row, a small swatch in its 
 - Selecting a tile tries the world on across the whole page, the sheet included. "Use this world" keeps it; Back or Escape puts back the theme the player had, and nothing is saved.
 - "Surprise me" hops a highlight across the tiles twelve times, each hop slower than the last, and lands on a random world other than the current one, which the page tries on; with motion reduced it lands at once.
 - Tile corners are capped at 0.75rem, so a soft theme's pill radius stays a tile.
+
+### The overtime
+With answer changes on, the overtime's call ("Overtime", and "Last chance to switch") sits above the time left. Each world prints the word on its own material, in a pair the contrast tests check, and beats it in its own way with motion on (otherwise it holds still): Neon Rain, a magenta neon tube that flickers, the LED gone magenta with it; Karaoke Box, the encore on the lyric screen in a pink rim, bouncing on the beat; Omikuji, a vermilion seal on the beam, swinging like a bell; Blossom Map, a pink pin flag, waving; Fighter Select, a slanted red banner, blinking; Quest Board, an urgent notice in red wax on a plank, its candlelight guttering; Back Issue, an "extra" on the yellow slab with its cyan shadow off register, thumping down; Side A, the word on the tape's label under highlighter, wobbling. Only paint, frames and transforms change, never the call's size, so the cards keep their place.
 
 ### Sound
 Each world has a voice for the deal, a pick, the overtime's call, a right or wrong answer and the results, synthesized from the table in `src/audio/sounds.ts` (oscillators and envelopes, no files): Neon Rain's synth blips and bright arpeggio, Karaoke Box's fanfare and a trombone sliding down, Omikuji's shrine bell and wooden clack, Blossom Map's soft chimes, Fighter Select's square-wave blips and coin, Quest Board's plucked lute and low drum, Back Issue's typewriter keys and bell, and Side A's tape-deck click, warm chord and dragging tape. Every sound is short (under 2.5 s), stays under 8 kHz, and plays at 35% of the game's volume, so the clip stays on top. Right and wrong land with the right card, 820ms into the reveal.

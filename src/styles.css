@@ -70,6 +70,8 @@
     /* The street's light: the neon's cyan tube beside the magenta accent. It lights edges and glows, and
        carries no text. */
     --neon-cyan: #22e6ff;
+    /* The LED's dark glass, behind its segments; it carries the figures, in the neon. */
+    --glass: #020207;
     --display-font: 'Zen Kaku Gothic New', ui-sans-serif, system-ui, sans-serif;
     --display-weight: 700;
     --display-case: none;
@@ -850,6 +852,81 @@
     font-size: 0.875rem;
   }
 
+  /* ---- Each world's overtime (docs/DESIGN.md, The overtime). The call's word is printed on the world's own
+     material, in a tested text pair, and the readout takes the alarm's color. Only paint, frames and transforms
+     change, never the call's size, so the cards keep their place. ---- */
+  /* Neon Rain: a magenta neon tube, the LED gone magenta with it. */
+  :root:is([data-theme='tokyo-rain'], :not([data-theme])) .overtime-word {
+    box-shadow:
+      0 0 0.5rem rgb(255 46 151 / 0.8),
+      0 0 1.25rem rgb(255 46 151 / 0.45);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  :root:is([data-theme='tokyo-rain'], :not([data-theme])) .time-left[data-overtime] .readout {
+    color: var(--accent);
+    filter: drop-shadow(0 0 0.375rem rgb(255 46 151 / 0.7));
+  }
+
+  /* Karaoke Box: the encore on the lyric screen, in the sung line's pink. */
+  :root[data-theme='karaoke'] .overtime-word {
+    border: 2px solid var(--lyric-sung);
+    background: var(--screen);
+    color: var(--screen-ink);
+    box-shadow: 0 0 0.75rem rgb(255 111 184 / 0.5);
+  }
+
+  /* Omikuji: a vermilion seal on the torii's beam. */
+  :root[data-theme='omikuji'] .overtime-word {
+    border-radius: 0.125rem;
+    background: var(--beam);
+    color: var(--beam-ink);
+    box-shadow:
+      inset 0 0 0 2px var(--beam),
+      inset 0 0 0 3px rgb(255 255 255 / 0.6);
+  }
+
+  /* Blossom Map: the map's pink pin flag. */
+  :root[data-theme='blossom-map'] .overtime-word {
+    border-radius: 999px;
+    box-shadow: 0 0 0 3px var(--blossom);
+  }
+
+  /* Fighter Select: the arcade's slanted red banner. */
+  :root[data-theme='shonen'] .overtime-word {
+    border-radius: 0;
+    background: var(--card-mark);
+    color: var(--card-mark-ink);
+    text-transform: uppercase;
+    transform: skewX(-12deg);
+  }
+
+  /* Quest Board: an urgent notice, its word in red wax on a plank. */
+  :root[data-theme='isekai'] .overtime-word {
+    border: 2px solid var(--pin);
+    background: var(--plank);
+    color: var(--plank-ink);
+  }
+
+  /* Back Issue: an "extra" slapped on the yellow slab, its cyan shadow off register. */
+  :root[data-theme='retro-vhs'] .overtime-word {
+    border: 2px solid var(--ink);
+    border-radius: 0;
+    background: var(--slab);
+    color: var(--ink);
+    text-transform: uppercase;
+    box-shadow: 0.1875rem 0.1875rem 0 var(--cyan);
+    transform: rotate(-2deg);
+  }
+
+  /* Side A: the word on the tape's label, under a strip of highlighter. */
+  :root[data-theme='side-a'] .overtime-word {
+    border-radius: 0.125rem;
+    background: linear-gradient(transparent 55%, var(--accent) 55%), var(--label);
+    color: var(--label-ink);
+  }
+
   .nudge-line {
     min-height: 1.5rem;
     font-size: 0.875rem;
@@ -1582,7 +1659,7 @@
   /* The LED reads in cyan, glowing. */
   :root[data-theme='tokyo-rain'] .readout,
   :root:not([data-theme]) .readout {
-    --accent: var(--neon-cyan);
+    color: var(--neon-cyan);
     filter: drop-shadow(0 0 0.25rem rgb(34 230 255 / 0.6));
   }
 
@@ -4291,6 +4368,117 @@
 @keyframes overtime-beat {
   50% {
     transform: scale(1.06);
+  }
+}
+
+/* Each world's overtime beat, in place of the shared one: the neon tube flickers, the encore bounces on the
+   beat, the shrine's seal swings like a bell, the pin flag waves, the arcade banner blinks, the notice's candle
+   gutters, the extra thumps down, and the tape wobbles. */
+:root[data-motion='full']:is([data-theme='tokyo-rain'], :not([data-theme])) .overtime-word {
+  animation: neon-on 1.2s steps(1, end) 400ms infinite;
+}
+
+:root[data-motion='full'][data-theme='karaoke'] .overtime-word {
+  animation: encore-bounce 500ms cubic-bezier(0.3, 0, 0.3, 1) 400ms infinite alternate;
+}
+
+:root[data-motion='full'][data-theme='omikuji'] .overtime-word {
+  transform-origin: top center;
+  animation: bell-swing 1.4s ease-in-out 400ms infinite alternate;
+}
+
+:root[data-motion='full'][data-theme='blossom-map'] .overtime-word {
+  transform-origin: left center;
+  animation: flag-wave 900ms ease-in-out 400ms infinite alternate;
+}
+
+:root[data-motion='full'][data-theme='shonen'] .overtime-word {
+  animation: arcade-blink 500ms steps(1, end) 400ms infinite;
+}
+
+:root[data-motion='full'][data-theme='isekai'] .overtime-word {
+  animation: candle-gutter 1.6s ease-in-out 400ms infinite;
+}
+
+:root[data-motion='full'][data-theme='retro-vhs'] .overtime-word {
+  animation: extra-thump 1s cubic-bezier(0.16, 1, 0.3, 1) 400ms infinite;
+}
+
+:root[data-motion='full'][data-theme='side-a'] .overtime-word {
+  animation: tape-wobble 700ms ease-in-out 400ms infinite alternate;
+}
+
+@keyframes encore-bounce {
+  to {
+    transform: translateY(-0.1875rem);
+  }
+}
+
+@keyframes bell-swing {
+  from {
+    transform: rotate(-3deg);
+  }
+
+  to {
+    transform: rotate(3deg);
+  }
+}
+
+@keyframes flag-wave {
+  from {
+    transform: skewY(-2deg);
+  }
+
+  to {
+    transform: skewY(2deg);
+  }
+}
+
+/* The banner keeps its slant through the blink. */
+@keyframes arcade-blink {
+  0% {
+    opacity: 1;
+  }
+
+  60% {
+    opacity: 0.35;
+  }
+}
+
+@keyframes candle-gutter {
+  0%,
+  100% {
+    box-shadow: 0 0 0.5rem rgb(255 180 58 / 0.35);
+  }
+
+  40% {
+    box-shadow: 0 0 1rem rgb(255 180 58 / 0.7);
+  }
+
+  60% {
+    box-shadow: 0 0 0.25rem rgb(255 180 58 / 0.2);
+  }
+}
+
+/* The extra keeps its tilt as it thumps. */
+@keyframes extra-thump {
+  0% {
+    transform: rotate(-2deg) scale(1.12);
+  }
+
+  30%,
+  100% {
+    transform: rotate(-2deg) scale(1);
+  }
+}
+
+@keyframes tape-wobble {
+  from {
+    transform: skewX(-3deg);
+  }
+
+  to {
+    transform: skewX(3deg);
   }
 }
 

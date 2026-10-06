@@ -68,7 +68,11 @@ const GRAPHIC_PAIRS: [graphic: string, background: string][] = [
 // text on the board and the rank and completed stamps in red ink, Back Issue's ink on its yellow slab and screened
 // text over its halftone.
 const WORLD_TEXT_PAIRS: Partial<Record<(typeof THEMES)[number], [text: string, background: string][]>> = {
-  'tokyo-rain': [['card', 'card-alert']],
+  'tokyo-rain': [
+    ['card', 'card-alert'],
+    ['accent', 'glass'],
+    ['card-mark', 'glass'],
+  ],
   karaoke: [
     ['screen-ink', 'screen'],
     ['screen-muted', 'screen'],
@@ -81,6 +85,7 @@ const WORLD_TEXT_PAIRS: Partial<Record<(typeof THEMES)[number], [text: string, b
   ],
   'side-a': [
     ['label-ink', 'label'],
+    ['label-ink', 'accent'],
     ['card-ink', 'accent'],
   ],
   shonen: [['card-ink', 'nameplate']],
