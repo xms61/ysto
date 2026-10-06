@@ -5,10 +5,9 @@ import type { OptionTitles } from '../../shared/protocol.ts';
 import { TITLE_LANGUAGES } from '../../shared/settings.ts';
 import type { TitleLanguage } from '../../shared/settings.ts';
 import type { CatalogAnime } from '../catalog/load.ts';
+import { normalizeTitle } from '../../shared/titles.ts';
 
-export function normalizeTitle(title: string): string {
-  return title.normalize('NFKC').toLowerCase().replace(/\s+/g, ' ').trim();
-}
+export { normalizeTitle };
 
 function romaji(anime: CatalogAnime): string {
   return anime.titles.romaji ?? anime.titles.display;

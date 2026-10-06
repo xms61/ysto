@@ -43,6 +43,7 @@ export interface LobbySettings {
   lives: number; // in Elimination: what each player starts with; a wrong or missed answer costs one
   teams: number; // in Teams: how many teams the players split into
   questions: QuestionKind;
+  answerBy: AnswerBy; // typing names the anime, so it goes with anime questions, or their rounds in a mix
 }
 
 // What the catalog allows: its years, the genres the settings offer, and the largest popularity rank
@@ -61,6 +62,10 @@ export type Play = (typeof PLAYS)[number];
 // What the options name: the anime, the song's title, its artists, or a mix drawn round by round.
 export const QUESTION_KINDS = ['anime', 'song', 'artist', 'mixed'] as const;
 export type QuestionKind = (typeof QUESTION_KINDS)[number];
+
+// How players answer: by tapping one of the four options, or by typing the anime's title.
+export const ANSWER_BYS = ['options', 'typing'] as const;
+export type AnswerBy = (typeof ANSWER_BYS)[number];
 
 export const LIMITS = {
   sampleLengthSec: { min: 10, max: 30, step: 5 },
@@ -92,6 +97,7 @@ export function defaultSettings(bounds: SettingsBounds): LobbySettings {
     lives: 3,
     teams: 2,
     questions: 'anime',
+    answerBy: 'options',
   };
 }
 
@@ -114,6 +120,7 @@ const SETTINGS_KEYS = [
   'lives',
   'teams',
   'questions',
+  'answerBy',
 ] as const;
 const RANGE_KEYS = ['from', 'to'] as const;
 const SCORING_KEYS = ['mode', 'streakBonus', 'comeback', 'wrongAnswerPenalty'] as const;
@@ -152,7 +159,8 @@ function isScoring(value: unknown): value is ScoringRules {
 export function validateSettings(value: unknown, bounds: SettingsBounds): LobbySettings | null {
   if (!isRecord(value) || !hasKeys(value, SETTINGS_KEYS)) return null;
   const { sampleLengthSec, songsPerGame, years, genres, kinds, formats, difficulty, popularityRanks } = value;
-  const { sampleStart, scoring, answerChanges, overtimeSec, endless, hints, play, lives, teams, questions } = value;
+  const { sampleStart, scoring, answerChanges, overtimeSec, endless, hints, play, lives, teams, questions, answerBy } =
+    value;
   const { songsPerGame: songs, overtimeSec: overtime } = LIMITS;
   if (
     !isSampleLength(sampleLengthSec) ||
@@ -173,6 +181,9 @@ export function validateSettings(value: unknown, bounds: SettingsBounds): LobbyS
     !isIntegerIn(lives, LIMITS.lives.min, LIMITS.lives.max) ||
     !isIntegerIn(teams, LIMITS.teams.min, LIMITS.teams.max) ||
     !isOneOf(questions, QUESTION_KINDS) ||
+    !isOneOf(answerBy, ANSWER_BYS) ||
+    // A typed answer names an anime, so song title and artist games can't use it.
+    (answerBy === 'typing' && (questions === 'song' || questions === 'artist')) ||
     // First correct gives everyone but the fastest nothing, which can't decide who loses a life.
     (play === 'elimination' && isScoring(scoring) && scoring.mode === 'firstCorrect')
   ) {
@@ -197,6 +208,7 @@ export function validateSettings(value: unknown, bounds: SettingsBounds): LobbyS
     lives,
     teams,
     questions,
+    answerBy,
   };
 }
 

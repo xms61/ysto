@@ -4,6 +4,7 @@
 import { readItem, writeItem } from './storage.ts';
 
 const NOTES: { version: string; lines: string[] }[] = [
+  { version: '1.25.0', lines: ['Type your answer: hosts can swap the four options for a title field.'] },
   { version: '1.24.0', lines: ['Name the song title or the artist instead of the anime, or mix them up.'] },
   { version: '1.23.0', lines: ['Teams: split into up to four teams, each scoring the average of its players.'] },
   { version: '1.22.0', lines: ['Elimination: lose a life for each miss, and the last one standing wins.'] },

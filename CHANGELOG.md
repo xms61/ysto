@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.25.0] - 2026-10-06
+
+### Added
+- Typed answers: under Answer by in the lobby settings, players type the anime's title instead of tapping one of four options. Suggestions come from the whole catalog as they type, in every title language and with synonyms, each with its year so remakes can be told apart. Only the exact anime is right. The reveal lists what everyone typed.
+
 ## [1.24.0] - 2026-10-06
 
 ### Added
@@ -29,11 +34,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Hints: with "Hints" on in the lobby, from halfway through a round a player can see when the anime aired ("TV, Spring 2013"); a right answer after a hint scores 70%, streak bonus included. One per round, only to the player who asks, and not once an answer is locked in. The reveal marks who took one.
-
-## [1.20.0] - 2026-10-06
-
-### Added
-- Each world shows the overtime in its own way: the call printed on the world's material (a magenta neon tube, the lyric screen, a shrine seal, a pin flag, an arcade banner, a guild notice, a magazine's extra, a tape label) and, with motion on, its own beat in place of the shared pulse.
-
-### Fixed
-- Neon Rain's LED has its dark glass back, and its figures turn magenta in the overtime instead of vanishing.

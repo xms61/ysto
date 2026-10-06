@@ -19,6 +19,7 @@ function round(overrides: Partial<ClientRound> = {}): ClientRound {
     overtime: null,
     nudge: null,
     hint: null,
+    typed: null,
     reveal: null,
     ...overrides,
   };

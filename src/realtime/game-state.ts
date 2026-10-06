@@ -8,6 +8,7 @@ import type {
   RoundHint,
   RoundReveal,
   ServerMessage,
+  TitleMatch,
 } from '../../shared/protocol.ts';
 import { answersCanChange } from '../../shared/settings.ts';
 
@@ -29,6 +30,7 @@ export interface ClientRound {
   overtime: { startsAt: number; endsAt: number } | null; // with answer changes on, once everyone has answered
   nudge: { playerId: string; count: number } | null; // the last player to switch, and how many switches so far
   hint: RoundHint | null; // when the anime aired, once this player has taken the hint
+  typed: TitleMatch | null; // with typing: the anime this player answered; with answer changes on, the latest
   reveal: RoundReveal | null;
 }
 
@@ -71,6 +73,7 @@ function onPrepare(state: GameState, message: Extract<ServerMessage, { type: 'ro
       overtime: null,
       nudge: null,
       hint: null,
+      typed: null,
       reveal: null,
     },
   };
@@ -93,6 +96,7 @@ function onRound(state: GameState, message: RoundMessage): GameState {
     return { ...state, round: { ...round, overtime: { startsAt, endsAt } } };
   }
   if (message.type === 'round:pick') return { ...state, round: { ...round, choice: message.option } };
+  if (message.type === 'round:typed') return { ...state, round: { ...round, typed: message.match } };
   if (message.type === 'round:hint') {
     const { format, season, year } = message;
     return { ...state, round: { ...round, hint: { format, season, year } } };
@@ -113,6 +117,7 @@ export function receive(state: GameState, message: ServerMessage): GameState {
     case 'round:overtime':
     case 'round:pick':
     case 'round:hint':
+    case 'round:typed':
     case 'round:reveal':
       return onRound(state, message);
     case 'game:results':
@@ -130,6 +135,15 @@ export function choose(state: GameState, option: number): GameState {
   const answered = round.choice !== null || (lobby !== null && round.answeredIds.includes(lobby.you));
   if (answered && !(lobby && answersCanChange(lobby.settings))) return state;
   return { ...state, round: { ...round, choice: option } };
+}
+
+// This player's typed answer, under the same rules as a tapped one.
+export function chooseTyped(state: GameState, match: TitleMatch): GameState {
+  const { round, lobby } = state;
+  if (!round?.start || round.reveal || round.typed?.animeId === match.animeId) return state;
+  const answered = round.typed !== null || (lobby !== null && round.answeredIds.includes(lobby.you));
+  if (answered && !(lobby && answersCanChange(lobby.settings))) return state;
+  return { ...state, round: { ...round, typed: match } };
 }
 
 export function playerOf(state: GameState): PlayerView | null {

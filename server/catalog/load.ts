@@ -11,6 +11,7 @@ export interface CatalogAnime {
   id: number;
   slug: string; // AnimeThemes' name for it, as in https://animethemes.moe/anime/<slug>
   titles: { display: string; romaji: string | null; english: string | null; native: string | null };
+  synonyms: string[]; // other names it goes by, for typed answers
   year: number | null;
   season: string | null;
   format: string;
@@ -125,6 +126,11 @@ function toTheme(row: Row, artists: Map<number, SongCredit[]>): CatalogTheme {
   };
 }
 
+function synonymsOf(value: SQLOutputValue | undefined): string[] {
+  const parsed: unknown = typeof value === 'string' ? JSON.parse(value) : [];
+  return Array.isArray(parsed) ? parsed.filter((item): item is string => typeof item === 'string') : [];
+}
+
 export function loadCatalog(file: string): Catalog {
   const db = new DatabaseSync(file, { readOnly: true });
   try {
@@ -154,6 +160,7 @@ export function loadCatalog(file: string): Catalog {
           english: text(row.title_english),
           native: text(row.title_native),
         },
+        synonyms: synonymsOf(row.synonyms_json),
         year: numeric(row.year),
         season: text(row.season),
         format: required(text(row.media_format), 'a media format'),

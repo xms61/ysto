@@ -1,6 +1,6 @@
 ---
 status: draft
-last-verified: 2026-10-05
+last-verified: 2026-10-06
 ---
 
 # Architecture
@@ -17,7 +17,7 @@ You Skipped The OP?! is a browser quiz. Players join a lobby with a code, hear a
   - `server/http/`: the security headers and the lobby routes. `server/realtime/`: the lobby sockets and their protocol ([REALTIME.md](server/realtime/REALTIME.md)).
   - `server/clips/`: the clip service. It cuts clips with ffmpeg, keeps them under tokens, and serves them on `GET /api/clips/:token` ([CLIPS.md](server/clips/CLIPS.md)). `server/tokens.ts` defines the random tokens it and the sessions use.
 - `src/`: the React client, which Vite bundles into `dist/`: the screens, the lobby socket and its store, the audio engine and the device settings ([FRONTEND.md](docs/FRONTEND.md)). It never imports `server/` or Node built-ins.
-- `shared/`: code that runs on both sides. `settings.ts` holds the lobby settings, their limits, defaults and validator; `scoring.ts` the scoring modes, modifiers and presets; `protocol.ts` the messages, codes and validators; `names.ts` the player-name rules; and `validate.ts` the checks the validators share. It imports neither `server/` nor `src/`, and no Node built-ins.
+- `shared/`: code that runs on both sides. `settings.ts` holds the lobby settings, their limits, defaults and validator; `scoring.ts` the scoring modes, modifiers and presets; `protocol.ts` the messages, codes and validators; `names.ts` the player-name rules; `titles.ts` how titles compare; and `validate.ts` the checks the validators share. It imports neither `server/` nor `src/`, and no Node built-ins.
 - `tests/`: server and shared tests (`node:test`), laid out like the folders they test.
 - `e2e/`: browser tests (Playwright) against the production build, served by `e2e/fixture-server.ts` on the catalog and tones that `e2e/fixture-data.ts` generates. CI's image check runs the image on the same data.
 - `Dockerfile`, `.dockerignore` and `deploy/`: the image, and the VPS's compose file and Caddy config ([hosting and deploy](docs/design-docs/hosting-and-deploy.md), [DEPLOY.md](docs/DEPLOY.md)).

@@ -11,6 +11,8 @@ const SERVER_TYPES = [
   'round:overtime',
   'round:pick',
   'round:hint',
+  'round:typed',
+  'titles:found',
   'round:reveal',
   'game:results',
   'reaction',

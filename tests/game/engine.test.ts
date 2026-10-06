@@ -831,3 +831,68 @@ test('the Teams results rank the teams by their totals', () => {
   ]);
   assert.deepEqual(gameView(sim.game).teams?.[0], { team: 1, score: 5000, points: 0 });
 });
+
+function typedMatch(animeId: number) {
+  return { animeId, english: null, romaji: `Show ${animeId}`, japanese: null, year: 2010 };
+}
+
+function typeAnswer(sim: Simulation, playerId: string, right: boolean): void {
+  const question = sim.game.round?.question;
+  assert.ok(question);
+  const animeId = right ? question.animeId : (question.options.animeIds.find((id) => id !== question.animeId) ?? 0);
+  sim.event({
+    type: 'answer',
+    playerId,
+    roundId: sim.last('round:start').roundId,
+    option: null,
+    typed: typedMatch(animeId),
+  });
+}
+
+test('with typing, a round sends no options and scores the typed anime in each scoring mode', () => {
+  for (const preset of ['classic', 'chill', 'buzzer'] as const) {
+    const sim = new Simulation(settings({ answerBy: 'typing', scoring: { ...SCORING_PRESETS[preset] } }), ['p1', 'p2']);
+    allReady(sim);
+    const start = sim.last('round:start');
+    assert.deepEqual(start.options, { english: [], romaji: [], japanese: [] });
+    sim.advanceTo(start.startsAt + 1000);
+    typeAnswer(sim, 'p2', false);
+    typeAnswer(sim, 'p1', true);
+    sim.advanceTo(start.endsAt + GAME_TIMING.graceMs);
+    const reveal = sim.last('round:reveal');
+    const points = pointsOf(reveal);
+    assert.ok((points.p1 ?? 0) > 0, `${preset}: the right anime scores`);
+    assert.ok((points.p2 ?? 0) <= 0, `${preset}: the wrong one doesn't`);
+    assert.equal(reveal.picks.find((pick) => pick.playerId === 'p1')?.typed?.animeId, reveal.animeId);
+  }
+});
+
+test('with typing, a tapped option is dropped, and without it a typed answer is', () => {
+  const typing = new Simulation(settings({ answerBy: 'typing' }), ['p1', 'p2']);
+  allReady(typing);
+  const start = typing.last('round:start');
+  typing.advanceTo(start.startsAt + 500);
+  typing.event({ type: 'answer', playerId: 'p1', roundId: start.roundId, option: 0 });
+  assert.equal(typing.count('round:answered'), 0);
+
+  const tapping = new Simulation(settings(), ['p1', 'p2']);
+  allReady(tapping);
+  const round = tapping.last('round:start');
+  tapping.advanceTo(round.startsAt + 500);
+  typeAnswer(tapping, 'p1', true);
+  assert.equal(tapping.count('round:answered'), 0);
+});
+
+test('with typing and answer changes on, a new anime switches the answer, and a returning player gets theirs back', () => {
+  const sim = new Simulation(settings({ answerBy: 'typing', answerChanges: true, overtimeSec: 5 }), ['p1', 'p2']);
+  allReady(sim);
+  const start = sim.last('round:start');
+  sim.advanceTo(start.startsAt + 500);
+  typeAnswer(sim, 'p1', false);
+  typeAnswer(sim, 'p1', true);
+  assert.equal(sim.count('round:switched'), 1);
+  sim.event({ type: 'player-disconnected', playerId: 'p1' });
+  sim.event({ type: 'player-connected', playerId: 'p1' });
+  const back = sim.last('round:typed');
+  assert.equal(back.match.animeId, sim.game.round?.question.animeId);
+});

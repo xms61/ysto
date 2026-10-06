@@ -8,10 +8,10 @@ import type { ClipPlayer } from '../audio/engine.ts';
 import { ServerClock } from './clock.ts';
 import { Connection } from './connection.ts';
 import type { ConnectionStatus, ExitReason, SocketLike } from './connection.ts';
-import { INITIAL_GAME, choose, receive } from './game-state.ts';
+import { INITIAL_GAME, choose, chooseTyped, receive } from './game-state.ts';
 import type { ClientRound, GameState } from './game-state.ts';
 import type { Session } from './session.ts';
-import type { PlayerIcon, ReactionKind, ReportReason } from '../../shared/protocol.ts';
+import type { PlayerIcon, ReactionKind, ReportReason, TitleMatch } from '../../shared/protocol.ts';
 
 export type NoticeCode = ErrorCode | 'server-closing';
 
@@ -70,6 +70,7 @@ export class GameStore {
   readonly #connection: Connection;
   readonly #listeners = new Set<() => void>();
   readonly #reactionListeners = new Set<(reaction: Reaction) => void>();
+  readonly #titleListeners = new Set<(query: string, matches: TitleMatch[]) => void>();
   #game: GameState = INITIAL_GAME;
   #pendingSettings: LobbySettings | null = null;
   #notice: Notice | null = null;
@@ -124,6 +125,24 @@ export class GameStore {
     if (game === this.#game || !round) return;
     if (!this.#connection.send({ type: 'answer', roundId: round.id, option })) return;
     this.#setGame(game);
+  }
+
+  answerTyped(match: TitleMatch): void {
+    const game = chooseTyped(this.#game, match);
+    const round = game.round;
+    if (game === this.#game || !round) return;
+    if (!this.#connection.send({ type: 'answer:typed', roundId: round.id, animeId: match.animeId })) return;
+    this.#setGame(game);
+  }
+
+  // Asks for the suggestions for what the player typed; they come back to onTitles' listeners.
+  searchTitles(query: string): void {
+    this.#connection.send({ type: 'titles:search', query });
+  }
+
+  onTitles(listener: (query: string, matches: TitleMatch[]) => void): () => void {
+    this.#titleListeners.add(listener);
+    return () => this.#titleListeners.delete(listener);
   }
 
   // Asks for the round's hint; the server answers this player alone, from halfway through the round.
@@ -217,6 +236,9 @@ export class GameStore {
       this.#showNotice(message.code);
     }
     if (message.type === 'server:closing') this.#showNotice('server-closing');
+    if (message.type === 'titles:found') {
+      for (const listener of this.#titleListeners) listener(message.query, message.matches);
+    }
     if (message.type === 'reaction') {
       for (const listener of this.#reactionListeners) listener({ playerId: message.playerId, kind: message.kind });
     }

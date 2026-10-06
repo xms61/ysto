@@ -4,6 +4,7 @@ import type { InputHTMLAttributes, ReactNode } from 'react';
 import { POINTS, SCORING_MODES, SCORING_PRESETS } from '../../shared/scoring.ts';
 import type { ScoringMode, ScoringPreset, ScoringRules } from '../../shared/scoring.ts';
 import {
+  ANSWER_BYS,
   DIFFICULTIES,
   LIMITS,
   MEDIA_FORMATS,
@@ -13,6 +14,7 @@ import {
   THEME_KINDS,
 } from '../../shared/settings.ts';
 import type {
+  AnswerBy,
   Difficulty,
   LobbySettings,
   Play,
@@ -233,11 +235,41 @@ function QuestionsGroup({ settings, set }: { settings: LobbySettings; set: (chan
           type="radio"
           name="questions"
           checked={settings.questions === questions}
-          onChange={() => set({ questions })}
+          onChange={() =>
+            set(questions === 'song' || questions === 'artist' ? { questions, answerBy: 'options' } : { questions })
+          }
         >
           {QUESTION_LABELS[questions]}
         </Choice>
       ))}
+    </Group>
+  );
+}
+
+const ANSWER_BY_LABELS: Record<AnswerBy, string> = {
+  options: 'Options: tap one of four',
+  typing: "Typing: type the anime's title, with suggestions",
+};
+
+// How players answer. Typing names an anime, so a song title or artist game moves to Anime questions.
+function AnswerByGroup({ settings, set }: { settings: LobbySettings; set: (change: Partial<LobbySettings>) => void }) {
+  const songOnly = settings.questions === 'song' || settings.questions === 'artist';
+  return (
+    <Group legend="Answer by">
+      {ANSWER_BYS.map((answerBy) => (
+        <Choice
+          key={answerBy}
+          type="radio"
+          name="answer-by"
+          checked={settings.answerBy === answerBy}
+          onChange={() => set(answerBy === 'typing' && songOnly ? { answerBy, questions: 'anime' } : { answerBy })}
+        >
+          {ANSWER_BY_LABELS[answerBy]}
+        </Choice>
+      ))}
+      {settings.answerBy === 'typing' && settings.questions === 'mixed' && (
+        <p className="text-sm text-muted">Song title and artist rounds still show four options.</p>
+      )}
     </Group>
   );
 }
@@ -292,6 +324,7 @@ export function SettingsForm({ settings, bounds, onChange }: SettingsFormProps) 
     <div className="flex flex-col gap-6">
       <PlayGroup settings={settings} set={set} />
       <QuestionsGroup settings={settings} set={set} />
+      <AnswerByGroup settings={settings} set={set} />
 
       <div className="grid gap-4 sm:grid-cols-2">
         {settings.endless ? (
