@@ -1,7 +1,15 @@
 // A game's rounds as a pure state machine (docs/product-specs/game-flow.md). `step` takes the game, an event
 // and the time, and returns the next game and the effects for the shell to run: messages, timers, clip cuts
 // and clip expiries. Nothing here reads a clock, a socket or a file, so a fake clock can drive whole games.
-import type { GameView, Pick, PlayedSong, ResultView, ServerMessage, StandingView } from '../../shared/protocol.ts';
+import type {
+  GameView,
+  Pick,
+  PlayedSong,
+  ResultView,
+  ServerMessage,
+  StandingView,
+  TeamStanding,
+} from '../../shared/protocol.ts';
 import { rankPlayers, scoreQuestion } from '../../shared/scoring.ts';
 import type { Answer } from '../../shared/scoring.ts';
 import { answersCanChange } from '../../shared/settings.ts';
@@ -61,6 +69,8 @@ export interface Game {
   away: string[]; // players without a connection
   participants: string[]; // players in the rounds; a late joiner becomes one at the next round
   standings: Record<string, Standing>;
+  teams: Record<string, number> | null; // with Teams: each player's team
+  teamScores: number[]; // with Teams: each team's total, by team number
   round: Round | null; // null between rounds, while the next clip is being cut
   nextIndex: number; // the question the next round plays
   clips: Record<number, PreparedClip>; // by question index
@@ -88,6 +98,7 @@ type TimerEvent = { type: 'timer'; name: TimerName; roundId: string };
 type PlayerEvent = {
   type: 'player-joined' | 'player-connected' | 'player-disconnected' | 'player-left';
   playerId: string;
+  team?: number; // a player who joins a Teams game: the team the lobby gave them
 };
 export type GameEvent =
   | ClipEvent
@@ -279,6 +290,26 @@ function lastStanding(game: Game): boolean {
   return left === 0 || (left === 1 && game.participants.length > 1);
 }
 
+// With Teams, each team scores the average of its connected members' points this round, so a small team can beat a
+// big one; a team with nobody connected scores nothing.
+function scoreTeams(game: Game, picks: Pick[]): TeamStanding[] | null {
+  if (!game.teams) return null;
+  const teams = game.teams;
+  const standings = game.teamScores.map((score, team) => {
+    const members = picks.filter((pick) => teams[pick.playerId] === team && !game.away.includes(pick.playerId));
+    const total = members.reduce((sum, pick) => sum + pick.points, 0);
+    const points = members.length > 0 ? Math.round(total / members.length) : 0;
+    game.teamScores[team] = score + points;
+    return { team, score: score + points, points };
+  });
+  return standings;
+}
+
+function teamResults(game: Game): TeamStanding[] | null {
+  if (!game.teams) return null;
+  return game.teamScores.map((score, team) => ({ team, score, points: 0 })).sort((a, b) => b.score - a.score);
+}
+
 // Scores the round (a skipped one scores nothing and keeps streaks), then reveals the answer.
 function closeRound(draft: Draft, round: Round, skipped: boolean): void {
   const { game, now } = draft;
@@ -314,6 +345,7 @@ function closeRound(draft: Draft, round: Round, skipped: boolean): void {
     };
   });
   if (!skipped) takeLives(game, round);
+  const teams = skipped ? (game.teams ? teamResults(game) : null) : scoreTeams(game, picks);
   round.phase = 'revealing';
   game.playedThemeIds.push(round.question.themeId);
   const { question } = round;
@@ -328,6 +360,7 @@ function closeRound(draft: Draft, round: Round, skipped: boolean): void {
     ...question.reveal,
     picks,
     standings: standingViews(game),
+    ...(teams ? { teams } : {}),
   };
   send(draft, round.reveal);
   draft.effects.push({ type: 'timer', name: 'reveal', roundId: round.id, at: now + GAME_TIMING.revealMs });
@@ -357,7 +390,8 @@ function finish(draft: Draft): void {
   const { game } = draft;
   game.finished = true;
   game.round = null;
-  send(draft, { type: 'game:results', standings: results(game) });
+  const teams = teamResults(game);
+  send(draft, { type: 'game:results', standings: results(game), ...(teams ? { teams } : {}) });
   draft.effects.push({ type: 'finished' });
 }
 
@@ -487,6 +521,7 @@ function onPlayer(draft: Draft, event: PlayerEvent): void {
   if (event.type === 'player-joined' && !game.players.includes(id)) {
     game.players.push(id);
     game.away.push(id);
+    if (game.teams && event.team !== undefined) game.teams[id] = event.team;
   } else if (event.type === 'player-connected' && game.away.includes(id)) {
     game.away = game.away.filter((candidate) => candidate !== id);
     catchUp(draft, id);
@@ -560,10 +595,12 @@ export interface NewGame {
   questions: Question[];
   players: string[];
   away: string[];
+  teams?: Record<string, number>; // with Teams: each player's team
 }
 
 // The first clip is cut at once; the first round begins when it's ready.
-export function startGame({ id, settings, questions, players, away }: NewGame): Step {
+export function startGame({ id, settings, questions, players, away, teams }: NewGame): Step {
+  const playsTeams = settings.play === 'teams';
   const game: Game = {
     id,
     settings,
@@ -572,6 +609,8 @@ export function startGame({ id, settings, questions, players, away }: NewGame): 
     away: [...away],
     participants: [],
     standings: {},
+    teams: playsTeams ? { ...teams } : null,
+    teamScores: playsTeams ? Array.from({ length: settings.teams }, () => 0) : [],
     round: null,
     nextIndex: 0,
     clips: {},
@@ -595,6 +634,7 @@ export function gameView(game: Game): GameView {
     number: game.played,
     rounds: rounds(game),
     results: game.finished ? results(game) : null,
+    ...(game.teams ? { teams: teamResults(game) ?? [] } : {}),
     songs: game.finished ? game.songs : null,
   };
 }

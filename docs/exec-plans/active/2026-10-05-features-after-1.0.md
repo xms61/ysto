@@ -216,7 +216,7 @@ Taken in this order, one step at a time; each step says how it shows.
 - [x] 2026-10-06 M7.2 Overtime animation per world (1.20.0)
 - [x] 2026-10-06 M8 Hints (1.21.0)
 - [x] 2026-10-06 M9 Elimination (1.22.0)
-- [ ] M10 Teams
+- [x] 2026-10-06 M10 Teams (1.23.0)
 - [ ] M11 Song title and artist rounds
 - [ ] M12 Typed answers
 - [ ] M13 Daily challenge with a streak
@@ -241,13 +241,14 @@ Taken in this order, one step at a time; each step says how it shows.
 - 2026-10-06: The owner merged Tokyo Rain and Konbini 2 a.m. into Neon Rain (M22), picking the name, magenta and cyan, and holographic street ads as the round's object, from a mood board of rainy neon Tokyo streets. It keeps `tokyo-rain`'s id, so the default and every Tokyo Rain player carry over; Konbini's players land there through the prefs fallback.
 - 2026-10-06: Hints (M8) built with the plan's defaults. A player whose answer is locked in gets no hint, since it could only cost them; with answer changes on they may still take one. A hint never softens the wrong-answer penalty.
 - 2026-10-06: Elimination (M9) built with the defaults. The settings form gains its "Play" group (Classic or Elimination, the lives, Endless) at the top; the "Questions" and "Answer by" groups the plan named come with M11 and M12, which give them something to hold. A late joiner in Elimination watches the game out with 0 lives, since full lives would be unfair and the fewest left would be arbitrary. A missed clip (no audio) costs no life, as the plan says for a failed clip.
+- 2026-10-06: Teams (M10) built with the average. The teams are named Kitsune, Tanuki, Tengu and Kappa and marked by a dot in the world's accent, good and edge colors (the fourth a ring of the accent), which all hold 3:1 on the panel in every world, so no new tokens. A dropped member counts for neither side of the average, so a team isn't punished for a lost connection. Teams are a play of their own, not combined with Elimination.
 
 ## Open questions
 Each has a default the milestone builds unless the owner decides otherwise:
 - M5: the six reactions. Default: hype, laugh, shock, facepalm, heart, clap.
 - M8 (built 2026-10-06 with the default): what a hint shows, and what it costs. Default: format, season and year, at 70% of the points.
 - M9 (built 2026-10-06 with the default): the lives. Default: 3, and a missed answer costs one, as a wrong one does.
-- M10: a team's round score. Default: the average of its members' points; the alternative is the sum.
+- M10 (built 2026-10-06 with the default): a team's round score. Default: the average of its members' points; the alternative is the sum.
 - M12: whether a sibling season counts as right ("Attack on Titan" for "Attack on Titan Season 3"). Default: only the exact anime.
 - M13: the daily's settings and the day's boundary. Default: Normal, 10 songs of 15 s, a new day at 00:00 UTC (01:00 or 02:00 in Germany).
 - M14: whether phones show the titles too. Default: yes, for accessibility and for players who sit far from the screen.

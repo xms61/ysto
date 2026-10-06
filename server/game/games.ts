@@ -131,7 +131,15 @@ export class Games {
     const known = connectionsOf(lobby);
     const players = [...known.keys()];
     const away = players.filter((id) => !known.get(id));
-    const started = startGame({ id: newToken().slice(0, 8), settings: lobby.settings, questions, players, away });
+    const teams = Object.fromEntries(lobby.players.map((player) => [player.id, player.team]));
+    const started = startGame({
+      id: newToken().slice(0, 8),
+      settings: lobby.settings,
+      questions,
+      players,
+      away,
+      teams,
+    });
     this.#runs.get(lobby.code)?.timers.forEach((cancel) => cancel());
     const run: Run = { code: lobby.code, game: started.game, timers: new Map(), known, reported: new Set() };
     this.#runs.set(lobby.code, run);
@@ -308,7 +316,8 @@ export class Games {
     }
     for (const [playerId, isConnected] of now) {
       if (run.known.has(playerId)) continue;
-      events.push({ type: 'player-joined', playerId });
+      const team = lobby.players.find((player) => player.id === playerId)?.team;
+      events.push({ type: 'player-joined', playerId, ...(team === undefined ? {} : { team }) });
       if (isConnected) events.push({ type: 'player-connected', playerId });
     }
     run.known = now;

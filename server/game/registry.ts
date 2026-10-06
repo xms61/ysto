@@ -21,8 +21,10 @@ import {
   newLobby,
   removePlayer,
   setIcon,
+  setTeam,
+  shuffleTeams,
 } from './lobby.ts';
-import type { HostError, JoinError, Lobby, Outcome } from './lobby.ts';
+import type { HostError, JoinError, Lobby, Outcome, TeamError } from './lobby.ts';
 import { poolSize, settingsBounds } from './pool.ts';
 
 export const OPEN_LOBBIES_PER_IP = 3;
@@ -51,6 +53,16 @@ export interface RegistryOptions {
 export interface Joined {
   playerId: string;
   sessionToken: string;
+}
+
+// A fair shuffle (Fisher-Yates) with the system's random numbers.
+function shuffled<T>(items: T[]): T[] {
+  const result = [...items];
+  for (let index = result.length - 1; index > 0; index--) {
+    const other = randomInt(index + 1);
+    [result[index], result[other]] = [result[other] as T, result[index] as T];
+  }
+  return result;
 }
 
 export class LobbyRegistry {
@@ -156,6 +168,16 @@ export class LobbyRegistry {
     if ('error' in outcome) return outcome.error;
     this.#store(outcome.lobby);
     return null;
+  }
+
+  setTeam(seat: Seat, targetId: string, team: number): TeamError | null {
+    return this.#applyAsHost(seat, (lobby) => setTeam(lobby, seat.playerId, targetId, team));
+  }
+
+  shuffleTeams(seat: Seat): 'not-host' | null {
+    return this.#applyAsHost(seat, (lobby) =>
+      shuffleTeams(lobby, seat.playerId, shuffled(lobby.players.map((player) => player.id))),
+    );
   }
 
   updateSettings(seat: Seat, settings: LobbySettings): 'not-host' | null {

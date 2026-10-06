@@ -15,6 +15,8 @@ import {
   RECONNECT_GRACE_MS,
   removePlayer,
   setIcon,
+  setTeam,
+  shuffleTeams,
 } from '../../server/game/lobby.ts';
 import type { Lobby, Outcome } from '../../server/game/lobby.ts';
 import { PLAYER_ICONS } from '../../shared/protocol.ts';
@@ -132,4 +134,36 @@ test('lets a player switch to a free icon, never to one another player has', () 
   const free = PLAYER_ICONS.find((icon) => icon !== ann.icon && icon !== ben.icon) ?? 'fox';
   assert.equal(lobbyOf(setIcon(lobby, 'ann', free)).players[0]?.icon, free);
   assert.equal(lobbyOf(setIcon(lobby, 'ann', ann.icon)).players[0]?.icon, ann.icon, 'keeping your own is fine');
+});
+
+function teamsOf(lobby: Lobby): Record<string, number> {
+  return Object.fromEntries(lobby.players.map((player) => [player.id, player.team]));
+}
+
+test('seats each new player on the smallest team', () => {
+  const lobby = lobbyWith(['a', 'b', 'c', 'd', 'e']);
+  assert.deepEqual(teamsOf(lobby), { a: 0, b: 1, c: 0, d: 1, e: 0 });
+});
+
+test('lets a player change their own team, and the host move anyone, to a team the settings have', () => {
+  const lobby = lobbyWith(['a', 'b', 'c']);
+  assert.equal(teamsOf(lobbyOf(setTeam(lobby, 'b', 'b', 0))).b, 0);
+  assert.equal(teamsOf(lobbyOf(setTeam(lobby, 'a', 'c', 1))).c, 1);
+  assert.deepEqual(setTeam(lobby, 'b', 'c', 1), { error: 'not-host' });
+  assert.deepEqual(setTeam(lobby, 'a', 'z', 1), { error: 'unknown-player' });
+  assert.deepEqual(setTeam(lobby, 'a', 'b', 2), { error: 'unknown-team' });
+});
+
+test('the host shuffles the players into even teams, in the order dealt', () => {
+  const lobby = lobbyOf(changeSettings(lobbyWith(['a', 'b', 'c', 'd', 'e']), 'a', { ...settings, teams: 3 }));
+  const shuffled = lobbyOf(shuffleTeams(lobby, 'a', ['e', 'd', 'c', 'b', 'a']));
+  assert.deepEqual(teamsOf(shuffled), { e: 0, d: 1, c: 2, b: 0, a: 1 });
+  assert.deepEqual(shuffleTeams(lobby, 'b', ['a']), { error: 'not-host' });
+});
+
+test('fewer teams in the settings move the players of the teams that go to the smallest left', () => {
+  const four = lobbyOf(changeSettings(lobbyWith(['a', 'b']), 'a', { ...settings, teams: 4 }));
+  const spread = lobbyOf(setTeam(lobbyOf(setTeam(four, 'a', 'a', 3)), 'a', 'b', 2));
+  const two = lobbyOf(changeSettings(spread, 'a', { ...settings, teams: 2 }));
+  assert.deepEqual(teamsOf(two), { a: 0, b: 1 });
 });

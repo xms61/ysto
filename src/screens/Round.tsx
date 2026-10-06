@@ -22,6 +22,7 @@ import { Ruler } from '../components/Ruler.tsx';
 import { Shide } from '../components/Shide.tsx';
 import { Segments } from '../components/Segments.tsx';
 import { RoundBody, ScoresPanel, Stage } from '../components/Stage.tsx';
+import { TeamBoard, teamName } from '../components/Teams.tsx';
 import { ConfirmButton, Panel, buttonClass } from '../components/ui.tsx';
 import { hintText, livesText, optionTitle, score } from '../format.ts';
 import type { TitleLanguages } from '../format.ts';
@@ -407,6 +408,7 @@ function LiveScores({ lobby, round, foot }: { lobby: LobbyState; round: ClientRo
   return (
     <>
       <ScoresPanel>
+        {lobby.game?.teams && <TeamBoard teams={lobby.game.teams} label="Teams" />}
         <ol className="board">
           {players.map((player) => {
             const answered = round.start !== null && round.answeredIds.includes(player.id);
@@ -420,6 +422,9 @@ function LiveScores({ lobby, round, foot }: { lobby: LobbyState; round: ClientRo
                 <span className="board-name">
                   <PlayerBadge icon={player.icon} />
                   {player.name}
+                  {player.team !== undefined && (
+                    <span className="ml-2 text-xs text-muted">{teamName(player.team)}</span>
+                  )}
                   {player.lives !== undefined && player.lives > 0 && (
                     <span className="ml-2 text-xs text-muted">{livesText(player.lives)}</span>
                   )}

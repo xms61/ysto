@@ -1232,6 +1232,77 @@
 
   /* The round's standings at the reveal, as a scoreboard: place, who moved, the name, the round's points and the
      total, the numbers in the display face and tabular. */
+  /* Teams (Teams.tsx): each team's dot in one of the world's own colors, all at 3:1 on the panel, so the four
+     tell apart in every world; the name beside it says the team. */
+  .team-dot {
+    display: inline-block;
+    width: 0.75rem;
+    height: 0.75rem;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+
+  .team-dot[data-team='1'] {
+    background: var(--good);
+  }
+
+  .team-dot[data-team='2'] {
+    background: var(--edge);
+  }
+
+  .team-dot[data-team='3'] {
+    background: transparent;
+    box-shadow: inset 0 0 0 2px var(--accent);
+  }
+
+  .team-box {
+    padding: 0.75rem;
+    border: 1px solid var(--line);
+    border-radius: min(var(--radius-lg), 0.75rem);
+  }
+
+  .team-board {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    margin-bottom: 0.75rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .team-row {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: min(var(--radius-lg), 0.75rem);
+    background: var(--raised);
+  }
+
+  .team-row .board-total {
+    margin-left: auto;
+  }
+
+  .team-results {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .team-result {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--line);
+    border-radius: min(var(--radius-lg), 0.75rem);
+  }
+
+  .team-result[data-lead] {
+    border-color: var(--accent);
+    box-shadow: inset 0 0 0 1px var(--accent);
+  }
+
   .board {
     padding-top: 0.5rem;
     border-top: 1px solid var(--line);

@@ -7,6 +7,7 @@ import type { CSSProperties } from 'react';
 import type { LobbyState, PlayedSong, PlayerIcon, ResultView } from '../../shared/protocol.ts';
 import { AnimeName } from '../components/AnimeName.tsx';
 import { Burst } from '../components/Burst.tsx';
+import { TeamResults } from '../components/Teams.tsx';
 import { PlayerBadge } from '../components/PlayerIcon.tsx';
 import { ReactionBar } from '../components/Reactions.tsx';
 import { ReportClip } from '../components/ReportClip.tsx';
@@ -215,6 +216,7 @@ export function Results({ store, lobby, isHost, titles, reported }: ResultsProps
         </p>
       ) : (
         <div className="flex flex-1 flex-col justify-center pb-6">
+          {lobby.game?.teams && <TeamResults lobby={lobby} teams={lobby.game.teams} results={results} />}
           <Bill lobby={lobby} results={results} rounds={rounds} />
         </div>
       )}

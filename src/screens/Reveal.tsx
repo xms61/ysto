@@ -6,6 +6,7 @@
 import type { CSSProperties, ReactNode } from 'react';
 import type { LobbyState, PlayerIcon, RoundReveal, StandingView } from '../../shared/protocol.ts';
 import { AnswerBack, AnswerSizer, OptionCard } from '../components/OptionCard.tsx';
+import { TeamBoard, teamName } from '../components/Teams.tsx';
 import { PlayerBadge, PlayerStamp } from '../components/PlayerIcon.tsx';
 import { RoundBody, ScoresPanel, Stage } from '../components/Stage.tsx';
 import type { CardState } from '../components/OptionCard.tsx';
@@ -209,45 +210,53 @@ function Lineup({ reveal, lobby }: { reveal: RoundReveal; lobby: LobbyState }) {
   const places = placesOf(order);
   const before = ranksBefore(reveal, order);
   return (
-    <ol aria-label="Scores" className="board">
-      {order.map((standing, rank) => {
-        const outcome = outcomeOf(reveal, standing.playerId);
-        const gained = pointsOf(reveal, standing.playerId);
-        const pick = reveal.picks.find((candidate) => candidate.playerId === standing.playerId);
-        return (
-          <li
-            key={standing.playerId}
-            className="board-row"
-            data-player={standing.playerId}
-            data-you={standing.playerId === lobby.you || undefined}
-          >
-            <span className="board-place">{place(places[rank] ?? rank + 1)}</span>
-            <MoveMark from={before.get(standing.playerId) ?? rank} to={rank} />
-            <PickMark option={pick?.option ?? null} />
-            <span className="board-name">
-              <PlayerBadge icon={iconOf(lobby, standing.playerId)} />
-              {nameOf(lobby, standing.playerId)}
-              {standing.playerId === lobby.you && <span className="ml-2 text-xs text-muted">you</span>}
-              {pick?.noAudio && <span className="ml-2 text-xs text-muted">no audio</span>}
-              {pick?.hinted && <span className="ml-2 text-xs text-muted">hint</span>}
-              {standing.lives !== undefined && (
-                <span className="ml-2 text-xs text-muted">{livesText(standing.lives)}</span>
-              )}
-            </span>
-            <span className="board-delta" data-outcome={outcome}>
-              {outcome === 'none' ? (
-                'no answer'
-              ) : (
-                <>
-                  {outcome === 'right' ? <CheckIcon /> : <CrossIcon />} {gained !== 0 ? points(gained) : outcome}
-                </>
-              )}
-            </span>
-            <span className="board-total">{score(standing.score)}</span>
-          </li>
-        );
-      })}
-    </ol>
+    <>
+      {reveal.teams && <TeamBoard teams={reveal.teams} label="Teams" />}
+      <ol aria-label="Scores" className="board">
+        {order.map((standing, rank) => {
+          const outcome = outcomeOf(reveal, standing.playerId);
+          const gained = pointsOf(reveal, standing.playerId);
+          const pick = reveal.picks.find((candidate) => candidate.playerId === standing.playerId);
+          return (
+            <li
+              key={standing.playerId}
+              className="board-row"
+              data-player={standing.playerId}
+              data-you={standing.playerId === lobby.you || undefined}
+            >
+              <span className="board-place">{place(places[rank] ?? rank + 1)}</span>
+              <MoveMark from={before.get(standing.playerId) ?? rank} to={rank} />
+              <PickMark option={pick?.option ?? null} />
+              <span className="board-name">
+                <PlayerBadge icon={iconOf(lobby, standing.playerId)} />
+                {nameOf(lobby, standing.playerId)}
+                {standing.playerId === lobby.you && <span className="ml-2 text-xs text-muted">you</span>}
+                {pick?.noAudio && <span className="ml-2 text-xs text-muted">no audio</span>}
+                {pick?.hinted && <span className="ml-2 text-xs text-muted">hint</span>}
+                {reveal.teams && (
+                  <span className="ml-2 text-xs text-muted">
+                    {teamName(lobby.players.find((player) => player.id === standing.playerId)?.team ?? 0)}
+                  </span>
+                )}
+                {standing.lives !== undefined && (
+                  <span className="ml-2 text-xs text-muted">{livesText(standing.lives)}</span>
+                )}
+              </span>
+              <span className="board-delta" data-outcome={outcome}>
+                {outcome === 'none' ? (
+                  'no answer'
+                ) : (
+                  <>
+                    {outcome === 'right' ? <CheckIcon /> : <CrossIcon />} {gained !== 0 ? points(gained) : outcome}
+                  </>
+                )}
+              </span>
+              <span className="board-total">{score(standing.score)}</span>
+            </li>
+          );
+        })}
+      </ol>
+    </>
   );
 }
 
