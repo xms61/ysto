@@ -14,6 +14,7 @@ import {
   newLobby,
   RECONNECT_GRACE_MS,
   removePlayer,
+  addScreen,
   setIcon,
   setTeam,
   shuffleTeams,
@@ -166,4 +167,25 @@ test('fewer teams in the settings move the players of the teams that go to the s
   const spread = lobbyOf(setTeam(lobbyOf(setTeam(four, 'a', 'a', 3)), 'a', 'b', 2));
   const two = lobbyOf(changeSettings(spread, 'a', { ...settings, teams: 2 }));
   assert.deepEqual(teamsOf(two), { a: 0, b: 1 });
+});
+
+test('seats up to two party screens, named in turn, not in a locked lobby, and not counted as players', () => {
+  const full = lobbyWith(['a', 'b']);
+  const one = lobbyOf(addScreen(full, 's1', 0));
+  const two = lobbyOf(addScreen(one, 's2', 0));
+  assert.deepEqual(
+    two.players.filter((player) => player.screen).map((player) => player.name),
+    ['Screen', 'Screen 2'],
+  );
+  assert.deepEqual(addScreen(two, 's3', 0), { error: 'screens-full' });
+  assert.deepEqual(addScreen({ ...full, locked: true }, 's1', 0), { error: 'lobby-locked' });
+  assert.ok('lobby' in addPlayer(two, { id: 'c', name: 'Cid' }, 0, 3), 'screens leave room for a third player');
+});
+
+test('a screen never becomes the host', () => {
+  const lobby = lobbyOf(addScreen(lobbyWith(['a']), 's1', 0));
+  const connected = connectPlayer(lobby, 's1', 5000);
+  const hostless = removePlayer(connected, 'a', 6000);
+  assert.equal(hostless.hostId, null);
+  assert.equal(connectPlayer({ ...lobby, hostId: null }, 's1', 7000).hostId, null);
 });

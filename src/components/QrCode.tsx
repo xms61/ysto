@@ -9,7 +9,7 @@ function modulePath(modules: boolean[][]): string {
   return modules.flatMap((row, y) => row.map((dark, x) => (dark ? `M${x} ${y}h1v1h-1z` : ''))).join('');
 }
 
-export function QrCode({ text, label }: { text: string; label: string }) {
+export function QrCode({ text, label, className = 'size-40' }: { text: string; label: string; className?: string }) {
   const { size, path } = useMemo(() => {
     const { data } = encode(text, { ecc: 'M', border: 0 });
     return { size: data.length, path: modulePath(data) };
@@ -21,7 +21,7 @@ export function QrCode({ text, label }: { text: string; label: string }) {
       aria-label={label}
       viewBox={`${-QUIET_ZONE} ${-QUIET_ZONE} ${extent} ${extent}`}
       shapeRendering="crispEdges"
-      className="size-40 rounded-lg"
+      className={`${className} rounded-lg`}
     >
       <rect x={-QUIET_ZONE} y={-QUIET_ZONE} width={extent} height={extent} fill="#fff" />
       <path d={path} fill="#000" />

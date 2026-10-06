@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.27.0] - 2026-10-06
+
+### Added
+- Party mode: with it on in the lobby settings, a TV or laptop joins by the link with "Use as the screen" and plays the sound for everyone, showing the round large with the join QR in its corner, while the phones only answer. A lobby takes up to two screens, which don't count as players; a party game needs one connected to start.
+
 ## [1.26.0] - 2026-10-06
 
 ### Added
@@ -26,11 +31,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Teams: under Play in the lobby settings, 2 to 4 teams (Kitsune, Tanuki, Tengu, Kappa). Players pick a team in the lobby, and the host can move anyone or shuffle them evenly. Each round a team scores the average of its members' points, so a small team can beat a big one; the round, the reveal and the results show the teams' totals.
-
-## [1.22.0] - 2026-10-06
-
-### Added
-- Elimination: under Play in the lobby settings, a game where a wrong or missed answer costs a life (1 to 5, 3 by default) and the last one standing wins; ranked by lives, then points. Players who are out watch; alone, it is survival. A skipped round or a clip that failed to load costs no life. Elimination can't use First correct.
-
-### Changed
-- The lobby settings open with a Play group: Classic or Elimination, the lives, and Endless.

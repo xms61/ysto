@@ -15,6 +15,7 @@ export interface Player {
   icon: PlayerIcon;
   connectedSince: number | null; // null while not connected
   team: number; // the player's team when the lobby plays Teams, kept in range of the settings' count
+  screen: boolean; // a party mode screen, not a player: it never answers, scores, hosts or counts toward the cap
   disconnectedAt: number | null; // null while connected; a new seat counts from its creation
 }
 
@@ -30,6 +31,7 @@ export interface Lobby {
 }
 
 export type JoinError = 'lobby-full' | 'lobby-locked' | 'name-taken';
+export const MAX_SCREENS = 2;
 export type TeamError = 'not-host' | 'unknown-player' | 'unknown-team';
 export type HostError = 'not-host' | 'unknown-player' | 'cannot-kick-self';
 export type Outcome<E> = { lobby: Lobby } | { error: E };
@@ -44,7 +46,9 @@ function isConnected(player: Player): boolean {
 
 // The connected player who has been connected longest (join order breaks ties), or nobody.
 function longestConnected(players: Player[]): string | null {
-  const connected = players.filter(isConnected).sort((a, b) => (a.connectedSince ?? 0) - (b.connectedSince ?? 0));
+  const connected = players
+    .filter((player) => isConnected(player) && !player.screen)
+    .sort((a, b) => (a.connectedSince ?? 0) - (b.connectedSince ?? 0));
   return connected[0]?.id ?? null;
 }
 
@@ -66,16 +70,33 @@ export function addPlayer(
   maxPlayers: number,
 ): Outcome<JoinError> {
   if (lobby.locked) return { error: 'lobby-locked' };
-  if (lobby.players.length >= maxPlayers) return { error: 'lobby-full' };
+  if (playersOf(lobby).length >= maxPlayers) return { error: 'lobby-full' };
   if (lobby.players.some((player) => nameKey(player.name) === nameKey(seat.name))) return { error: 'name-taken' };
   const player: Player = {
     ...seat,
     icon: freeIcon(lobby, seat.id),
-    team: smallestTeam(lobby.players, lobby.settings.teams),
+    team: smallestTeam(playersOf(lobby), lobby.settings.teams),
+    screen: false,
     connectedSince: null,
     disconnectedAt: now,
   };
   return { lobby: { ...lobby, players: [...lobby.players, player], hostId: lobby.hostId ?? seat.id } };
+}
+
+// The lobby's players, without its screens.
+export function playersOf(lobby: Lobby): Player[] {
+  return lobby.players.filter((player) => !player.screen);
+}
+
+// A party mode screen joins by the lobby's link, without a name: "Screen", or "Screen 2" beside another. A lobby has
+// at most two, and a locked lobby takes none.
+export function addScreen(lobby: Lobby, id: string, now: number): Outcome<'lobby-locked' | 'screens-full'> {
+  if (lobby.locked) return { error: 'lobby-locked' };
+  const screens = lobby.players.filter((player) => player.screen).length;
+  if (screens >= MAX_SCREENS) return { error: 'screens-full' };
+  const name = screens === 0 ? 'Screen' : `Screen ${screens + 1}`;
+  const screen: Player = { id, name, icon: 'fox', team: 0, screen: true, connectedSince: null, disconnectedAt: now };
+  return { lobby: { ...lobby, players: [...lobby.players, screen] } };
 }
 
 // A new player's icon: one nobody in the lobby has, picked by their random id, or any once all are taken.
@@ -129,7 +150,9 @@ export function setIcon(lobby: Lobby, id: string, icon: PlayerIcon): Outcome<'ic
 
 export function connectPlayer(lobby: Lobby, id: string, now: number): Lobby {
   const connected = updatePlayer(lobby, id, (player) => ({ ...player, connectedSince: now, disconnectedAt: null }));
-  return withIdleSince({ ...connected, hostId: connected.hostId ?? id }, now);
+  // A screen never takes the host's seat.
+  const screen = lobby.players.some((player) => player.id === id && player.screen);
+  return withIdleSince({ ...connected, hostId: connected.hostId ?? (screen ? null : id) }, now);
 }
 
 // A dropped player keeps their seat and host rights for the reconnect grace; the game keeps their score.

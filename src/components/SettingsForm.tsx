@@ -214,6 +214,9 @@ function PlayGroup({ settings, set }: { settings: LobbySettings; set: (change: P
       <Choice type="checkbox" checked={settings.endless} onChange={(event) => set({ endless: event.target.checked })}>
         Endless: play until the host ends the game
       </Choice>
+      <Choice type="checkbox" checked={settings.party} onChange={(event) => set({ party: event.target.checked })}>
+        Party mode: sound on one screen, which joins by the link with &quot;Use as the screen&quot;
+      </Choice>
     </Group>
   );
 }

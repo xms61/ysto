@@ -7,6 +7,7 @@ import type { AudioEngine } from '../audio/engine.ts';
 import { NoticeToast } from '../components/NoticeToast.tsx';
 import { PreferencesMenu } from '../components/PrefsPanel.tsx';
 import { ReactionLayer } from '../components/Reactions.tsx';
+import { QrCode } from '../components/QrCode.tsx';
 import { SoundBanner } from '../components/SoundBanner.tsx';
 import { WhatsNew } from '../components/WhatsNew.tsx';
 import { ConfirmButton, Panel } from '../components/ui.tsx';
@@ -109,6 +110,9 @@ export function LobbySession(props: LobbySessionProps) {
   const host = isHost(game);
   const screen = screenOf(game);
   const titles = { first: prefs.titleLanguage, second: prefs.secondTitleLanguage };
+  // In party mode a screen plays the sound and shows the join code; a phone only answers.
+  const isScreen = lobby?.players.some((player) => player.id === lobby.you && player.screen) ?? false;
+  const phoneInParty = (lobby?.settings.party ?? false) && !isScreen;
   useReloadWhenStale({ version: lobby?.version, screen }, props);
   useLogGame(lobby, props.log);
   useSoundCues(game, audio, prefs.theme, prefs.soundEffects);
@@ -133,7 +137,16 @@ export function LobbySession(props: LobbySessionProps) {
         <PreferencesMenu prefs={prefs} onChange={onPrefs} />
         <ConfirmButton label="Leave" question="Leave the lobby?" onConfirm={() => store.leave()} />
       </header>
-      <SoundBanner audio={audio} />
+      {!phoneInParty && <SoundBanner audio={audio} />}
+      {isScreen && screen !== 'lobby' && (
+        <div className="screen-qr">
+          <QrCode
+            text={`${window.location.origin}/j/${session.code}`}
+            label={`QR code of the join link for lobby ${session.code}`}
+            className="size-28"
+          />
+        </div>
+      )}
       {lobby && <ReactionLayer store={store} lobby={lobby} />}
       {screen === 'lobby' && lobby && notes.length > 0 && <WhatsNew lines={notes} onClose={onNotesSeen} />}
       {!lobby || !settings ? (

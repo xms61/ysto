@@ -67,7 +67,8 @@ export interface Game {
   id: string;
   settings: LobbySettings;
   questions: Question[];
-  players: string[]; // everyone in the lobby
+  players: string[]; // everyone in the lobby who plays
+  screens: string[]; // party mode screens: they hear every message and play the clips, but never answer
   away: string[]; // players without a connection
   participants: string[]; // players in the rounds; a late joiner becomes one at the next round
   standings: Record<string, Standing>;
@@ -102,6 +103,7 @@ type PlayerEvent = {
   type: 'player-joined' | 'player-connected' | 'player-disconnected' | 'player-left';
   playerId: string;
   team?: number; // a player who joins a Teams game: the team the lobby gave them
+  screen?: boolean; // a party mode screen joins, not a player
 };
 export type GameEvent =
   | ClipEvent
@@ -154,7 +156,11 @@ interface Draft {
   now: number;
 }
 
-function send(draft: Draft, message: ServerMessage, to: string[] = draft.game.players): void {
+function send(
+  draft: Draft,
+  message: ServerMessage,
+  to: string[] = [...draft.game.players, ...draft.game.screens],
+): void {
   draft.effects.push({ type: 'send', to: [...to], message });
 }
 
@@ -269,7 +275,10 @@ function startRound(draft: Draft, round: Round): void {
   round.startsAt = now + (game.played === 1 ? GAME_TIMING.firstLeadMs : GAME_TIMING.leadMs);
   round.endsAt = round.startsAt + game.settings.sampleLengthSec * 1000;
   round.closeAt = round.endsAt + GAME_TIMING.graceMs;
-  round.noAudio.push(...inPlay(game).filter((id) => !round.ready.includes(id) && !round.noAudio.includes(id)));
+  // In party mode the screens play the clips, so no player is ever marked as having had no audio.
+  if (!game.settings.party) {
+    round.noAudio.push(...inPlay(game).filter((id) => !round.ready.includes(id) && !round.noAudio.includes(id)));
+  }
   round.phase = 'playing';
   send(draft, startMessage(game, round));
   draft.effects.push({ type: 'timer', name: 'close', roundId: round.id, at: round.closeAt });
@@ -416,11 +425,19 @@ function answeredIds(round: Round): string[] {
   return round.answers.map((answer) => answer.playerId);
 }
 
+// The ready barrier: every connected player has the clip, or in party mode every connected screen (the phones
+// load none); with no screen connected, the barrier's timer starts the round.
+function barrierDone(game: Game, round: Round): boolean {
+  if (!game.settings.party) return allConnectedDone(game, round.ready);
+  const screens = connected(game, game.screens);
+  return screens.length > 0 && screens.every((id) => round.ready.includes(id));
+}
+
 // After someone drops or leaves, the players still connected may all be done already.
 function recheck(draft: Draft): void {
   const { game } = draft;
   const round = game.round;
-  if (round?.phase === 'preparing' && allConnectedDone(game, round.ready)) startRound(draft, round);
+  if (round?.phase === 'preparing' && barrierDone(game, round)) startRound(draft, round);
   else if (round?.phase === 'playing' && allConnectedDone(game, answeredIds(round))) everyoneAnswered(draft, round);
 }
 
@@ -538,7 +555,10 @@ function catchUp(draft: Draft, playerId: string): void {
 function onPlayer(draft: Draft, event: PlayerEvent): void {
   const { game } = draft;
   const id = event.playerId;
-  if (event.type === 'player-joined' && !game.players.includes(id)) {
+  if (event.type === 'player-joined' && event.screen && !game.screens.includes(id)) {
+    game.screens.push(id);
+    game.away.push(id);
+  } else if (event.type === 'player-joined' && !event.screen && !game.players.includes(id)) {
     game.players.push(id);
     game.away.push(id);
     if (game.teams && event.team !== undefined) game.teams[id] = event.team;
@@ -550,6 +570,7 @@ function onPlayer(draft: Draft, event: PlayerEvent): void {
     recheck(draft);
   } else if (event.type === 'player-left') {
     game.players = game.players.filter((candidate) => candidate !== id);
+    game.screens = game.screens.filter((candidate) => candidate !== id);
     game.away = game.away.filter((candidate) => candidate !== id);
     game.participants = game.participants.filter((candidate) => candidate !== id);
     delete game.standings[id];
@@ -569,7 +590,8 @@ function onClip(draft: Draft, event: ClipEvent): void {
 function onReady(draft: Draft, event: ReadyEvent): void {
   const round = draft.game.round;
   if (!round || round.id !== event.roundId || round.phase !== 'preparing') return;
-  if (!inPlay(draft.game).includes(event.playerId) || round.ready.includes(event.playerId)) return;
+  const ready = inPlay(draft.game).includes(event.playerId) || draft.game.screens.includes(event.playerId);
+  if (!ready || round.ready.includes(event.playerId)) return;
   round.ready.push(event.playerId);
   if (!event.loaded) round.noAudio.push(event.playerId);
   recheck(draft);
@@ -616,16 +638,18 @@ export interface NewGame {
   players: string[];
   away: string[];
   teams?: Record<string, number>; // with Teams: each player's team
+  screens?: string[]; // party mode screens
 }
 
 // The first clip is cut at once; the first round begins when it's ready.
-export function startGame({ id, settings, questions, players, away, teams }: NewGame): Step {
+export function startGame({ id, settings, questions, players, away, teams, screens = [] }: NewGame): Step {
   const playsTeams = settings.play === 'teams';
   const game: Game = {
     id,
     settings,
     questions,
     players: [...players],
+    screens: [...screens],
     away: [...away],
     participants: [],
     standings: {},

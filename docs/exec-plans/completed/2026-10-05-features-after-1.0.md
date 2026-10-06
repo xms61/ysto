@@ -220,7 +220,7 @@ Taken in this order, one step at a time; each step says how it shows.
 - [x] 2026-10-06 M11 Song title and artist rounds (1.24.0)
 - [x] 2026-10-06 M12 Typed answers (1.25.0)
 - [x] 2026-10-06 M13 Daily challenge with a streak (1.26.0)
-- [ ] M14 Party mode
+- [x] 2026-10-06 M14 Party mode (1.27.0)
 
 ## Decision log
 - 2026-10-05: The owner picked thirteen of the fifteen suggestions, leaving out list imports and interface translations. Typed answers become an alternative way to answer, not a replacement for the four options. Hints exist only when the lobby turns them on. The daily challenge shows a streak of the days played in a row.
@@ -245,6 +245,7 @@ Taken in this order, one step at a time; each step says how it shows.
 - 2026-10-06: Song title and artist rounds (M11) shipped as one PR rather than two, since the distractors and the round's prompt are small together. Their options read the same in every title language. The settings form gains its "Questions" group. The catalog gate needs no new rule: the pool count already follows the setting, and a lobby with too few themes for a kind is refused as for any filter.
 - 2026-10-06: Typed answers (M12): the measurement the plan asked for came out at 4,879 playable anime and 876 KB of titles and synonyms as JSON, 383 KB gzipped and 276 KB with Brotli, too much to send every phone before it can answer. The server searches instead (`titles:search`, 5 a second per player), from an index cached per catalog. It ships as one PR. The e2e test on a phone keyboard is left for the tech-debt tracker; the client test covers the flow and the screenshots the phone layout.
 - 2026-10-06: The daily challenge (M13) built with the defaults; Daily No. 1 is 1 October 2026. The badge is the accent's chip with the run's length rather than a drawing per world, kept small until the owner wants more. The fixture catalog grew from 12 to 24 anime so a ten-song daily can play in the browser tests, and the browser tests' server gets a fixture-only secret.
+- 2026-10-06: Party mode (M14) shipped as one PR. A screen is a lobby player marked `screen`, which keeps seats, reconnects and broadcasts as they are, rather than a separate kind of seat; the engine keeps screens apart from players. A screen joins only an unlocked lobby, like a player.
 
 ## Open questions
 Each has a default the milestone builds unless the owner decides otherwise:
@@ -254,7 +255,7 @@ Each has a default the milestone builds unless the owner decides otherwise:
 - M10 (built 2026-10-06 with the default): a team's round score. Default: the average of its members' points; the alternative is the sum.
 - M12 (built 2026-10-06 with the default): whether a sibling season counts as right ("Attack on Titan" for "Attack on Titan Season 3"). Default: only the exact anime.
 - M13 (built 2026-10-06 with the default): the daily's settings and the day's boundary. Default: Normal, 10 songs of 15 s, a new day at 00:00 UTC (01:00 or 02:00 in Germany).
-- M14: whether phones show the titles too. Default: yes, for accessibility and for players who sit far from the screen.
+- M14 (built 2026-10-06 with the default): whether phones show the titles too. Default: yes, for accessibility and for players who sit far from the screen.
 
 ## Surprises
 None yet.
@@ -263,4 +264,4 @@ None yet.
 Each milestone lists its tests. Every PR passes `npm run test:ci`, the doc and tracked-files checks, and the browser tests (`npm run build && npm run test:e2e`), and posts screenshots of every world for new surfaces. After phase 1, the owner's playtest with friends, still open in the [tech-debt tracker](../tech-debt-tracker.md), checks the session features before phase 3 starts.
 
 ## Outcome
-Filled in when this plan moves to completed/.
+Every milestone shipped, M1 to M22, between 1.3.0 and 1.27.0: a session's small comforts (stale tabs reload, songs and reports at the results, the lobby's tally, reactions, saved setups, what's new, large screens, the anime log, player animals), the round rebuilt so nothing moves and it fits a desktop without scrolling, sound effects and each world's overtime, then new ways to play (hints, Elimination, Teams, song title and artist rounds, typed answers, endless games), the daily challenge with its streak, and party mode. Along the way the owner retired six worlds and merged two into Neon Rain. Open questions were built with their defaults; the owner can still change any of them. Follow-ups live in the [tech-debt tracker](../tech-debt-tracker.md): the playtest with friends, the clip bench and port scan on the VPS, the `docker` check in the ruleset, and a phone-keyboard e2e for typed answers.

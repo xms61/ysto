@@ -30,6 +30,9 @@ export const ERROR_MESSAGES: Record<ErrorCode | ClientErrorCode, string> = {
   'unknown-team': 'That team is gone now. Pick another one.',
   'daily-off': "Today's challenge isn't available on this server.",
   'daily-fixed': "The daily challenge's settings can't change.",
+  'screens-full': 'This lobby has two screens already.',
+  'no-screen':
+    'Party mode plays the sound on a screen. Open the join link on a TV or laptop and choose "Use as the screen" first.',
   offline: "Couldn't reach the server. Check your connection and try again.",
 };
 

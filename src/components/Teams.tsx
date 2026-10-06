@@ -55,7 +55,7 @@ export function LobbyTeams({ store, lobby, isHost }: { store: GameStore; lobby: 
     <section aria-label="Teams" className="mt-4 flex flex-col gap-3">
       <div className="grid gap-3 sm:grid-cols-2">
         {teams.map((team) => {
-          const members = lobby.players.filter((player) => player.team === team);
+          const members = lobby.players.filter((player) => player.team === team && !player.screen);
           return (
             <div key={team} className="team-box">
               <h3 className="display">

@@ -25,7 +25,8 @@ export function PlayerList({ lobby, onKick, showScores }: PlayerListProps) {
           {player.id === lobby.you && <Tag>you</Tag>}
           {player.id === lobby.hostId && <Tag>host</Tag>}
           {!player.connected && <Tag>away</Tag>}
-          {player.spectating && <Tag>joins next round</Tag>}
+          {player.screen && <Tag>screen</Tag>}
+          {player.spectating && !player.screen && <Tag>joins next round</Tag>}
           {winsOf(player.id) > 0 && <Tag>{wins(winsOf(player.id))}</Tag>}
           <span className="ml-auto flex items-center gap-3">
             {showScores && <span className="tabular-nums">{score(player.score)}</span>}

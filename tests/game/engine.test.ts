@@ -896,3 +896,52 @@ test('with typing and answer changes on, a new anime switches the answer, and a 
   const back = sim.last('round:typed');
   assert.equal(back.match.animeId, sim.game.round?.question.animeId);
 });
+
+test('in party mode the barrier waits only for the screen, and no player is marked as having no audio', () => {
+  const settings_ = settings({ party: true });
+  const questions = buildGame(catalog, settings_, seededRandom(1));
+  const started = startGame({
+    id: 'g1',
+    settings: settings_,
+    questions,
+    players: ['p1', 'p2'],
+    away: [],
+    screens: ['tv'],
+  });
+  assert.deepEqual(started.game.screens, ['tv']);
+  const sim = new Simulation(settings_, ['p1', 'p2']);
+  sim.game = { ...sim.game, screens: ['tv'] };
+  const { roundId } = sim.last('round:prepare');
+  sim.event({ type: 'ready', playerId: 'p1', roundId, loaded: true });
+  assert.equal(sim.count('round:start'), 0, 'a phone being ready starts nothing');
+  sim.event({ type: 'ready', playerId: 'tv', roundId, loaded: true });
+  const start = sim.last('round:start');
+  assert.ok(start.startsAt > 0, 'the screen being ready starts the round');
+  sim.advanceTo(start.endsAt + GAME_TIMING.graceMs);
+  assert.deepEqual(
+    sim
+      .last('round:reveal')
+      .picks.filter((pick) => pick.noAudio)
+      .map((pick) => pick.playerId),
+    [],
+  );
+});
+
+test("a party screen hears the game's messages but can't answer", () => {
+  const sim = new Simulation(settings({ party: true }), ['p1', 'p2']);
+  sim.game = { ...sim.game, screens: ['tv'] };
+  const { roundId } = sim.last('round:prepare');
+  sim.event({ type: 'ready', playerId: 'tv', roundId, loaded: true });
+  const start = sim.last('round:start');
+  assert.ok(sim.sent.find((entry) => entry.message.type === 'round:start')?.to.includes('tv'));
+  sim.advanceTo(start.startsAt + 500);
+  sim.event({ type: 'answer', playerId: 'tv', roundId, option: 0 });
+  assert.equal(sim.count('round:answered'), 0);
+});
+
+test('a screen that joins mid-game is a screen, not a player', () => {
+  const sim = new Simulation(settings({ party: true }), ['p1']);
+  sim.event({ type: 'player-joined', playerId: 'tv', screen: true });
+  assert.deepEqual(sim.game.screens, ['tv']);
+  assert.ok(!sim.game.players.includes('tv'));
+});

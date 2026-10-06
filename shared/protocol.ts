@@ -47,7 +47,9 @@ export type ErrorCode =
   | 'icon-taken'
   | 'unknown-team'
   | 'daily-off'
-  | 'daily-fixed';
+  | 'daily-fixed'
+  | 'screens-full'
+  | 'no-screen';
 
 // Why the server closed a socket. The 4000s are this protocol's own.
 export const CLOSE_CODES = {
@@ -250,6 +252,7 @@ export interface PlayerView {
   score: number;
   lives?: number; // in an Elimination game: the lives left, 0 once out
   team?: number; // with Teams: the player's team, 0 to the number of teams less one
+  screen?: true; // a party mode screen: it plays the clips and shows the game, and never answers
 }
 
 // Where the lobby's game stands: `number` is the round in progress, or the rounds played once it's over.
