@@ -14,6 +14,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - A lobby closes 15 s after its last player left or lost the connection, unless someone comes back first, instead of after 15 minutes. The registry sweeps every second instead of every 5 s.
 - One address can have 10 lobbies open at once instead of 3, for homes and events that share a connection.
 
+### Fixed
+- Players who last played before 1.5.0 now see what's new: a device with saved preferences but no version noted counts as coming from 1.0.0, instead of as a first visit that shows nothing.
+
 ## [1.28.0] - 2026-10-06
 
 ### Changed

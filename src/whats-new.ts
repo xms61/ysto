@@ -46,6 +46,9 @@ export const MAX_LINES = 3;
 
 // Released storage keys are permanent.
 const SEEN_KEY = 'ysto_seen_version';
+// Saved preferences, kept since 1.0.0, mark a device that played before the dialog came in 1.5.0.
+const PREFS_KEY = 'ysto_prefs';
+const BEFORE_NOTES = '1.0.0';
 
 function parts(version: string): number[] {
   return version.split('.').map((part) => Number.parseInt(part, 10) || 0);
@@ -60,10 +63,15 @@ function isNewer(version: string, than: string): boolean {
   return false;
 }
 
+// The version this device last saw: none on a first visit, and 1.0.0 for one that played before the dialog.
+function seenVersion(storage: Storage | null): string | null {
+  return readItem(storage, SEEN_KEY) ?? (readItem(storage, PREFS_KEY) === null ? null : BEFORE_NOTES);
+}
+
 // The lines to show on this visit: the newest three from the versions after the one this device last saw, up
 // to this page's. A first visit, or storage that is blocked, shows nothing: everything is new to it.
 export function notesToShow(storage: Storage | null, current: string): string[] {
-  const seen = readItem(storage, SEEN_KEY);
+  const seen = seenVersion(storage);
   if (seen === null) {
     writeItem(storage, SEEN_KEY, current);
     return [];
