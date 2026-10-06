@@ -250,14 +250,27 @@ export class GameStore {
     const round = after.round;
     if (message.type === 'round:prepare' && round && before.round?.id !== round.id) {
       this.#connection.ping();
-      void this.#loadClip(round);
-    } else if (message.type === 'round:start' && round?.start && round.id === message.roundId) {
+      if (this.#soundOnScreen()) this.#connection.send({ type: 'round:ready', roundId: round.id, loaded: true });
+      else void this.#loadClip(round);
+    } else if (
+      message.type === 'round:start' &&
+      round?.start &&
+      round.id === message.roundId &&
+      !this.#soundOnScreen()
+    ) {
       this.#audio.play(this.#clock.toLocal(round.start.startsAt));
     } else if (message.type === 'round:reveal' && message.skipped) {
       this.#audio.stop();
     } else if (before.round && !round) {
       this.#audio.stop();
     }
+  }
+
+  // In party mode the screen plays the sound, so a player's phone loads and plays no clip.
+  #soundOnScreen(): boolean {
+    const lobby = this.#game.lobby;
+    if (!lobby?.settings.party) return false;
+    return !lobby.players.some((player) => player.id === lobby.you && player.screen);
   }
 
   // The barrier waits for this player's ready, loaded or not, but a round that already started doesn't.

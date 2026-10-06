@@ -63,6 +63,11 @@ export function createLobby(name: string, fetchFn: Fetch = fetch): Promise<Seate
   return seat(fetchFn, '/api/lobbies', name, (body) => (isRecord(body) ? body.code : null));
 }
 
+// A party mode screen's seat in a lobby: no name, and it never plays. `code` is already normalized.
+export function joinAsScreen(code: string, fetchFn: Fetch = fetch): Promise<Seated> {
+  return seat(fetchFn, `/api/lobbies/${encodeURIComponent(code)}/screens`, '', () => code);
+}
+
 // `code` is already normalized (shared/protocol.ts normalizeCode).
 export function joinLobby(code: string, name: string, fetchFn: Fetch = fetch): Promise<Seated> {
   return seat(fetchFn, `/api/lobbies/${encodeURIComponent(code)}/players`, name, () => code);

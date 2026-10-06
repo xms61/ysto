@@ -26,6 +26,7 @@ const STATUS: Partial<Record<ErrorCode, number>> = {
   'name-taken': 409,
   'lobby-full': 409,
   'lobby-locked': 409,
+  'screens-full': 409,
   'too-large': 413,
   'too-many-lobbies': 429,
   'rate-limited': 429,
@@ -113,6 +114,21 @@ export function apiRouter({ registry, trustedHops, dailyOn = false, now = Date.n
     if ('error' in named) return fail(res, named.error);
     const code = normalizeCode(req.params.code);
     const joined = code === null ? { error: 'lobby-not-found' as const } : registry.join(code, named.name);
+    if ('error' in joined) {
+      if (joined.error === 'lobby-not-found') unknownCodes.take(ip);
+      return fail(res, joined.error);
+    }
+    res.status(201).json(joined);
+  });
+
+  // A party mode screen joins a lobby by its code, with no name. It counts as a join.
+  router.post('/api/lobbies/:code/screens', (req, res) => {
+    if (!registry) return fail(res, 'not-ready');
+    const ip = ipOf(req);
+    if (unknownCodes.exhausted(ip)) return fail(res, 'rate-limited', unknownCodes.retryAfterSec(ip));
+    if (!joins.take(ip)) return fail(res, 'rate-limited', joins.retryAfterSec(ip));
+    const code = normalizeCode(req.params.code);
+    const joined = code === null ? { error: 'lobby-not-found' as const } : registry.joinScreen(code);
     if ('error' in joined) {
       if (joined.error === 'lobby-not-found') unknownCodes.take(ip);
       return fail(res, joined.error);

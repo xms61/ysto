@@ -284,6 +284,7 @@ function OvertimeCall({ secondsLeft }: { secondsLeft: number }) {
 }
 
 function statusLine(
+  screen: boolean,
   spectating: boolean,
   out: boolean,
   answered: boolean,
@@ -291,6 +292,7 @@ function statusLine(
   closed: boolean,
   overtime: boolean,
 ) {
+  if (screen) return 'This screen plays the sound. Answer on your phones.';
   if (spectating) return "You joined during this round. You'll play from the next one.";
   if (out) return "You're out. Watch who lasts.";
   if (closed) return answered ? 'Locked in.' : "Time's up.";
@@ -303,6 +305,7 @@ function statusLine(
 function Answering({ store, lobby, round, start, titles, clip, ghost, foot }: AnsweringProps) {
   const now = useTicker(store.serverNow, TICK_MS);
   const you = lobby.players.find((player) => player.id === lobby.you);
+  const screen = you?.screen ?? false;
   const spectating = you?.spectating ?? false;
   const out = you?.lives === 0;
   const answered = round.choice !== null || round.typed !== null || round.answeredIds.includes(lobby.you);
@@ -310,7 +313,7 @@ function Answering({ store, lobby, round, start, titles, clip, ghost, foot }: An
   const { overtime } = round;
   const countdown = overtime ?? start;
   const closed = now >= countdown.endsAt;
-  const canAnswer = !spectating && !out && !closed && (!answered || canSwitch);
+  const canAnswer = !screen && !spectating && !out && !closed && (!answered || canSwitch);
   // A typing round shows a field in place of the options, so its keys type rather than pick.
   const typing = start.options[titles.first].length === 0;
   useAnswerKeys(store, canAnswer && !typing);
@@ -340,7 +343,7 @@ function Answering({ store, lobby, round, start, titles, clip, ghost, foot }: An
       ))}
     </ol>
   );
-  const status = statusLine(spectating, out, answered, canSwitch, closed, overtime !== null);
+  const status = statusLine(screen, spectating, out, answered, canSwitch, closed, overtime !== null);
   // Above the cards with the timer, so the cards reach the round's foot: the clip's state when it isn't
   // playing, the status, and who just switched. Who has answered shows in the scores column.
   const slot = (
@@ -356,7 +359,7 @@ function Answering({ store, lobby, round, start, titles, clip, ghost, foot }: An
         )}
       </p>
       {canSwitch && players > 1 && <Nudge lobby={lobby} nudge={round.nudge} />}
-      {lobby.settings.hints && !spectating && !out && (
+      {lobby.settings.hints && !screen && !spectating && !out && (
         <HintLine
           store={store}
           round={round}
@@ -414,7 +417,7 @@ function SlotGhost({ lobby }: { lobby: LobbyState }) {
 // and the round's foot. Who picked what stays hidden until the reveal.
 function LiveScores({ lobby, round, foot }: { lobby: LobbyState; round: ClientRound; foot: ReactNode }) {
   const players = lobby.players
-    .filter((player) => !player.spectating)
+    .filter((player) => !player.spectating && !player.screen)
     .sort((a, b) => (b.lives ?? 0) - (a.lives ?? 0) || b.score - a.score);
   return (
     <>

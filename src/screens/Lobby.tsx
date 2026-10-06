@@ -123,7 +123,7 @@ export function Lobby({ store, lobby, settings, isHost }: LobbyProps) {
   return (
     <>
       <Invite code={lobby.code} />
-      <Panel title={`Players (${lobby.players.length})`}>
+      <Panel title={`Players (${lobby.players.filter((player) => !player.screen).length})`}>
         <PlayerList
           lobby={lobby}
           onKick={isHost ? (playerId) => store.kick(playerId) : null}

@@ -21,6 +21,8 @@ import {
   lockLobby,
   newLobby,
   removePlayer,
+  addScreen,
+  playersOf,
   setIcon,
   setTeam,
   shuffleTeams,
@@ -132,6 +134,20 @@ export class LobbyRegistry {
     return { playerId, sessionToken };
   }
 
+  // A party mode screen's seat in a lobby.
+  joinScreen(code: string): Joined | { error: 'lobby-not-found' | 'lobby-locked' | 'screens-full' } {
+    const lobby = this.#lobbies.get(code);
+    if (!lobby) return { error: 'lobby-not-found' };
+    const playerId = randomBytes(PLAYER_ID_BYTES).toString('base64url');
+    const outcome = addScreen(lobby, playerId, this.#now());
+    if ('error' in outcome) return outcome;
+    const sessionToken = newToken();
+    this.#seats.set(sessionToken, { code, playerId });
+    this.#tokens.set(playerId, sessionToken);
+    this.#store(outcome.lobby);
+    return { playerId, sessionToken };
+  }
+
   seatOf(sessionToken: string): Seat | undefined {
     return this.#seats.get(sessionToken);
   }
@@ -190,7 +206,7 @@ export class LobbyRegistry {
 
   shuffleTeams(seat: Seat): 'not-host' | null {
     return this.#applyAsHost(seat, (lobby) =>
-      shuffleTeams(lobby, seat.playerId, shuffled(lobby.players.map((player) => player.id))),
+      shuffleTeams(lobby, seat.playerId, shuffled(playersOf(lobby).map((player) => player.id))),
     );
   }
 

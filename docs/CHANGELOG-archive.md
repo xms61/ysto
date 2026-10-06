@@ -2,6 +2,14 @@
 
 Releases moved out of `CHANGELOG.md` (which keeps about the latest 5). Newest first.
 
+## [1.22.0] - 2026-10-06
+
+### Added
+- Elimination: under Play in the lobby settings, a game where a wrong or missed answer costs a life (1 to 5, 3 by default) and the last one standing wins; ranked by lives, then points. Players who are out watch; alone, it is survival. A skipped round or a clip that failed to load costs no life. Elimination can't use First correct.
+
+### Changed
+- The lobby settings open with a Play group: Classic or Elimination, the lives, and Endless.
+
 ## [1.21.0] - 2026-10-06
 
 ### Added
