@@ -150,12 +150,17 @@ Each milestone is one PR on a `feat/…` branch (two where noted), with a versio
 - [x] 2026-10-05 M15 What's new (1.5.0)
 - [x] 2026-10-05 M16 Large screens (1.9.0)
 - [x] 2026-10-05 M17 A reveal that fits the screen (1.10.0)
+- [x] 2026-10-06 M17 follow-up (owner): the headphones and their rings removed, the space given to the cards; the clip's state is a line under the cards; the answer's cover above its title, set to the right; the scores in a 20rem column left of the cards and the answer in a column kept free right of them; no card or column moves from answering to the reveal, also with a long verdict or a tall answer card (1.14.0)
+- [ ] M17 follow-up (owner, 2026-10-06): some worlds leave no room between text and the edges of their rounded boxes, such as Blossom Map's pill-shaped score rows in the scores column; pad every world's rows and boxes so text clears the curve
+- [ ] M17 follow-up (owner, 2026-10-06): at the reveal the reactions, "Report this clip" and the line on what comes next move to the left column, under the scores
 - [x] 2026-10-05 M18 The anime log (1.13.0)
 - [x] 2026-10-05 M19 Player icons as stamps (1.11.0)
+- [ ] M19 follow-up (owner, 2026-10-06): each world draws the animals in one color with good contrast to its card, instead of the shared paper and ink; at the reveal the stamps sit at random spots along the card's right side, not along its bottom, each wholly inside the picked card, never across two; and a pick shows only as its stamp, without the "Your pick" pill
 - [x] 2026-10-05 M2 The game's songs at the results (1.4.0)
 - [x] 2026-10-05 M3 Report a broken clip (1.6.0)
 - [x] 2026-10-05 M4 The lobby's tally (1.7.0)
 - [x] 2026-10-05 M5 Reactions (1.8.0)
+- [ ] M5 follow-up (owner, 2026-10-06): the drawn reaction icons are hard to recognize; use the platform's emoji instead. This reverses M5's "original SVG icons, not emoji", and needs an exception in CODE_STYLE.md's no-emoji rule for the reaction table
 - [x] 2026-10-05 M6 Saved settings (1.12.0)
 - [ ] M7 Sound effects per world
 - [ ] M8 Hints
@@ -176,6 +181,7 @@ Each milestone is one PR on a `feat/…` branch (two where noted), with a versio
 - 2026-10-05: The daily's seed takes a server secret, because the code and the catalog's sources are public. Rejected: a seed from the date alone.
 - 2026-10-05: The streak lives on the device, because the game has no accounts and keeps no personal data. Rejected: a server-side streak, which would need an identity.
 - 2026-10-05: Reports keep no names, addresses or lobby codes, because nothing about a report needs them, and SECURITY.md keeps no personal data. Rejected: free-text reports, which would need moderating.
+- 2026-10-06: The owner asked for the reveal to move nothing. The slot above the cards now holds a hidden copy of the longest verdict, and each card a hidden copy of the back it would show if it were the answer, built from its own title, so it tells nobody the answer. Face-down cards can't know their titles, so they hold a back with a typical title, and only a longer title grows its row as the cards turn face up. Splash Page's right panel no longer stays scaled up. Rejected: fixed card heights with clamped titles, which would cut long titles.
 - 2026-10-05: The anime log (M18) learns which songs the player got right from the results' song list, which now names the players who picked each song right. It is sent only once the game is over, so it tells nobody an answer early. Rejected: collecting each round's reveal on the client, which a player who reconnects at the results would miss.
 
 ## Open questions

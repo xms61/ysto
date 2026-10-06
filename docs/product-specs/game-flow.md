@@ -1,6 +1,6 @@
 ---
 status: draft
-last-verified: 2026-10-05
+last-verified: 2026-10-06
 ---
 
 # Game flow
@@ -31,7 +31,7 @@ server                                              clients
 - "Play again" is the host starting the next game from the results.
 - The sample plays for the whole answer window, which equals the sample length.
 - **Answer changes** (a lobby setting, off by default; never in First correct): a player can pick another option until the round closes, and the cards stay open after a pick. When every connected player has answered, the round doesn't close: an overtime of 3 to 10 s (the host's choice, 5 s by default) starts, with the theme's call "Overtime" and its time readout counting the overtime down. Anyone can still switch; a switch doesn't restart it. It never runs past the clip's end. Each switch shows the others "Mio switched", never the option. A player who reconnects gets their own pick back.
-- The cards stay where they are from the deal to the reveal; the verdict takes the timer's place. On a wide screen the scores sit beside the cards for the whole round (who has answered, then each player's pick and points), with the answer above them at the reveal, so nothing needs a scroll; on a phone they follow the cards.
+- The cards keep their place and size from the deal to the reveal; the verdict takes the timer's place. On a wide screen the scores sit left of the cards for the whole round (who has answered, then each player's pick and points), and the answer fills a column kept free right of them at the reveal, so nothing moves and nothing needs a scroll; on a phone the scores follow the cards and the answer comes last. A line under the cards says when this player's clip is loading or failed to load.
 - The reveal shows:
   - the right option, and the anime in English, romaji and Japanese
   - OP or ED and its number

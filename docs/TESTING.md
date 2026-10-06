@@ -1,6 +1,6 @@
 ---
 status: draft
-last-verified: 2026-10-05
+last-verified: 2026-10-06
 ---
 
 # Testing
@@ -10,7 +10,7 @@ last-verified: 2026-10-05
 | `npm test` | Server, shared and catalog tests (`node:test`) | `tests/**/*.test.ts` |
 | `npm run test:coverage` | The same tests with coverage thresholds over `server/`, `shared/` and `scripts/catalog/`: lines and functions ≥ 85 %, branches ≥ 75 %. `server/main.ts` and `scripts/catalog/bin/` only wire things together and are left out. | Node's built-in coverage; the flags are in `package.json` |
 | `npm run test:web` | Client tests (Vitest, jsdom, Testing Library): the reducer, clock, socket, store and audio engine against fakes, whole flows through `App`, and the themes' contrast | `src/**/*.test.{ts,tsx}`, `vitest.config.ts` |
-| `npm run test:e2e` | Browser tests against the production build, in Chromium, Firefox and WebKit: the smoke test, the clip decode test, a whole game with two players, on a phone the lobby's start bar on the viewport's foot and the listening rings centered on the headphones, and axe on every screen in every theme (Chromium only). Run `npm run build` first. | `e2e/`, `playwright.config.ts` |
+| `npm run test:e2e` | Browser tests against the production build, in Chromium, Firefox and WebKit: the smoke test, the clip decode test, a whole game with two players, on a phone the lobby's start bar on the viewport's foot and the cards keeping their place and size from answering to the reveal, and axe on every screen in every theme (Chromium only). Run `npm run build` first. | `e2e/`, `playwright.config.ts` |
 | `npm run load` | The load test: 25 lobbies of 8 bots play whole games against a running server, fetching every clip, readying, answering (one round in ten they let run out) and pinging every 2 s. It passes when every game finishes with no refusal, clips at p95 under 1 s and ping round trips (the event loop's lag on one machine) at p95 under 50 ms. Run it against `node e2e/fixture-server.ts` (with `PORT` and `YSTO_TRUST_PROXY=1`, since each bot sends its own address), never against a server players use. A run takes about 2.5 minutes; restart the server between many runs, since finished lobbies count against `YSTO_MAX_LOBBIES` until they expire. Flags: `--url`, `--lobbies`, `--players`, `--rounds`. | `scripts/load/`, `tests/load/` |
 | `npm run test:ci` | Lint, format check, typecheck, coverage and client tests: everything CI runs except the build, the smoke test and the repo checks | `.github/workflows/ci.yml` |
 | `node --test scripts/*.test.mjs` | Tests of the doc and tracked-files checks | `scripts/` |

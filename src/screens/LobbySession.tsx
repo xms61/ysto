@@ -116,7 +116,7 @@ export function LobbySession(props: LobbySessionProps) {
   return (
     <div
       ref={page}
-      className={`mx-auto flex min-h-dvh w-full max-w-3xl flex-col gap-4 px-4 py-4 ${screen === 'round' ? 'lg:max-w-6xl' : ''}`}
+      className={`mx-auto flex min-h-dvh w-full max-w-3xl flex-col gap-4 px-4 py-4 ${screen === 'round' ? 'lg:max-w-[88rem]' : ''}`}
     >
       <header className="relative flex flex-wrap items-center gap-3">
         <h1 className="display text-lg">
