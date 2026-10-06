@@ -4371,15 +4371,15 @@
   }
 }
 
-/* Each world's overtime beat, in place of the shared one: the neon tube flickers, the encore bounces on the
+/* Each world's overtime beat, in place of the shared one: the neon tube flickers, the encore beats on the
    beat, the shrine's seal swings like a bell, the pin flag waves, the arcade banner blinks, the notice's candle
-   gutters, the extra thumps down, and the tape wobbles. */
+   gutters, the extra thumps down, and the tape sways. */
 :root[data-motion='full']:is([data-theme='tokyo-rain'], :not([data-theme])) .overtime-word {
   animation: neon-on 1.2s steps(1, end) 400ms infinite;
 }
 
 :root[data-motion='full'][data-theme='karaoke'] .overtime-word {
-  animation: encore-bounce 500ms cubic-bezier(0.3, 0, 0.3, 1) 400ms infinite alternate;
+  animation: encore-beat 500ms cubic-bezier(0.3, 0, 0.3, 1) 400ms infinite alternate;
 }
 
 :root[data-motion='full'][data-theme='omikuji'] .overtime-word {
@@ -4405,10 +4405,10 @@
 }
 
 :root[data-motion='full'][data-theme='side-a'] .overtime-word {
-  animation: tape-wobble 700ms ease-in-out 400ms infinite alternate;
+  animation: tape-sway 700ms ease-in-out 400ms infinite alternate;
 }
 
-@keyframes encore-bounce {
+@keyframes encore-beat {
   to {
     transform: translateY(-0.1875rem);
   }
@@ -4472,7 +4472,7 @@
   }
 }
 
-@keyframes tape-wobble {
+@keyframes tape-sway {
   from {
     transform: skewX(-3deg);
   }
