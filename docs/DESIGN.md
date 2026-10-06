@@ -680,6 +680,9 @@ The Preferences panel shows the current theme as one row, a small swatch in its 
 - "Surprise me" hops a highlight across the tiles twelve times, each hop slower than the last, and lands on a random world other than the current one, which the page tries on; with motion reduced it lands at once.
 - Tile corners are capped at 0.75rem, so a soft theme's pill radius stays a tile.
 
+### Sound
+Each world has a voice for the deal, a pick, the overtime's call, a right or wrong answer and the results, synthesized from the table in `src/audio/sounds.ts` (oscillators and envelopes, no files): Neon Rain's synth blips and bright arpeggio, Karaoke Box's fanfare and a trombone sliding down, Omikuji's shrine bell and wooden clack, Blossom Map's soft chimes, Fighter Select's square-wave blips and coin, Quest Board's plucked lute and low drum, Back Issue's typewriter keys and bell, and Side A's tape-deck click, warm chord and dragging tape. Every sound is short (under 2.5 s), stays under 8 kHz, and plays at 35% of the game's volume, so the clip stays on top. Right and wrong land with the right card, 820ms into the reveal.
+
 ### Motion
 Motion is decoration. It never carries information, and it runs only when the page's `data-motion` is `full`: the player's motion setting, or else the device's `prefers-reduced-motion`. Reduced motion stops every animation and every transition.
 

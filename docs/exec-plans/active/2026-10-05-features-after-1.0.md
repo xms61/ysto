@@ -102,6 +102,9 @@ Each milestone is one PR on a `feat/…` branch (two where noted), with a versio
 - **Build:** synthesized at runtime with Web Audio, oscillators and envelopes from a small table per world, so there are no audio files to license or ship. They play through the engine's gain node, so the volume and the iPhone unlock apply.
 - **Tests:** each world's table names every sound; nothing plays at volume 0 or with the switch off; e2e stays muted.
 - **With:** the answer changes plan's per-world overtime animation can ship in the same pass, so the overtime's call gets its sound and its motion together.
+- **Voices (2026-10-06, the eight worlds left):** Neon Rain, synth blips and a bright arpeggio; Karaoke Box, a fanfare and a trombone's slide down; Omikuji, a shrine bell and a wooden clack; Blossom Map, soft chimes; Fighter Select, arcade square-wave blips and a coin; Quest Board, a plucked lute triad and a low drum; Back Issue, typewriter keys and its bell; Side A, a tape deck's click and a warm chord, the tape dragging down for a wrong answer.
+- **When each plays:** the deal as the cards slide in; a pick when this player picks; the overtime's call when it starts; right or wrong as the right card lands at the reveal (a missed round sounds wrong); the results as the bill opens. All at a fixed share of the game's volume, under the clip.
+- **Steps:** (1) sounds, the switch and their tests, one PR; (2) each world's overtime animation, one PR.
 
 ### Phase 3: new ways to play
 
@@ -209,7 +212,8 @@ Taken in this order, one step at a time; each step says how it shows.
 - [x] 2026-10-06 M21 Infinite mode (1.16.0)
 - [x] 2026-10-06 Retire six worlds: Hanami, Tournament Arc, Splash Page, Night Arc, Model Kit, Gachapon (1.17.0)
 - [x] 2026-10-06 M22 Neon Rain: Tokyo Rain and Konbini 2 a.m. merged (1.18.0)
-- [ ] M7 Sound effects per world
+- [x] 2026-10-06 M7.1 Sound effects per world (1.19.0)
+- [ ] M7.2 Overtime animation per world
 - [ ] M8 Hints
 - [ ] M9 Elimination
 - [ ] M10 Teams

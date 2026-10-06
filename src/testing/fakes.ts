@@ -11,6 +11,7 @@ import type {
   BufferSourceLike,
   ClipPlayer,
   GainNodeLike,
+  OscillatorLike,
 } from '../audio/engine.ts';
 import type { SocketLike } from '../realtime/connection.ts';
 import type { Session } from '../realtime/session.ts';
@@ -100,6 +101,10 @@ export class FakeParam implements AudioParamLike {
     this.calls.push(`ramp ${value}@${endTime}`);
   }
 
+  exponentialRampToValueAtTime(value: number, endTime: number): void {
+    this.calls.push(`exp ${value}@${endTime}`);
+  }
+
   setTargetAtTime(target: number, startTime: number): void {
     this.calls.push(`target ${target}@${startTime}`);
     this.value = target;
@@ -137,6 +142,22 @@ export class FakeSource extends FakeNode implements BufferSourceLike {
   }
 }
 
+export class FakeOscillator extends FakeNode implements OscillatorLike {
+  type: OscillatorType = 'sine';
+  readonly frequency = new FakeParam(440);
+  onended: ((event: Event) => void) | null = null;
+  started: number | null = null;
+  stoppedAt: number | null = null;
+
+  start(when = 0): void {
+    this.started = when;
+  }
+
+  stop(when = 0): void {
+    this.stoppedAt = when;
+  }
+}
+
 export class FakeAudioContext implements AudioContextLike {
   currentTime = 100;
   state = 'suspended';
@@ -144,6 +165,7 @@ export class FakeAudioContext implements AudioContextLike {
   onstatechange: ((event: Event) => void) | null = null;
   readonly gains: FakeGain[] = [];
   readonly sources: FakeSource[] = [];
+  readonly oscillators: FakeOscillator[] = [];
   clipSeconds = 20;
   failDecode = false;
 
@@ -167,6 +189,12 @@ export class FakeAudioContext implements AudioContextLike {
     const source = new FakeSource();
     this.sources.push(source);
     return source;
+  }
+
+  createOscillator(): FakeOscillator {
+    const oscillator = new FakeOscillator();
+    this.oscillators.push(oscillator);
+    return oscillator;
   }
 
   decodeAudioData(): Promise<AudioBufferLike> {

@@ -121,3 +121,34 @@ test('sets the volume on the master gain, before and after the tap', () => {
   engine.setVolume(0.5);
   expect(master(context).gain.calls).toEqual(['target 0.5@100']);
 });
+
+const BEEP = [{ wave: 'square', from: 880, to: 440, at: 0.1, length: 0.2, level: 0.5 }] as const;
+
+test('plays a sound effect as oscillators under the master volume, after its delay', () => {
+  const { engine, context } = engineWith();
+  engine.setVolume(0.5);
+  engine.unlock();
+  engine.playTones(BEEP, 0.82);
+  const [oscillator] = context.oscillators;
+  expect(oscillator?.type).toBe('square');
+  expect(oscillator?.started).toBeCloseTo(100.92);
+  expect(oscillator?.stoppedAt).toBeCloseTo(101.12);
+  expect(oscillator?.frequency.calls).toEqual([
+    expect.stringMatching(/^set 880@100\.9[12]/),
+    expect.stringMatching(/^exp 440@101\.1[12]/),
+  ]);
+  const envelope = context.gains[1];
+  expect(oscillator?.outputs).toEqual([envelope]);
+  expect(envelope?.outputs).toEqual([master(context)]);
+});
+
+test('plays no sound effect while audio is locked or the volume is 0', () => {
+  const { engine, context } = engineWith();
+  engine.setVolume(0.5);
+  engine.playTones(BEEP);
+  expect(context.oscillators).toHaveLength(0);
+  engine.unlock();
+  engine.setVolume(0);
+  engine.playTones(BEEP);
+  expect(context.oscillators).toHaveLength(0);
+});

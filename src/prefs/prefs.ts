@@ -1,4 +1,5 @@
-// A player's device settings (docs/product-specs/settings.md): volume, theme, title languages and motion.
+// A player's device settings (docs/product-specs/settings.md): volume, sound effects, theme, title languages and
+// motion.
 // They live in this browser's localStorage and never reach the server or the other players.
 import { useEffect, useLayoutEffect, useState, useSyncExternalStore } from 'react';
 import { TITLE_LANGUAGES } from '../../shared/settings.ts';
@@ -29,6 +30,7 @@ export interface Prefs {
   titleLanguage: TitleLanguage;
   secondTitleLanguage: TitleLanguage | null; // shown under the first, smaller; never the same language
   motion: Motion;
+  soundEffects: boolean; // the game's own sounds, at the game's volume
 }
 
 export const DEFAULT_PREFS: Prefs = {
@@ -37,6 +39,7 @@ export const DEFAULT_PREFS: Prefs = {
   titleLanguage: 'english',
   secondTitleLanguage: null,
   motion: 'system',
+  soundEffects: true,
 };
 
 function secondLanguageOf(value: unknown, first: TitleLanguage): TitleLanguage | null {
@@ -60,6 +63,7 @@ export function readPrefs(storage: Storage | null): Prefs {
     titleLanguage,
     secondTitleLanguage: secondLanguageOf(value.secondTitleLanguage, titleLanguage),
     motion: isOneOf(value.motion, MOTIONS) ? value.motion : DEFAULT_PREFS.motion,
+    soundEffects: typeof value.soundEffects === 'boolean' ? value.soundEffects : DEFAULT_PREFS.soundEffects,
   };
 }
 

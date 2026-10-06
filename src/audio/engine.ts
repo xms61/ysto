@@ -1,6 +1,8 @@
 // Plays each round's clip through Web Audio: fetch, decode, then a gain node for the volume, which works on
 // iPhones too, where media elements ignore their volume (docs/design-docs/audio-clips.md). A clip starts at
-// the round's start time, or partway in when it's ready late, so every player hears the same moment.
+// the round's start time, or partway in when it's ready late, so every player hears the same moment. The game's
+// sound effects (sounds.ts) go through the same volume.
+import type { Tone } from './sounds.ts';
 
 // 'locked' until a tap lets audio start, and again after the system suspends it (an iPhone's lock screen).
 export type AudioState = 'locked' | 'running' | 'unavailable';
@@ -11,6 +13,7 @@ export interface AudioParamLike {
   cancelScheduledValues(startTime: number): unknown;
   setValueAtTime(value: number, startTime: number): unknown;
   linearRampToValueAtTime(value: number, endTime: number): unknown;
+  exponentialRampToValueAtTime(value: number, endTime: number): unknown;
   setTargetAtTime(target: number, startTime: number, timeConstant: number): unknown;
 }
 
@@ -34,6 +37,14 @@ export interface BufferSourceLike extends AudioNodeLike {
   stop(when?: number): void;
 }
 
+export interface OscillatorLike extends AudioNodeLike {
+  type: OscillatorType;
+  readonly frequency: AudioParamLike;
+  onended: ((event: Event) => void) | null;
+  start(when?: number): void;
+  stop(when?: number): void;
+}
+
 export interface AudioContextLike {
   readonly currentTime: number;
   readonly state: string; // Safari adds 'interrupted' to the standard states
@@ -42,6 +53,7 @@ export interface AudioContextLike {
   resume(): Promise<void>;
   createGain(): GainNodeLike;
   createBufferSource(): BufferSourceLike;
+  createOscillator(): OscillatorLike;
   decodeAudioData(data: ArrayBuffer): Promise<AudioBufferLike>;
 }
 
@@ -59,6 +71,10 @@ export interface ClipPlayer {
 }
 
 const FADE_OUT_S = 0.4;
+// The sound effects play at this share of the game's volume, so they sit under the clip.
+const SOUND_SHARE = 0.35;
+const ATTACK_S = 0.005;
+const SILENCE = 0.0001; // an exponential ramp can't reach 0
 const VOLUME_SMOOTHING_S = 0.02;
 
 interface Clip {
@@ -133,6 +149,35 @@ export class AudioEngine implements ClipPlayer {
     if (!clip) return;
     clip.startsAt = startsAt;
     this.#startIfDue(clip);
+  }
+
+  // Plays a sound effect's tones, starting `delayS` from now. Nothing plays while audio is locked or muted.
+  playTones(tones: readonly Tone[], delayS = 0): void {
+    const context = this.#context;
+    const master = this.#master;
+    if (!context || !master || context.state !== 'running' || this.#volume === 0) return;
+    const start = context.currentTime + delayS;
+    for (const tone of tones) this.#playTone(context, master, tone, start + tone.at);
+  }
+
+  #playTone(context: AudioContextLike, master: GainNodeLike, tone: Tone, at: number): void {
+    const end = at + tone.length;
+    const envelope = context.createGain();
+    envelope.gain.setValueAtTime(0, at);
+    envelope.gain.linearRampToValueAtTime(tone.level * SOUND_SHARE, at + ATTACK_S);
+    envelope.gain.exponentialRampToValueAtTime(SILENCE, end);
+    envelope.connect(master);
+    const oscillator = context.createOscillator();
+    oscillator.type = tone.wave;
+    oscillator.frequency.setValueAtTime(tone.from, at);
+    if (tone.to !== undefined) oscillator.frequency.exponentialRampToValueAtTime(tone.to, end);
+    oscillator.connect(envelope);
+    oscillator.onended = () => {
+      oscillator.disconnect();
+      envelope.disconnect();
+    };
+    oscillator.start(at);
+    oscillator.stop(end);
   }
 
   // Fades the clip out, so a skipped round or the next one never cuts it off with a click.

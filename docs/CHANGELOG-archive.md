@@ -2,6 +2,17 @@
 
 Releases moved out of `CHANGELOG.md` (which keeps about the latest 5). Newest first.
 
+## [1.14.0] - 2026-10-06
+
+### Changed
+- The round on a wide screen: the scores in a column left of the cards, and the answer in a column right of them, kept free from the round's start. On a phone the scores follow the cards and the answer comes last.
+- The reveal moves nothing: the slot above the cards holds the longest verdict's height, each card the height of its back, and the lines under the cards keep their height. Splash Page's right panel settles back to its size.
+- The answer's cover sits above its title, set to the right.
+- The cards grow into the space the headphones left.
+
+### Removed
+- The headphones and their rings above the cards. A line under the cards says when the clip is loading or failed to load.
+
 ## [1.13.0] - 2026-10-05
 
 ### Added
