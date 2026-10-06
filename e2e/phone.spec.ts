@@ -34,6 +34,8 @@ test('the start bar stands on the foot and the cards stay put at the reveal', as
   test.setTimeout(120_000);
   await page.addInitScript(() => {
     localStorage.setItem('ysto_prefs', JSON.stringify({ motion: 'reduced' }));
+    // Saved preferences mark a returning player; a version seen past every note keeps "What's new" closed.
+    localStorage.setItem('ysto_seen_version', '999.0.0');
   });
   await page.goto('/');
   await page.getByLabel('Your name').fill('Ann');

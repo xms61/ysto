@@ -9,6 +9,13 @@ test('a first visit shows nothing and notes the version', () => {
   expect(notesToShow(localStorage, '1.4.0')).toEqual([]);
 });
 
+test('treats a device with saved preferences but no version seen as one that played 1.0.0', () => {
+  localStorage.setItem('ysto_prefs', '{}');
+  expect(notesToShow(localStorage, '1.4.0')[0]).toMatch(/every song of the game/);
+  markSeen(localStorage, '1.4.0');
+  expect(notesToShow(localStorage, '1.4.0')).toEqual([]);
+});
+
 test('shows the newest lines since the last version seen, up to this one, until marked seen', () => {
   localStorage.setItem('ysto_seen_version', '1.1.0');
   const lines = notesToShow(localStorage, '1.4.0');

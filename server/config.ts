@@ -115,7 +115,7 @@ export function loadConfig(env: Env = process.env, cwd: string = process.cwd()):
     ffmpegConcurrency: integerIn(env, 'YSTO_FFMPEG_CONCURRENCY', 1, 64, Math.max(1, availableParallelism() - 1)),
     trustedProxyHops: integerIn(env, 'YSTO_TRUST_PROXY', 0, 10, 0),
     allowedOrigins: allowedOrigins(env),
-    maxLobbies: integerIn(env, 'YSTO_MAX_LOBBIES', 1, 10_000, 100),
+    maxLobbies: integerIn(env, 'YSTO_MAX_LOBBIES', 1, 100_000, 2000),
     maxPlayers: integerIn(env, 'YSTO_MAX_PLAYERS', 1, 50, 12),
     maxGames: integerIn(env, 'YSTO_MAX_GAMES', 1, 1000, 30),
     stateDir: optionalPath(env, 'YSTO_STATE_DIR', cwd),

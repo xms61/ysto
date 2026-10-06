@@ -67,7 +67,7 @@ A group of friends plays together on one small VPS. The catalog holds about 14,5
 | `YSTO_CACHE_DIR` | `./data/cache` | Raw API responses for the ingest scripts |
 | `YSTO_TRUST_PROXY` | 0 | Reverse proxy hop count, so rate limits see player IPs |
 | `YSTO_ALLOWED_ORIGINS` | none | Origins whose pages may open the socket, besides the page's own |
-| `YSTO_MAX_LOBBIES` | 100 | |
+| `YSTO_MAX_LOBBIES` | 2000 | Open lobbies; an empty one closes after 15 s |
 | `YSTO_MAX_GAMES` | 30 | Games running at once, sized to ffmpeg capacity |
 | `YSTO_MAX_PLAYERS` | 12 | Per lobby |
 | `YSTO_FFMPEG_PATH` | `ffmpeg` | `ffprobe` is expected next to it |

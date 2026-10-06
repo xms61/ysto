@@ -25,7 +25,7 @@ How the app behaves when something fails or slows down. The general rules are in
 - ffmpeg: 10 s per clip, and up to 3 themes per round.
 - Ready barrier: 8 s. The round then starts for everyone, 1 s later (3 s for a game's first round).
 - Answer grace: 300 ms after `endsAt`. The reveal shows for 7 s, and a clip token lives 10 s past it (at most 10 minutes if its game ends early).
-- Reconnect grace: 60 s. Lobby expiry: 15 minutes with no connected player, 4 hours in any case. The registry sweeps every 5 s, so both end up to 5 s late.
+- Reconnect grace: 60 s. Lobby expiry: 15 s with no connected player, so an empty lobby frees its place at once, and 4 hours in any case. The registry sweeps every second, so both end up to 1 s late.
 - Sockets: `hello` within 10 s of connecting, and a heartbeat ping every 15 s. A socket that misses a ping is closed, which starts its seat's grace.
 - Ingest scripts: one AnimeThemes request a second, and one AniList request every 2.1 s (AniList allowed 30 a minute on 2026-09-25). A 429 waits for `Retry-After`. Server errors and network failures retry up to 5 attempts, backing off 2, 4, 8, 16 s (capped at 60 s). Every step resumes from its cache ([catalog](design-docs/catalog.md)).
 

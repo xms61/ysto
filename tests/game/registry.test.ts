@@ -92,9 +92,12 @@ test('hands the host over when the host leaves', () => {
   assert.equal(registry.lobby(host.code)?.hostId, guest.playerId);
 });
 
-test('releases seats after the reconnect grace, then closes the lobby after 15 idle minutes', () => {
-  const { registry, clock, events } = setUp();
+test('releases a seat after the reconnect grace while someone else keeps the lobby open', () => {
+  const { registry, clock } = setUp();
   const host = created(registry);
+  const guest = registry.join(host.code, 'Bo');
+  assert.ok('playerId' in guest);
+  registry.connect(guest.sessionToken);
   const seat = registry.connect(host.sessionToken) ?? assert.fail();
   registry.disconnect(seat);
   clock.now += RECONNECT_GRACE_MS - 1;
@@ -103,12 +106,30 @@ test('releases seats after the reconnect grace, then closes the lobby after 15 i
   clock.now += 1;
   registry.sweep();
   assert.equal(registry.seatOf(host.sessionToken), undefined);
-  assert.deepEqual(registry.lobby(host.code)?.players, []);
+  assert.deepEqual(
+    registry.lobby(host.code)?.players.map((player) => player.id),
+    [guest.playerId],
+  );
+});
+
+test('closes a lobby 15 s after everyone left, unless someone comes back first', () => {
+  const { registry, clock, events } = setUp();
+  const host = created(registry);
+  const seat = registry.connect(host.sessionToken) ?? assert.fail();
+  registry.disconnect(seat);
+  clock.now += IDLE_LOBBY_MS - 1;
+  registry.sweep();
+  registry.connect(host.sessionToken);
+  clock.now += IDLE_LOBBY_MS;
+  registry.sweep();
+  assert.ok(registry.lobby(host.code), 'a player came back in time');
+  registry.disconnect(seat);
   clock.now += IDLE_LOBBY_MS;
   events.length = 0;
   registry.sweep();
   assert.equal(registry.lobby(host.code), undefined);
   assert.deepEqual(events, [{ type: 'closed', code: host.code }]);
+  assert.equal(registry.seatOf(host.sessionToken), undefined);
   created(registry, 'Ann', '10.0.0.1');
 });
 

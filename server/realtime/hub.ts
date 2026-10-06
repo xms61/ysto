@@ -27,7 +27,7 @@ export const REALTIME_LIMITS = {
   strikes: 5,
   helloTimeoutMs: 10_000,
   heartbeatMs: 15_000,
-  sweepMs: 5_000,
+  sweepMs: 1_000,
 } as const;
 
 interface Connection {

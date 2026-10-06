@@ -109,7 +109,7 @@ test('counts the grace of a new seat from its creation', () => {
   assert.deepEqual(expiredSeats(lobby, 500 + RECONNECT_GRACE_MS), ['a']);
 });
 
-test('expires a lobby idle for 15 minutes, and any lobby after 4 hours', () => {
+test('expires a lobby idle for 15 seconds, and any lobby after 4 hours', () => {
   const idle = disconnectPlayer(lobbyWith(['Ann']), 'Ann', 1000);
   assert.equal(isExpired(idle, 1000 + IDLE_LOBBY_MS - 1), false);
   assert.equal(isExpired(idle, 1000 + IDLE_LOBBY_MS), true);

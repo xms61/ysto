@@ -30,7 +30,7 @@ import {
 import type { HostError, JoinError, Lobby, Outcome, TeamError } from './lobby.ts';
 import { poolSize, settingsBounds } from './pool.ts';
 
-export const OPEN_LOBBIES_PER_IP = 3;
+export const OPEN_LOBBIES_PER_IP = 10;
 const PLAYER_ID_BYTES = 9;
 
 export interface Seat {

@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.29.1] - 2026-10-06
+
+### Changed
+- CI runs the browser tests as one job per browser, side by side, and keeps the Ubuntu packages of the browsers' system libraries in the Actions cache, since the mirror took up to 13 minutes to send them. The required `e2e` check passes when all three browsers do.
+
+## [1.29.0] - 2026-10-06
+
+### Changed
+- The server keeps up to 2000 lobbies open by default (`YSTO_MAX_LOBBIES`, up to 100000), up from 100.
+- A lobby closes 15 s after its last player left or lost the connection, unless someone comes back first, instead of after 15 minutes. The registry sweeps every second instead of every 5 s.
+- One address can have 10 lobbies open at once instead of 3, for homes and events that share a connection.
+
+### Fixed
+- Players who last played before 1.5.0 now see what's new: a device with saved preferences but no version noted counts as coming from 1.0.0, instead of as a first visit that shows nothing.
+
 ## [1.28.0] - 2026-10-06
 
 ### Changed
@@ -21,13 +36,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Party mode: with it on in the lobby settings, a TV or laptop joins by the link with "Use as the screen" and plays the sound for everyone, showing the round large with the join QR in its corner, while the phones only answer. A lobby takes up to two screens, which don't count as players; a party game needs one connected to start.
-
-## [1.26.0] - 2026-10-06
-
-### Added
-- Today's challenge: the same ten songs for everyone each day (it changes at 00:00 UTC), played solo from the home screen, with this device's streak of days in a row, badges at 7, 30 and 100 days, and a result to copy and share as plain blocks that name no song. Replays of a day are practice. Needs `YSTO_DAILY_SECRET` on the server.
-
-## [1.25.0] - 2026-10-06
-
-### Added
-- Typed answers: under Answer by in the lobby settings, players type the anime's title instead of tapping one of four options. Suggestions come from the whole catalog as they type, in every title language and with synonyms, each with its year so remakes can be told apart. Only the exact anime is right. The reveal lists what everyone typed.
