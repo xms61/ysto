@@ -4,6 +4,7 @@
 import { readItem, writeItem } from './storage.ts';
 
 const NOTES: { version: string; lines: string[] }[] = [
+  { version: '1.17.0', lines: ['Nine worlds now: six were retired, and their players start back in Tokyo Rain.'] },
   { version: '1.16.0', lines: ['Endless games: the songs keep coming until the host ends the game.'] },
   {
     version: '1.15.0',

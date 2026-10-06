@@ -17,14 +17,9 @@ import type { CardState } from '../components/OptionCard.tsx';
 import { MODE_LABELS } from '../components/SettingsForm.tsx';
 import { Candle } from '../components/Candle.tsx';
 import { Cassette } from '../components/Cassette.tsx';
-import { Dango } from '../components/Dango.tsx';
 import { Route } from '../components/Route.tsx';
 import { Ruler } from '../components/Ruler.tsx';
 import { Shide } from '../components/Shide.tsx';
-import { Dial } from '../components/Dial.tsx';
-import { FocusLines } from '../components/FocusLines.tsx';
-import { Nipper } from '../components/Nipper.tsx';
-import { Pennants } from '../components/Pennants.tsx';
 import { Segments } from '../components/Segments.tsx';
 import { RoundBody, ScoresPanel, Stage } from '../components/Stage.tsx';
 import { ConfirmButton, Panel } from '../components/ui.tsx';
@@ -164,14 +159,6 @@ function TimeLeft({ elapsed, secondsLeft }: { elapsed: number; secondsLeft: numb
       </p>
     );
   }
-  if (readout === 'dango') {
-    return (
-      <div className="flex items-center gap-3">
-        <Dango left={1 - elapsed} />
-        <p className="ml-auto tabular-nums">{secondsLeft} s left</p>
-      </div>
-    );
-  }
   if (readout === 'lyric') {
     return <p className="lyric-left tabular-nums">{secondsLeft} s left</p>;
   }
@@ -179,22 +166,6 @@ function TimeLeft({ elapsed, secondsLeft }: { elapsed: number; secondsLeft: numb
     return (
       <div className="flex items-center gap-3">
         <Cassette left={1 - elapsed} />
-        <p className="tabular-nums">{secondsLeft} s left</p>
-      </div>
-    );
-  }
-  if (readout === 'focus') {
-    return (
-      <div className="flex items-center gap-3">
-        <FocusLines left={1 - elapsed} />
-        <p className="tabular-nums">{secondsLeft} s left</p>
-      </div>
-    );
-  }
-  if (readout === 'pennants') {
-    return (
-      <div className="flex items-center gap-3">
-        <Pennants left={1 - elapsed} />
         <p className="tabular-nums">{secondsLeft} s left</p>
       </div>
     );
@@ -223,26 +194,10 @@ function TimeLeft({ elapsed, secondsLeft }: { elapsed: number; secondsLeft: numb
       </div>
     );
   }
-  if (readout === 'candle') {
-    return (
-      <div className="flex items-end gap-3">
-        <Candle left={1 - elapsed} />
-        <p className="tabular-nums">{secondsLeft} s left</p>
-      </div>
-    );
-  }
-  if (readout === 'dial') {
-    return (
-      <div className="flex items-center gap-3">
-        <Dial left={1 - elapsed} />
-        <p className="tabular-nums">{secondsLeft} s left</p>
-      </div>
-    );
-  }
   return (
-    <div className="flex items-center gap-3">
-      <Nipper left={1 - elapsed} />
-      <p className="ml-auto tabular-nums">{secondsLeft} s left</p>
+    <div className="flex items-end gap-3">
+      <Candle left={1 - elapsed} />
+      <p className="tabular-nums">{secondsLeft} s left</p>
     </div>
   );
 }

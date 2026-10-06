@@ -6,7 +6,7 @@ import type { Page } from '@playwright/test';
 // - The lobby's start bar stands on the viewport's foot, also at the end of the scroll (src/screens/Lobby.tsx).
 // - The cards keep their place and size from answering to the reveal (src/components/Stage.tsx and
 //   OptionCard.tsx): the slot above them holds the verdict's height, and each card the height of its back.
-const THEMES = ['tokyo-rain', 'sakura', 'shonen', 'mecha', 'karaoke', 'isekai'];
+const THEMES = ['tokyo-rain', 'omikuji', 'shonen', 'retro-vhs', 'karaoke', 'isekai'];
 const WAIT = { timeout: 20_000 };
 
 test.use({ viewport: { width: 375, height: 812 } });

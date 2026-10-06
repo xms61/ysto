@@ -34,19 +34,6 @@ const ICONS: Record<Theme, ReactNode> = {
       <path className="ti-paper ti-out" d="m22 24 5 4-3 4-5-4Z" />
     </>
   ),
-  // A bento with a blossom in one compartment.
-  sakura: (
-    <>
-      <rect className="ti-paper ti-out" x="5" y="11" width="38" height="27" rx="3" />
-      <path className="ti-mark-line" d="M24 11v27M24 24h19" />
-      <circle className="ti-accent" cx="14" cy="20" r="3" />
-      <circle className="ti-accent" cx="10" cy="25" r="3" />
-      <circle className="ti-accent" cx="18" cy="25" r="3" />
-      <circle className="ti-accent" cx="12" cy="30" r="3" />
-      <circle className="ti-accent" cx="16" cy="30" r="3" />
-      <path className="ti-out" d="M30 17h8M30 31h8" />
-    </>
-  ),
   // A fortune slip, folded and knotted round a branch.
   omikuji: (
     <>
@@ -73,56 +60,6 @@ const ICONS: Record<Theme, ReactNode> = {
       <circle className="ti-accent" cx="15" cy="11" r="6" />
       <circle className="ti-mark" cx="29" cy="34" r="3" />
       <circle className="ti-mark" cx="37" cy="34" r="3" />
-    </>
-  ),
-  // A bracket closing on the final.
-  'tournament-arc': (
-    <>
-      <path className="ti-out" d="M4 8h10v10H4M4 30h10v10H4M14 13h8v22h-8M22 24h8" />
-      <rect className="ti-paper ti-out" x="30" y="17" width="14" height="14" rx="2" />
-      <path className="ti-accent" d="m37 19 2 4 4 .5-3 3 1 4-4-2-4 2 1-4-3-3 4-.5Z" />
-    </>
-  ),
-  // An impact balloon with a shout in it.
-  'splash-page': (
-    <>
-      <path
-        className="ti-paper ti-out"
-        d="m24 4 4 8 9-4-2 9 9 3-8 5 6 8-10-1-1 10-7-7-7 7-1-10-10 1 6-8-8-5 9-3-2-9 9 4Z"
-      />
-      <path className="ti-accent-line" d="M24 15v11" />
-      <circle className="ti-accent" cx="24" cy="31" r="2" />
-    </>
-  ),
-  // A crescent moon over speed lines.
-  'night-arc': (
-    <>
-      <path className="ti-out" d="M4 38h14M4 43h22M30 43h14" />
-      <path className="ti-paper ti-out" d="M30 6a14 14 0 1 0 10 24A12 12 0 0 1 30 6Z" />
-      <circle className="ti-accent" cx="12" cy="10" r="1.6" />
-      <circle className="ti-accent" cx="40" cy="8" r="1.2" />
-    </>
-  ),
-  // A model kit's robot head: a helmet, a visor and an antenna.
-  mecha: (
-    <>
-      <path className="ti-out" d="M24 4v8" />
-      <circle className="ti-accent" cx="24" cy="4" r="2.5" />
-      <path className="ti-paper ti-out" d="M10 22a14 10 0 0 1 28 0v14l-6 6H16l-6-6Z" />
-      <path className="ti-accent" d="M14 24h20v6H14Z" />
-      <path className="ti-mark-line" d="M18 36h12M6 26v8M42 26v8" />
-    </>
-  ),
-  // A capsule toy machine: the clear dome of capsules, the red body, its coin dial and chute.
-  'magical-girl': (
-    <>
-      <circle className="ti-paper ti-out" cx="24" cy="15" r="12" />
-      <circle className="ti-accent" cx="19" cy="16" r="3.5" />
-      <circle className="ti-mark" cx="28" cy="12" r="3.5" />
-      <circle className="ti-accent" cx="27" cy="20" r="3" />
-      <path className="ti-accent ti-out" d="M12 26h24v18H12Z" />
-      <circle className="ti-paper ti-out" cx="24" cy="32" r="3" />
-      <path className="ti-paper ti-out" d="M19 39h10v3H19Z" />
     </>
   ),
   // A sword, a spark of magic at its tip.

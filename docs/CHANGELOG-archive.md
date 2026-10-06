@@ -2,6 +2,11 @@
 
 Releases moved out of `CHANGELOG.md` (which keeps about the latest 5). Newest first.
 
+## [1.12.0] - 2026-10-05
+
+### Added
+- Saved setups: the host saves the lobby's settings under a name, up to eight on the device, and loads one in any lobby they host. Loading fits it to the lobby's catalog and says what changed.
+
 ## [1.11.0] - 2026-10-05
 
 ### Added

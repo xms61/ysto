@@ -105,62 +105,6 @@
     --radius-2xl: 0.625rem;
   }
 
-  /* Hanami (id sakura): a lacquer bento opened on the blue picnic tarp under the blossom. The tarp owns the page;
-     the round's box is black lacquer with a vermilion rim, its four compartments split by green leaf dividers. */
-  [data-theme='sakura'] {
-    --display-adjust: 0.5;
-    color-scheme: dark;
-    --page: #1f4f99;
-    --plate: url('./assets/plates/sakura.webp');
-    --plate-opacity: 0.05;
-    --panel: #1c1515;
-    --raised: #2b2121;
-    --line: #4a3636;
-    --edge: #f0c9d2;
-    --ink: #fff8f4;
-    --muted: #ecd3da;
-    --accent: #f7a8bd;
-    --accent-ink: #2a0f18;
-    --good: #8fe0a8;
-    --bad: #ffc2bb;
-    --card: #fbfaf6;
-    --card-ink: #1c1515;
-    --card-muted: #5c4a45;
-    --card-dim: #e3dccf;
-    --card-mark: #b8302a;
-    --stamp: #0d0808; /* the picks' stamp ink, lacquer black: the card mark is the back's own vermilion */
-    --card-mark-ink: #ffffff;
-    --card-chosen: #fde3ea;
-    --card-chosen-ink: #1c1515;
-    --card-alert: #9e1f1f;
-    --card-back: #b8302a;
-    --card-back-ink: #fff8f0;
-    --blossom: #f4a7b9;
-    --foil: #c9a14a;
-    /* The bento's black lacquer and the green leaf dividers between its compartments; neither carries text. */
-    --lacquer: #0f0b0b;
-    --leaf: #3d7f22;
-    /* The dango skewer's bamboo and its three dumplings. None carries text. */
-    --dango-stick: #c9a46a;
-    --dango-pink: #f4a7b9;
-    --dango-white: #fbfaf6;
-    --dango-green: #8cc068;
-    --display-font: 'Zen Antique', 'Hiragino Mincho ProN', 'Yu Mincho', serif;
-    --display-weight: 400;
-    --display-case: none;
-    --display-tracking: 0.01em;
-    --title-font: var(--display-font);
-    --title-weight: 400;
-    --title-case: none;
-    --title-tracking: 0.01em;
-    --title-adjust: 0.5;
-    --panel-shadow: 0 1rem 2rem -1rem rgb(5 15 40 / 0.7);
-    --page-texture: none;
-    --radius-lg: 0.25rem;
-    --radius-xl: 0.375rem;
-    --radius-2xl: 0.625rem;
-  }
-
   /* Fighter Select (id shonen): an arcade fighting game's character select. Black screen, slanted name plates,
      a two-digit countdown in yellow, a red cursor on the pick, a gold plate for the winner. */
   [data-theme='shonen'] {
@@ -208,123 +152,6 @@
     --radius-lg: 2px;
     --radius-xl: 2px;
     --radius-2xl: 2px;
-  }
-
-  /* Model Kit (id mecha): a plastic model kit on the workbench. The page is the cutting mat; the round is a step
-     of the kit's manual, its options four armor parts on one grey runner, cut with a nipper as the round runs. */
-  [data-theme='mecha'] {
-    --display-adjust: 0.52;
-    color-scheme: dark;
-    --page: #142a22;
-    --plate: url('./assets/plates/mecha.webp');
-    --plate-opacity: 0.05;
-    --panel: #1c2126;
-    --raised: #262d33;
-    --line: #3a434b;
-    --edge: #7d8a95;
-    --ink: #e8edf0;
-    --muted: #a9b4bc;
-    --accent: #f2c230;
-    --accent-ink: #141414;
-    --good: #5cf28a;
-    --bad: #ff6a55;
-    --card: #c9cfd3;
-    --card-ink: #14181b;
-    --card-muted: #30373d;
-    --card-dim: #a3abb1;
-    --card-mark: #2b3136;
-    --card-mark-ink: #f2f4f5;
-    --card-chosen: #f7e9ad;
-    --card-chosen-ink: #14181b;
-    --card-alert: #a3221b;
-    --card-back: #f2c230;
-    --card-back-ink: #141414;
-    --display-font: 'Barlow Condensed', 'Arial Narrow', sans-serif;
-    --display-weight: 700;
-    --display-case: uppercase;
-    --display-tracking: 0.04em;
-    --title-font: 'Barlow Condensed', 'Arial Narrow', sans-serif;
-    --title-weight: 600;
-    --title-case: uppercase;
-    --title-tracking: 0.04em;
-    --title-adjust: 0.52;
-    --panel-shadow: 0 1rem 2rem -1.25rem rgb(0 0 0 / 0.85);
-    --page-texture:
-      linear-gradient(rgb(170 214 190 / 0.12) 1px, transparent 1px) 0 0 / 5rem 5rem,
-      linear-gradient(90deg, rgb(170 214 190 / 0.12) 1px, transparent 1px) 0 0 / 5rem 5rem,
-      linear-gradient(rgb(170 214 190 / 0.06) 1px, transparent 1px) 0 0 / 1rem 1rem,
-      linear-gradient(90deg, rgb(170 214 190 / 0.06) 1px, transparent 1px) 0 0 / 1rem 1rem;
-    /* The workbench: the cutting mat under the round, the manual's paper with its step header, the runner's grey
-       plastic, and the nipper's steel and grips. Only the mat and the manual carry text. */
-    --mat: #19332a;
-    --manual: #f1efe8;
-    --manual-ink: #16181a;
-    --manual-muted: #4a5056;
-    --runner: #8d969c;
-    --runner-shade: #5f686e;
-    --nipper: #b8c0c6;
-    --nipper-grip: #c8372d;
-    --radius-lg: 0;
-    --radius-xl: 0;
-    --radius-2xl: 0;
-  }
-
-  /* Gachapon (id magical-girl): a capsule toy machine on a sunny shopping street. The round is the machine: its
-     red head, the clear dome with four alike capsules, the coin dial, and the tray the capsule drops to. */
-  [data-theme='magical-girl'] {
-    --display-adjust: 0.52;
-    color-scheme: light;
-    --page: #fff4e3;
-    --plate: url('./assets/plates/magical-girl.webp');
-    --plate-opacity: 0.07;
-    --panel: #ffffff;
-    --raised: #fbeedd;
-    --line: #ecd9c2;
-    --edge: #9b7b5e;
-    --ink: #2a1810;
-    --muted: #6b5244;
-    --accent: #c42b26;
-    --accent-ink: #ffffff;
-    --good: #1d7a3d;
-    --bad: #bb241d;
-    --card: #eef6fb;
-    --card-ink: #1d2a33;
-    --card-muted: #4a5a66;
-    --card-dim: #dde4e9;
-    --card-mark: #1d5f9e;
-    --card-mark-ink: #ffffff;
-    --card-chosen: #ffe9a8;
-    --card-chosen-ink: #2a1810;
-    --card-alert: #b3261e;
-    --card-back: #ffd23f;
-    --card-back-ink: #2a1810;
-    /* The machine: its red head with the round on it, the clear dome, the capsules' colored halves, the chrome of
-       the dial and the tray, the paper slips, and the gold charm inside the right capsule. Only the head and the
-       slips carry text. */
-    --head: #c42b26;
-    --head-ink: #ffffff;
-    --dome: #e3f1fa;
-    --capsule: #3a9ad9;
-    --capsule-shade: #2a7bb5;
-    --chrome: #b8c3cc;
-    --chrome-shade: #7f8b95;
-    --slip: #ffffff;
-    --foil: #f2c14e;
-    --foil-sheen: linear-gradient(135deg, #fff1b8, #d9a23a 28%, #fff6d8 48%, #b7862e 66%, #f2c14e 84%, #fff1b8);
-    --display-font: 'Mochiy Pop One', 'Hiragino Maru Gothic ProN', ui-rounded, system-ui, sans-serif;
-    --display-weight: 400;
-    --display-case: none;
-    --display-tracking: 0.01em;
-    --title-font: var(--display-font);
-    --title-weight: 400;
-    --title-case: none;
-    --title-tracking: 0;
-    --title-adjust: 0.52;
-    --panel-shadow: 0 1rem 2.25rem -1.25rem rgb(90 50 20 / 0.35);
-    --page-texture: radial-gradient(rgb(196 43 38 / 0.08) 2px, transparent 2.5px) 0 0 / 1.5rem 1.5rem;
-    --radius-lg: 0.75rem;
-    --radius-xl: 1.25rem;
-    --radius-2xl: 1.5rem;
   }
 
   /* Quest Board (id isekai): the adventurers' guild notice board at night. The round is the board: a carved plank
@@ -650,156 +477,6 @@
     --radius-lg: 999px;
     --radius-xl: 1.25rem;
     --radius-2xl: 1.5rem;
-  }
-
-  /* Tournament Arc: a semifinal bracket on the tournament board. The round's heading is a black brushed banner,
-     the time left the referee's pennants, and the options four wooden entrant plates, two matches joined on the
-     bracket's spine with the final at its middle. */
-  [data-theme='tournament-arc'] {
-    --display-adjust: 0.56;
-    color-scheme: light;
-    --page: #ecebe6;
-    --plate: url('./assets/plates/tournament-arc.webp');
-    --plate-opacity: 0.17;
-    --panel: #fbfaf6;
-    --raised: #e0ded6;
-    --line: #b9b6ab;
-    --edge: #5c5a52;
-    --ink: #141414;
-    --muted: #4e4c46;
-    --accent: #c0261b;
-    --accent-ink: #ffffff;
-    --good: #1f6e3c;
-    --bad: #a3140a;
-    --card: #f3e6c8;
-    --card-ink: #141414;
-    --card-muted: #55534c;
-    --card-dim: #e3e1da;
-    --card-mark: #141414;
-    --card-mark-ink: #ffffff;
-    --card-chosen: #141414;
-    --card-chosen-ink: #ffffff;
-    --card-alert: #a3140a;
-    --card-back: #c9a227;
-    --card-back-ink: #141414;
-    /* The board: the black banner and its text, and the final's gold. The pennants are the accent's red and the
-       panel's white. */
-    --banner: #141414;
-    --banner-ink: #fbfaf6;
-    --gold: #c9a227;
-    --gong: #a8801f;
-    --gong-light: #f0d27a;
-    --display-font: 'Dela Gothic One', 'Arial Black', sans-serif;
-    --display-weight: 400;
-    --display-case: none;
-    --display-tracking: 0.02em;
-    --title-font: 'Kaisei Tokumin', 'Hiragino Mincho ProN', 'Yu Mincho', serif;
-    --title-weight: 700;
-    --title-case: none;
-    --title-tracking: 0.01em;
-    --title-adjust: 0.52;
-    --field-rim: 2px;
-    --panel-shadow: none;
-    --page-texture: none;
-    --radius-lg: 2px;
-    --radius-xl: 2px;
-    --radius-2xl: 2px;
-  }
-
-  /* Splash Page: a battle manga page. The round's heading is a narration box, the time left the panel's focus
-     lines closing in, and the options four slanted panels read right to left, their titles in speech balloons. */
-  [data-theme='splash-page'] {
-    --display-adjust: 0.56;
-    color-scheme: light;
-    --page: #f4f4f1;
-    --plate: url('./assets/plates/splash-page.webp');
-    --plate-opacity: 0.14;
-    --panel: #ffffff;
-    --raised: #e6e6e2;
-    --line: #111111;
-    --edge: #111111;
-    --ink: #0d0d0d;
-    --muted: #4a4a4a;
-    --accent: #d42a1c;
-    --accent-ink: #ffffff;
-    --good: #1f6e3c;
-    --bad: #b3140a;
-    --card: #ffffff;
-    --card-ink: #0d0d0d;
-    --card-muted: #555555;
-    --card-dim: #e6e6e2;
-    --card-mark: #0d0d0d;
-    --card-mark-ink: #ffffff;
-    --card-chosen: #0d0d0d;
-    --card-chosen-ink: #ffffff;
-    --card-alert: #b3140a;
-    --card-back: #ffffff;
-    --card-back-ink: #0d0d0d;
-    /* The printed page: the screentone's grey dots, under no text. */
-    --tone: #b8b8b8;
-    --display-font: 'Reggae One', 'Arial Black', sans-serif;
-    --display-weight: 400;
-    --display-case: none;
-    --display-tracking: 0.02em;
-    --title-font: 'Comic Neue', 'Comic Sans MS', sans-serif;
-    --title-weight: 700;
-    --title-case: uppercase;
-    --title-tracking: 0.02em;
-    --title-adjust: 0.52;
-    --field-rim: 2px;
-    --panel-shadow: none;
-    --page-texture: none;
-    --radius-lg: 2px;
-    --radius-xl: 2px;
-    --radius-2xl: 2px;
-  }
-
-  /* Night Arc: the all-black pages of a manga's darkest chapter, white ink and one rare red. The round's heading is
-     the chapter's header in white brush capitals, the time left white focus lines closing in, and the options four
-     black panels in white frames, their titles in white-ink balloons and their numbers in the gutters. */
-  [data-theme='night-arc'] {
-    --display-adjust: 0.5;
-    color-scheme: dark;
-    --page: #0a0a0a;
-    --plate: url('./assets/plates/night-arc.webp');
-    --plate-opacity: 0.17;
-    --panel: #111111;
-    --raised: #1c1c1c;
-    --line: #3a3a3a;
-    --edge: #f4f4f0;
-    --ink: #f4f4f0;
-    --muted: #a8a8a2;
-    --accent: #f4f4f0;
-    --accent-ink: #0a0a0a;
-    --good: #7be0a0;
-    --bad: #ff6b6b;
-    --card: #0a0a0a;
-    --card-ink: #f4f4f0;
-    --card-muted: #a8a8a2;
-    --card-dim: #161616;
-    --card-mark: #f4f4f0;
-    --stamp: #868686; /* the picks' stamp ink, mid grey: the fronts are black and the back is white */
-    --card-mark-ink: #0a0a0a;
-    --card-chosen: #0a0a0a;
-    --card-chosen-ink: #f4f4f0;
-    --card-alert: #ff6b6b;
-    --card-back: #f4f4f0;
-    --card-back-ink: #0a0a0a;
-    --display-font: 'Shojumaru', 'Arial Black', sans-serif;
-    --display-weight: 400;
-    --display-case: uppercase;
-    --display-tracking: 0.04em;
-    --title-font: 'Patrick Hand SC', 'Comic Sans MS', sans-serif;
-    --title-weight: 400;
-    --title-case: none;
-    --title-tracking: 0.02em;
-    --title-adjust: 0.52;
-    --field-rim: 2px;
-    --panel-shadow: none;
-    --page-texture: none;
-    --radius-lg: 2px;
-    --radius-xl: 2px;
-    --radius-2xl: 2px;
   }
 
   /* Side A: a friend's mixtape. The round's heading is written on the cassette's label, the time left is the
@@ -1923,29 +1600,6 @@
     color: var(--bad);
   }
 
-  /* Model Kit cuts the corners off its parts and panels, like armor plates; each element sets its own cut. */
-  :root[data-theme='mecha'] .panel {
-    --cut: 0.875rem;
-  }
-
-  :root[data-theme='mecha'] .card-face {
-    --cut: 0.625rem;
-  }
-
-  :root[data-theme='mecha'] :is(.panel, .card-face),
-  :root[data-theme='mecha'] .card-front::before {
-    clip-path: polygon(
-      var(--cut) 0,
-      calc(100% - var(--cut)) 0,
-      100% var(--cut),
-      100% calc(100% - var(--cut)),
-      calc(100% - var(--cut)) 100%,
-      var(--cut) 100%,
-      0 calc(100% - var(--cut)),
-      0 var(--cut)
-    );
-  }
-
   /* ---- Tokyo Rain: a ramen ticket machine under the noren. The round's heading hangs on the noren; the
      options are backlit buttons on the machine's dark face, keyed by indigo coin lamps. A pick lights its
      button and lamp amber while the rest go dark; at the reveal the right button prints its ticket and the
@@ -2163,87 +1817,6 @@
     border-block: 2px dashed rgb(26 26 26 / 0.35);
   }
 
-  /* ---- Hanami: a lacquer bento opened on the blue tarp. Panels are black lacquer with a vermilion rim; the
-     options are the box's four compartments, rice-paper slips split by green leaf dividers inside a vermilion and
-     black rim. A pick lifts its compartment with a doubled vermilion rim while the others' lids close down. ---- */
-  :root[data-theme='sakura'] .panel {
-    border: 2px solid var(--card-mark);
-    outline: 1px solid var(--card-mark);
-    outline-offset: -7px;
-  }
-
-  :root[data-theme='sakura'] .options {
-    margin: 0.5625rem;
-    padding: 0.375rem;
-    gap: 0.375rem;
-    border-radius: 0.375rem;
-    background: var(--leaf);
-    box-shadow:
-      0 0 0 0.25rem var(--card-mark),
-      0 0 0 0.5625rem var(--lacquer),
-      0 1rem 1.75rem -0.75rem rgb(0 0 0 / 0.7);
-  }
-
-  :root[data-theme='sakura'] .card-face {
-    border-radius: 0.125rem;
-  }
-
-  :root[data-theme='sakura'] .card-front {
-    border: 0;
-    box-shadow: inset 0 0 0 1px rgb(28 21 21 / 0.12);
-  }
-
-  :root[data-theme='sakura'] .card[data-state='chosen'] .card-front {
-    transform: translateY(-3px);
-    box-shadow:
-      inset 0 0 0 2px var(--card-mark),
-      inset 0 0 0 4px var(--card-chosen),
-      inset 0 0 0 5px var(--card-mark),
-      0 0.5rem 1rem -0.375rem rgb(0 0 0 / 0.55);
-  }
-
-  /* A lid closes over a compartment that is out of play: the slip dims under a lacquer edge along its top. */
-  :root[data-theme='sakura'] .card[data-state='muted'] .card-front,
-  :root[data-theme='sakura'] .card[data-state='missed'] .card-front {
-    background-color: var(--card-dim);
-    color: var(--card-muted);
-    box-shadow: inset 0 0.375rem 0 var(--lacquer);
-  }
-
-  :root[data-theme='sakura'] .card-back {
-    box-shadow:
-      inset 0 0 0 4px var(--card-back),
-      inset 0 0 0 5px var(--foil);
-  }
-
-  :root[data-theme='sakura'] .card-printed {
-    background: var(--lacquer);
-    color: var(--card-mark);
-    box-shadow: inset 0 0 0 2px var(--card-mark);
-  }
-
-  :root[data-theme='sakura'] .button-quiet {
-    background: var(--panel);
-    border-color: var(--card-mark);
-    box-shadow:
-      inset 0 0 0 2px var(--panel),
-      inset 0 0 0 3px var(--card-mark);
-  }
-
-  :root[data-theme='sakura'] .button-quiet:hover:not(:disabled) {
-    border-color: var(--card-mark);
-    background: var(--raised);
-    box-shadow:
-      inset 0 0 0 2px var(--raised),
-      inset 0 0 0 3px var(--card-mark);
-  }
-
-  :root[data-theme='sakura'] .button-primary {
-    box-shadow:
-      inset 0 0 0 2px var(--accent),
-      inset 0 0 0 3px rgb(42 15 24 / 0.6);
-  }
-
   /* ---- Fighter Select: an arcade character select. The round's heading is a red slanted banner; the options
      are fighter slots, each title on a slanted name plate under a red slanted number. The pick takes the red
      player cursor; at the reveal the right slot turns gold behind a starburst. ---- */
@@ -2326,351 +1899,16 @@
     color: var(--bad);
   }
 
-  /* ---- Model Kit: a step of a plastic model kit's manual on the cutting mat. The round's heading is the step's
-     header on the manual's paper; the options are four armor parts on one grey runner, each on its gate tag
-     A1 to A4. A pick marks its part and gates in yellow; at the reveal the right part is cut free in yellow
-     plastic and snaps in, and the rest stay on the runner as spares. ---- */
-  :root[data-theme='mecha'] .panel {
-    border: 0;
-    box-shadow:
-      inset 0 0 0 1px var(--line),
-      var(--panel-shadow);
-  }
-
-  /* The round's panel is the cutting mat: solid green under the text, its ruler ticks along the left edge. */
-  :root[data-theme='mecha'] .round-panel {
-    background:
-      repeating-linear-gradient(to bottom, rgb(170 214 190 / 0.4) 0 1px, transparent 1px 1rem) 0 0 / 0.375rem 100%
-        no-repeat,
-      repeating-linear-gradient(to bottom, rgb(170 214 190 / 0.4) 0 1px, transparent 1px 5rem) 0 0 / 0.625rem 100%
-        no-repeat,
-      var(--mat);
-  }
-
-  /* The step header, printed on the manual's paper: a black step bar before the heading and a rule under it. */
-  :root[data-theme='mecha'] .round-head {
-    margin: -1rem -1rem 0.75rem;
-    padding: 0.75rem 1rem;
-    border-bottom: 3px solid var(--manual-ink);
-    background: var(--manual);
-    color: var(--manual-ink);
-  }
-
   @media (min-width: 40rem) {
-    :root[data-theme='mecha'] .round-head {
-      margin: -1.5rem -1.5rem 1rem;
-      padding: 1rem 1.5rem;
-    }
   }
 
-  :root[data-theme='mecha'] .round-head h2 {
-    display: flex;
-    align-items: center;
-    gap: 0.625rem;
-  }
-
-  :root[data-theme='mecha'] .round-head h2::before {
-    content: '';
-    width: 0.625rem;
-    align-self: stretch;
-    background: var(--manual-ink);
-  }
-
-  :root[data-theme='mecha'] .round-head .button-quiet {
-    border: 2px solid var(--manual-ink);
-    background: transparent;
-    color: var(--manual-ink);
-  }
-
-  :root[data-theme='mecha'] .round-head .button-quiet:hover:not(:disabled) {
-    background: rgb(22 24 26 / 0.08);
-  }
-
-  /* The runner: a grey plastic frame with a cross bar between the four parts. */
-  :root[data-theme='mecha'] .options {
-    padding: 0.75rem;
-    border: 0.375rem solid var(--runner);
-    background:
-      linear-gradient(var(--runner), var(--runner)) center / 100% 0.25rem no-repeat,
-      linear-gradient(var(--runner), var(--runner)) center / 0.25rem 100% no-repeat;
-    box-shadow:
-      inset 0 0 0 1px var(--runner-shade),
-      0 0 0 1px var(--runner-shade),
-      0 0.75rem 1.25rem -0.75rem rgb(0 0 0 / 0.75);
-  }
-
-  /* Each part hangs from the frame or the cross bar by two gates, one to its left and one above. */
-  :root[data-theme='mecha'] .options > li {
-    position: relative;
-  }
-
-  :root[data-theme='mecha'] .options > li::before,
-  :root[data-theme='mecha'] .options > li::after {
-    content: '';
-    position: absolute;
-    background: var(--runner);
-    box-shadow: 0 0 0 1px var(--runner-shade);
-  }
-
-  :root[data-theme='mecha'] .options > li::before {
-    top: 50%;
-    left: -0.75rem;
-    width: 0.75rem;
-    height: 0.25rem;
-  }
-
-  :root[data-theme='mecha'] .options > li::after {
-    top: -0.75rem;
-    left: 50%;
-    width: 0.25rem;
-    height: 0.75rem;
-  }
-
-  :root[data-theme='mecha'] .options > li:has(.card[data-state='chosen'])::before,
-  :root[data-theme='mecha'] .options > li:has(.card[data-state='chosen'])::after {
-    background: var(--accent);
-  }
-
-  /* The right part is cut free: its gates are gone. */
-  :root[data-theme='mecha'] .options > li:has(.card[data-turned])::before,
-  :root[data-theme='mecha'] .options > li:has(.card[data-turned])::after {
-    visibility: hidden;
-  }
-
-  /* A part's front is its plastic: a shaded edge round a lighter face, drawn a little smaller, with a molded
-     panel line under the tag and two pin marks. */
-  :root[data-theme='mecha'] .card-front {
-    border: 0;
-    isolation: isolate;
-    background-color: var(--runner-shade);
-  }
-
-  :root[data-theme='mecha'] .card-front::before {
-    content: '';
-    position: absolute;
-    inset: 2px;
-    z-index: -1;
-    --cut: calc(0.625rem - 1.2px);
-    background:
-      linear-gradient(rgb(0 0 0 / 0.22), rgb(0 0 0 / 0.22)) 0 calc(2.625rem + 2px) / 100% 1px no-repeat,
-      linear-gradient(rgb(255 255 255 / 0.5), rgb(255 255 255 / 0.5)) 0 calc(2.625rem + 3px) / 100% 1px no-repeat,
-      radial-gradient(circle at calc(100% - 0.875rem) 0.875rem, var(--runner-shade) 0 2px, transparent 2.5px),
-      radial-gradient(circle at calc(100% - 1.625rem) 0.875rem, var(--runner-shade) 0 2px, transparent 2.5px);
-    background-color: var(--card);
-  }
-
-  :root[data-theme='mecha'] .card[data-state='chosen'] .card-front {
-    background-color: var(--accent);
-  }
-
-  :root[data-theme='mecha'] .card[data-state='chosen'] .card-front::before {
-    background-color: var(--card-chosen);
-  }
-
-  :root[data-theme='mecha'] .card[data-state='muted'] .card-front::before {
-    background-color: var(--card-dim);
-  }
-
-  :root[data-theme='mecha'] .card-index,
   :root[data-theme='retro-vhs'] .card-index {
     display: flex;
     align-items: center;
     justify-content: center;
   }
 
-  /* The gate tag molded on the runner beside each part: A1 to A4. */
-  :root[data-theme='mecha'] .card-index {
-    width: auto;
-    min-width: 2.25rem;
-    padding: 0 0.375rem;
-    border-radius: 0;
-    background: var(--card-mark);
-    color: var(--card-mark-ink);
-    font-size: 1rem;
-    box-shadow: none;
-  }
-
-  :root[data-theme='mecha'] .card-index::before {
-    content: 'A';
-  }
-
-  :root[data-theme='mecha'] .card-printed {
-    background: var(--runner);
-    color: var(--card-mark);
-    box-shadow: inset 0 0 0 2px var(--runner-shade);
-  }
-
-  :root[data-theme='mecha'] .button-quiet {
-    border: 1px solid var(--edge);
-    background: var(--raised);
-  }
-
-  :root[data-theme='mecha'] .button-quiet:hover:not(:disabled) {
-    background-color: var(--line);
-  }
-
-  /* ---- Gachapon: a capsule toy machine. The round's heading is the machine's red head under a row of bulbs;
-     the options are four alike capsules in the clear dome, each title on a paper slip inside. A pick drops its
-     capsule toward the tray; at the reveal the wrong capsules drop out of the dome and the right one opens on a
-     gold charm. ---- */
-  :root[data-theme='magical-girl'] .panel {
-    border: 2px solid var(--line);
-  }
-
-  /* The round's panel is the machine's white body, rimmed in its red, with the tray at its foot. */
-  :root[data-theme='magical-girl'] .round-panel {
-    border: 0;
-    box-shadow:
-      inset 0 0 0 3px var(--head),
-      var(--panel-shadow);
-  }
-
-  /* The tray: a chrome-rimmed mouth after the panel's last line, so it never sits over text. */
-  :root[data-theme='magical-girl'] .round-panel::after {
-    content: '';
-    display: block;
-    width: min(55%, 14rem);
-    height: 2.25rem;
-    margin: 1.5rem auto 0.25rem;
-    border-radius: 0.375rem 0.375rem 1.25rem 1.25rem;
-    background: var(--ink);
-    box-shadow:
-      inset 0 0.5rem 0.75rem rgb(0 0 0 / 0.6),
-      0 0 0 4px var(--chrome),
-      0 0 0 5px var(--chrome-shade);
-  }
-
-  /* The machine's head: solid red under the heading, its bulbs along the foot below the text. */
-  :root[data-theme='magical-girl'] .round-head {
-    margin: -1rem -1rem 0.75rem;
-    padding: 0.875rem 1rem 1.5rem;
-    border-radius: var(--radius-2xl) var(--radius-2xl) 0 0;
-    background:
-      radial-gradient(circle, var(--foil) 0 3px, transparent 3.5px) 0.25rem calc(100% - 0.25rem) / 1.25rem 0.75rem
-        repeat-x,
-      var(--head);
-    color: var(--head-ink);
-  }
-
   @media (min-width: 40rem) {
-    :root[data-theme='magical-girl'] .round-head {
-      margin: -1.5rem -1.5rem 1rem;
-      padding: 1.125rem 1.5rem 1.75rem;
-    }
-  }
-
-  :root[data-theme='magical-girl'] .round-head .button-quiet {
-    border-color: var(--head-ink);
-    background: transparent;
-    color: var(--head-ink);
-  }
-
-  /* The dome: clear glass with a highlight, rounded over the top, in a chrome rim. */
-  :root[data-theme='magical-girl'] .options {
-    padding: 1rem 0.875rem 0.875rem;
-    border-radius: 3.5rem 3.5rem 1.25rem 1.25rem;
-    background: radial-gradient(ellipse 30% 18% at 22% 10%, rgb(255 255 255 / 0.95), transparent 70%), var(--dome);
-    box-shadow:
-      inset 0 0 0 3px var(--chrome),
-      inset 0 0 0 4px var(--chrome-shade);
-  }
-
-  /* A capsule: its colored half on top, holding the key, a seam, and the clear half with the title on a slip. */
-  :root[data-theme='magical-girl'] .card-face {
-    border-radius: 1.75rem;
-  }
-
-  :root[data-theme='magical-girl'] .card-front {
-    border: 0;
-    background:
-      linear-gradient(var(--capsule), var(--capsule)) top / 100% 3rem no-repeat,
-      linear-gradient(var(--capsule-shade), var(--capsule-shade)) 0 3rem / 100% 3px no-repeat,
-      radial-gradient(ellipse 18% 12% at 82% 72%, rgb(255 255 255 / 0.9), transparent 70%),
-      var(--card);
-    box-shadow: inset 0 0 0 2px var(--capsule-shade);
-  }
-
-  :root[data-theme='magical-girl'] .card-index {
-    border-radius: 50%;
-    box-shadow: 0 0 0 2px var(--card-mark-ink);
-  }
-
-  :root[data-theme='magical-girl'] .card-title {
-    padding: 0.25rem 0.5rem;
-    border-radius: 0.25rem;
-    background: var(--slip);
-    box-shadow: 0 1px 2px rgb(0 0 0 / 0.12);
-  }
-
-  /* The pick drops toward the tray and takes the machine's red. */
-  :root[data-theme='magical-girl'] .card[data-state='chosen'] .card-front {
-    background:
-      linear-gradient(var(--head), var(--head)) top / 100% 3rem no-repeat,
-      var(--card-chosen);
-    box-shadow: inset 0 0 0 2px var(--head);
-    transform: translateY(0.25rem);
-  }
-
-  :root[data-theme='magical-girl'] .card[data-state='chosen'] .card-title {
-    background: transparent;
-    box-shadow: none;
-  }
-
-  /* Capsules out of the running lose their color, the dome's grey under them. */
-  :root[data-theme='magical-girl'] .card:is([data-state='muted'], [data-state='missed']) .card-front {
-    background:
-      linear-gradient(var(--chrome), var(--chrome)) top / 100% 3rem no-repeat,
-      var(--card-dim);
-    box-shadow: inset 0 0 0 2px var(--chrome-shade);
-  }
-
-  /* The right capsule opens: its colored half lifted off the top, a gold charm inside. */
-  :root[data-theme='magical-girl'] .card-back:not(.card-printed) {
-    padding-top: 1.75rem;
-    background:
-      linear-gradient(var(--capsule), var(--capsule)) top / 100% 0.875rem no-repeat,
-      var(--card-back);
-    box-shadow: inset 0 0 0 2px var(--capsule-shade);
-  }
-
-  :root[data-theme='magical-girl'] .card-back:not(.card-printed)::after {
-    content: '';
-    position: absolute;
-    right: 0.875rem;
-    bottom: 0.75rem;
-    width: 1.5rem;
-    height: 1.5rem;
-    background: var(--foil-sheen);
-    clip-path: polygon(50% 0, 61% 39%, 100% 50%, 61% 61%, 50% 100%, 39% 61%, 0 50%, 39% 39%);
-  }
-
-  /* Face down, a closed capsule with nothing to read. */
-  :root[data-theme='magical-girl'] .card-printed {
-    background:
-      linear-gradient(var(--capsule), var(--capsule)) top / 100% 45% no-repeat,
-      linear-gradient(var(--capsule-shade), var(--capsule-shade)) 0 45% / 100% 3px no-repeat,
-      var(--card);
-    color: var(--capsule-shade);
-    box-shadow: inset 0 0 0 2px var(--capsule-shade);
-  }
-
-  :root[data-theme='magical-girl'] .card-printed .card-emblem {
-    margin-top: 2.5rem;
-  }
-
-  :root[data-theme='magical-girl'] .button {
-    border-radius: 999px;
-  }
-
-  :root[data-theme='magical-girl'] .button-quiet {
-    border: 2px solid var(--line);
-  }
-
-  :root[data-theme='magical-girl'] .choice[type='radio']::before {
-    width: 0.75rem;
-    height: 0.75rem;
-    border-radius: 0;
-    clip-path: polygon(50% 0, 61% 39%, 100% 50%, 61% 61%, 50% 100%, 39% 61%, 0 50%, 39% 39%);
   }
 
   /* ---- Quest Board: the guild's notice board. The round's heading is carved into a plank across the top; the
@@ -3723,350 +2961,7 @@
     stroke-width: 2;
   }
 
-  /* ---- Tournament Arc: a semifinal bracket on the tournament board. The round's heading is a black banner
-     brushed ragged at its ends; the time left is the referee's pennants, taken down one by one; the options are four
-     wooden entrant plates hung with a hard shadow, two matches each joined by a VS medallion on the bracket's
-     spine, with the final's emblem at its middle. A pick turns its plate black and advances it toward the spine,
-     its medallion red; at the reveal the right entrant takes the final in gold. ---- */
-  :root[data-theme='tournament-arc'] .panel {
-    border: 2px solid var(--ink);
-  }
-
-  /* The banner: black cloth across the panel's top, its ends brushed ragged. */
-  :root[data-theme='tournament-arc'] .round-head {
-    margin: -1rem -1rem 1rem;
-    padding: 0.875rem 1.5rem;
-    background: var(--banner);
-    color: var(--banner-ink);
-    clip-path: polygon(
-      0 8%,
-      2% 0,
-      98% 4%,
-      100% 0,
-      99% 30%,
-      100% 55%,
-      98.5% 80%,
-      100% 100%,
-      3% 96%,
-      0 100%,
-      1.5% 70%,
-      0 45%,
-      1% 22%
-    );
-  }
-
   @media (min-width: 40rem) {
-    :root[data-theme='tournament-arc'] .round-head {
-      margin: -1.5rem -1.5rem 1.25rem;
-      padding: 1rem 2rem;
-    }
-  }
-
-  :root[data-theme='tournament-arc'] .round-head .button-quiet {
-    border: 2px solid var(--banner-ink);
-    background: transparent;
-    color: var(--banner-ink);
-  }
-
-  /* The bracket: a spine down the middle that joins the two matches to the final at its center. */
-  :root[data-theme='tournament-arc'] .options {
-    position: relative;
-    padding: 0.25rem 0;
-  }
-
-  :root[data-theme='tournament-arc'] .options::before {
-    content: '';
-    position: absolute;
-    top: 1rem;
-    bottom: 1rem;
-    left: 50%;
-    width: 3px;
-    margin-left: -1.5px;
-    background: var(--ink);
-  }
-
-  :root[data-theme='tournament-arc'] .options::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 1.25rem;
-    height: 1.25rem;
-    margin: -0.625rem 0 0 -0.625rem;
-    border: 3px solid var(--ink);
-    background: var(--panel);
-    rotate: 45deg;
-  }
-
-  :root[data-theme='tournament-arc'][data-phase='reveal'] .options::after {
-    background: var(--gold);
-  }
-
-  /* An entrant plate: hinoki hung on the board with a hard shadow, two nails at its top corners. */
-  :root[data-theme='tournament-arc'] .card-front {
-    border: 2px solid var(--ink);
-    background-image:
-      radial-gradient(circle at 0.625rem 0.5rem, var(--edge) 0 2px, transparent 2.5px),
-      radial-gradient(circle at calc(100% - 0.625rem) 0.5rem, var(--edge) 0 2px, transparent 2.5px);
-    box-shadow: 3px 3px 0 var(--ink);
-  }
-
-  :root[data-theme='tournament-arc'] .card-index {
-    margin-top: 0.25rem;
-  }
-
-  /* Each match's VS medallion sits on the spine between its two plates, hidden from screen readers. */
-  :root[data-theme='tournament-arc'] .options > li:nth-child(odd) .card::after {
-    content: 'VS' / '';
-    position: absolute;
-    top: 50%;
-    right: -1.125rem;
-    z-index: 2;
-    display: grid;
-    place-items: center;
-    width: 1.5rem;
-    height: 1.5rem;
-    margin-top: -0.75rem;
-    border-radius: 50%;
-    background: var(--ink);
-    color: var(--panel);
-    font-family: var(--display-font);
-    font-size: 0.5625rem;
-    line-height: 1;
-  }
-
-  /* Picked: the plate turns black and advances toward the spine, its match's medallion red. */
-  :root[data-theme='tournament-arc'] .card[data-state='chosen'] .card-index {
-    background: var(--accent);
-    color: var(--accent-ink);
-  }
-
-  :root[data-theme='tournament-arc'] .options > li:nth-child(odd):has(.card[data-state='chosen']) {
-    translate: 0.25rem 0;
-  }
-
-  :root[data-theme='tournament-arc'] .options > li:nth-child(even):has(.card[data-state='chosen']) {
-    translate: -0.25rem 0;
-  }
-
-  :root[data-theme='tournament-arc'] .options > li:nth-child(odd):has(.card[data-state='chosen']) .card::after,
-  :root[data-theme='tournament-arc'] .options > li:nth-child(odd):has(+ li .card[data-state='chosen']) .card::after {
-    background: var(--accent);
-    color: var(--accent-ink);
-  }
-
-  :root[data-theme='tournament-arc'] .card:is([data-state='muted'], [data-state='missed']) .card-front {
-    box-shadow: 1px 1px 0 var(--edge);
-  }
-
-  /* The final: the right entrant's plate in gold, framed in ink. */
-  :root[data-theme='tournament-arc'] .card-back:not(.card-printed) {
-    border: 2px solid var(--ink);
-    box-shadow: 3px 3px 0 var(--ink);
-  }
-
-  /* Face down, a blank black plate with a white "?!". */
-  :root[data-theme='tournament-arc'] .card-printed {
-    border: 2px solid var(--ink);
-    background: var(--ink);
-    color: var(--panel);
-  }
-
-  :root[data-theme='tournament-arc'] .button-quiet {
-    border: 2px solid var(--ink);
-  }
-
-  /* Dela Gothic runs too wide for a phone's header, so the buttons take the plates' face. */
-  :root[data-theme='tournament-arc'] .button {
-    font-family: var(--title-font);
-    font-weight: var(--title-weight);
-    letter-spacing: var(--title-tracking);
-  }
-
-  :root[data-theme='tournament-arc'] .button-quiet:hover:not(:disabled) {
-    border-color: var(--accent);
-  }
-
-  /* Tournament Arc's pennants (Pennants.tsx): red and white flags on a black cord. */
-  .pennants {
-    flex: 1;
-    min-width: 0;
-    height: auto;
-    overflow: visible;
-  }
-
-  .pennant-cord {
-    fill: none;
-    stroke: var(--ink);
-    stroke-width: 1.5;
-  }
-
-  .pennant-red,
-  .pennant-white {
-    stroke: var(--ink);
-    stroke-width: 1;
-    stroke-linejoin: round;
-  }
-
-  .pennant-red {
-    fill: var(--accent);
-  }
-
-  .pennant-white {
-    fill: var(--panel);
-  }
-
-  .pennants [data-gone] {
-    opacity: 0;
-  }
-
-  /* ---- Splash Page: a battle manga page. The round's heading is a narration box in a heavy ink frame; the time
-     left is a panel's focus lines closing in on its center; the options are four slanted panels on screentone, read
-     right to left like a manga page, each title lettered in a speech balloon. A pick blacks its panel out with the
-     balloon still white; at the reveal the right panel blows up into a splash of focus lines with a sound effect
-     lettered over its corner. ---- */
-  :root[data-theme='splash-page'] .panel {
-    border: 3px solid var(--ink);
-  }
-
-  /* The narration box: white in a heavy frame with a hard shadow. */
-  :root[data-theme='splash-page'] .round-head {
-    margin-bottom: 1rem;
-    padding: 0.625rem 1rem;
-    border: 3px solid var(--ink);
-    background: var(--panel);
-    box-shadow: 4px 4px 0 var(--ink);
-  }
-
-  /* The page reads right to left: the first panel is the top right. Each panel's own content reads left to right. */
-  :root[data-theme='splash-page'] .options {
-    direction: rtl;
-  }
-
-  :root[data-theme='splash-page'] .options > li {
-    direction: ltr;
-  }
-
-  /* Each panel's cut: the gutters between them slant, and every panel loses the same corner triangle, so all four
-     keep the same area. --outer is the panel, --inner its frame's inside edge. */
-  :root[data-theme='splash-page'] .options > li:nth-child(1) {
-    --outer: 8% 0, 100% 0, 100% 100%, 0 100%;
-    --inner: calc(8% + 3px) 3px, calc(100% - 3px) 3px, calc(100% - 3px) calc(100% - 3px), 3px calc(100% - 3px);
-  }
-
-  :root[data-theme='splash-page'] .options > li:nth-child(2) {
-    --outer: 0 0, 100% 0, 92% 100%, 0 100%;
-    --inner: 3px 3px, calc(100% - 3px) 3px, calc(92% - 3px) calc(100% - 3px), 3px calc(100% - 3px);
-  }
-
-  :root[data-theme='splash-page'] .options > li:nth-child(3) {
-    --outer: 0 0, 100% 0, 100% 100%, 8% 100%;
-    --inner: 3px 3px, calc(100% - 3px) 3px, calc(100% - 3px) calc(100% - 3px), calc(8% + 3px) calc(100% - 3px);
-  }
-
-  :root[data-theme='splash-page'] .options > li:nth-child(4) {
-    --outer: 0 0, 92% 0, 100% 100%, 0 100%;
-    --inner: 3px 3px, calc(92% - 3px) 3px, calc(100% - 3px) calc(100% - 3px), 3px calc(100% - 3px);
-  }
-
-  :root[data-theme='splash-page'] .card-face {
-    border: 0;
-    border-radius: 0;
-    clip-path: polygon(var(--outer));
-  }
-
-  /* A panel: screentone on white, its ink frame drawn along the cut. */
-  :root[data-theme='splash-page'] .card-front {
-    background-image: radial-gradient(circle, var(--tone) 1px, transparent 1.4px);
-    background-size: 5px 5px;
-  }
-
-  :root[data-theme='splash-page'] .card-face::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: var(--ink);
-    clip-path: polygon(evenodd, var(--outer), var(--inner));
-    pointer-events: none;
-  }
-
-  /* The title in a speech balloon, its tail pointing down into the panel. */
-  :root[data-theme='splash-page'] .card-title {
-    position: relative;
-    padding: 0.25rem 0.75rem;
-    border: 2px solid var(--ink);
-    border-radius: 1.5rem / 1.25rem;
-    background: var(--card);
-    color: var(--card-ink);
-  }
-
-  :root[data-theme='splash-page'] .card:is([data-state='muted'], [data-state='missed']) .card-title {
-    color: var(--card-muted);
-  }
-
-  /* Picked: the panel blacked out, its key red, the balloon still white. */
-  :root[data-theme='splash-page'] .card[data-state='chosen'] .card-front {
-    background-image: none;
-  }
-
-  :root[data-theme='splash-page'] .card[data-state='chosen'] .card-index {
-    background: var(--accent);
-    color: var(--accent-ink);
-  }
-
-  /* The splash: the right panel bursts out of its frame in focus lines, its words on white, a sound effect over its
-     corner, and settles back to its own size, so the reveal moves no card. */
-  :root[data-theme='splash-page'] .card[data-turned] {
-    z-index: 2;
-  }
-
-  :root[data-theme='splash-page'] .card-back:not(.card-printed) {
-    background:
-      radial-gradient(ellipse 34% 30% at 50% 50%, var(--card-back) 0 96%, transparent 100%),
-      repeating-conic-gradient(from 2deg at 50% 50%, var(--ink) 0 1.2deg, transparent 1.2deg 9deg), var(--card-back);
-  }
-
-  :root[data-theme='splash-page'] .card-back:not(.card-printed) > span {
-    padding-inline: 0.25rem;
-    background: var(--card-back);
-  }
-
-  :root[data-theme='splash-page'] .card[data-turned]::after {
-    content: 'ドン' / '';
-    position: absolute;
-    top: -0.875rem;
-    right: -0.25rem;
-    z-index: 3;
-    font-family: var(--ja-font);
-    font-size: 1.75rem;
-    font-weight: 900;
-    line-height: 1;
-    color: var(--accent);
-    -webkit-text-stroke: 0.12em var(--ink);
-    paint-order: stroke fill;
-    rotate: -10deg;
-    pointer-events: none;
-  }
-
-  /* Face down, a blank black panel with a white "?!". */
-  :root[data-theme='splash-page'] .card-printed {
-    background: var(--ink);
-    color: var(--panel);
-  }
-
-  :root[data-theme='splash-page'] .button-quiet {
-    border: 2px solid var(--ink);
-  }
-
-  :root[data-theme='splash-page'] .button-quiet:hover:not(:disabled) {
-    border-color: var(--accent);
-  }
-
-  /* Splash Page's focus lines (FocusLines.tsx): ink wedges in a white panel frame. */
-  .focus-lines {
-    flex: 1;
-    min-width: 0;
-    height: 2.75rem;
   }
 
   .focus-frame {
@@ -4074,107 +2969,6 @@
     stroke: var(--ink);
     stroke-width: 2;
     vector-effect: non-scaling-stroke;
-  }
-
-  .focus-line {
-    fill: var(--ink);
-  }
-
-  /* ---- Night Arc: the all-black pages of a manga's darkest chapter. The round's heading is the chapter's header
-     in white brush capitals between two white rules; the time left is white focus lines closing in on a black
-     panel; the options are four black panels in white frames, their titles in white-ink balloons and their numbers
-     set in the gutters at the panels' corners. A pick doubles its panel's frame; at the reveal the right panel bursts
-     to white. Red is spent only on a wrong verdict. ---- */
-  :root[data-theme='night-arc'] .panel {
-    border: 2px solid var(--ink);
-  }
-
-  /* The chapter header: white brush capitals centered between two white rules. */
-  :root[data-theme='night-arc'] .round-head {
-    justify-content: center;
-    margin-bottom: 1rem;
-    padding-block: 0.75rem;
-    border-block: 2px solid var(--ink);
-    text-align: center;
-  }
-
-  /* A panel: solid black in a white frame. Its number sits in the gutter on its top corner, so the face lets it out. */
-  :root[data-theme='night-arc'] .options {
-    padding: 0.5rem;
-  }
-
-  :root[data-theme='night-arc'] .card-front {
-    justify-content: flex-end;
-    overflow: visible;
-    border: 3px solid var(--ink);
-    border-radius: 0;
-  }
-
-  :root[data-theme='night-arc'] .card-index {
-    position: absolute;
-    top: -0.75rem;
-    left: -0.75rem;
-    z-index: 1;
-    min-width: 1.5rem;
-    height: 1.5rem;
-    border-radius: 0;
-    background: var(--page);
-    color: var(--ink);
-    box-shadow: none;
-  }
-
-  /* The title in a white-ink balloon: a white outline round black, its tail pointing down into the panel. */
-  :root[data-theme='night-arc'] .card-title {
-    padding: 0.25rem 0.75rem;
-    border: 2px solid var(--ink);
-    border-radius: 1.5rem / 1.25rem;
-    background: var(--card);
-  }
-
-  /* Picked: the frame doubled, a black rule inside the white. */
-  :root[data-theme='night-arc'] .card[data-state='chosen'] .card-front {
-    box-shadow:
-      inset 0 0 0 3px var(--card),
-      inset 0 0 0 5px var(--ink);
-  }
-
-  /* Out of the running: the frame goes grey. */
-  :root[data-theme='night-arc'] .card:is([data-state='muted'], [data-state='missed']) .card-front,
-  :root[data-theme='night-arc'] .card:is([data-state='muted'], [data-state='missed']) .card-title {
-    border-color: var(--muted);
-  }
-
-  :root[data-theme='night-arc'] .card:is([data-state='muted'], [data-state='missed']) .card-index {
-    color: var(--muted);
-    box-shadow: none;
-  }
-
-  /* The right panel bursts to white: black focus lines from its edges, its words on white. */
-  :root[data-theme='night-arc'] .card-back:not(.card-printed) {
-    border: 3px solid var(--ink);
-    border-radius: 0;
-    background:
-      radial-gradient(ellipse 34% 30% at 50% 50%, var(--card-back) 0 96%, transparent 100%),
-      repeating-conic-gradient(from 2deg at 50% 50%, var(--card-back-ink) 0 1.2deg, transparent 1.2deg 9deg),
-      var(--card-back);
-  }
-
-  :root[data-theme='night-arc'] .card-back:not(.card-printed) > span {
-    padding-inline: 0.25rem;
-    background: var(--card-back);
-  }
-
-  /* Face down, a black panel in its white frame with a white "?!". */
-  :root[data-theme='night-arc'] .card-printed {
-    border: 3px solid var(--ink);
-    border-radius: 0;
-    background: var(--card);
-    color: var(--ink);
-  }
-
-  :root[data-theme='night-arc'] .button-quiet {
-    border: 2px solid var(--ink);
-    background: var(--page);
   }
 
   /* ---- Side A: a friend's mixtape. The round's heading is written in marker on the cassette's label, under its
@@ -4367,15 +3161,6 @@
       inset 0 0.375rem 0.75rem rgb(0 0 0 / 0.5);
   }
 
-  /* Hanami: another lacquer box rimmed twice in vermilion. */
-  :root[data-theme='sakura'] .reveal-band {
-    border: 2px solid var(--card-mark);
-    background: var(--panel);
-    box-shadow:
-      inset 0 0 0 5px var(--panel),
-      inset 0 0 0 6px var(--card-mark);
-  }
-
   /* Fighter Select: the fighter's profile on the select screen under a red slant; names on slanted plates. */
   :root[data-theme='shonen'] .reveal-band {
     border: 2px solid var(--line);
@@ -4385,31 +3170,13 @@
       var(--panel);
   }
 
-  :root[data-theme='shonen'] .reveal-kind,
-  /* Model Kit: a framed box on a page of the manual. */
-  :root[data-theme='mecha'] .reveal-band {
+  :root[data-theme='shonen'] .reveal-kind {
     --ink: var(--manual-ink);
     --muted: var(--manual-muted);
     border: 2px solid var(--manual-ink);
     border-radius: 0;
     background: var(--manual);
     color: var(--manual-ink);
-  }
-
-  :root[data-theme='mecha'] .reveal-kind {
-    border-radius: 0;
-    background: var(--card-mark);
-    color: var(--card-mark-ink);
-  }
-
-  /* Gachapon: an open capsule, its blue half over the top. */
-  :root[data-theme='magical-girl'] .reveal-band {
-    border: 0;
-    border-radius: 1.75rem;
-    background:
-      linear-gradient(var(--capsule), var(--capsule)) top / 100% 0.75rem no-repeat,
-      var(--panel);
-    box-shadow: inset 0 0 0 2px var(--capsule-shade);
   }
 
   /* Back Issue: the article page, ruled in ink and printed off register, its kind set as a black caption tag. */
@@ -4491,49 +3258,6 @@
     color: var(--card-mark-ink);
   }
 
-  /* Tournament Arc: the board's result notice in a double ink rule, its kind on a black tag; names on little
-     wooden plates, this player's in red. */
-  :root[data-theme='tournament-arc'] .reveal-band {
-    border: 4px double var(--ink);
-    border-radius: 0;
-    background: var(--panel);
-  }
-
-  :root[data-theme='tournament-arc'] .reveal-kind {
-    border-radius: 0;
-    background: var(--ink);
-    color: var(--panel);
-  }
-
-  /* Splash Page: another panel in a heavy frame with a hard shadow, its kind on a black caption; names in little
-     speech balloons, this player's in red. */
-  :root[data-theme='splash-page'] .reveal-band {
-    border: 3px solid var(--ink);
-    border-radius: 0;
-    background: var(--panel);
-    box-shadow: 4px 4px 0 var(--ink);
-  }
-
-  :root[data-theme='splash-page'] .reveal-kind {
-    border-radius: 0;
-    background: var(--ink);
-    color: var(--panel);
-  }
-
-  /* Night Arc: another black panel in a white frame, its kind on a white caption; names in white-ink balloons, this
-     player's filled white. */
-  :root[data-theme='night-arc'] .reveal-band {
-    border: 3px solid var(--ink);
-    border-radius: 0;
-    background: var(--page);
-  }
-
-  :root[data-theme='night-arc'] .reveal-kind {
-    border-radius: 0;
-    background: var(--ink);
-    color: var(--page);
-  }
-
   /* Side A: the insert's inside flap, lined paper, the kind under a highlighter stroke. */
   :root[data-theme='side-a'] .reveal-band {
     --ink: var(--card-ink);
@@ -4553,14 +3277,10 @@
 
   /* On light paper the cover's wash is cut back, so the dark ink keeps its contrast. */
   :root:is(
-      [data-theme='mecha'],
-      [data-theme='magical-girl'],
       [data-theme='retro-vhs'],
       [data-theme='konbini'],
       [data-theme='omikuji'],
       [data-theme='blossom-map'],
-      [data-theme='tournament-arc'],
-      [data-theme='splash-page'],
       [data-theme='side-a']
     )
     .reveal-wash {
@@ -4715,69 +3435,6 @@
     pointer-events: none;
   }
 
-  /* Hanami's dango skewer (Dango.tsx): a bamboo stick and the dumplings left on it. */
-  .dango {
-    flex: 1;
-    min-width: 0;
-    height: auto;
-  }
-
-  .dango-stick {
-    stroke: var(--dango-stick);
-    stroke-width: 3;
-    stroke-linecap: round;
-  }
-
-  .dango-pink {
-    fill: var(--dango-pink);
-  }
-
-  .dango-white {
-    fill: var(--dango-white);
-  }
-
-  .dango-green {
-    fill: var(--dango-green);
-  }
-
-  :is(.dango-pink, .dango-white, .dango-green) {
-    stroke: rgb(28 21 21 / 0.35);
-    stroke-width: 1;
-  }
-
-  /* Model Kit's nipper (Nipper.tsx): the runner's frame, its gates, and the tool with red grips. */
-  .nipper {
-    flex: 1;
-    min-width: 0;
-    height: auto;
-    flex-shrink: 0;
-    overflow: visible;
-  }
-
-  .nipper-frame,
-  .nipper-gate {
-    fill: var(--runner);
-    stroke: var(--runner-shade);
-    stroke-width: 1;
-  }
-
-  .nipper [data-cut] .nipper-gate {
-    opacity: 0;
-  }
-
-  .nipper-grip {
-    fill: none;
-    stroke: var(--nipper-grip);
-    stroke-width: 5;
-    stroke-linecap: round;
-  }
-
-  .nipper-jaw {
-    fill: var(--nipper);
-    stroke: var(--runner-shade);
-    stroke-width: 1;
-  }
-
   /* The mark a theme prints on each option that was not the answer, lit across the face's corner. */
   .card-mark-plate {
     position: absolute;
@@ -4793,48 +3450,6 @@
     line-height: 1.4;
     white-space: nowrap;
     box-shadow: 0 0 0.75rem -0.125rem var(--card-alert);
-  }
-
-  /* Model Kit's "Spare": a plain tag over the part's pin marks, since a part left on the runner is kept, not wrong. */
-  :root[data-theme='mecha'] .card-mark-plate {
-    top: 0.5rem;
-    border-radius: 0;
-    background: var(--card-mark);
-    color: var(--card-mark-ink);
-    box-shadow: none;
-  }
-
-  /* Gachapon's coin dial (Dial.tsx): a chrome knob with a grip bar, ringed by the seconds still to turn. */
-  .dial {
-    width: 4rem;
-    height: 4rem;
-    flex-shrink: 0;
-  }
-
-  .dial-body {
-    fill: var(--chrome);
-    stroke: var(--chrome-shade);
-    stroke-width: 1.5;
-  }
-
-  .dial-tick {
-    stroke: var(--accent);
-    stroke-width: 2.5;
-    stroke-linecap: round;
-  }
-
-  .dial-tick[data-turned] {
-    stroke: var(--line);
-  }
-
-  .dial-knob {
-    transform-origin: 26px 26px;
-  }
-
-  .dial-grip {
-    fill: var(--panel);
-    stroke: var(--chrome-shade);
-    stroke-width: 1.5;
   }
 
   /* ---- A burst of the theme's material (Burst.tsx): the right card's hit, and the winner's. ---- */
@@ -4868,15 +3483,6 @@
     background: var(--card-back);
   }
 
-  :root[data-theme='sakura'] .burst-mote {
-    border-radius: 80% 0 80% 0;
-    background: var(--blossom);
-  }
-
-  :root[data-theme='sakura'] .burst-mote:nth-child(4n) {
-    background: var(--foil);
-  }
-
   :root[data-theme='shonen'] .burst-mote {
     width: calc(var(--size) * 0.5);
     height: calc(var(--size) * 2.2);
@@ -4885,22 +3491,6 @@
   }
 
   :root[data-theme='shonen'] .burst-mote:nth-child(5n) {
-    background: var(--accent);
-  }
-
-  /* Model Kit's burst is plastic flash off the cut: yellow and runner grey. */
-  :root[data-theme='mecha'] .burst-mote:nth-child(even) {
-    background: var(--runner);
-  }
-
-  :root[data-theme='magical-girl'] .burst-mote {
-    width: calc(var(--size) * 1.6);
-    height: calc(var(--size) * 1.6);
-    background: var(--foil-sheen);
-    clip-path: polygon(50% 0, 61% 39%, 100% 50%, 61% 61%, 50% 100%, 39% 61%, 0 50%, 39% 39%);
-  }
-
-  :root[data-theme='magical-girl'] .burst-mote:nth-child(3n) {
     background: var(--accent);
   }
 
@@ -4954,12 +3544,6 @@
     pointer-events: none;
   }
 
-  :root[data-theme='sakura'] .card-impact::before {
-    border-color: var(--foil);
-    outline: 1px solid var(--card-mark);
-    outline-offset: 3px;
-  }
-
   /* Shonen shouts the answer from a starburst in its spot red. */
   :root[data-theme='shonen'] .card-impact::before {
     inset: -2.25rem -1.25rem;
@@ -4988,36 +3572,6 @@
       20% 6%,
       42% 22%
     );
-  }
-
-  /* Model Kit's right part clicks into place: brackets close round its corners in the green of a right answer. */
-  :root[data-theme='mecha'] .card-impact::before {
-    --clamp: var(--good);
-    inset: -0.4375rem;
-    z-index: 1;
-    border: 0;
-    border-radius: 0;
-    background:
-      linear-gradient(var(--clamp), var(--clamp)) top left / 1.25rem 3px,
-      linear-gradient(var(--clamp), var(--clamp)) top left / 3px 1.25rem,
-      linear-gradient(var(--clamp), var(--clamp)) top right / 1.25rem 3px,
-      linear-gradient(var(--clamp), var(--clamp)) top right / 3px 1.25rem,
-      linear-gradient(var(--clamp), var(--clamp)) bottom left / 1.25rem 3px,
-      linear-gradient(var(--clamp), var(--clamp)) bottom left / 3px 1.25rem,
-      linear-gradient(var(--clamp), var(--clamp)) bottom right / 1.25rem 3px,
-      linear-gradient(var(--clamp), var(--clamp)) bottom right / 3px 1.25rem;
-    background-repeat: no-repeat;
-  }
-
-  :root[data-theme='magical-girl'] .card-impact::before {
-    padding: 3px;
-    border: 0;
-    border-radius: calc(var(--radius-xl) + 0.75rem);
-    background: var(--foil-sheen);
-    mask:
-      linear-gradient(#000 0 0) content-box,
-      linear-gradient(#000 0 0);
-    mask-composite: exclude;
   }
 
   /* Quest Board's right notice glows in the candle's light. */
@@ -5086,13 +3640,6 @@
     color: inherit;
   }
 
-  :root[data-theme='sakura'] .bill-lead {
-    box-shadow:
-      inset 0 0 0 5px var(--card-back),
-      inset 0 0 0 6px var(--card-back-ink),
-      var(--panel-shadow);
-  }
-
   /* The winner's gold plate in a white frame, slanted like the select screen. */
   :root[data-theme='shonen'] .bill-lead {
     border: 2px solid var(--ink);
@@ -5114,28 +3661,6 @@
     background:
       linear-gradient(currentColor, currentColor) 0 0 / calc(var(--share, 0) * 100%) 100% no-repeat,
       rgb(26 20 0 / 0.25);
-  }
-
-  :root[data-theme='mecha'] .bill-lead {
-    padding-top: 1.75rem;
-    border-radius: 0;
-    clip-path: polygon(1rem 0, calc(100% - 1rem) 0, 100% 1rem, 100% 100%, 0 100%, 0 1rem);
-    box-shadow: var(--panel-shadow);
-    background-image: linear-gradient(var(--runner), var(--runner));
-    background-size: 100% 0.5rem;
-    background-repeat: no-repeat;
-  }
-
-  /* Gachapon's winner comes out of the machine in an open lemon capsule, its blue half over the top. */
-  :root[data-theme='magical-girl'] .bill-lead {
-    padding-top: 1.75rem;
-    border-radius: 1.75rem;
-    background-image: linear-gradient(var(--capsule), var(--capsule));
-    background-size: 100% 0.875rem;
-    background-repeat: no-repeat;
-    box-shadow:
-      inset 0 0 0 2px var(--capsule-shade),
-      var(--panel-shadow);
   }
 
   /* A menu window, its cursor on the winner. */
@@ -5271,60 +3796,6 @@
       radial-gradient(circle at 23% 41%, var(--blossom) 0 22%, transparent 23%);
   }
 
-  /* Tournament Arc's champion: the gold plate framed in ink, hung from a nail by its cord. */
-  :root[data-theme='tournament-arc'] .bill-lead {
-    margin-top: 1.5rem;
-    border: 2px solid var(--ink);
-    border-radius: 0;
-    box-shadow: 4px 4px 0 var(--ink);
-  }
-
-  :root[data-theme='tournament-arc'] .bill-lead::before {
-    content: '';
-    position: absolute;
-    bottom: 100%;
-    left: 30%;
-    width: 40%;
-    height: 1.25rem;
-    background:
-      radial-gradient(circle at 50% 3px, var(--edge) 0 3px, transparent 3.5px),
-      linear-gradient(to bottom right, transparent calc(50% - 1px), var(--ink) 0 calc(50% + 1px), transparent 0) left /
-        50% 100% no-repeat,
-      linear-gradient(to bottom left, transparent calc(50% - 1px), var(--ink) 0 calc(50% + 1px), transparent 0) right /
-        50% 100% no-repeat;
-  }
-
-  /* Splash Page's winner gets the splash: a panel in a heavy frame, a sound effect lettered over its corner. */
-  :root[data-theme='splash-page'] .bill-lead {
-    margin-top: 1rem;
-    border: 3px solid var(--ink);
-    border-radius: 0;
-    box-shadow: 5px 5px 0 var(--ink);
-  }
-
-  :root[data-theme='splash-page'] .bill-lead::after {
-    content: 'ドドド' / '';
-    position: absolute;
-    top: -1.125rem;
-    left: -0.5rem;
-    font-family: var(--ja-font);
-    font-size: 1.5rem;
-    font-weight: 900;
-    line-height: 1;
-    color: var(--accent);
-    -webkit-text-stroke: 0.12em var(--ink);
-    paint-order: stroke fill;
-    rotate: -8deg;
-  }
-
-  /* Night Arc's winner is the panel burst to white, framed in white on the black page. */
-  :root[data-theme='night-arc'] .bill-lead {
-    border-radius: 0;
-    box-shadow:
-      0 0 0 3px var(--page),
-      0 0 0 5px var(--ink);
-  }
-
   /* Side A's winner is written on the insert with a highlighter stroke over their name. */
   :root[data-theme='side-a'] .bill-lead {
     box-shadow: var(--panel-shadow);
@@ -5416,9 +3887,12 @@
     }
   }
 
+  /* Nine worlds stand three by three; on a wide screen the grid keeps a tile's size and centers. */
   @media (min-width: 64rem) {
     .theme-grid {
-      grid-template-columns: repeat(5, minmax(0, 1fr));
+      width: 100%;
+      max-width: 60rem;
+      margin-inline: auto;
     }
   }
 
@@ -5563,21 +4037,6 @@
       inset 0 3px 0 rgb(255 255 255 / 0.06);
   }
 
-  /* Hanami: the bento's lacquer lid edge, rimmed twice in vermilion like its panels. */
-  :root[data-theme='sakura'] .start-bar {
-    border-top: 2px solid var(--card-mark);
-    background: var(--panel);
-    box-shadow:
-      inset 0 5px 0 var(--panel),
-      inset 0 6px 0 var(--card-mark);
-  }
-
-  /* Gachapon: the machine's white body under its red rim. */
-  :root[data-theme='magical-girl'] .start-bar {
-    border-top: 3px solid var(--head);
-    background: var(--panel);
-  }
-
   /* Back Issue: the page's foot, under a ruled line of ink. */
   :root[data-theme='retro-vhs'] .start-bar {
     border-top: 2px solid var(--ink);
@@ -5617,32 +4076,6 @@
       repeating-linear-gradient(90deg, var(--card-mark) 0 1.5rem, var(--panel) 1.5rem 3rem) 0 0 / 100% 0.3125rem
         no-repeat,
       var(--panel);
-  }
-
-  /* Tournament Arc: the ring's edge, the referee's red pennants strung along the top under an ink rule. */
-  :root[data-theme='tournament-arc'] .start-bar {
-    border-top: 2px solid var(--ink);
-    padding-top: 1.375rem;
-    background:
-      conic-gradient(from 135deg at 50% 0, var(--accent) 90deg, transparent 0) 0 0 / 1.25rem 0.625rem repeat-x,
-      var(--panel);
-  }
-
-  /* Splash Page: the page's foot under a heavy panel rule, a strip of screentone above it. */
-  :root[data-theme='splash-page'] .start-bar {
-    border-top: 3px solid var(--ink);
-    padding-top: 1.125rem;
-    background:
-      radial-gradient(circle, var(--tone) 1px, transparent 1.4px) 0 0 / 5px 5px repeat-x,
-      var(--panel);
-    background-size:
-      5px 5px,
-      auto;
-  }
-
-  /* Night Arc: the black page's foot under a white panel rule. */
-  :root[data-theme='night-arc'] .start-bar {
-    border-top: 3px solid var(--ink);
   }
 
   /* Side A: the cassette's smoky shell along the foot, its label's stripes along the top edge. */
@@ -6135,29 +4568,6 @@
     background: rgb(255 255 255 / 0.1);
   }
 
-  :root[data-theme='sakura'] .phase-flash {
-    background: rgb(255 255 255 / 0.35);
-  }
-
-  /* The manga themes' impact frame: ink speed lines rushing in from the edges of the page. */
-  :root:is([data-theme='tournament-arc'], [data-theme='splash-page']) .phase-flash {
-    inset: -40%;
-    background: repeating-conic-gradient(from 0deg at 50% 50%, rgb(0 0 0 / 0.16) 0deg 1.2deg, transparent 1.2deg 7deg);
-    mask: radial-gradient(circle, transparent 18%, #000 42%);
-  }
-
-  /* Model Kit: the desk lamp swung over the bench. */
-  :root[data-theme='mecha'] .phase-flash {
-    background: radial-gradient(ellipse at 50% 0, rgb(255 240 205 / 0.35), transparent 65%);
-  }
-
-  :root[data-theme='magical-girl'] .phase-flash {
-    inset: 10%;
-    border: 3px solid var(--foil);
-    border-radius: 50%;
-    background: none;
-  }
-
   /* Back Issue: a pass of halftone, as a page comes off the press. */
   :root[data-theme='retro-vhs'] .phase-flash {
     background: radial-gradient(circle, rgb(0 163 220 / 0.18) 0 1.5px, transparent 2px) 0 0 / 6px 6px;
@@ -6172,24 +4582,13 @@
     animation: spin 90s linear infinite;
   }
 
-  /* Night Arc's and Fighter Select's pages are black, so their speed lines are drawn in white; Night Arc's
-     impact frame too. */
-  :root:is([data-theme='night-arc'], [data-theme='shonen']) .speed-lines {
+  /* Fighter Select's page is black, so its speed lines are drawn in white. */
+  :root[data-theme='shonen'] .speed-lines {
     background: repeating-conic-gradient(
       from 0deg at 50% 50%,
       rgb(255 255 255 / 0.08) 0deg 0.6deg,
       transparent 0.6deg 6deg
     );
-  }
-
-  :root[data-theme='night-arc'] .phase-flash {
-    inset: -40%;
-    background: repeating-conic-gradient(
-      from 0deg at 50% 50%,
-      rgb(255 255 255 / 0.18) 0deg 1.2deg,
-      transparent 1.2deg 7deg
-    );
-    mask: radial-gradient(circle, transparent 18%, #000 42%);
   }
 
   .weather-surge .tracking {
@@ -6525,25 +4924,6 @@
   }
 }
 
-@keyframes clamp-lock {
-  0% {
-    opacity: 0;
-    transform: scale(1.35);
-  }
-  40%,
-  56%,
-  72%,
-  100% {
-    opacity: 1;
-    transform: none;
-  }
-  48%,
-  64% {
-    opacity: 0.2;
-    transform: none;
-  }
-}
-
 @keyframes window-flash {
   0%,
   100% {
@@ -6699,35 +5079,6 @@
   }
 }
 
-@keyframes impact-lines {
-  0% {
-    opacity: 0;
-    transform: scale(1.35);
-  }
-  15% {
-    opacity: 1;
-    transform: scale(1);
-  }
-  100% {
-    opacity: 0;
-    transform: scale(0.96);
-  }
-}
-
-@keyframes ring-out {
-  0% {
-    opacity: 0;
-    transform: scale(0.3);
-  }
-  20% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-    transform: scale(1.4);
-  }
-}
-
 @keyframes spin {
   to {
     transform: rotate(360deg);
@@ -6812,10 +5163,6 @@
   animation: ink-shake 320ms linear 860ms;
 }
 
-:root[data-motion='full'][data-theme='mecha'] .card[data-turned] .card-impact::before {
-  animation: clamp-lock 900ms cubic-bezier(0.2, 0.9, 0.3, 1) 820ms both;
-}
-
 /* The results: the bill from the bottom up, the headliner last and largest. */
 :root[data-motion='full'] .bill-act {
   animation: act-in 480ms cubic-bezier(0.16, 1, 0.3, 1) var(--act-delay) both;
@@ -6879,23 +5226,6 @@
   )
   .phase-flash {
   animation: lightning 1.1s linear 700ms both;
-}
-
-:root[data-motion='full']:is([data-phase='reveal'], [data-phase='results']):is(
-    [data-theme='tournament-arc'],
-    [data-theme='splash-page'],
-    [data-theme='night-arc']
-  )
-  .phase-flash {
-  animation: impact-lines 800ms cubic-bezier(0.16, 1, 0.3, 1) 760ms both;
-}
-
-:root[data-motion='full']:is([data-phase='reveal'], [data-phase='results'])[data-theme='mecha'] .phase-flash {
-  animation: window-flash 700ms steps(1) 760ms both;
-}
-
-:root[data-motion='full']:is([data-phase='reveal'], [data-phase='results'])[data-theme='magical-girl'] .phase-flash {
-  animation: ring-out 1.2s cubic-bezier(0.16, 1, 0.3, 1) 760ms both;
 }
 
 :root[data-motion='full']:is([data-phase='reveal'], [data-phase='results'])[data-theme='isekai'] .phase-flash {
@@ -6982,105 +5312,6 @@
   }
 }
 
-/* Hanami: an eaten dumpling pops up off the skewer; the others' lids slide down to rest when a pick is made. */
-.dango [data-eaten] {
-  opacity: 0;
-}
-
-:root[data-motion='full'] .dango circle {
-  transform-box: fill-box;
-  transform-origin: center;
-  transition:
-    transform 280ms cubic-bezier(0.16, 1, 0.3, 1),
-    opacity 280ms ease-out;
-}
-
-:root[data-motion='full'] .dango [data-eaten] {
-  transform: translateY(-70%) scale(0.3);
-}
-
-:root[data-motion='full'][data-theme='sakura'] .card:is([data-state='muted'], [data-state='missed']) .card-front {
-  animation: lid-close 320ms cubic-bezier(0.16, 1, 0.3, 1) both;
-}
-
-@keyframes lid-close {
-  from {
-    box-shadow: inset 0 0 0 var(--lacquer);
-  }
-
-  to {
-    box-shadow: inset 0 0.375rem 0 var(--lacquer);
-  }
-}
-
-/* Gachapon: the dial's knob turns smoothly between seconds; a pick drops its capsule toward the tray; at the
-   reveal the wrong capsules drop out of the dome and the right one opens, its lid lifting off; at the results
-   the standings tumble out one capsule at a time. */
-:root[data-motion='full'] .dial-knob {
-  transition: transform 300ms linear;
-}
-
-:root[data-motion='full'][data-theme='magical-girl'] .card[data-state='chosen'] .card-front {
-  animation: capsule-drop 360ms cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-:root[data-motion='full'][data-phase='reveal'][data-theme='magical-girl']
-  .card:is([data-state='muted'], [data-state='missed'])
-  .card-front {
-  animation: capsule-out 420ms cubic-bezier(0.16, 1, 0.3, 1) 620ms both;
-}
-
-:root[data-motion='full'][data-theme='magical-girl'] .card[data-turned] .card-back {
-  animation: capsule-open 520ms cubic-bezier(0.16, 1, 0.3, 1) 760ms both;
-}
-
-:root[data-motion='full'][data-theme='magical-girl'] .bill-act {
-  animation-name: capsule-tumble;
-}
-
-@keyframes capsule-drop {
-  from {
-    transform: translateY(-0.75rem);
-  }
-
-  to {
-    transform: translateY(0.25rem);
-  }
-}
-
-@keyframes capsule-out {
-  from {
-    opacity: 0.4;
-    transform: translateY(-0.75rem);
-  }
-}
-
-@keyframes capsule-open {
-  from {
-    background-size:
-      100% 2.5rem,
-      auto;
-  }
-
-  to {
-    background-size:
-      100% 0.875rem,
-      auto;
-  }
-}
-
-@keyframes capsule-tumble {
-  from {
-    opacity: 0;
-    transform: translateY(-1.5rem) rotate(-12deg);
-  }
-
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-
 /* Back Issue: the reader's X is drawn into the ballot square; the ruler's bar shortens smoothly; at the reveal
    the answer page settles into register, its offset shadow closing in. */
 :root[data-motion='full'][data-theme='retro-vhs'] .card[data-state='chosen'] .card-front::after {
@@ -7156,48 +5387,6 @@
 
   to {
     opacity: 0.5;
-  }
-}
-
-/* Model Kit: a picked part's plastic takes its yellow mark in 150ms; the nipper's jaws snap shut at each cut and
-   its gate fades away; at the reveal the right part lifts off the runner as it is cut, then snaps down into place. */
-:root[data-motion='full'][data-theme='mecha'] :is(.card-front, .card-front::before) {
-  transition: background-color 150ms ease-out;
-}
-
-:root[data-motion='full'] .nipper-tool {
-  animation: nipper-snap 260ms cubic-bezier(0.3, 0, 0.2, 1);
-}
-
-:root[data-motion='full'] .nipper-gate {
-  transition: opacity 200ms ease-out;
-}
-
-:root[data-motion='full'][data-theme='mecha'] .card[data-turned] {
-  animation: part-snap 620ms cubic-bezier(0.16, 1, 0.3, 1) 620ms both;
-}
-
-@keyframes nipper-snap {
-  from {
-    transform: scaleX(1.6);
-  }
-
-  to {
-    transform: none;
-  }
-}
-
-@keyframes part-snap {
-  0% {
-    transform: none;
-  }
-
-  45% {
-    transform: translateY(-0.5rem) scale(1.04);
-  }
-
-  100% {
-    transform: none;
   }
 }
 
@@ -7475,135 +5664,6 @@
   from {
     scale: 0;
     rotate: -72deg;
-  }
-}
-
-/* Tournament Arc: each pennant drops as it is taken down; a pick advances its plate toward the spine; at the reveal
-   the final's emblem lights gold as the right entrant takes it; at the results the champion's plate swings on its
-   cord. */
-:root[data-motion='full'] .pennant-red,
-:root[data-motion='full'] .pennant-white {
-  transform-box: fill-box;
-  transform-origin: top;
-  transition:
-    transform 320ms cubic-bezier(0.16, 1, 0.3, 1),
-    opacity 320ms ease-out;
-}
-
-:root[data-motion='full'] .pennants [data-gone] {
-  transform: translateY(60%) scaleY(0.4);
-}
-
-:root[data-motion='full'][data-theme='tournament-arc'] .options > li {
-  transition: translate 260ms cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-:root[data-motion='full'][data-theme='tournament-arc'][data-phase='reveal'] .options::after {
-  animation: final-light 480ms cubic-bezier(0.16, 1, 0.3, 1) 800ms both;
-}
-
-:root[data-motion='full'][data-theme='tournament-arc'] .bill-lead.bill-act {
-  transform-origin: 50% -1.25rem;
-  animation-name: plate-swing;
-}
-
-@keyframes final-light {
-  from {
-    background: var(--panel);
-    scale: 1.8;
-  }
-}
-
-@keyframes plate-swing {
-  0% {
-    opacity: 0;
-    transform: rotate(-8deg);
-  }
-
-  50% {
-    opacity: 1;
-    transform: rotate(4deg);
-  }
-
-  100% {
-    transform: none;
-  }
-}
-
-/* Splash Page: a picked panel jolts as it is blacked out; at the reveal the right panel bursts out of the page and
-   settles, and its sound effect slams on; at the results the winner's sound effect slams on as it is billed. */
-:root[data-motion='full'][data-theme='splash-page'] .card[data-state='chosen'] .card-front {
-  animation: panel-jolt 240ms steps(3, end);
-}
-
-:root[data-motion='full'][data-theme='splash-page'] .card[data-turned] {
-  animation: splash-burst 620ms cubic-bezier(0.16, 1, 0.3, 1) 620ms both;
-}
-
-:root[data-motion='full'][data-theme='splash-page'] .card[data-turned]::after {
-  animation: sfx-slam 300ms cubic-bezier(0.16, 1, 0.3, 1) 900ms both;
-}
-
-:root[data-motion='full'][data-theme='splash-page'] .bill-lead.bill-act::after {
-  animation: sfx-slam 300ms cubic-bezier(0.16, 1, 0.3, 1) calc(var(--act-delay) + 400ms) both;
-}
-
-@keyframes panel-jolt {
-  0% {
-    translate: -3px 0;
-  }
-
-  50% {
-    translate: 3px 1px;
-  }
-
-  100% {
-    translate: 0;
-  }
-}
-
-@keyframes splash-burst {
-  from {
-    scale: 1.3;
-  }
-}
-
-@keyframes sfx-slam {
-  from {
-    opacity: 0;
-    scale: 2.2;
-  }
-}
-
-/* Night Arc: a picked panel's frame doubles as it is drawn in; at the reveal the right panel bursts to white, its
-   light flaring out past its frame. */
-:root[data-motion='full'][data-theme='night-arc'] .card[data-state='chosen'] .card-front {
-  animation: frame-double 260ms cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-:root[data-motion='full'][data-theme='night-arc'] .card[data-turned] .card-back {
-  animation: white-burst 700ms cubic-bezier(0.16, 1, 0.3, 1) 620ms both;
-}
-
-@keyframes frame-double {
-  from {
-    box-shadow:
-      inset 0 0 0 3px var(--card),
-      inset 0 0 0 3px var(--ink);
-  }
-}
-
-@keyframes white-burst {
-  0% {
-    box-shadow: 0 0 0 0 var(--ink);
-  }
-
-  35% {
-    box-shadow: 0 0 0 1.25rem var(--ink);
-  }
-
-  100% {
-    box-shadow: 0 0 0 2.5rem transparent;
   }
 }
 
