@@ -2,7 +2,7 @@
 
 A multiplayer anime music quiz in the browser. Players join a lobby with a code and a name, hear a random sample of an anime opening or ending, and pick the right anime from four options.
 
-Status: released ([CHANGELOG](CHANGELOG.md)). Games play end to end in the browser, in eight anime themes: create a lobby, share the link or QR code, and play with friends on any device, in Classic, Elimination or Teams, naming the anime, the song or the artist, by tapping or typing, with sound on every phone or on one screen in party mode; or play today's daily challenge alone. It runs on a VPS from the released Docker image ([v1 plan](docs/exec-plans/completed/2026-09-25-ysto-v1.md)).
+Status: released ([CHANGELOG](CHANGELOG.md)). Games play end to end in the browser, in eight anime themes: create a lobby, share the link or QR code, and play with friends on any device, in Classic, Elimination or Teams, naming the anime, the song or the artist, by tapping or typing, with sound on every phone or on one screen in party mode; or play today's daily challenge alone. It runs on a VPS from the released Docker image ([v1 plan](docs/exec-plans/completed/2026-09-25-ysto-v1.md), [features after 1.0](docs/exec-plans/completed/2026-10-05-features-after-1.0.md)).
 
 ## Setup
 ```bash
