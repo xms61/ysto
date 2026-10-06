@@ -205,6 +205,8 @@ export class Realtime {
         return this.#games.answer(seat, message.roundId, message.option);
       case 'round:skip':
         return this.#report(connection, this.#games.skip(seat));
+      case 'game:end':
+        return this.#report(connection, this.#games.end(seat));
       case 'clip:report':
         return this.#games.report(seat, message.number, message.reason);
       case 'reaction':

@@ -102,3 +102,13 @@ test('counts each anime heard and how often it was right, most heard first, then
     ['aria', 1, 1],
   ]);
 });
+
+test('keeps an endless game out of the log', () => {
+  const songs = [played(1, 'kon', ['p1'])];
+  const base = lobbyState();
+  const endless = lobbyState({
+    settings: { ...base.settings, endless: true },
+    game: { phase: 'results', number: 1, rounds: 1, results: RESULTS, songs },
+  });
+  expect(gameOf(endless, 1)).toBeNull();
+});

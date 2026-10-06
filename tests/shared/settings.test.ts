@@ -20,6 +20,7 @@ test('starts a lobby with the defaults of the settings spec', () => {
     scoring: { mode: 'speed', streakBonus: true, comeback: false, wrongAnswerPenalty: false },
     answerChanges: false,
     overtimeSec: 5,
+    endless: false,
   });
 });
 
@@ -64,6 +65,7 @@ const INVALID: [string, Record<string, unknown>][] = [
   ['an unknown scoring mode', { scoring: { ...SCORING_PRESETS.classic, mode: 'fastest' } }],
   ['a scoring flag that is not a boolean', { scoring: { ...SCORING_PRESETS.classic, comeback: 'yes' } }],
   ['answer changes that are not a boolean', { answerChanges: 'on' }],
+  ['an endless switch that is not a boolean', { endless: 1 }],
   ['an overtime under 3 s', { overtimeSec: 2 }],
   ['an overtime over 10 s', { overtimeSec: 11 }],
   ['an extra field', { extra: true }],

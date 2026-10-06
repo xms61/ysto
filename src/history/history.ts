@@ -74,12 +74,13 @@ export function readHistory(storage: Storage | null): LoggedGame[] {
   return Array.isArray(stored) ? stored.filter(isGame).slice(0, MAX_GAMES) : [];
 }
 
-// The finished game as this player saw it, or null for one they only watched or where no round played.
+// The finished game as this player saw it, or null for one they only watched, where no round played, or an
+// endless one, which stays out of the log.
 export function gameOf(lobby: LobbyState, at: number): LoggedGame | null {
   const results = lobby.game?.results ?? [];
   const songs = lobby.game?.songs ?? [];
   const rank = results.findIndex((result) => result.playerId === lobby.you);
-  if (rank < 0 || songs.length === 0) return null;
+  if (rank < 0 || songs.length === 0 || lobby.settings.endless) return null;
   const places = sharedPlaces(results.map((result) => result.score));
   return {
     id: `${lobby.code}:${lobby.tally?.games ?? 0}`,

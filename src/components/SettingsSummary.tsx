@@ -33,7 +33,12 @@ function scoring(settings: LobbySettings): string {
 
 export function SettingsSummary({ settings, bounds }: { settings: LobbySettings; bounds: SettingsBounds }) {
   const rows: [string, string][] = [
-    ['Game', `${settings.songsPerGame} songs, ${settings.sampleLengthSec} s each`],
+    [
+      'Game',
+      settings.endless
+        ? `Endless, ${settings.sampleLengthSec} s a song`
+        : `${settings.songsPerGame} songs, ${settings.sampleLengthSec} s each`,
+    ],
     ['Difficulty', difficulty(settings)],
     ['Samples start at', SAMPLE_START_LABELS[settings.sampleStart].toLowerCase()],
     ['Songs', songsFrom(settings, bounds)],

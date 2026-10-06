@@ -198,7 +198,7 @@ Taken in this order, one step at a time; each step says how it shows.
 - [x] 2026-10-06 M20.14 The cards fill the middle
 - [x] 2026-10-06 M20.15 No scroll on a desktop
 - [x] 2026-10-06 M20.16 Check and ship (1.15.0)
-- [ ] M21 Infinite mode
+- [x] 2026-10-06 M21 Infinite mode (1.16.0)
 - [ ] M7 Sound effects per world
 - [ ] M8 Hints
 - [ ] M9 Elimination

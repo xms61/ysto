@@ -112,6 +112,23 @@ export function buildGame(
   );
 }
 
+// An endless game's next batch: up to `count` questions from anime none of its questions uses yet, fewer as
+// the pool runs out, and none once it has.
+export function moreQuestions(
+  catalog: Catalog,
+  settings: LobbySettings,
+  random: Random,
+  avoid: readonly Question[],
+  count: number,
+): Question[] {
+  const usedAnime = new Set(avoid.map((question) => question.animeId));
+  const eligible = eligibleThemes(catalog, settings).filter((theme) => !usedAnime.has(theme.animeId));
+  const universe = optionUniverse(catalog, settings);
+  return drawThemes(catalog, eligible, count, random).map((theme) =>
+    buildQuestion(catalog, theme, settings, universe, random),
+  );
+}
+
 // A round whose clip can't be cut plays another theme, drawn the same way, from an anime that none of the
 // given questions (the game's, and those already tried for the round) uses.
 export function replacementQuestion(

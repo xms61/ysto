@@ -12,7 +12,7 @@ export interface RoundStart {
 export interface ClientRound {
   id: string;
   number: number;
-  rounds: number;
+  rounds: number | null; // null in an endless game
   clipToken: string;
   start: RoundStart | null; // null until round:start
   answeredIds: string[];

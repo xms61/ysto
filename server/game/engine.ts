@@ -67,11 +67,18 @@ export interface Game {
   dropped: number; // rounds whose clip failed on every theme
   playedThemeIds: number[];
   songs: PlayedSong[]; // each closed round's song, for the results
+  moreAsked: boolean; // an endless game waits for its next batch of questions
+  exhausted: boolean; // an endless game's pool has no unplayed anime left
   finished: boolean;
 }
 
+// An endless game asks for its next batch of questions when this many are left to play.
+const ENDLESS_LOW_WATER = 2;
+
 type ClipEvent =
   { type: 'clip-ready'; index: number; question: Question; clipToken: string } | { type: 'clip-failed'; index: number };
+// An endless game's next batch; none left in the pool when it is empty.
+type QuestionsEvent = { type: 'questions'; questions: Question[] };
 type ReadyEvent = { type: 'ready'; playerId: string; roundId: string; loaded: boolean };
 type AnswerEvent = { type: 'answer'; playerId: string; roundId: string; option: number };
 type TimerEvent = { type: 'timer'; name: TimerName; roundId: string };
@@ -79,13 +86,15 @@ type PlayerEvent = {
   type: 'player-joined' | 'player-connected' | 'player-disconnected' | 'player-left';
   playerId: string;
 };
-export type GameEvent = ClipEvent | ReadyEvent | AnswerEvent | TimerEvent | { type: 'skip' } | PlayerEvent;
+export type GameEvent =
+  ClipEvent | QuestionsEvent | ReadyEvent | AnswerEvent | TimerEvent | { type: 'skip' } | { type: 'end' } | PlayerEvent;
 
 export type GameEffect =
   | { type: 'send'; to: string[]; message: ServerMessage }
   | { type: 'timer'; name: TimerName; roundId: string; at: number }
   | { type: 'cut-clip'; index: number; question: Question }
   | { type: 'expire-clip'; clipToken: string; at: number }
+  | { type: 'more-questions' }
   | { type: 'finished' };
 
 export interface Step {
@@ -110,8 +119,18 @@ function connected(game: Game, ids: string[]): string[] {
   return ids.filter((id) => !game.away.includes(id));
 }
 
-function rounds(game: Game): number {
+// An endless game has no count until it ends, and then counts the rounds it played.
+function rounds(game: Game): number | null {
+  if (game.settings.endless) return game.finished ? game.songs.length : null;
   return game.questions.length - game.dropped;
+}
+
+function askForMore(draft: Draft): void {
+  const { game } = draft;
+  if (!game.settings.endless || game.exhausted || game.moreAsked) return;
+  if (game.questions.length - game.nextIndex > ENDLESS_LOW_WATER) return;
+  game.moreAsked = true;
+  draft.effects.push({ type: 'more-questions' });
 }
 
 function requestCut(draft: Draft, index: number): void {
@@ -154,6 +173,7 @@ function beginRound(draft: Draft, index: number, clip: { question: Question; cli
   }
   game.played++;
   game.nextIndex = index + 1;
+  askForMore(draft);
   const round: Round = {
     id: `${game.id}.${game.played}`,
     question: clip.question,
@@ -184,6 +204,8 @@ function advance(draft: Draft): void {
     game.dropped++;
     game.nextIndex++;
   }
+  // An endless game waits for its next batch, unless the pool is spent.
+  if (game.settings.endless && !game.exhausted) return askForMore(draft);
   finish(draft);
 }
 
@@ -418,6 +440,20 @@ function onReady(draft: Draft, event: ReadyEvent): void {
   recheck(draft);
 }
 
+function onQuestions(draft: Draft, event: QuestionsEvent): void {
+  const { game } = draft;
+  game.moreAsked = false;
+  if (event.questions.length === 0) game.exhausted = true;
+  game.questions.push(...event.questions);
+  if (!game.round) advance(draft);
+  else requestCut(draft, game.nextIndex);
+}
+
+// The host ends the game at once; a round still running doesn't count.
+function onEnd(draft: Draft): void {
+  finish(draft);
+}
+
 function onSkip(draft: Draft): void {
   const round = draft.game.round;
   if (round && round.phase !== 'revealing') closeRound(draft, round, true);
@@ -427,6 +463,8 @@ export function step(game: Game, event: GameEvent, now: number): Step {
   if (game.finished) return { game, effects: [] };
   const draft: Draft = { game: structuredClone(game), effects: [], now };
   if (event.type === 'clip-ready' || event.type === 'clip-failed') onClip(draft, event);
+  else if (event.type === 'questions') onQuestions(draft, event);
+  else if (event.type === 'end') onEnd(draft);
   else if (event.type === 'ready') onReady(draft, event);
   else if (event.type === 'answer') onAnswer(draft, event);
   else if (event.type === 'timer') onTimer(draft, event);
@@ -461,6 +499,8 @@ export function startGame({ id, settings, questions, players, away }: NewGame): 
     dropped: 0,
     playedThemeIds: [],
     songs: [],
+    moreAsked: false,
+    exhausted: false,
     finished: false,
   };
   const draft: Draft = { game, effects: [], now: 0 };

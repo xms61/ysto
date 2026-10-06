@@ -2,6 +2,7 @@
 // (docs/product-specs/lobby.md, settings.md).
 import { useState } from 'react';
 import type { LobbyState } from '../../shared/protocol.ts';
+import { LIMITS } from '../../shared/settings.ts';
 import type { LobbySettings } from '../../shared/settings.ts';
 import { PlayerList } from '../components/PlayerList.tsx';
 import { IconPicker } from '../components/IconPicker.tsx';
@@ -64,14 +65,18 @@ function Invite({ code }: { code: string }) {
 
 function StartBar({ store, lobby, settings, isHost }: LobbyProps) {
   const { pool } = lobby;
-  // An anime plays at most once per game, so the anime count caps the songs.
-  const tooFew = pool.anime < settings.songsPerGame;
+  // An anime plays at most once per game, so the anime count caps the songs; an endless game needs enough for
+  // the shortest game to start.
+  const needed = settings.endless ? LIMITS.songsPerGame.min : settings.songsPerGame;
+  const tooFew = pool.anime < needed;
   const matching = `${pool.themes.toLocaleString('en')} songs from ${pool.anime.toLocaleString('en')} anime match.`;
   return (
     <div className="start-bar sticky bottom-0 z-10 -mx-4 flex flex-wrap items-center gap-3">
       <p className="flex-1 text-sm" aria-live="polite">
         {matching}
-        {tooFew && isHost && ` Play at most ${pool.anime} songs, or widen the filters.`}
+        {tooFew &&
+          isHost &&
+          (settings.endless ? ' Widen the filters.' : ` Play at most ${pool.anime} songs, or widen the filters.`)}
       </p>
       {isHost ? (
         <Button onClick={() => store.startGame()} disabled={tooFew}>

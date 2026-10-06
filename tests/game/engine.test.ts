@@ -26,6 +26,7 @@ class Simulation {
   sent: Sent[] = [];
   expired: { clipToken: string; at: number }[] = [];
   finished = false;
+  askedForMore = 0;
   readonly failing: (index: number) => boolean;
   #timers: { name: TimerName; roundId: string; at: number }[] = [];
   #cuts: Extract<GameEffect, { type: 'cut-clip' }>[] = [];
@@ -74,6 +75,7 @@ class Simulation {
         this.#timers.push({ name: effect.name, roundId: effect.roundId, at: effect.at });
       else if (effect.type === 'cut-clip') this.#cuts.push(effect);
       else if (effect.type === 'expire-clip') this.expired.push({ clipToken: effect.clipToken, at: effect.at });
+      else if (effect.type === 'more-questions') this.askedForMore++;
       else this.finished = true;
     }
   }
@@ -561,4 +563,45 @@ test('starts the overtime when the last player to answer drops, and catches up a
     roundId: sim.last('round:start').roundId,
     option: optionFor(sim, false),
   });
+});
+
+test('an endless game asks for more questions as it runs low and plays on, with no round count', () => {
+  const sim = new Simulation(settings({ endless: true }), ['p1']);
+  assert.equal(sim.last('round:prepare').rounds, null);
+  playRound(sim, []);
+  assert.equal(sim.askedForMore, 0);
+  playRound(sim, []);
+  assert.equal(sim.askedForMore, 1, 'asks once two questions are left');
+  sim.event({ type: 'questions', questions: buildGame(catalog, settings(), seededRandom(7)) });
+  for (let round = 0; round < 3; round++) playRound(sim, []);
+  assert.equal(sim.finished, false);
+  assert.equal(sim.last('round:prepare').number, 6);
+  assert.equal(gameView(sim.game).rounds, null);
+});
+
+test('an endless game ends once the pool is spent, counting the rounds it played', () => {
+  const sim = new Simulation(settings({ endless: true }), ['p1']);
+  playRound(sim, []);
+  playRound(sim, []);
+  sim.event({ type: 'questions', questions: [] });
+  for (let round = 0; round < 3; round++) playRound(sim, []);
+  assert.equal(sim.finished, true);
+  assert.equal(gameView(sim.game).rounds, 5);
+  assert.equal(gameView(sim.game).songs?.length, 5);
+});
+
+test("the host's end finishes the game at once, without the round still running", () => {
+  const sim = new Simulation(settings({ endless: true }), ['p1']);
+  playRound(sim, [{ playerId: 'p1', delayMs: 1000, correct: true }]);
+  allReady(sim);
+  sim.advanceTo(sim.last('round:start').startsAt + 500);
+  sim.event({ type: 'end' });
+  assert.equal(sim.finished, true);
+  const view = gameView(sim.game);
+  assert.equal(view.rounds, 1);
+  assert.deepEqual(
+    view.songs?.map((song) => song.number),
+    [1],
+  );
+  assert.equal(view.results?.[0]?.correct, 1);
 });
