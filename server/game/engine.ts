@@ -242,7 +242,8 @@ function closeRound(draft: Draft, round: Round, skipped: boolean): void {
   game.playedThemeIds.push(round.question.themeId);
   const { question } = round;
   const { cover, ...song } = question.reveal;
-  game.songs.push({ number: game.played, skipped, ...song });
+  const right = round.answers.filter((answer) => answer.correct).map((answer) => answer.playerId);
+  game.songs.push({ number: game.played, skipped, right, ...song });
   round.reveal = {
     type: 'round:reveal',
     roundId: round.id,

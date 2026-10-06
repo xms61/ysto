@@ -13,8 +13,10 @@ import type { Prefs } from '../prefs/prefs.ts';
 import type { ExitReason, SocketLike } from '../realtime/connection.ts';
 import { isHost } from '../realtime/game-state.ts';
 import type { GameState } from '../realtime/game-state.ts';
+import type { LobbyState } from '../../shared/protocol.ts';
 import type { Session } from '../realtime/session.ts';
 import { GameStore } from '../realtime/store.ts';
+import { gameOf, logGame } from '../history/history.ts';
 import { reloadIfStale } from '../version.ts';
 import { Lobby } from './Lobby.tsx';
 import { Results } from './Results.tsx';
@@ -28,6 +30,7 @@ interface LobbySessionProps {
   onExit: (reason: ExitReason) => void;
   createSocket?: (url: string) => SocketLike;
   storage: Storage | null; // this tab's session storage, where a reload for a new version is noted
+  log: Storage | null; // the device's storage, where finished games are logged
   reload?: () => void;
   notes: string[]; // what's new since this device's last visit, shown in the lobby only
   onNotesSeen: () => void;
@@ -69,6 +72,15 @@ function useReloadWhenStale(stale: { version: string | undefined; screen: string
   }, [version, screen, storage, reload]);
 }
 
+// A finished game goes into the device's log when its results arrive; logGame skips one already logged.
+function useLogGame(lobby: LobbyState | null, log: Storage | null): void {
+  useEffect(() => {
+    if (lobby?.game?.phase !== 'results') return;
+    const game = gameOf(lobby, Date.now());
+    if (game) logGame(log, game);
+  }, [lobby, log]);
+}
+
 // A new screen (the lobby, a game, the results) takes the focus to its first heading, so a screen reader
 // hears where the player is and the keyboard starts from there. The first screen keeps the page's focus.
 function useFocusOnScreenChange(screen: string, container: RefObject<HTMLDivElement | null>): void {
@@ -97,6 +109,7 @@ export function LobbySession(props: LobbySessionProps) {
   const screen = screenOf(game);
   const titles = { first: prefs.titleLanguage, second: prefs.secondTitleLanguage };
   useReloadWhenStale({ version: lobby?.version, screen }, props);
+  useLogGame(lobby, props.log);
   const page = useRef<HTMLDivElement>(null);
   useFocusOnScreenChange(lobby && settings ? screen : 'connecting', page);
 

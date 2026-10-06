@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.13.0] - 2026-10-05
+
+### Added
+- Your games: the home screen opens a log of the games this device finished, with the player's place, score and songs, and an anime log of every anime heard, how often, and how often the player got it, linked to AnimeThemes. Kept on the device, the last 100 games; "Clear the log" empties it.
+- The results' song list names the players who picked each song right, sent once the game is over.
+
+## [1.12.0] - 2026-10-05
+
+### Added
+- Saved setups: the host saves the lobby's settings under a name, up to eight on the device, and loads one in any lobby they host. Loading fits it to the lobby's catalog and says what changed.
+
 ## [1.11.0] - 2026-10-05
 
 ### Added
@@ -29,13 +40,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Large screens: past 1920 x 1080 the whole page scales with the window, to twice the size on a 4K screen, instead of a small panel in the middle. Phones and screens up to 1080p are unchanged.
-
-## [1.8.0] - 2026-10-05
-
-### Added
-- Reactions: in the lobby, at the reveal and on the results, six reactions (hype, laugh, shock, facepalm, heart, clap) drawn as the game's own icons. Each rises from its sender's name on screen, or from the corner with the name. Never while a round takes answers; one a second per player.
-
-## [1.7.0] - 2026-10-05
-
-### Added
-- The lobby's tally: games played, and each player's wins and points across them. The player list shows wins, and from the second game the results say who leads. A player who leaves takes their line with them.

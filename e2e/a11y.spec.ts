@@ -53,7 +53,7 @@ async function answerWhenOpen(page: Page, round: number): Promise<void> {
 
 test('every screen passes axe in every theme', async ({ page, browserName }) => {
   test.skip(browserName !== 'chromium', 'axe reads the same page in every browser; one is enough');
-  test.setTimeout(240_000);
+  test.setTimeout(300_000);
   const found: string[] = [];
 
   await page.goto('/');
@@ -85,6 +85,15 @@ test('every screen passes axe in every theme', async ({ page, browserName }) => 
   for (let round = 2; round <= ROUNDS; round++) await answerWhenOpen(page, round);
   await expect(page.getByRole('heading', { name: 'Final results' })).toBeVisible(WAIT);
   await audit(page, 'results', found);
+
+  // The finished game is in the device's log.
+  await page.getByRole('button', { name: 'Leave' }).click();
+  await page.getByRole('button', { name: 'Yes' }).click();
+  await page.getByRole('button', { name: 'Your games' }).click();
+  await page.getByText(`Songs (${ROUNDS})`).click();
+  await audit(page, 'game log', found);
+  await page.getByRole('button', { name: /^Anime log/ }).click();
+  await audit(page, 'anime log', found);
 
   expect(found).toEqual([]);
 });

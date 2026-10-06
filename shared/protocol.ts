@@ -190,8 +190,9 @@ export interface RevealDetails {
   cover: string | null; // a path on this server
 }
 
-// A song the game played, for the list at the results. A skipped round's song is listed too.
-export type PlayedSong = Omit<RevealDetails, 'cover'> & { number: number; skipped: boolean };
+// A song the game played, for the list at the results. A skipped round's song is listed too. `right` names the
+// players who picked the anime, sent only once the game is over.
+export type PlayedSong = Omit<RevealDetails, 'cover'> & { number: number; skipped: boolean; right: string[] };
 
 export interface PlayerView {
   id: string;

@@ -84,6 +84,11 @@ export function animeTitle(anime: AnimeTitles, language: TitleLanguage): Title {
   return text ? { text, lang: langOf(language) } : { text: anime.romaji, lang: undefined };
 }
 
+// The anime's page on AnimeThemes.
+export function animeThemesUrl(slug: string): string {
+  return `https://animethemes.moe/anime/${encodeURIComponent(slug)}`;
+}
+
 // Its titles in the other languages, each once, for the reveal to teach: the player's second language first.
 export function otherTitles(anime: AnimeTitles, shown: Title, second: TitleLanguage | null): Title[] {
   const seen = new Set([titleKey(shown.text)]);

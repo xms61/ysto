@@ -2,6 +2,16 @@
 
 Releases moved out of `CHANGELOG.md` (which keeps about the latest 5). Newest first.
 
+## [1.8.0] - 2026-10-05
+
+### Added
+- Reactions: in the lobby, at the reveal and on the results, six reactions (hype, laugh, shock, facepalm, heart, clap) drawn as the game's own icons. Each rises from its sender's name on screen, or from the corner with the name. Never while a round takes answers; one a second per player.
+
+## [1.7.0] - 2026-10-05
+
+### Added
+- The lobby's tally: games played, and each player's wins and points across them. The player list shows wins, and from the second game the results say who leads. A player who leaves takes their line with them.
+
 ## [1.6.0] - 2026-10-05
 
 ### Added

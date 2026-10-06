@@ -319,6 +319,23 @@ test("lists the game's songs with the results, in the order they played, without
   assert.ok(songs.every((song) => !('cover' in song)));
 });
 
+test('names the players who picked each song right, only in the finished list', () => {
+  const sim = new Simulation(settings({ songsPerGame: 2 }), ['p1', 'p2']);
+  playRound(sim, [
+    { playerId: 'p1', delayMs: 1000, correct: true },
+    { playerId: 'p2', delayMs: 1200, correct: false },
+  ]);
+  playRound(sim, [
+    { playerId: 'p1', delayMs: 1000, correct: true },
+    { playerId: 'p2', delayMs: 900, correct: true },
+  ]);
+  const songs = gameView(sim.game).songs ?? assert.fail();
+  assert.deepEqual(
+    songs.map((song) => [...song.right].sort()),
+    [['p1'], ['p1', 'p2']],
+  );
+});
+
 test('lets a late joiner watch the round in progress, then play from the next one at 0 points', () => {
   const sim = new Simulation(settings(), ['p1']);
   allReady(sim);

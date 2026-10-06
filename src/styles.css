@@ -5933,6 +5933,36 @@
     outline-offset: 2px;
   }
 
+  /* The device's game log: one game per row, its songs folded under it, each marked right or missed. */
+  .log-game {
+    padding-block: 0.75rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .log-game:last-child {
+    border-bottom: 0;
+  }
+
+  .log-songs {
+    margin-top: 0.5rem;
+  }
+
+  .log-songs .song-row:last-child,
+  .log-anime .song-row:last-child {
+    border-bottom: 0;
+  }
+
+  .log-mark {
+    flex-shrink: 0;
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--bad);
+  }
+
+  .log-mark[data-right='true'] {
+    color: var(--good);
+  }
+
   /* A folded section: its summary reads as a quiet row with a chevron in the theme's ink. */
   .adjust {
     border-top: 1px solid var(--line);
