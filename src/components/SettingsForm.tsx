@@ -169,13 +169,17 @@ export function SettingsForm({ settings, bounds, onChange }: SettingsFormProps) 
   return (
     <div className="flex flex-col gap-6">
       <div className="grid gap-4 sm:grid-cols-2">
-        <NumberField
-          label="Songs per game"
-          value={settings.songsPerGame}
-          min={LIMITS.songsPerGame.min}
-          max={LIMITS.songsPerGame.max}
-          onCommit={(songsPerGame) => set({ songsPerGame })}
-        />
+        {settings.endless ? (
+          <p className="self-end text-muted">Songs keep coming until the host ends the game.</p>
+        ) : (
+          <NumberField
+            label="Songs per game"
+            value={settings.songsPerGame}
+            min={LIMITS.songsPerGame.min}
+            max={LIMITS.songsPerGame.max}
+            onCommit={(songsPerGame) => set({ songsPerGame })}
+          />
+        )}
         <label className="flex flex-col gap-1.5 font-medium">
           Sample length
           <select
@@ -191,6 +195,10 @@ export function SettingsForm({ settings, bounds, onChange }: SettingsFormProps) 
           </select>
         </label>
       </div>
+
+      <Choice type="checkbox" checked={settings.endless} onChange={(event) => set({ endless: event.target.checked })}>
+        Endless: play until the host ends the game
+      </Choice>
 
       <Group legend="Difficulty">
         {DIFFICULTIES.map((difficulty) => (

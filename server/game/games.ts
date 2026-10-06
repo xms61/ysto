@@ -2,6 +2,7 @@
 // its events, and carries out the engine's effects: timers on the scheduler, each clip cut a round ahead,
 // clip tokens, and messages through its listener, the realtime layer.
 import type { ErrorCode, GameView, ReportReason, ServerMessage, TallyView } from '../../shared/protocol.ts';
+import { LIMITS } from '../../shared/settings.ts';
 import type { Catalog } from '../catalog/load.ts';
 import type { CutClip } from '../clips/cut.ts';
 import { prepareClip } from '../clips/prepare.ts';
@@ -13,7 +14,7 @@ import { gameView, scoreOf, startGame, step } from './engine.ts';
 import type { Game, GameEffect, GameEvent, TimerName } from './engine.ts';
 import type { Lobby } from './lobby.ts';
 import { poolSize } from './pool.ts';
-import { buildGame, replacementQuestion } from './questions.ts';
+import { buildGame, moreQuestions, replacementQuestion } from './questions.ts';
 import type { Question } from './questions.ts';
 import type { Random } from './random.ts';
 import type { LobbyRegistry, RegistryEvent, Seat } from './registry.ts';
@@ -54,6 +55,9 @@ interface Tally {
 function connectionsOf(lobby: Lobby): Map<string, boolean> {
   return new Map(lobby.players.map((player) => [player.id, player.connectedSince !== null]));
 }
+
+// The questions an endless game is dealt at a time.
+const ENDLESS_BATCH = 5;
 
 export class Games {
   readonly #options: GamesOptions;
@@ -111,9 +115,13 @@ export class Games {
     if (this.running(lobby.code)) return 'game-running';
     if (!clips) return 'not-ready';
     if ([...this.#runs.keys()].filter((code) => this.running(code)).length >= maxGames) return 'server-busy';
-    if (poolSize(catalog, lobby.settings).anime < lobby.settings.songsPerGame) return 'pool-too-small';
+    // An endless game starts with one batch and draws the next as it goes.
+    const firstBatch = lobby.settings.endless
+      ? { ...lobby.settings, songsPerGame: LIMITS.songsPerGame.min }
+      : lobby.settings;
+    if (poolSize(catalog, firstBatch).anime < firstBatch.songsPerGame) return 'pool-too-small';
     const played = this.#played.get(lobby.code) ?? new Set<number>();
-    const questions = buildGame(catalog, lobby.settings, random, played);
+    const questions = buildGame(catalog, firstBatch, random, played);
     const known = connectionsOf(lobby);
     const players = [...known.keys()];
     const away = players.filter((id) => !known.get(id));
@@ -158,6 +166,13 @@ export class Games {
     return game.questions.find((candidate) => candidate.themeId === themeId);
   }
 
+  // The host ends the game now, in any phase, with its results.
+  end(seat: Seat): ErrorCode | null {
+    if (this.#options.registry.lobby(seat.code)?.hostId !== seat.playerId) return 'not-host';
+    this.#step(seat.code, { type: 'end' });
+    return null;
+  }
+
   skip(seat: Seat): ErrorCode | null {
     if (this.#options.registry.lobby(seat.code)?.hostId !== seat.playerId) return 'not-host';
     this.#step(seat.code, { type: 'skip' });
@@ -178,6 +193,7 @@ export class Games {
       else if (effect.type === 'timer') this.#setTimer(run, effect.name, effect.roundId, effect.at);
       else if (effect.type === 'cut-clip') this.#cut(run, effect.index, effect.question);
       else if (effect.type === 'expire-clip') this.#options.clips?.tokens.expireAt(effect.clipToken, effect.at);
+      else if (effect.type === 'more-questions') this.#more(run);
       else this.#finished(run);
     }
     // A new round turns spectators into players, so the lobby state changes with it.
@@ -195,6 +211,16 @@ export class Games {
       if (this.#runs.get(run.code) === run) this.#step(run.code, { type: 'timer', name, roundId });
     });
     run.timers.set(key, cancel);
+  }
+
+  // Deals an endless game its next batch, after the step that asked for it has been applied.
+  #more(run: Run): void {
+    const { catalog, random } = this.#options;
+    const questions = moreQuestions(catalog, run.game.settings, random, run.game.questions, ENDLESS_BATCH);
+    queueMicrotask(() => {
+      if (this.#runs.get(run.code) === run && !run.game.finished)
+        this.#step(run.code, { type: 'questions', questions });
+    });
   }
 
   #cut(run: Run, index: number, question: Question): void {

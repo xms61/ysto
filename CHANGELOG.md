@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.16.0] - 2026-10-06
+
+### Added
+- Endless games: with "Endless" on in the lobby settings, rounds keep coming until the host ends the game with "End the game", in any phase (a round still running doesn't count), or until the pool has no unplayed anime left. The heading shows the round without a total, and the results count the rounds played. Endless games stay out of the anime log. The server deals the questions five at a time as the game goes.
+
 ## [1.15.0] - 2026-10-06
 
 ### Changed
@@ -43,14 +48,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Saved setups: the host saves the lobby's settings under a name, up to eight on the device, and loads one in any lobby they host. Loading fits it to the lobby's catalog and says what changed.
-
-## [1.11.0] - 2026-10-05
-
-### Added
-- Player animals: sixteen animals drawn for the game as stamps, the same in every theme. Each player gets a free one on joining and can pick another in the lobby; two players share one only once all are taken. At the reveal each pick is stamped on its card's corner with the picker's animal, and the animals mark players in the lists, scores and results.
-
-### Changed
-- The answer box in the round's side column has a smaller cover and title, so long titles break between words.
-
-### Removed
-- The name chips under the cards, and their per-world styles.

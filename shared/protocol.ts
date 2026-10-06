@@ -78,6 +78,7 @@ export type ClientMessage =
   | { type: 'round:ready'; roundId: string; loaded: boolean }
   | { type: 'answer'; roundId: string; option: number }
   | { type: 'round:skip' }
+  | { type: 'game:end' } // the host ends the game now, with its results
   | { type: 'clip:report'; number: number; reason: ReportReason }
   | { type: 'reaction'; kind: ReactionKind }
   | { type: 'player:icon'; icon: PlayerIcon };
@@ -137,7 +138,8 @@ export function parseClientMessage(text: string, bounds: SettingsBounds): Client
   if (type === 'time:ping' && hasKeys(value, ['type', 'clientTime']) && Number.isFinite(value.clientTime)) {
     return { type, clientTime: Number(value.clientTime) };
   }
-  if ((type === 'lobby:leave' || type === 'game:start' || type === 'round:skip') && hasKeys(value, ['type'])) {
+  const bare = type === 'lobby:leave' || type === 'game:start' || type === 'round:skip' || type === 'game:end';
+  if (bare && hasKeys(value, ['type'])) {
     return { type };
   }
   if (type === 'lobby:lock' && hasKeys(value, ['type', 'locked']) && typeof value.locked === 'boolean') {
@@ -208,7 +210,7 @@ export interface PlayerView {
 export interface GameView {
   phase: 'playing' | 'results';
   number: number;
-  rounds: number;
+  rounds: number | null; // null while an endless game runs
   results: ResultView[] | null;
   songs: PlayedSong[] | null; // with the results: the songs in the order they played
 }
@@ -268,7 +270,7 @@ export type RoundReveal = {
 
 export type ServerMessage =
   | LobbyState
-  | { type: 'round:prepare'; roundId: string; clipToken: string; number: number; rounds: number }
+  | { type: 'round:prepare'; roundId: string; clipToken: string; number: number; rounds: number | null }
   | { type: 'round:start'; roundId: string; startsAt: number; endsAt: number; options: OptionTitles }
   | { type: 'round:answered'; roundId: string; playerIds: string[] }
   // With answer changes on: someone picked another option (never which), the overtime once everyone has

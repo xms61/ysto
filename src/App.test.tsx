@@ -189,6 +189,17 @@ test('with answer changes on, lets the player switch, runs the overtime and name
   expect(screen.getByText('Last chance to switch', SHOWN)).toBeTruthy();
 });
 
+test('runs an endless game without a round count, and lets the host end it', () => {
+  const base = lobbyState();
+  const endless = { ...base.settings, endless: true };
+  const { socket } = renderSeated(lobbyState({ settings: endless, game: { ...PLAYING, rounds: null } }));
+  act(() => socket.receive({ type: 'round:prepare', roundId: 'g.1', clipToken: 'c1', number: 1, rounds: null }));
+  expect(screen.getByRole('heading', { name: 'Round 1' })).toBeTruthy();
+  fireEvent.click(screen.getByRole('button', { name: 'End the game' }));
+  fireEvent.click(screen.getByRole('button', { name: 'Yes' }));
+  expect(socket.sentOfType('game:end')).toHaveLength(1);
+});
+
 test('sets the round as a masthead number in Back Issue, still named as the round', () => {
   localStorage.setItem('ysto_prefs', JSON.stringify({ volume: 15, theme: 'retro-vhs' }));
   const { socket } = renderSeated(lobbyState({ game: PLAYING }));

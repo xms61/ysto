@@ -196,7 +196,11 @@ export function Results({ store, lobby, isHost, titles, reported }: ResultsProps
       <h2 className="display mb-4 text-3xl">Final results</h2>
       {tallyLine(lobby) && <p className="-mt-2 mb-4 text-sm text-muted">{tallyLine(lobby)}</p>}
       {rounds === 0 ? (
-        <p>No round could be played, because none of the clips loaded. Try another game.</p>
+        <p>
+          {lobby.settings.endless
+            ? 'The game ended before a round was played.'
+            : 'No round could be played, because none of the clips loaded. Try another game.'}
+        </p>
       ) : (
         <div className="flex flex-1 flex-col justify-center pb-6">
           <Bill lobby={lobby} results={results} rounds={rounds} />

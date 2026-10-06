@@ -144,11 +144,10 @@ Each milestone is one PR on a `feat/…` branch (two where noted), with a versio
 - **Build:** a screen seat, which can fetch clips but never answers or scores. In party mode, the barrier waits only for the screens' clips; the phones report ready without loading, and they are never marked "no audio". Without a connected screen the game doesn't start, and if the screen drops mid-game the barrier waits for it as long as for any player.
 - **Tests:** registry (screen seats, caps, host rules unaffected), engine (the barrier in party mode, no-audio marks), e2e with one screen and two phones.
 
-#### M21 Infinite mode (added by the owner, 2026-10-06; to be shaped before it is built)
-- **Behavior:** a game with no set number of songs: rounds keep coming until the host ends the game, or the pool runs out of unplayed songs. The results then cover every round played.
-- **Open, for the owner:** whether the host ends it from a button in the round or between rounds; whether a player who joins mid-game plays from the next round, as now; whether the song list at the results and the anime log keep every round of a long game.
-- **Build (first thoughts):** `songsPerGame` takes an "infinite" value; the engine draws questions in batches as it goes rather than all at the start; a host's "End the game" message closes the current round and finishes.
-- **Tests:** engine (it keeps drawing, ends on the host's message, ends when the pool is spent), the setting's validation, client.
+#### M21 Infinite mode (added by the owner, 2026-10-06)
+- **Behavior:** the host turns on "Endless" in the lobby settings, and the number of songs no longer applies: rounds keep coming until the host ends the game, at any time, with "End the game" (a round still running when they do doesn't count), or until the pool has no unplayed song left. The heading reads "Round 7" without a total, and the results count the rounds played. A player who joins mid-game plays from the next round, as in any game. An endless game is not written to the anime log; its results still list its songs.
+- **Build:** a lobby setting `endless` (default off). `Games` deals an endless game's questions in batches: the engine asks for more (`more-questions`) when two are left, and `Games` draws the next batch from the anime the game hasn't used, or answers with none, after which the game ends when its questions run out. `rounds` is null while an endless game runs. The host's `game:end` ends a game at once with its results.
+- **Tests:** engine (asks for more and keeps going, ends on the host's message mid-round without counting the round, ends when the pool is spent), the setting's validation and saved setups, `game:end` refused for a guest, client (heading without a total, the host's button, no log entry).
 
 #### M20 The round, polished (owner's notes from playing, 2026-10-06)
 Taken in this order, one step at a time; each step says how it shows.
@@ -199,7 +198,7 @@ Taken in this order, one step at a time; each step says how it shows.
 - [x] 2026-10-06 M20.14 The cards fill the middle
 - [x] 2026-10-06 M20.15 No scroll on a desktop
 - [x] 2026-10-06 M20.16 Check and ship (1.15.0)
-- [ ] M21 Infinite mode
+- [x] 2026-10-06 M21 Infinite mode (1.16.0)
 - [ ] M7 Sound effects per world
 - [ ] M8 Hints
 - [ ] M9 Elimination
@@ -220,6 +219,7 @@ Taken in this order, one step at a time; each step says how it shows.
 - 2026-10-05: The streak lives on the device, because the game has no accounts and keeps no personal data. Rejected: a server-side streak, which would need an identity.
 - 2026-10-05: Reports keep no names, addresses or lobby codes, because nothing about a report needs them, and SECURITY.md keeps no personal data. Rejected: free-text reports, which would need moderating.
 - 2026-10-06: The owner asked for the reveal to move nothing. The slot above the cards now holds a hidden copy of the longest verdict, and each card a hidden copy of the back it would show if it were the answer, built from its own title, so it tells nobody the answer. Face-down cards can't know their titles, so they hold a back with a typical title, and only a longer title grows its row as the cards turn face up. Splash Page's right panel no longer stays scaled up. Rejected: fixed card heights with clamped titles, which would cut long titles.
+- 2026-10-06: Infinite mode (M21), shaped with the owner: the host ends it whenever they want; late joiners play from the next round, as in any game; endless games stay out of the anime log. Dealing questions in batches keeps the engine pure and the start fast. Rejected: drawing the whole pool at the start.
 - 2026-10-06: The owner asked for reactions during the round, which M5 had ruled out so a reaction can't point at an option. A reaction carries no option, and players in one room can talk anyway, so the risk is small; the owner chose fun over it. They also asked for the platform's emoji over the drawn icons, reversing M5: emoji read at a glance. The source keeps them as escapes, so the code stays plain text.
 - 2026-10-06: The owner asked to drop the latency allowance (half the round trip, up to 150ms, taken off an answer's time, and First correct's 150ms wait for a faster answer still on its way). Times are now plain server arrival. The 300ms grace after the timer stays, so an answer sent at the last moment isn't lost in transit, until the owner says otherwise.
 - 2026-10-05: The anime log (M18) learns which songs the player got right from the results' song list, which now names the players who picked each song right. It is sent only once the game is over, so it tells nobody an answer early. Rejected: collecting each round's reveal on the client, which a player who reconnects at the results would miss.

@@ -134,6 +134,10 @@ export class GameStore {
     this.#connection.send({ type: 'round:skip' });
   }
 
+  endGame(): void {
+    this.#connection.send({ type: 'game:end' });
+  }
+
   kick(playerId: string): void {
     this.#connection.send({ type: 'player:kick', playerId });
   }

@@ -226,6 +226,24 @@ test('refuses settings changes and a second start while a game runs, and lets a 
   });
 });
 
+test('lets only the host end a game, at once, with its results', async () => {
+  await withServer(async (server) => {
+    const { ann, annClient, benClient } = await twoPlayerLobby(server);
+    const { settings } = server.registry.lobby(ann.code) ?? assert.fail();
+    annClient.send({ type: 'settings:update', settings: { ...settings, endless: true } });
+    await annClient.state((state) => state.settings.endless);
+    annClient.send({ type: 'game:start' });
+    const prepare = await nextOf(annClient, 'round:prepare');
+    assert.equal(prepare.rounds, null);
+    benClient.send({ type: 'game:end' });
+    assert.deepEqual(await nextOf(benClient, 'error'), { type: 'error', code: 'not-host' });
+    annClient.send({ type: 'game:end' });
+    await nextOf(benClient, 'game:results');
+    const finished = await benClient.state((state) => state.game?.phase === 'results');
+    assert.equal(finished.game?.rounds, 0);
+  });
+});
+
 test('refuses to start a game the pool cannot fill, or past the cap on running games', async () => {
   await withServer(async (server) => {
     const host = await createLobby(server, 'Ann');

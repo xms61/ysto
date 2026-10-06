@@ -2,6 +2,17 @@
 
 Releases moved out of `CHANGELOG.md` (which keeps about the latest 5). Newest first.
 
+## [1.11.0] - 2026-10-05
+
+### Added
+- Player animals: sixteen animals drawn for the game as stamps, the same in every theme. Each player gets a free one on joining and can pick another in the lobby; two players share one only once all are taken. At the reveal each pick is stamped on its card's corner with the picker's animal, and the animals mark players in the lists, scores and results.
+
+### Changed
+- The answer box in the round's side column has a smaller cover and title, so long titles break between words.
+
+### Removed
+- The name chips under the cards, and their per-world styles.
+
 ## [1.10.0] - 2026-10-05
 
 ### Changed

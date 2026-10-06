@@ -434,10 +434,15 @@ function LiveScores({ lobby, round, foot }: { lobby: LobbyState; round: ClientRo
 
 interface RoundHeadingProps {
   number: number;
-  rounds: number;
+  rounds: number | null; // null in an endless game
   store: GameStore;
   start: RoundStart | null;
   revealed: boolean;
+}
+
+// "Round 3 of 15", or in an endless game, which has no last round, "Round 3".
+function roundName(number: number, rounds: number | null): string {
+  return rounds === null ? `Round ${number}` : `Round ${number} of ${rounds}`;
 }
 
 // The round's heading: "Round 3 of 15", a magazine's masthead number, "No. 03 / 15", which screen readers
@@ -447,22 +452,16 @@ function RoundHeading(props: RoundHeadingProps) {
   const { masthead, readout } = useStage();
   if (readout === 'lyric') return <LyricHeading {...props} />;
   if (!masthead) {
-    return (
-      <h2 className="display text-[1.375rem] sm:text-2xl">
-        Round {number} of {rounds}
-      </h2>
-    );
+    return <h2 className="display text-[1.375rem] sm:text-2xl">{roundName(number, rounds)}</h2>;
   }
   const issue = (value: number) => String(value).padStart(2, '0');
   return (
     <h2 className="display">
-      <span className="sr-only">
-        Round {number} of {rounds}
-      </span>
+      <span className="sr-only">{roundName(number, rounds)}</span>
       <span aria-hidden="true" className="masthead">
         <span className="masthead-no">No.</span>
         <span className="masthead-issue">{issue(number)}</span>
-        <span className="masthead-of">/ {issue(rounds)}</span>
+        {rounds !== null && <span className="masthead-of">/ {issue(rounds)}</span>}
       </span>
     </h2>
   );
@@ -474,7 +473,7 @@ function LyricHeading({ number, rounds, store, start, revealed }: RoundHeadingPr
   const now = useTicker(store.serverNow, TICK_MS);
   const running = start ? (now - start.startsAt) / (start.endsAt - start.startsAt) : 0;
   const sung = revealed ? 1 : Math.min(1, Math.max(0, running));
-  const words = `Round ${number} of ${rounds}`;
+  const words = roundName(number, rounds);
   return (
     <h2 className="display lyric" style={{ '--sung': sung } as CSSProperties}>
       {words}
@@ -510,12 +509,18 @@ function RoundView({ store, lobby, round, titles, reported, isHost, clip }: Roun
         />
         {/* Kept in place but hidden at the reveal, so the heading keeps its height and the cards their place. */}
         {isHost && (
-          <div className={reveal ? 'invisible' : undefined}>
-            <ConfirmButton
-              label="Skip round"
-              question={solo ? 'Skip this round?' : 'Skip this round for everyone?'}
-              onConfirm={() => store.skipRound()}
-            />
+          <div className="flex flex-wrap items-center gap-3">
+            <div className={reveal ? 'invisible' : undefined}>
+              <ConfirmButton
+                label="Skip round"
+                question={solo ? 'Skip this round?' : 'Skip this round for everyone?'}
+                onConfirm={() => store.skipRound()}
+              />
+            </div>
+            {/* An endless game ends when the host says so, in any phase; a round still running doesn't count. */}
+            {lobby.settings.endless && (
+              <ConfirmButton label="End the game" question="End the game now?" onConfirm={() => store.endGame()} />
+            )}
           </div>
         )}
       </div>
