@@ -5,7 +5,7 @@ last-verified: 2026-10-06
 
 # Backdrop plate prompts
 
-Image prompts for the backdrop plate behind each of the nine theme worlds ([plan](exec-plans/completed/2026-10-01-theme-worlds.md)). The owner generates the images; the rules they must meet are in [DESIGN.md](DESIGN.md) under The backdrop plates.
+Image prompts for the backdrop plate behind each of the eight theme worlds ([plan](exec-plans/completed/2026-10-01-theme-worlds.md)). The owner generates the images; the rules they must meet are in [DESIGN.md](DESIGN.md) under The backdrop plates.
 
 ## How to use them
 - Paste the theme's prompt followed by the shared ending below, as one prompt.
@@ -23,8 +23,7 @@ Light plates sit behind the light themes, dark plates behind the dark ones. "Reu
 
 | Id | Name | Tone | Prompt |
 | :-- | :-- | :-- | :-- |
-| `tokyo-rain` | Tokyo Rain | Dark | A narrow Tokyo back alley at night in heavy rain, seen from just inside a small ramen counter: the edge of an indigo cloth door curtain at the top, warm amber light spilling onto wet black asphalt, puddles reflecting blurred lanterns, steam drifting. Deep navy and amber, painted. |
-| `konbini` | Konbini 2 a.m. | Dark | A wet city street at two in the morning, the cold white light of a convenience store spilling from the right edge across rain-soaked pavement, a parked bicycle and a vending glow far off, everything else dark navy. Cinematic, painted, very quiet. |
+| `tokyo-rain` | Neon Rain | Dark | A Tokyo side street at night in heavy rain, seen at street level: tall vertical neon signs in magenta and cyan glowing down both sides, their light smeared in long reflections across wet black asphalt, LED strips along the shopfronts, steam rising from a grate, umbrellas far off and out of focus. Deep blue-black with magenta and cyan; the middle of the street dark and empty. |
 | `karaoke` | Karaoke Box | Dark | The inside of an empty small karaoke booth after midnight, seen softly out of focus: a curved vinyl bench along the bottom edge, a low table with two empty glasses, scattered pink and cyan light spots from a slowly turning mirror ball on the dark walls. Deep indigo with pink and cyan. |
 | `omikuji` | Omikuji | Light | A shrine courtyard in early spring, very pale and misty: a low wooden rack along the bottom where many folded white paper fortunes are tied in knots, a blossoming branch drooping in from the top corner, soft vermilion of a gate far off in the haze. Washed-out watercolor. |
 | `blossom-map` | Blossom Map | Light | A flat, cheerful illustrated bird's-eye view of a city park in spring, in the style of a printed guide map: soft rounded lobes of flat green lawn, a pale pond, winding paths, round pink cherry tree clusters around the edges, no shading, no grain, no labels. |

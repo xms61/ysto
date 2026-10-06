@@ -324,7 +324,7 @@ test('keeps both title languages when the second becomes the first', () => {
 });
 
 function openThemeSheet() {
-  fireEvent.click(screen.getByRole('button', { name: /^Tokyo Rain, choose a world$/ }));
+  fireEvent.click(screen.getByRole('button', { name: /^Neon Rain, choose a world$/ }));
   return screen.getByRole('dialog', { name: 'Choose a world' });
 }
 

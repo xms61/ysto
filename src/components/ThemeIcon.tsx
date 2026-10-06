@@ -5,24 +5,13 @@ import type { ReactNode } from 'react';
 import type { Theme } from '../prefs/prefs.ts';
 
 const ICONS: Record<Theme, ReactNode> = {
-  // A bowl of ramen with chopsticks and steam.
+  // A vertical neon sign in the rain: a lit board of glyph strokes over a glowing tube.
   'tokyo-rain': (
     <>
-      <path className="ti-out" d="M15 17c-2-3 2-5 0-8M21 17c-2-3 2-5 0-8" />
-      <path className="ti-out" d="M33 5 25 24M38 7 29 24" />
-      <path className="ti-paper ti-out" d="M6 24h36a18 18 0 0 1-36 0Z" />
-      <path className="ti-mark-line" d="M9 31h30" />
-      <path className="ti-accent" d="M18 41h12l-2 3h-8Z" />
-    </>
-  ),
-  // A corner shop at night: a striped awning over a lit window and door.
-  konbini: (
-    <>
-      <rect className="ti-paper ti-out" x="6" y="14" width="36" height="28" rx="1" />
-      <path className="ti-accent" d="M5 9h38v7H5Z" />
-      <path className="ti-mark-line" d="M5 16h38" />
-      <rect className="ti-out" x="10" y="21" width="12" height="9" />
-      <rect className="ti-out" x="27" y="21" width="10" height="21" />
+      <path className="ti-out" d="M8 6v8M12 10v8M40 8v8M36 14v8" />
+      <rect className="ti-paper ti-out" x="17" y="4" width="14" height="34" rx="2" />
+      <path className="ti-mark-line" d="M20 10h8M24 10v6M20 20h8M21 25h6M24 25v7M20 32h8" />
+      <path className="ti-accent" d="M9 42h30v3H9Z" />
     </>
   ),
   // A microphone, its grille lit.

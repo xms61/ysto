@@ -38,7 +38,7 @@ How the UI code is built. How it should look is in [DESIGN.md](DESIGN.md), and w
 - Nothing sends settings the server would refuse: the store checks them with `validateSettings` first, because every refusal counts against the socket.
 - Storage keys (`ysto_prefs`, `ysto_session`) are permanent once released.
 - Colors, radii, type and shadows come from the theme tokens, never from raw values in a component, so every theme applies to every screen.
-- An animation runs only through a `motion-*` class or a theme decoration that `styles.css` starts under `:root[data-motion='full']`. Motion that script drives (the results' count, Tokyo Rain's flapping title, the lock-in buzz) checks `motionAllowed()` from `hooks.ts` first.
+- An animation runs only through a `motion-*` class or a theme decoration that `styles.css` starts under `:root[data-motion='full']`. Motion that script drives (the results' count, the lock-in buzz) checks `motionAllowed()` from `hooks.ts` first.
 - The options lie face down until the clip starts, then all four turn face up together in the same frame, on a curve that shows their titles within about a frame (the Equal Four Rule in [DESIGN.md](DESIGN.md)).
 - Each screen of a game tells the page its phase with `usePagePhase` (`data-phase` on `<html>`: lobby, countdown, playing, reveal, results), and the backdrop's weather follows it in CSS. The phase comes from the game's state, never from the audio.
 - The four option cards are always equal: one `OptionCard` per option, the same stock and index mark, and a state (`open`, `chosen`, `muted`, `missed`, `right`) that never singles one out before the reveal.

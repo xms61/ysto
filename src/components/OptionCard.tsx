@@ -20,7 +20,7 @@ interface OptionCardProps {
   title: OptionTitle;
   state: CardState;
   tag?: ReactNode;
-  mark?: string; // printed on the face at the reveal, such as Tokyo Rain's "Sold out"
+  mark?: string; // printed on the face at the reveal, such as Neon Rain's "No signal"
   back?: ReactNode;
   sizer?: ReactNode; // the back this card would show at its longest, laid out but never shown
   dealt?: boolean; // turned face up from its back as the clip starts

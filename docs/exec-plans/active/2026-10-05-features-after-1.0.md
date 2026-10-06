@@ -8,7 +8,7 @@ Not in this plan, by the owner's choice: importing AniList or MyAnimeList lists,
 ## Context
 - Specs: [game flow](../../product-specs/game-flow.md), [questions](../../product-specs/questions.md), [scoring](../../product-specs/scoring.md), [lobby](../../product-specs/lobby.md), [settings](../../product-specs/settings.md). Each milestone updates the specs it changes, or adds one (rules in the [specs index](../../product-specs/index.md)).
 - Server: the engine and its rules ([GAME.md](../../../server/game/GAME.md)), the protocol and its limits ([REALTIME.md](../../../server/realtime/REALTIME.md)), the catalog ([CATALOG.md](../../../scripts/catalog/CATALOG.md); `anime.slug` and `synonyms_json` are in the database but not yet loaded by `server/catalog/load.ts`), clips ([CLIPS.md](../../../server/clips/CLIPS.md)).
-- Client: [FRONTEND.md](../../FRONTEND.md), [DESIGN.md](../../DESIGN.md) (nine worlds: every new surface takes each world's tokens, type and motion), `src/prefs/prefs.ts` (device settings; released `ysto_*` keys never change), `src/audio/engine.ts`.
+- Client: [FRONTEND.md](../../FRONTEND.md), [DESIGN.md](../../DESIGN.md) (eight worlds: every new surface takes each world's tokens, type and motion), `src/prefs/prefs.ts` (device settings; released `ysto_*` keys never change), `src/audio/engine.ts`.
 - Invariants that hold for every milestone: [anti-cheat](../../design-docs/anti-cheat.md) (no message tells a player the answer before the reveal); [SECURITY.md](../../SECURITY.md) (validated input, rate limits, no personal data kept); WCAG AA in every world, keys for every control, motion only under the motion setting; tests use no network and no real data ([TESTING.md](../../TESTING.md)).
 - Deploy: the game container is read-only with no writable volume ([DEPLOY.md](../../DEPLOY.md), `deploy/compose.yml`). Milestone 3 adds the first one.
 - Running alongside: the [answer changes plan](2026-10-05-answer-changes.md) still owes each world's own overtime animation.
@@ -149,6 +149,14 @@ Each milestone is one PR on a `feat/…` branch (two where noted), with a versio
 - **Build:** a lobby setting `endless` (default off). `Games` deals an endless game's questions in batches: the engine asks for more (`more-questions`) when two are left, and `Games` draws the next batch from the anime the game hasn't used, or answers with none, after which the game ends when its questions run out. `rounds` is null while an endless game runs. The host's `game:end` ends a game at once with its results.
 - **Tests:** engine (asks for more and keeps going, ends on the host's message mid-round without counting the round, ends when the pool is spent), the setting's validation and saved setups, `game:end` refused for a guest, client (heading without a total, the host's button, no log entry).
 
+#### M22 Neon Rain (added by the owner, 2026-10-06)
+Tokyo Rain and Konbini 2 a.m. become one world, Neon Rain: Tokyo at night in the rain, neon cyberpunk, LEDs. The owner's mood board: wet streets that mirror the signs, vertical columns of lit kanji, magenta and cyan on near-black, glowing LED strips, umbrellas and steam.
+- **Ids:** Neon Rain keeps the id `tokyo-rain` and stays the default; `konbini` leaves `THEMES`, so a player who had it gets Neon Rain.
+- **Palette:** near-black navy page; neon magenta (`accent`) and cyan as the two light sources; amber kept for the LED digits.
+- **The round:** holographic street ads over a wet crossing. The round's heading is a neon sign tube; the time left the LED segments, in cyan; the options four translucent holo panels with scanlines and a glowing edge, each keyed by a lit LED tag. A pick lights its panel full cyan; at the reveal the right panel locks in solid magenta and the others drop to "No signal" (`wrongMark`) with a flicker; picks are stamped in white, which keeps 3:1 on the magenta. The answer box is a holo ad in a cyan frame; the results' winner a lit billboard. Rain keeps falling on the page with its reflections.
+- **Plate:** the Tokyo Rain plate until the owner makes a new one from the prompt in PLATE_PROMPTS.md.
+- **Tests:** contrast pairs for the new surfaces (text on the holo panels, the sign, the billboard); the prefs fallback from `konbini`.
+
 #### M20 The round, polished (owner's notes from playing, 2026-10-06)
 Taken in this order, one step at a time; each step says how it shows.
 1. **The scores column's foot:** scores at the top left; the reactions and "Report this clip" pinned to the column's foot in every phase of the round, the same height throughout, so nothing moves at the reveal. The line "The next round starts in a few seconds" goes. A clip can be reported while its round plays.
@@ -200,6 +208,7 @@ Taken in this order, one step at a time; each step says how it shows.
 - [x] 2026-10-06 M20.16 Check and ship (1.15.0)
 - [x] 2026-10-06 M21 Infinite mode (1.16.0)
 - [x] 2026-10-06 Retire six worlds: Hanami, Tournament Arc, Splash Page, Night Arc, Model Kit, Gachapon (1.17.0)
+- [x] 2026-10-06 M22 Neon Rain: Tokyo Rain and Konbini 2 a.m. merged (1.18.0)
 - [ ] M7 Sound effects per world
 - [ ] M8 Hints
 - [ ] M9 Elimination
@@ -225,6 +234,7 @@ Taken in this order, one step at a time; each step says how it shows.
 - 2026-10-06: The owner asked to drop the latency allowance (half the round trip, up to 150ms, taken off an answer's time, and First correct's 150ms wait for a faster answer still on its way). Times are now plain server arrival. The 300ms grace after the timer stays, so an answer sent at the last moment isn't lost in transit, until the owner says otherwise.
 - 2026-10-05: The anime log (M18) learns which songs the player got right from the results' song list, which now names the players who picked each song right. It is sent only once the game is over, so it tells nobody an answer early. Rejected: collecting each round's reveal on the client, which a player who reconnects at the results would miss.
 - 2026-10-06: The owner retired six worlds (Hanami, Tournament Arc, Splash Page, Night Arc, Model Kit, Gachapon), leaving nine; M7's sound tables and every later surface need only those nine. Their ids leave `THEMES`, so a stored one falls back to Tokyo Rain through the prefs validator, with no migration; the ids are not reused for new worlds, since an old device would land on the new world unasked.
+- 2026-10-06: The owner merged Tokyo Rain and Konbini 2 a.m. into Neon Rain (M22), picking the name, magenta and cyan, and holographic street ads as the round's object, from a mood board of rainy neon Tokyo streets. It keeps `tokyo-rain`'s id, so the default and every Tokyo Rain player carry over; Konbini's players land there through the prefs fallback.
 
 ## Open questions
 Each has a default the milestone builds unless the owner decides otherwise:

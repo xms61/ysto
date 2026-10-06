@@ -3,8 +3,7 @@
 import type { Theme } from '../prefs/prefs.ts';
 
 export const THEME_NAMES: Record<Theme, string> = {
-  'tokyo-rain': 'Tokyo Rain',
-  konbini: 'Konbini 2 a.m.',
+  'tokyo-rain': 'Neon Rain',
   karaoke: 'Karaoke Box',
   omikuji: 'Omikuji',
   'blossom-map': 'Blossom Map',
@@ -15,8 +14,7 @@ export const THEME_NAMES: Record<Theme, string> = {
 };
 
 export const THEME_WORLDS: Record<Theme, string> = {
-  'tokyo-rain': 'A ramen ticket machine under the noren, out of the rain',
-  konbini: 'The one bright shop on a wet street',
+  'tokyo-rain': 'Holographic street ads over a rainy Tokyo crossing at night',
   karaoke: "The booth's lyric screen and song remote",
   omikuji: 'Shrine fortune slips in spring',
   'blossom-map': "A hanami park's guide map",

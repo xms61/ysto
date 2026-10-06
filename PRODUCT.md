@@ -39,7 +39,7 @@ Four things set it apart from other anime music quizzes, such as Anime Music Qui
 
 ## Capabilities and Constraints
 - Lobbies hold up to 12 players. Games have 5 to 50 songs with samples of 10 to 30 s, and the host picks a scoring preset (Classic, Buzzer, Chill) or tunes the modes and modifiers ([product specs](docs/product-specs/index.md)).
-- Each device has its own volume (15% at first), theme (Tokyo Rain, Konbini 2 a.m., Karaoke Box, Omikuji, Blossom Map, Fighter Select, Quest Board, Back Issue, Side A), title languages (one, or two shown together) and motion setting.
+- Each device has its own volume (15% at first), theme (Neon Rain, Karaoke Box, Omikuji, Blossom Map, Fighter Select, Quest Board, Back Issue, Side A), title languages (one, or two shown together) and motion setting.
 - The server makes every decision that affects a score ([anti-cheat](docs/design-docs/anti-cheat.md)).
 - The repo is public. Audio, catalog data, secrets and details of the owner's machine are never committed, and public text describes the audio library only in general terms, without counts or sizes.
 - Metadata comes from AnimeThemes and AniList, under their terms. The running server calls no third-party service.
@@ -54,7 +54,7 @@ Four things set it apart from other anime music quizzes, such as Anime Music Qui
 
 ## Evidence on Hand
 - There are no testimonials, player counts, press or usage data. Nothing of the kind may be invented.
-- Real assets: the name, the favicon (`public/favicon.svg`), the nine themes (`src/styles.css`) and their backdrop plates (`src/assets/plates/`), and the credits to AnimeThemes and AniList.
+- Real assets: the name, the favicon (`public/favicon.svg`), the eight themes (`src/styles.css`) and their backdrop plates (`src/assets/plates/`), and the credits to AnimeThemes and AniList.
 - The owner's audio library is private. Public material never describes its size or contents.
 
 ## Product Principles

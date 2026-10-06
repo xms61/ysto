@@ -2,6 +2,12 @@
 
 Releases moved out of `CHANGELOG.md` (which keeps about the latest 5). Newest first.
 
+## [1.13.0] - 2026-10-05
+
+### Added
+- Your games: the home screen opens a log of the games this device finished, with the player's place, score and songs, and an anime log of every anime heard, how often, and how often the player got it, linked to AnimeThemes. Kept on the device, the last 100 games; "Clear the log" empties it.
+- The results' song list names the players who picked each song right, sent once the game is over.
+
 ## [1.12.0] - 2026-10-05
 
 ### Added
