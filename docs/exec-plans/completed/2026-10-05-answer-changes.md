@@ -28,7 +28,7 @@ A host can let players change their answer while a round is open. Once every pla
 ## Progress
 - [x] 2026-10-05 Rules decided with the owner
 - [x] 2026-10-05 Engine, protocol and settings, with the plain overtime in every world (1.2.0)
-- [ ] Overtime in each world
+- [x] 2026-10-06 Overtime in each world, for the eight worlds left (1.20.0)
 
 ## Decision log
 - 2026-10-05: An overtime after the last answer, rather than closing at once or always running to the deadline, because it gives everyone a fair last look without making every round run its full length. Rejected: closing at the last answer (an early answerer could never react to the others), running every round to the deadline (slow when everyone is sure).
@@ -36,12 +36,12 @@ A host can let players change their answer while a round is open. Once every pla
 - 2026-10-05: A nudge on a switch, naming the player but not the option, because it builds tension and gives nothing away. Rejected: silent switches.
 
 ## Surprises
-None yet.
+- 2026-10-06: Neon Rain's LED had lost its dark glass when Tokyo Rain and Konbini merged (`--glass` was theirs), and overriding its color through a token that referred back to `--accent` made a cycle that blanked it; the readout now sets its color directly.
 
 ## Validation
 - `npm run test:ci`: the engine tests cover a switch, a switch's response time, the overtime start, its cap at the clip's end, First correct ignoring switches, a drop that completes the answers, and catch-up.
 - `npm run build && npm run test:e2e`: the whole-game test still passes; a two-player round with switching on runs its overtime.
-- Screenshots of the overtime in all fifteen worlds, phone and desktop.
+- Screenshots of the overtime in every world, phone and desktop (eight worlds by the time it shipped).
 
 ## Outcome
-Filled in when this plan moves to completed/.
+Players can switch until the round closes, and an overtime of 3 to 10 s gives everyone a last look once all have answered; switches nudge the others without the option. Each world prints the overtime's call on its own material and beats it in its own way (DESIGN.md, The overtime). The worlds shrank from fifteen to eight while it was owed, so it shipped for those eight.

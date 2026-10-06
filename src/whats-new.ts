@@ -4,6 +4,8 @@
 import { readItem, writeItem } from './storage.ts';
 
 const NOTES: { version: string; lines: string[] }[] = [
+  { version: '1.20.0', lines: ['The overtime looks different in every world.'] },
+  { version: '1.19.0', lines: ['Sound effects in every world, with a switch in Preferences.'] },
   {
     version: '1.18.0',
     lines: ['Neon Rain: Tokyo at night in the rain, holographic ads and all, replaces Tokyo Rain and Konbini.'],

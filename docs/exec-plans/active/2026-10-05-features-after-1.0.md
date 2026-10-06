@@ -11,7 +11,7 @@ Not in this plan, by the owner's choice: importing AniList or MyAnimeList lists,
 - Client: [FRONTEND.md](../../FRONTEND.md), [DESIGN.md](../../DESIGN.md) (eight worlds: every new surface takes each world's tokens, type and motion), `src/prefs/prefs.ts` (device settings; released `ysto_*` keys never change), `src/audio/engine.ts`.
 - Invariants that hold for every milestone: [anti-cheat](../../design-docs/anti-cheat.md) (no message tells a player the answer before the reveal); [SECURITY.md](../../SECURITY.md) (validated input, rate limits, no personal data kept); WCAG AA in every world, keys for every control, motion only under the motion setting; tests use no network and no real data ([TESTING.md](../../TESTING.md)).
 - Deploy: the game container is read-only with no writable volume ([DEPLOY.md](../../DEPLOY.md), `deploy/compose.yml`). Milestone 3 adds the first one.
-- Running alongside: the [answer changes plan](2026-10-05-answer-changes.md) still owes each world's own overtime animation.
+- Done alongside: the [answer changes plan](../completed/2026-10-05-answer-changes.md) owed each world's own overtime animation.
 
 ## How the features fit together
 New lobby settings group into three choices at the top of the settings form, so the form doesn't grow into one long list:
@@ -213,7 +213,7 @@ Taken in this order, one step at a time; each step says how it shows.
 - [x] 2026-10-06 Retire six worlds: Hanami, Tournament Arc, Splash Page, Night Arc, Model Kit, Gachapon (1.17.0)
 - [x] 2026-10-06 M22 Neon Rain: Tokyo Rain and Konbini 2 a.m. merged (1.18.0)
 - [x] 2026-10-06 M7.1 Sound effects per world (1.19.0)
-- [ ] M7.2 Overtime animation per world
+- [x] 2026-10-06 M7.2 Overtime animation per world (1.20.0)
 - [ ] M8 Hints
 - [ ] M9 Elimination
 - [ ] M10 Teams
