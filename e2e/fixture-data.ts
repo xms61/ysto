@@ -9,7 +9,7 @@ import { writeCatalog } from '../scripts/catalog/store.ts';
 import { anime, media, probed, theme } from '../tests/catalog/fixtures.ts';
 
 // Enough anime for a game of the fewest songs on Normal, which keeps the easiest half of the themes.
-const ANIME_IDS = Array.from({ length: 12 }, (_, index) => index + 1);
+const ANIME_IDS = Array.from({ length: 24 }, (_, index) => index + 1);
 const TONE_SECONDS = 40;
 
 function ffmpeg(args: string[]): void {
@@ -28,7 +28,7 @@ export function writeFixture(root: string): { audioDir: string; catalogDir: stri
   ffmpeg(['-f', 'lavfi', '-i', 'color=c=0x3355aa:s=96x136', '-frames:v', '1', join(catalogDir, 'covers', '1.jpg')]);
   const catalog = assembleCatalog({
     animeThemes: ANIME_IDS.map((id) => anime(id, { year: 2010 + id, themes: [theme(id, `anime${id}-OP1`)] })),
-    aniList: new Map(ANIME_IDS.map((id) => [1000 + id, media(1000 + id, { popularity: 20_000 - id * 1000 })])),
+    aniList: new Map(ANIME_IDS.map((id) => [1000 + id, media(1000 + id, { popularity: 30_000 - id * 1000 })])),
     audio: ANIME_IDS.map((id) => probed(`anime${id}-OP1.ogg`, TONE_SECONDS * 1000)),
     coverFiles: new Map([[1, '1.jpg']]),
   });

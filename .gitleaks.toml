@@ -5,6 +5,12 @@
 useDefault = true
 
 [[rules]]
+id = "daily-secret"
+description = "A value for YSTO_DAILY_SECRET, which lets anyone list the daily challenge's answers"
+regex = '''YSTO_DAILY_SECRET\s*[=:]\s*['"]?[A-Za-z0-9+\/=_-]{32,}'''
+keywords = ["ysto_daily_secret"]
+
+[[rules]]
 id = "home-folder-path"
 description = "Absolute path into a home folder, which reveals the machine and its user"
 regex = '''(?i)(?:\b[a-z]:(?:\\\\|\\|\/)users(?:\\\\|\\|\/)[^\\\/\s'"`]+|\/[a-z]\/users\/[^\/\s'"`]+\/|(?:^|[\s'"`=])\/(?:users|home)\/[^\/\s'"`]+\/)'''

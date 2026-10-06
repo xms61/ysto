@@ -6,7 +6,7 @@ last-verified: 2026-10-06
 # Lobby API and sockets
 
 Entry: `server/realtime/hub.ts`. `Realtime` serves the lobby sockets at `/ws` on the HTTP server. The lobby routes are in `server/http/api.ts`, and both work through the `LobbyRegistry` ([GAME.md](../game/GAME.md)). The protocol's types, validators and codes are in `shared/protocol.ts`.
-- `../http/api.ts`: `POST /api/lobbies` and `POST /api/lobbies/:code/players`, each returning a session token.
+- `../http/api.ts`: `POST /api/lobbies` and `POST /api/lobbies/:code/players`, each returning a session token; `GET /api/daily` (whether the daily challenge is on, and today's number) and `POST /api/daily` (a locked one-player lobby for today's daily, counted as a creation; `daily-off` without the secret).
 - `../http/headers.ts`: the security headers every response carries.
 - `../client-ip.ts`: the player's IP behind `YSTO_TRUST_PROXY` proxies, for HTTP and upgrades alike.
 - `../rate-limit.ts`: sliding-window counts per key.

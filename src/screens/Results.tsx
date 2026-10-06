@@ -8,6 +8,7 @@ import type { LobbyState, PlayedSong, PlayerIcon, ResultView } from '../../share
 import { AnimeName } from '../components/AnimeName.tsx';
 import { Burst } from '../components/Burst.tsx';
 import { TeamResults } from '../components/Teams.tsx';
+import { DailyResult } from '../components/Daily.tsx';
 import { PlayerBadge } from '../components/PlayerIcon.tsx';
 import { ReactionBar } from '../components/Reactions.tsx';
 import { ReportClip } from '../components/ReportClip.tsx';
@@ -34,6 +35,7 @@ interface ResultsProps {
   isHost: boolean;
   titles: TitleLanguages;
   reported: number[]; // the rounds whose clip this player reported
+  storage: Storage | null; // the device's, where a daily's streak is counted
 }
 
 // Each act waits for the one billed below it; the headliner holds a beat longer.
@@ -199,7 +201,7 @@ function tallyLine(lobby: LobbyState): string | null {
   return `Game ${tally.games} in this lobby. ${lead}`;
 }
 
-export function Results({ store, lobby, isHost, titles, reported }: ResultsProps) {
+export function Results({ store, lobby, isHost, titles, reported, storage }: ResultsProps) {
   usePagePhase('results');
   const results = lobby.game?.results ?? [];
   const rounds = lobby.game?.rounds ?? 0;
@@ -216,6 +218,7 @@ export function Results({ store, lobby, isHost, titles, reported }: ResultsProps
         </p>
       ) : (
         <div className="flex flex-1 flex-col justify-center pb-6">
+          {lobby.daily && <DailyResult lobby={lobby} storage={storage} />}
           {lobby.game?.teams && <TeamResults lobby={lobby} teams={lobby.game.teams} results={results} />}
           <Bill lobby={lobby} results={results} rounds={rounds} />
         </div>
@@ -224,7 +227,7 @@ export function Results({ store, lobby, isHost, titles, reported }: ResultsProps
       {songs.length > 0 && <SongList store={store} songs={songs} titles={titles} reported={reported} />}
       <div className="mt-auto flex flex-wrap items-center gap-3 border-t border-line pt-4">
         {isHost ? (
-          <Button onClick={() => store.startGame()}>Play again</Button>
+          <Button onClick={() => store.startGame()}>{lobby.daily ? 'Play again for practice' : 'Play again'}</Button>
         ) : (
           <p className="text-muted">Waiting for the host to start the next game.</p>
         )}

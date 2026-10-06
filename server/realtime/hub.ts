@@ -317,7 +317,7 @@ export class Realtime {
   #broadcast(lobby: Lobby): void {
     const connections = lobby.players.flatMap((player) => this.#bySeat.get(player.id) ?? []);
     if (connections.length === 0) return;
-    const { code, hostId, locked, settings } = lobby;
+    const { code, hostId, locked, settings, daily } = lobby;
     const shared = {
       version: SERVER_VERSION,
       code,
@@ -332,6 +332,7 @@ export class Realtime {
         code,
         lobby.players.map((player) => player.id),
       ),
+      ...(daily ? { daily } : {}),
     };
     for (const connection of connections) {
       send(connection, { type: 'lobby:state', ...shared, you: connection.seat?.playerId ?? '' });

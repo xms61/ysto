@@ -1,6 +1,6 @@
 ---
 status: draft
-last-verified: 2026-10-05
+last-verified: 2026-10-06
 ---
 
 # Security
@@ -8,7 +8,7 @@ last-verified: 2026-10-05
 The answer to a round is protected by the [anti-cheat design](design-docs/anti-cheat.md). This doc covers everything else: secrets, input, sessions, transport, player data and the public repo.
 
 ## Secrets
-- The running server needs no secret. If one is ever added, it lives in `.env`, which git ignores, or in the host's environment or GitHub Actions secrets. It is never logged or sent to clients, and it gets a gitleaks rule.
+- The running server has one secret, `YSTO_DAILY_SECRET`, the daily challenge's seed ([daily](product-specs/daily.md)): anyone with it can list a day's answers. It lives in `.env`, which git ignores, is at least 32 characters, is never logged or sent to clients, and `.gitleaks.toml` has a rule for it. Any other secret added later follows the same rules.
 - [.env.example](../.env.example) lists every variable, and `server/config.ts` is the only code that reads them (ESLint enforces this). Each value is validated at startup, and a bad one stops the server with a clear message.
 - What must never be committed, and the checks that enforce it, are in the [release guardrails](../.github/RELEASE_PROCESS.md). That includes details of the owner's machine, because the repo is public. The VPS's SSH keys never go into the repo or into GitHub.
 

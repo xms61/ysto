@@ -1,6 +1,6 @@
 ---
 status: draft
-last-verified: 2026-10-05
+last-verified: 2026-10-06
 ---
 
 # Deploy
@@ -56,7 +56,7 @@ sudo chown -R deploy:deploy /opt/ysto /srv/ysto
 scp deploy/compose.yml deploy/Caddyfile deploy@<server>:/opt/ysto/
 scp deploy/.env.example deploy@<server>:/opt/ysto/.env
 ```
-On the VPS, set `YSTO_DOMAIN` in `/opt/ysto/.env`. The folder defaults match the ones created above.
+On the VPS, set `YSTO_DOMAIN` in `/opt/ysto/.env`, and for the daily challenge `YSTO_DAILY_SECRET` (`openssl rand -base64 32`; changing it changes every future day's songs, so set it once). The folder defaults match the ones created above.
 
 ### 4. The library and the catalog
 *Owner machine* (rsync runs in WSL on Windows):

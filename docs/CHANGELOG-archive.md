@@ -2,6 +2,11 @@
 
 Releases moved out of `CHANGELOG.md` (which keeps about the latest 5). Newest first.
 
+## [1.21.0] - 2026-10-06
+
+### Added
+- Hints: with "Hints" on in the lobby, from halfway through a round a player can see when the anime aired ("TV, Spring 2013"); a right answer after a hint scores 70%, streak bonus included. One per round, only to the player who asks, and not once an answer is locked in. The reveal marks who took one.
+
 ## [1.20.0] - 2026-10-06
 
 ### Added

@@ -8,7 +8,8 @@ import { PreferencesMenu } from '../components/PrefsPanel.tsx';
 import { Button, INPUT, Panel } from '../components/ui.tsx';
 import { ERROR_MESSAGES } from '../copy.ts';
 import type { Prefs } from '../prefs/prefs.ts';
-import { createLobby, joinLobby } from '../realtime/api.ts';
+import { createDaily, createLobby, joinLobby } from '../realtime/api.ts';
+import { DailyPanel } from '../components/Daily.tsx';
 import type { Seated } from '../realtime/api.ts';
 import type { Session } from '../realtime/session.ts';
 
@@ -19,6 +20,7 @@ interface HomeProps {
   onPrefs: (change: Partial<Prefs>) => void;
   unlockAudio: () => void;
   onSeated: (session: Session) => void;
+  storage: Storage | null; // the device's, where the daily streak lives
   onShowLog: () => void;
 }
 
@@ -38,7 +40,7 @@ function HowToPlay() {
   );
 }
 
-export function Home({ joinCode, notice, prefs, onPrefs, unlockAudio, onSeated, onShowLog }: HomeProps) {
+export function Home({ joinCode, notice, prefs, onPrefs, unlockAudio, onSeated, onShowLog, storage }: HomeProps) {
   const [name, setName] = useState('');
   const [code, setCode] = useState(joinCode ?? '');
   const [linked, setLinked] = useState(joinCode !== null);
@@ -46,8 +48,7 @@ export function Home({ joinCode, notice, prefs, onPrefs, unlockAudio, onSeated, 
   const [busy, setBusy] = useState(false);
 
   // Audio may only start from a player's own tap, so this one unlocks it for the rounds to come.
-  async function seat(event: FormEvent, request: (cleaned: string) => Promise<Seated> | string) {
-    event.preventDefault();
+  async function seat(request: (cleaned: string) => Promise<Seated> | string) {
     unlockAudio();
     const cleaned = cleanName(name);
     if (cleaned === null) return setError(ERROR_MESSAGES['invalid-name']);
@@ -60,12 +61,18 @@ export function Home({ joinCode, notice, prefs, onPrefs, unlockAudio, onSeated, 
     onSeated(result.session);
   }
 
-  const create = (event: FormEvent) => seat(event, (cleaned) => createLobby(cleaned));
-  const join = (event: FormEvent) =>
-    seat(event, (cleaned) => {
+  const create = (event: FormEvent) => {
+    event.preventDefault();
+    void seat((cleaned) => createLobby(cleaned));
+  };
+  const playDaily = () => void seat((cleaned) => createDaily(cleaned));
+  const join = (event: FormEvent) => {
+    event.preventDefault();
+    void seat((cleaned) => {
       const normalized = normalizeCode(code);
       return normalized === null ? CODE_MESSAGE : joinLobby(normalized, cleaned);
     });
+  };
 
   const nameField = (
     <label className="flex flex-col gap-1.5 font-medium">
@@ -149,6 +156,7 @@ export function Home({ joinCode, notice, prefs, onPrefs, unlockAudio, onSeated, 
           {error}
         </p>
       )}
+      {!linked && <DailyPanel storage={storage} busy={busy} onPlay={playDaily} />}
       <HowToPlay />
       <Button variant="quiet" className="self-center" onClick={onShowLog}>
         Your games

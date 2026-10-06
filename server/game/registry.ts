@@ -3,6 +3,7 @@
 // sweep, and reports every change to one listener: the realtime layer, which tells the players.
 import { randomBytes, randomInt } from 'node:crypto';
 import { CODE_ALPHABET, CODE_LENGTH } from '../../shared/protocol.ts';
+import { dailySettings } from '../../shared/daily.ts';
 import { defaultSettings } from '../../shared/settings.ts';
 import type { LobbySettings, SettingsBounds } from '../../shared/settings.ts';
 import type { PlayerIcon } from '../../shared/protocol.ts';
@@ -105,6 +106,19 @@ export class LobbyRegistry {
     return { code, ...joined };
   }
 
+  // A daily challenge's lobby: one seat, locked once its player is in, with the day's fixed settings.
+  createDaily(
+    name: string,
+    ip: string,
+    number: number,
+  ): (Joined & { code: string }) | { error: 'server-full' | 'too-many-lobbies' } {
+    const created = this.create(name, ip);
+    if ('error' in created) return created;
+    const lobby = this.#lobbies.get(created.code);
+    if (lobby) this.#store({ ...lobby, settings: dailySettings(this.bounds), locked: true, daily: { number } });
+    return created;
+  }
+
   join(code: string, name: string): Joined | { error: 'lobby-not-found' | JoinError } {
     const lobby = this.#lobbies.get(code);
     if (!lobby) return { error: 'lobby-not-found' };
@@ -157,7 +171,7 @@ export class LobbyRegistry {
     return null;
   }
 
-  lock(seat: Seat, locked: boolean): 'not-host' | null {
+  lock(seat: Seat, locked: boolean): 'not-host' | 'daily-fixed' | null {
     return this.#applyAsHost(seat, (lobby) => lockLobby(lobby, seat.playerId, locked));
   }
 
@@ -180,7 +194,7 @@ export class LobbyRegistry {
     );
   }
 
-  updateSettings(seat: Seat, settings: LobbySettings): 'not-host' | null {
+  updateSettings(seat: Seat, settings: LobbySettings): 'not-host' | 'daily-fixed' | null {
     return this.#applyAsHost(seat, (lobby) => changeSettings(lobby, seat.playerId, settings));
   }
 

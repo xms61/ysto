@@ -1,6 +1,6 @@
 // The lobby between games: the invite (code, link and QR code), the players, the settings, and the start
 // (docs/product-specs/lobby.md, settings.md).
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { LobbyState } from '../../shared/protocol.ts';
 import { LIMITS } from '../../shared/settings.ts';
 import type { LobbySettings } from '../../shared/settings.ts';
@@ -97,8 +97,29 @@ function StartBar({ store, lobby, settings, isHost }: LobbyProps) {
   );
 }
 
+// A daily's private lobby starts its game as soon as its player is in, once; back from its results it waits.
+function DailyLobby({ store, lobby }: { store: GameStore; lobby: LobbyState }) {
+  const started = useRef(false);
+  useEffect(() => {
+    if (started.current || lobby.game !== null) return;
+    started.current = true;
+    store.startGame();
+  }, [store, lobby.game]);
+  return (
+    <Panel title={`Daily No. ${lobby.daily?.number ?? ''}`}>
+      <p className="text-muted">Ten songs of 15 s each, the same for everyone today. Your first play counts.</p>
+      {lobby.game !== null && (
+        <Button className="mt-4" onClick={() => store.startGame()}>
+          Play again for practice
+        </Button>
+      )}
+    </Panel>
+  );
+}
+
 export function Lobby({ store, lobby, settings, isHost }: LobbyProps) {
   usePagePhase('lobby');
+  if (lobby.daily) return <DailyLobby store={store} lobby={lobby} />;
   return (
     <>
       <Invite code={lobby.code} />

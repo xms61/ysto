@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.26.0] - 2026-10-06
+
+### Added
+- Today's challenge: the same ten songs for everyone each day (it changes at 00:00 UTC), played solo from the home screen, with this device's streak of days in a row, badges at 7, 30 and 100 days, and a result to copy and share as plain blocks that name no song. Replays of a day are practice. Needs `YSTO_DAILY_SECRET` on the server.
+
 ## [1.25.0] - 2026-10-06
 
 ### Added
@@ -29,8 +34,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - The lobby settings open with a Play group: Classic or Elimination, the lives, and Endless.
-
-## [1.21.0] - 2026-10-06
-
-### Added
-- Hints: with "Hints" on in the lobby, from halfway through a round a player can see when the anime aired ("TV, Spring 2013"); a right answer after a hint scores 70%, streak bonus included. One per round, only to the player who asks, and not once an answer is locked in. The reveal marks who took one.

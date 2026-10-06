@@ -19,6 +19,7 @@ export interface Config {
   maxPlayers: number;
   maxGames: number;
   stateDir: string | null; // where the server keeps what it writes, such as clip reports; null keeps nothing
+  dailySecret: string | null; // the daily challenge's seed secret; null turns the daily off
 }
 
 // Where the catalog scripts read and write. Relative paths resolve against the working directory,
@@ -90,6 +91,19 @@ function ffprobeNextTo(ffmpegPath: string): string {
   return join(dirname(ffmpegPath), name.replace(/^ffmpeg/i, 'ffprobe'));
 }
 
+// The daily's seed takes this secret with the date, so nobody can list a day's songs from the public code and
+// catalog. Without it the daily is off.
+const MIN_SECRET_LENGTH = 32;
+
+function dailySecret(env: Env): string | null {
+  const secret = setValue(env, 'YSTO_DAILY_SECRET');
+  if (secret === undefined) return null;
+  if (secret.length < MIN_SECRET_LENGTH) {
+    throw new Error(`YSTO_DAILY_SECRET is shorter than ${MIN_SECRET_LENGTH} characters`);
+  }
+  return secret;
+}
+
 export function loadConfig(env: Env = process.env, cwd: string = process.cwd()): Config {
   return {
     port: integerIn(env, 'PORT', 1, 65535, 3000),
@@ -105,6 +119,7 @@ export function loadConfig(env: Env = process.env, cwd: string = process.cwd()):
     maxPlayers: integerIn(env, 'YSTO_MAX_PLAYERS', 1, 50, 12),
     maxGames: integerIn(env, 'YSTO_MAX_GAMES', 1, 1000, 30),
     stateDir: optionalPath(env, 'YSTO_STATE_DIR', cwd),
+    dailySecret: dailySecret(env),
   };
 }
 

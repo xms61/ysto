@@ -21,6 +21,7 @@ export interface AppOptions {
   // The catalog is loaded, the audio folder is there and ffmpeg runs, so games can be played.
   ready: boolean;
   trustedProxyHops: number;
+  dailyOn?: boolean; // the daily challenge has its secret
   log: Logger;
   clips?: { tokens: ClipTokens; lobbyOfSession: LobbyOfSession };
 }
@@ -41,6 +42,7 @@ export function createApp({
   registry,
   ready,
   trustedProxyHops,
+  dailyOn = false,
   log,
   clips,
 }: AppOptions): Express {
@@ -53,7 +55,7 @@ export function createApp({
   app.get('/readyz', (_req, res) => {
     res.status(ready ? 200 : 503).json({ status: ready ? 'ready' : 'not-ready' });
   });
-  app.use(apiRouter({ registry, trustedHops: trustedProxyHops }));
+  app.use(apiRouter({ registry, trustedHops: trustedProxyHops, dailyOn }));
   if (clips) app.use(clipRouter(clips.tokens, clips.lobbyOfSession));
   // Reveals show covers; a missing one falls through to the 404 below. Browsers keep them for a day, so a
   // cover that comes back later in a game isn't fetched again.

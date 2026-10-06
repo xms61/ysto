@@ -84,6 +84,7 @@ const games =
     random: secureRandom,
     log,
     reports,
+    dailySecret: config.dailySecret,
   });
 const clipRoute = registry &&
   clips && { tokens: clips.tokens, lobbyOfSession: (token: string) => registry.seatOf(token)?.code };
@@ -93,6 +94,7 @@ const app = createApp({
   registry,
   ready: registry !== null && clips !== null,
   trustedProxyHops: config.trustedProxyHops,
+  dailyOn: config.dailySecret !== null,
   log,
   ...(clipRoute && { clips: clipRoute }),
 });

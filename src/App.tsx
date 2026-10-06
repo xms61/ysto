@@ -94,6 +94,7 @@ export function App({ audio, storage, createSocket, reload }: AppProps) {
             unlockAudio={() => audio.unlock()}
             onSeated={seated}
             onShowLog={() => setShowLog(true)}
+            storage={storage.local}
           />
           {notes.length > 0 && <WhatsNew lines={notes} onClose={notesSeen} />}
         </>
