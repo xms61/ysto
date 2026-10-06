@@ -31,23 +31,23 @@ server                                              clients
 - "Play again" is the host starting the next game from the results.
 - The sample plays for the whole answer window, which equals the sample length.
 - **Answer changes** (a lobby setting, off by default; never in First correct): a player can pick another option until the round closes, and the cards stay open after a pick. When every connected player has answered, the round doesn't close: an overtime of 3 to 10 s (the host's choice, 5 s by default) starts, with the theme's call "Overtime" and its time readout counting the overtime down. Anyone can still switch; a switch doesn't restart it. It never runs past the clip's end. Each switch shows the others "Mio switched", never the option. A player who reconnects gets their own pick back.
-- The cards keep their place and size from the deal to the reveal; the verdict takes the timer's place. On a wide screen the scores sit left of the cards for the whole round (who has answered, then each player's pick and points), and the answer fills a column kept free right of them at the reveal, so nothing moves and nothing needs a scroll; on a phone the scores follow the cards and the answer comes last. A line under the cards says when this player's clip is loading or failed to load.
+- The cards keep their place and size from the deal to the reveal; the verdict takes the timer's place. On a wide screen the scores sit left of the cards for the whole round (who has answered, then each player's pick and points), and the answer fills a column kept free right of them at the reveal, so nothing moves and nothing needs a scroll; on a phone the scores follow the cards and the answer comes last. A line above the cards says when this player's clip is loading or failed to load. On a wide screen the whole round fits the window, with no scroll, and the cards fill the middle column's height, a long title shrinking to fit its card.
 - The reveal shows:
   - the right option, and the anime in English, romaji and Japanese
   - OP or ED and its number
   - the song title and artists, and the year and season
   - the cover
-  - who picked each option, as each picker's animal stamp on its card's bottom right corner (named for screen readers and on hover), and on the scoreboard as the number of the card each player picked, shown only once the round has closed for everyone
+  - who picked each option, as each picker's animal stamped down its card's right side, wholly inside the card (named for screen readers and on hover), and on the scoreboard as the number of the card each player picked, shown only once the round has closed for everyone
   - each player's pick and points, and for a player who missed the song, with a wrong answer or none, "You skipped the OP?!" (or the ED)
 - A player whose clip fails to load can still answer. The reveal marks them "no audio", with no penalty.
 - The results bill the standings like a festival lineup, announced from the bottom up, the winner's full name largest, with each player's correct answers, average time and best streak. Players on the same score share a place, at the reveal and in the results. The lobby state keeps them until the next game, so a player who reloads on the results sees them again.
 - Below the standings, folded away, "Songs this game" lists every round's song in the order it played (a skipped round's too, marked): the anime in the player's title languages, OP or ED and its number, the song title and artists, when it aired, and a link to the anime's page on AnimeThemes, opening in a new tab without a referrer. The game then goes into the player's [game log](game-log.md).
-- **Report this clip:** at the reveal and in the results' song list, a player can report the round's clip with one of four reasons (silent or too quiet, wrong song, cut badly, something else). Each player reports a clip once per game; the control then reads "Reported. Thanks." The owner reads the reports ([DEPLOY.md](../DEPLOY.md#clip-reports)).
+- **Report this clip:** all through a round, at the foot of the scores column, and in the results' song list, a player can report the round's clip with one of four reasons (silent or too quiet, wrong song, cut badly, something else). Each player reports a clip once per game; the control then reads "Reported. Thanks." The owner reads the reports ([DEPLOY.md](../DEPLOY.md#clip-reports)).
 - The clip plays on through the reveal, and fades out when the next round is prepared, when the host skips, or when the game ends.
 
 ## Acceptance criteria
 - All players see the options at `startsAt`, and none before.
-- A round ends at `endsAt`, as soon as everyone has answered, or 150 ms after the first correct answer in First correct ([scoring](scoring.md)). With answer changes on, everyone having answered starts the overtime instead, and the round ends when it does.
+- A round ends at `endsAt`, as soon as everyone has answered, or in First correct on the first correct answer to arrive ([scoring](scoring.md)). With answer changes on, everyone having answered starts the overtime instead, and the round ends when it does.
 - The next round starts right after the reveal, without waiting for a clip to be cut.
 - "Play again" keeps the players and settings, and avoids the themes already played.
 - A game of 15 songs with 20 s samples takes about 7 to 8 minutes.

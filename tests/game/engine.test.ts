@@ -105,7 +105,6 @@ interface Scripted {
   playerId: string;
   delayMs: number; // after startsAt
   correct: boolean;
-  rttMs?: number;
 }
 
 function optionFor(sim: Simulation, correct: boolean): number {
@@ -120,7 +119,7 @@ function playRound(sim: Simulation, answers: Scripted[]): RoundReveal {
   for (const answer of [...answers].sort((a, b) => a.delayMs - b.delayMs)) {
     sim.advanceTo(start.startsAt + answer.delayMs);
     const option = optionFor(sim, answer.correct);
-    sim.event({ type: 'answer', playerId: answer.playerId, roundId: start.roundId, option, rttMs: answer.rttMs ?? 0 });
+    sim.event({ type: 'answer', playerId: answer.playerId, roundId: start.roundId, option });
   }
   sim.advanceTo(start.endsAt + GAME_TIMING.graceMs);
   const reveal = sim.last('round:reveal');
@@ -130,30 +129,28 @@ function playRound(sim: Simulation, answers: Scripted[]): RoundReveal {
 }
 
 // The scoring table applied to the script: response times from the script alone, and in First correct only
-// the answers that arrive before the round closes, 150 ms after the first correct one.
+// the answers that arrive up to the first correct one, which closes the round.
 function expectedAwards(rules: ScoringRules, answers: Scripted[], standings: ScoreStanding[]) {
   const arrived = [...answers].sort((a, b) => a.delayMs - b.delayMs);
   const firstCorrect = arrived.find((answer) => answer.correct)?.delayMs;
   const counted =
     rules.mode === 'firstCorrect' && firstCorrect !== undefined
-      ? arrived.filter((answer) => answer.delayMs <= firstCorrect + GAME_TIMING.maxRttCompensationMs)
+      ? arrived.filter((answer) => answer.delayMs <= firstCorrect)
       : arrived;
-  const scored: Answer[] = counted.map(({ playerId, correct, delayMs, rttMs = 0 }) => ({
+  const scored: Answer[] = counted.map(({ playerId, correct, delayMs }) => ({
     playerId,
     correct,
-    responseMs: Math.max(0, Math.round(delayMs - Math.min(rttMs / 2, GAME_TIMING.maxRttCompensationMs))),
+    responseMs: delayMs,
   }));
   return scoreQuestion(rules, 10_000, scored, standings);
 }
 
-// p8 skips the first round, p7 always misses, the others miss when (round + player) % 4 is 0. p2 and p3
-// have round trips of 100 ms and 1 s.
+// p8 skips the first round, p7 always misses, the others miss when (round + player) % 4 is 0.
 function scriptFor(round: number): Scripted[] {
   return PLAYERS.flatMap((playerId, index) => {
     const k = index + 1;
     if (playerId === 'p8' && round === 0) return [];
-    const rttMs = playerId === 'p2' ? 100 : playerId === 'p3' ? 1000 : 0;
-    return [{ playerId, delayMs: 800 * k + 137 * round, correct: playerId !== 'p7' && (round + k) % 4 !== 0, rttMs }];
+    return [{ playerId, delayMs: 800 * k + 137 * round, correct: playerId !== 'p7' && (round + k) % 4 !== 0 }];
   });
 }
 
@@ -193,7 +190,7 @@ test('drops early, late, repeated, foreign and stale answers', () => {
   allReady(sim);
   const start = sim.last('round:start');
   const answer = (playerId: string, roundId = start.roundId) =>
-    sim.event({ type: 'answer', playerId, roundId, option: optionFor(sim, true), rttMs: 0 });
+    sim.event({ type: 'answer', playerId, roundId, option: optionFor(sim, true) });
   sim.advanceTo(start.startsAt - 1);
   answer('p1');
   sim.advanceTo(start.startsAt + 500);
@@ -240,7 +237,7 @@ test('starts a round when every connected player is ready, or when the barrier r
   );
 });
 
-test('ends a round once everyone has answered, and in First correct 150 ms after the first correct answer', () => {
+test('ends a round once everyone has answered, and in First correct on the first correct answer', () => {
   const everyone = new Simulation(settings(), ['p1', 'p2']);
   playRoundPartly(everyone, [
     { playerId: 'p1', delayMs: 1000, correct: false },
@@ -254,15 +251,14 @@ test('ends a round once everyone has answered, and in First correct 150 ms after
   const buzzer = new Simulation(settings({ scoring: { ...SCORING_PRESETS.buzzer } }), ['p1', 'p2', 'p3']);
   playRoundPartly(buzzer, [
     { playerId: 'p1', delayMs: 1000, correct: true },
-    { playerId: 'p2', delayMs: 1100, correct: true, rttMs: 300 },
+    { playerId: 'p2', delayMs: 1100, correct: true },
   ]);
   const start = buzzer.last('round:start');
-  buzzer.advanceTo(start.startsAt + 1000 + GAME_TIMING.maxRttCompensationMs);
   const reveal = buzzer.sent.findLast((sent) => sent.message.type === 'round:reveal');
-  assert.equal(reveal?.at, start.startsAt + 1150);
-  // p2 arrived later, but with half its round trip taken off it answered first (1100 - 150 < 1000).
+  assert.equal(reveal?.at, start.startsAt + 1000);
+  // p2 arrived after the round had closed on p1's answer; no allowance for the connection reorders them.
   const points = Object.fromEntries(buzzer.last('round:reveal').picks.map((pick) => [pick.playerId, pick.points]));
-  assert.deepEqual(points, { p1: 0, p2: 1000, p3: 0 });
+  assert.deepEqual(points, { p1: 1000, p2: 0, p3: 0 });
 });
 
 // Readies everyone and sends the answers, without running the round out.
@@ -272,7 +268,7 @@ function playRoundPartly(sim: Simulation, answers: Scripted[]): void {
   for (const answer of answers) {
     sim.advanceTo(start.startsAt + answer.delayMs);
     const option = optionFor(sim, answer.correct);
-    sim.event({ type: 'answer', playerId: answer.playerId, roundId: start.roundId, option, rttMs: answer.rttMs ?? 0 });
+    sim.event({ type: 'answer', playerId: answer.playerId, roundId: start.roundId, option });
   }
 }
 
@@ -346,7 +342,7 @@ test('lets a late joiner watch the round in progress, then play from the next on
     .filter((sent) => sent.to.length === 1 && sent.to[0] === 'late')
     .map((sent) => sent.message.type);
   assert.deepEqual(caughtUp, ['round:prepare', 'round:start', 'round:answered']);
-  sim.event({ type: 'answer', playerId: 'late', roundId: sim.last('round:start').roundId, option: 0, rttMs: 0 });
+  sim.event({ type: 'answer', playerId: 'late', roundId: sim.last('round:start').roundId, option: 0 });
   sim.advanceTo(sim.last('round:start').endsAt + GAME_TIMING.graceMs);
   assert.deepEqual(
     sim.last('round:reveal').picks.map((pick) => pick.playerId),
@@ -376,8 +372,8 @@ test('catches up a player who reconnects, and waits only for connected players',
   sim.event({ type: 'player-connected', playerId: 'p2' });
   const toP2 = sim.sent.filter((sent) => sent.to.join() === 'p2').map((sent) => sent.message.type);
   assert.deepEqual(toP2, ['round:prepare', 'round:start', 'round:answered']);
-  sim.event({ type: 'answer', playerId: 'p1', roundId: start.roundId, option: 0, rttMs: 0 });
-  sim.event({ type: 'answer', playerId: 'p2', roundId: start.roundId, option: 0, rttMs: 0 });
+  sim.event({ type: 'answer', playerId: 'p1', roundId: start.roundId, option: 0 });
+  sim.event({ type: 'answer', playerId: 'p2', roundId: start.roundId, option: 0 });
   sim.event({ type: 'player-disconnected', playerId: 'p2' });
   sim.event({ type: 'player-connected', playerId: 'p2' });
   assert.equal(sim.sent.at(-1)?.message.type, 'round:reveal', 'a reconnect during the reveal gets the reveal again');
@@ -476,7 +472,7 @@ test('with answer changes on, a switch replaces the pick at its own time, and th
   allReady(sim);
   const start = sim.last('round:start');
   const answer = (playerId: string, correct: boolean) =>
-    sim.event({ type: 'answer', playerId, roundId: start.roundId, option: optionFor(sim, correct), rttMs: 0 });
+    sim.event({ type: 'answer', playerId, roundId: start.roundId, option: optionFor(sim, correct) });
   sim.advanceTo(start.startsAt + 1000);
   answer('p1', false);
   sim.advanceTo(start.startsAt + 3000);
@@ -510,7 +506,7 @@ test('runs an overtime once everyone has answered, open to switches, and never p
   });
   assert.equal(sim.count('round:reveal'), 0);
   sim.advanceTo(start.startsAt + 6000);
-  sim.event({ type: 'answer', playerId: 'p1', roundId: start.roundId, option: optionFor(sim, true), rttMs: 0 });
+  sim.event({ type: 'answer', playerId: 'p1', roundId: start.roundId, option: optionFor(sim, true) });
   sim.advanceTo(overtime.endsAt + GAME_TIMING.graceMs - 1);
   assert.equal(sim.count('round:reveal'), 0);
   sim.advanceTo(overtime.endsAt + GAME_TIMING.graceMs);
@@ -539,7 +535,6 @@ test('First correct keeps the first answer, even with answer changes on', () => 
     playerId: 'p2',
     roundId: sim.last('round:start').roundId,
     option: optionFor(sim, false),
-    rttMs: 0,
   });
   assert.equal(sim.count('round:overtime'), 0);
   assert.deepEqual(pointsOf(sim.last('round:reveal')), { p1: -500, p2: -500 });

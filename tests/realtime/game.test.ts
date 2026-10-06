@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { GAME_TIMING } from '../../server/game/engine.ts';
+import { REALTIME_LIMITS } from '../../server/realtime/hub.ts';
 import type { ServerMessage } from '../../shared/protocol.ts';
 import { createLobby, joinLobby, startServer, TestClient } from '../server/harness.ts';
 import type { Seat, ServerOptions, TestServer } from '../server/harness.ts';
@@ -140,7 +141,7 @@ test('with answer changes on, sends a switch to the others and runs the overtime
   });
 });
 
-test('keeps one report per player for each revealed clip, and none for a round not yet revealed', async () => {
+test('keeps one report per player for each clip, from its round on, and none for a round not yet begun', async () => {
   await withServer(async (server) => {
     const { annClient, benClient } = await twoPlayerLobby(server);
     annClient.send({ type: 'game:start' });
@@ -162,37 +163,38 @@ test('keeps one report per player for each revealed clip, and none for a round n
     }
     assert.deepEqual(
       server.reports.map((report) => report.reason),
-      ['bad-cut', 'wrong-song'],
+      ['silent', 'wrong-song'],
     );
     assert.ok(server.reports.every((report) => report.themeId > 0 && report.startMs >= 0));
   });
 });
 
-test('sends reactions to the whole lobby, once a second per player, and never while a round takes answers', async () => {
+test('sends reactions to the whole lobby, up to the limit per player, also while a round takes answers', async () => {
   await withServer(async (server) => {
-    const { ann, annClient, benClient } = await twoPlayerLobby(server);
+    const { ann, ben, annClient, benClient } = await twoPlayerLobby(server);
     const flush = async () => {
       for (const client of [annClient, benClient]) {
         client.send({ type: 'time:ping', clientTime: 1 });
         await nextOf(client, 'time:pong');
       }
     };
-    annClient.send({ type: 'reaction', kind: 'hype' });
-    annClient.send({ type: 'reaction', kind: 'laugh' });
+    const limit = REALTIME_LIMITS.reactionsPerSecond;
+    for (let sent = 0; sent < limit + 2; sent++) annClient.send({ type: 'reaction', kind: 'hype' });
     await flush();
     for (const client of [annClient, benClient]) {
       const reactions = client.received.filter((message) => message.type === 'reaction');
-      assert.deepEqual(reactions, [{ type: 'reaction', playerId: ann.playerId, kind: 'hype' }]);
+      assert.equal(reactions.length, limit);
+      assert.deepEqual(reactions[0], { type: 'reaction', playerId: ann.playerId, kind: 'hype' });
     }
     annClient.send({ type: 'game:start' });
     const prepare = await nextOf(annClient, 'round:prepare');
-    benClient.send({ type: 'reaction', kind: 'shock' });
     for (const client of [annClient, benClient])
       client.send({ type: 'round:ready', roundId: prepare.roundId, loaded: true });
     await nextOf(benClient, 'round:start');
-    benClient.send({ type: 'reaction', kind: 'clap' });
+    benClient.send({ type: 'reaction', kind: 'what' });
     await flush();
-    assert.equal(annClient.received.filter((message) => message.type === 'reaction').length, 1);
+    const latest = annClient.received.filter((message) => message.type === 'reaction').at(-1);
+    assert.deepEqual(latest, { type: 'reaction', playerId: ben.playerId, kind: 'what' });
   });
 });
 

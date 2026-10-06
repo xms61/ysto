@@ -1,6 +1,6 @@
 ---
 status: draft
-last-verified: 2026-10-05
+last-verified: 2026-10-06
 ---
 
 # Lobby
@@ -21,8 +21,8 @@ Friends get into a game within seconds and without accounts: a code or a link, a
 - **Reconnects:** a player who drops keeps their seat and score for 60 s, and the client reconnects on its own. A player who leaves on purpose gives up the seat at once. A second tab with the same seat takes it over from the first, which offers to take it back.
 - **New versions:** every lobby update carries the server's version. A page built from another version reloads itself in the lobby or on the results, never during a round, and keeps its seat. It tries once per server version, so a cached old page can't reload forever.
 - **Tally:** a lobby that plays several games keeps a tally of them: the games played, and each player's wins and points. Everyone sharing the top score wins, if it is above zero; a game where no round could be played doesn't count. The lobby's player list shows each player's wins, and from the second game the results say who leads ("Game 3 in this lobby. Ann has won 2."). A player who drops keeps their line; one who leaves takes it with them. The tally lasts as long as the lobby.
-- **Animals:** each player has an animal (fox, cat, owl, frog, panda, rabbit, bear, penguin, tanuki, octopus, crane, koi, dog, turtle, hamster, chick), drawn for the game as a stamp of the same paper and ink in every theme. A player who joins gets one nobody in the lobby has; in the lobby, "Your animal" lets them pick another, and the ones others have are stepped back and named. Only once all sixteen are taken do two players share one. The animal marks the player in the player list, the scores beside the round, the scoreboard and the results, and stamps their pick on its card at the reveal.
-- **Reactions:** in the lobby, at the reveal and on the results, a bar of six reactions: hype, laugh, shock, facepalm, heart and clap, drawn as the game's own icons in the theme's accent. A reaction rises from its sender's name wherever it shows (the player list, the scoreboard, the pickers, the bill), or from the corner with the name when it isn't on screen, and screen readers hear "Ben: Heart". Never while a round is being prepared or answered, so a reaction can't point at an option; at most one a second per player.
+- **Animals:** each player has an animal (fox, cat, owl, frog, panda, rabbit, bear, penguin, tanuki, octopus, crane, koi, dog, turtle, hamster, chick), drawn for the game: on a paper badge of the same paper and ink in every theme in the lists, and at the reveal as a one-color stamp in the world's stamp ink. A player who joins gets one nobody in the lobby has; in the lobby, "Your animal" lets them pick another, and the ones others have are stepped back and named. Only once all sixteen are taken do two players share one. The animal marks the player in the player list, the scores beside the round, the scoreboard and the results, and stamps their pick on its card at the reveal.
+- **Reactions:** in the lobby, all through a round (at the foot of the scores column) and on the results, a bar of seven reactions: hype, laugh, shock, facepalm, heart and clap as the platform's emoji, and the game's own "?!" ("What?!") in the world's display face, each a bare glyph without a frame. A reaction appears at a random spot round the button its sender pressed, or for everyone else round the sender's name wherever it shows (the player list, the scoreboard, the pickers, the bill), or in the corner with the name when it isn't on screen; it drifts up on its own path, swaying in smooth curves, and fades. Screen readers hear "Ben: Heart". Players can spam them: the server passes up to 8 a second per player, and the screen keeps the newest 40. A reaction carries no option, so reacting during a round is allowed (the owner's call, 2026-10-06).
 - **Expiry:** a lobby closes after 15 minutes with no connected player, and after 4 hours in any case.
 - **Lobby creation** is open to anyone who has the URL. Limits keep it from being abused ([SECURITY.md](../SECURITY.md)).
 
@@ -35,4 +35,4 @@ Friends get into a game within seconds and without accounts: a code or a link, a
 
 ## Out of scope
 - Accounts, friend lists and a public lobby list.
-- Chat, and reactions beyond the fixed six.
+- Chat, and reactions beyond the fixed seven.

@@ -1,5 +1,6 @@
 // Each player's animal (docs/product-specs/lobby.md), drawn for this game in two inks: the stamp's ink and its
 // paper, the same in every theme, so a pick reads as that player's stamp on any world's cards.
+import { useId } from 'react';
 import type { ReactNode } from 'react';
 import type { PlayerIcon as Icon } from '../../shared/protocol.ts';
 
@@ -195,6 +196,24 @@ export function PlayerIcon({ icon, className = '' }: { icon: Icon; className?: s
   return (
     <svg aria-hidden="true" viewBox="0 0 32 32" className={`player-icon ${className}`}>
       {ART[icon]}
+    </svg>
+  );
+}
+
+// A pick at the reveal, pressed onto the card like a rubber stamp: a ring and the animal in one color, the
+// world's stamp ink, its paper parts cut out so the card shows through. This player's own has a second ring.
+export function PlayerStamp({ icon, you = false }: { icon: Icon; you?: boolean }) {
+  const mask = `stamp-${useId().replace(/[^a-z0-9]/gi, '')}`;
+  return (
+    <svg aria-hidden="true" viewBox="0 0 40 40" className="player-stamp">
+      <mask id={mask}>
+        <g className="pi-cut" transform="translate(8 8) scale(0.75)">
+          {ART[icon]}
+        </g>
+      </mask>
+      <circle cx="20" cy="20" r="18.5" fill="none" stroke="currentColor" strokeWidth="2.5" />
+      {you && <circle cx="20" cy="20" r="15" fill="none" stroke="currentColor" strokeWidth="1.25" />}
+      <rect width="40" height="40" fill="currentColor" mask={`url(#${mask})`} />
     </svg>
   );
 }

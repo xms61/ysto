@@ -1,6 +1,6 @@
 ---
 status: verified
-last-verified: 2026-10-05
+last-verified: 2026-10-06
 ---
 
 # Lobby API and sockets
@@ -25,7 +25,7 @@ Entry: `server/realtime/hub.ts`. `Realtime` serves the lobby sockets at `/ws` on
 | `round:ready { roundId, loaded }` | player | the round's clip is fetched and decoded, or failed to (`loaded: false`) |
 | `clip:report { number, reason }` | player | reports the clip of round `number` (1–50) of the current or last game, for a reason in `REPORT_REASONS`; dropped when that round isn't revealed yet or the player already reported it |
 | `player:icon { icon }` | player | switches the player's animal to one of `PLAYER_ICONS`; `icon-taken` when another player in the lobby has it |
-| `reaction { kind }` | player | one of `REACTION_KINDS`, sent on to everyone in the lobby as `reaction { playerId, kind }`; dropped while a round is being prepared or answered, and past one a second per player (no strike) |
+| `reaction { kind }` | player | one of `REACTION_KINDS`, sent on to everyone in the lobby as `reaction { playerId, kind }`; passed at any time, also during a round, and dropped past 8 a second per player (no strike) |
 | `answer { roundId, option }` | player | locks in option 0–3; with answer changes on, a later one for another option switches to it |
 | `round:skip` | host | ends the round without points |
 
@@ -39,7 +39,7 @@ During a game the server sends `round:prepare`, `round:start`, `round:answered`,
   - sockets: 30 per IP; per socket, 20 messages a second, 4 KiB frames, and `hello` within 10 s
 - Invalid or excess messages each get an error. The fifth closes the socket with 1008. Host-rights errors don't count.
 - A newer socket for the same seat replaces the older one, as when a tab reloads.
-- Each socket keeps its last 5 ping round trips. The heartbeat, `hello` and every `round:prepare` send a ping, and an answer carries the median, from which the engine takes off at most 150 ms.
+- The heartbeat pings every socket; one that misses a pong by the next beat is closed. Round trips are not measured: an answer's time is its arrival.
 - Every refusal from the API has a JSON body `{ error }` with a code from `ErrorCode`. The client words the message.
 - Without a catalog, `/readyz` answers 503, the lobby routes answer `not-ready`, and no socket is served.
 

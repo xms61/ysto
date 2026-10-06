@@ -144,6 +144,12 @@ Each milestone is one PR on a `feat/…` branch (two where noted), with a versio
 - **Build:** a screen seat, which can fetch clips but never answers or scores. In party mode, the barrier waits only for the screens' clips; the phones report ready without loading, and they are never marked "no audio". Without a connected screen the game doesn't start, and if the screen drops mid-game the barrier waits for it as long as for any player.
 - **Tests:** registry (screen seats, caps, host rules unaffected), engine (the barrier in party mode, no-audio marks), e2e with one screen and two phones.
 
+#### M21 Infinite mode (added by the owner, 2026-10-06; to be shaped before it is built)
+- **Behavior:** a game with no set number of songs: rounds keep coming until the host ends the game, or the pool runs out of unplayed songs. The results then cover every round played.
+- **Open, for the owner:** whether the host ends it from a button in the round or between rounds; whether a player who joins mid-game plays from the next round, as now; whether the song list at the results and the anime log keep every round of a long game.
+- **Build (first thoughts):** `songsPerGame` takes an "infinite" value; the engine draws questions in batches as it goes rather than all at the start; a host's "End the game" message closes the current round and finishes.
+- **Tests:** engine (it keeps drawing, ends on the host's message, ends when the pool is spent), the setting's validation, client.
+
 #### M20 The round, polished (owner's notes from playing, 2026-10-06)
 Taken in this order, one step at a time; each step says how it shows.
 1. **The scores column's foot:** scores at the top left; the reactions and "Report this clip" pinned to the column's foot in every phase of the round, the same height throughout, so nothing moves at the reveal. The line "The next round starts in a few seconds" goes. A clip can be reported while its round plays.
@@ -157,7 +163,11 @@ Taken in this order, one step at a time; each step says how it shows.
 9. **Stamps clear of text:** a stamp never covers a card's text (its title, second title, or the back's label); the stamps keep to the free space on the card's right.
 10. **Title languages told apart:** where a title shows in more than one language or script (a card's second title, the answer's other titles), each language gets a slightly different color, so the eye can tell them apart.
 11. **No song details on the right card's back:** the turned card shows its label and title only, not "OP 1 · 2019"; the answer column already says which song it was.
-12. **Check and ship:** no card, column or foot moves from the deal to the reveal in any world at 375, 1100, 1280 and 1440 wide; axe in every world; the specs, DESIGN.md and REALTIME.md updated; 1.15.0.
+12. **A wider answer column:** the answer's column on the right a little wider, the stage giving up the room.
+13. **Scores on top:** in every layout the scores come first in their column, the reactions and the report after them; a score row is as tall during the round as at the reveal, so the reactions don't move.
+14. **The cards fill the middle:** on a wide screen the cards take the middle column's full height, down to the lines under them.
+15. **No scroll on a desktop:** at 1080p, 2K and 4K the whole round fits the window, with no scrolling, in every world. The verdict sits in a box of fixed height just above the cards; the cards fill the rest of the middle column at fixed, equal heights, and their titles scale their type down to fit rather than growing the card. The cards' foot is level with the foot of the scores column ("Report this clip"): the lines that sat under the cards (the status, who has answered, who switched, the clip's state) move into the slot above them, with the timer. A clear gap separates the verdict from the cards.
+16. **Check and ship:** no card, column or foot moves from the deal to the reveal in any world at 375, 1100, 1280 and 1440 wide; axe in every world; the specs, DESIGN.md and REALTIME.md updated; 1.15.0.
 
 ## Progress
 - [x] 2026-10-05 Features picked and shaped with the owner; plan written
@@ -181,10 +191,15 @@ Taken in this order, one step at a time; each step says how it shows.
 - [x] 2026-10-06 M20.6 No latency allowance
 - [x] 2026-10-06 M20.7 The answer column
 - [x] 2026-10-06 M20.8 Stamps
-- [ ] M20.9 Stamps clear of text
-- [ ] M20.10 Title languages told apart
-- [ ] M20.11 No song details on the right card's back
-- [ ] M20.12 Check and ship
+- [x] 2026-10-06 M20.9 Stamps clear of text
+- [x] 2026-10-06 M20.10 Title languages told apart
+- [x] 2026-10-06 M20.11 No song details on the right card's back
+- [x] 2026-10-06 M20.12 A wider answer column
+- [x] 2026-10-06 M20.13 Scores on top
+- [x] 2026-10-06 M20.14 The cards fill the middle
+- [x] 2026-10-06 M20.15 No scroll on a desktop
+- [x] 2026-10-06 M20.16 Check and ship (1.15.0)
+- [ ] M21 Infinite mode
 - [ ] M7 Sound effects per world
 - [ ] M8 Hints
 - [ ] M9 Elimination

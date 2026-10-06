@@ -13,7 +13,6 @@ export const GAME_TIMING = {
   firstLeadMs: 3000, // from the barrier to the first sample: the game's countdown
   leadMs: 1000, // from the barrier to a later sample, so every client has round:start in time
   graceMs: 300, // answers still count this long after endsAt
-  maxRttCompensationMs: 150, // at most this much of a player's round trip is taken off their time
   revealMs: 7000,
   clipLingerMs: 10_000, // a clip token lives this long after its reveal ends
 } as const;
@@ -74,7 +73,7 @@ export interface Game {
 type ClipEvent =
   { type: 'clip-ready'; index: number; question: Question; clipToken: string } | { type: 'clip-failed'; index: number };
 type ReadyEvent = { type: 'ready'; playerId: string; roundId: string; loaded: boolean };
-type AnswerEvent = { type: 'answer'; playerId: string; roundId: string; option: number; rttMs: number };
+type AnswerEvent = { type: 'answer'; playerId: string; roundId: string; option: number };
 type TimerEvent = { type: 'timer'; name: TimerName; roundId: string };
 type PlayerEvent = {
   type: 'player-joined' | 'player-connected' | 'player-disconnected' | 'player-left';
@@ -312,10 +311,10 @@ function everyoneAnswered(draft: Draft, round: Round): void {
   draft.effects.push({ type: 'timer', name: 'close', roundId: round.id, at: round.closeAt });
 }
 
+// An answer's time is when the server received it, with no allowance for the player's connection.
 function pickOf(round: Round, event: AnswerEvent, now: number): AnswerRecord {
-  const compensation = Math.min(event.rttMs / 2, GAME_TIMING.maxRttCompensationMs);
   const correct = event.option === round.question.correctIndex;
-  const responseMs = Math.max(0, Math.round(now - round.startsAt - compensation));
+  const responseMs = Math.max(0, Math.round(now - round.startsAt));
   return { playerId: event.playerId, option: event.option, correct, responseMs };
 }
 
@@ -342,13 +341,8 @@ function onAnswer(draft: Draft, event: AnswerEvent): void {
   round.answers.push(pick);
   send(draft, answeredMessage(round));
   if (allConnectedDone(game, answeredIds(round))) return everyoneAnswered(draft, round);
-  // In First correct a later answer may still have the lower adjusted time, so the round waits the
-  // compensation cap before it closes.
-  const closeAt = now + GAME_TIMING.maxRttCompensationMs;
-  if (game.settings.scoring.mode === 'firstCorrect' && pick.correct && closeAt < round.closeAt) {
-    round.closeAt = closeAt;
-    draft.effects.push({ type: 'timer', name: 'close', roundId: round.id, at: closeAt });
-  }
+  // In First correct the first right answer to arrive wins, and the round closes on it.
+  if (game.settings.scoring.mode === 'firstCorrect' && pick.correct) closeRound(draft, round, false);
 }
 
 function onTimer(draft: Draft, event: TimerEvent): void {

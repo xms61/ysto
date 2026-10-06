@@ -11,15 +11,18 @@ test('an option shows its title in the first language, and in the second under i
   expect(optionTitle(OPTIONS, 0, { first: 'english', second: 'romaji' })).toEqual({
     text: 'Attack on Titan',
     lang: undefined,
-    second: { text: 'Shingeki no Kyojin', lang: undefined },
+    language: 'english',
+    second: { text: 'Shingeki no Kyojin', lang: undefined, language: 'romaji' },
   });
   expect(optionTitle(OPTIONS, 2, { first: 'english', second: 'japanese' }).second).toEqual({
     text: '四月は君の嘘',
     lang: 'ja',
+    language: 'japanese',
   });
   expect(optionTitle(OPTIONS, 2, { first: 'japanese', second: null })).toEqual({
     text: '四月は君の嘘',
     lang: 'ja',
+    language: 'japanese',
     second: null,
   });
 });
@@ -31,14 +34,14 @@ test('a second title that reads the same as the first shows once', () => {
 
 test("the reveal lists the anime's other titles with the second language first", () => {
   const anime = { english: 'Attack on Titan', romaji: 'Shingeki no Kyojin', japanese: '進撃の巨人' };
-  const shown = { text: 'Attack on Titan', lang: undefined };
+  const shown = { text: 'Attack on Titan', lang: undefined, language: 'english' } as const;
   expect(otherTitles(anime, shown, 'japanese').map((title) => title.text)).toEqual([
     '進撃の巨人',
     'Shingeki no Kyojin',
   ]);
   expect(otherTitles(anime, shown, null).map((title) => title.text)).toEqual(['Shingeki no Kyojin', '進撃の巨人']);
   const naruto = { english: 'Naruto', romaji: 'NARUTO', japanese: 'NARUTO -ナルト-' };
-  expect(otherTitles(naruto, { text: 'Naruto', lang: undefined }, 'romaji').map((title) => title.text)).toEqual([
-    'NARUTO -ナルト-',
-  ]);
+  expect(
+    otherTitles(naruto, { text: 'Naruto', lang: undefined, language: 'english' }, 'romaji').map((title) => title.text),
+  ).toEqual(['NARUTO -ナルト-']);
 });

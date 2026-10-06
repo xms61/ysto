@@ -128,6 +128,7 @@
     --card-muted: #5c4a45;
     --card-dim: #e3dccf;
     --card-mark: #b8302a;
+    --stamp: #0d0808; /* the picks' stamp ink, lacquer black: the card mark is the back's own vermilion */
     --card-mark-ink: #ffffff;
     --card-chosen: #fde3ea;
     --card-chosen-ink: #1c1515;
@@ -403,6 +404,7 @@
     --card-muted: #4d4a45;
     --card-dim: #ebe7df;
     --card-mark: #d6006f;
+    --stamp: #141414; /* the picks' stamp ink, the card ink: the magenta mark is kept for what can be tapped */
     --card-mark-ink: #ffffff;
     --card-chosen: #fff6c2;
     --card-chosen-ink: #141414;
@@ -776,6 +778,7 @@
     --card-muted: #a8a8a2;
     --card-dim: #161616;
     --card-mark: #f4f4f0;
+    --stamp: #868686; /* the picks' stamp ink, mid grey: the fronts are black and the back is white */
     --card-mark-ink: #0a0a0a;
     --card-chosen: #0a0a0a;
     --card-chosen-ink: #f4f4f0;
@@ -1092,7 +1095,7 @@
     /* As tall as the window allows, so both rows of cards fit under the timer without a scroll: 11.5rem on a
        tall screen, down to 6rem on a short one. */
     .card-turn {
-      min-height: clamp(6rem, calc((100dvh - 28rem) / 2), 11.5rem);
+      min-height: clamp(6rem, calc((100dvh - 34rem) / 2), 11.5rem);
     }
 
     .card-front {
@@ -1167,6 +1170,33 @@
     font-size-adjust: var(--display-adjust, 0.52);
     text-transform: none;
     letter-spacing: 0;
+  }
+
+  /* Each title language reads in its own shade, so English and romaji, both in Latin letters, and Japanese can
+     be told apart at a glance: English in the text's own color, romaji more than halfway toward the world's
+     card mark on a card (its accent elsewhere), Japanese a third of the way. */
+  [data-language='romaji'] {
+    color: color-mix(in oklab, currentColor 45%, var(--accent));
+  }
+
+  [data-language='japanese'] {
+    color: color-mix(in oklab, currentColor 70%, var(--accent));
+  }
+
+  .card [data-language='romaji'] {
+    color: color-mix(in oklab, currentColor 45%, var(--card-mark));
+  }
+
+  .card [data-language='japanese'] {
+    color: color-mix(in oklab, currentColor 70%, var(--card-mark));
+  }
+
+  /* The text keeps clear of the strip down the card's right side where the reveal stamps who picked it, from
+     the deal on, so no title wraps anew when the stamps land. */
+  .card-title,
+  .card-back-label,
+  .card-back-title {
+    margin-inline-end: 2.5rem;
   }
 
   .card-title {
@@ -1292,12 +1322,8 @@
 
   /* The back prints the title in the same face and size as the front, so a turned card is no taller than
      its neighbors. */
-  .card-back-label,
-  .card-back-meta {
-    font-size: 0.75rem;
-  }
-
   .card-back-label {
+    font-size: 0.75rem;
     display: inline-flex;
     align-items: center;
     gap: 0.35rem;
@@ -1454,7 +1480,7 @@
     width: 6.5rem;
     aspect-ratio: 2 / 3;
     object-fit: cover;
-    border-radius: var(--radius-lg);
+    border-radius: min(var(--radius-lg), 0.75rem);
     box-shadow: 0 0.75rem 1.5rem -0.5rem rgb(0 0 0 / 0.6);
   }
 
@@ -1525,13 +1551,14 @@
     font-variant-numeric: tabular-nums;
   }
 
+  /* A box of two lines keeps its corners small, also in a world that rounds its chips into pills. */
   .board-row {
     display: grid;
     grid-template-columns: 2rem 1.25rem 1.75rem minmax(0, 1fr) auto 4rem;
     align-items: center;
     column-gap: 0.5rem;
-    padding: 0.5rem;
-    border-radius: var(--radius-lg);
+    padding: 0.5rem 0.75rem;
+    border-radius: min(var(--radius-lg), 0.75rem);
   }
 
   .board-row + .board-row {
@@ -1584,9 +1611,9 @@
     color: var(--muted);
   }
 
-  /* The round's three parts (Stage.tsx): the scores on the left, the stage in the middle, and the answer on the
-     right in a column kept free for it, so the reveal moves nothing. Between 64rem and 72rem the answer comes
-     under the stage; below 64rem the scores follow the stage and the answer comes last. */
+  /* The round's three parts (Stage.tsx): from 64rem the scores on the left, the stage in the middle, and the
+     answer on the right in a column kept free for it, so the reveal moves nothing; the side columns widen from
+     72rem. Below 64rem the scores follow the stage and the answer comes last. */
   .round-body {
     display: grid;
     grid-template-areas: 'main' 'scores' 'answer';
@@ -1598,13 +1625,55 @@
     min-width: 0;
   }
 
-  /* Room for the clip's line, the status, who has answered and who switched, kept at the reveal too. */
-  .stage-below {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    min-height: 7rem;
-    margin-top: 1.25rem;
+  /* From 64rem the round fills the window and its columns run its full height, so the row's height comes from
+     the window, not from what the stage holds: the cards' foot and the scores' foot sit on the window's foot. */
+  @media (min-width: 64rem) {
+    .round-panel {
+      display: flex;
+      flex: 1;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    .round-body {
+      flex: 1;
+      min-height: 0;
+    }
+
+    /* The cards take the middle column's full height, down to the lines under them, their rows sharing it. */
+    .round-main {
+      display: flex;
+      flex-direction: column;
+      align-self: stretch;
+    }
+
+    .stage {
+      flex: 1;
+      min-height: 0;
+    }
+
+    .round-main,
+    .round-scores,
+    .round-answer {
+      min-height: 0;
+    }
+
+    /* Rows that share the room left, never taller for a long title: the title shrinks instead (Stage.tsx). */
+    .stage > .options {
+      flex: 1;
+      min-height: 0;
+      grid-auto-rows: minmax(0, 1fr);
+    }
+
+    .stage > .options .card-turn {
+      min-height: 0;
+    }
+
+    .options .card-title,
+    .options .card-back-label,
+    .options .card-back-title {
+      zoom: var(--fit, 1);
+    }
   }
 
   .round-scores {
@@ -1621,93 +1690,135 @@
     display: none;
   }
 
+  .round-scores {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .scores-foot {
+    margin-top: 1.25rem;
+  }
+
+  /* In the scores column a row takes two lines of fixed height: the place, the name and the total, then under
+     the name who moved, the card picked and the round's points. Who is answering sits under the name the same
+     way, so a row is as tall while the round runs as at the reveal and nothing under the scores moves. */
+  .round-scores .board-row,
+  .round-scores .live-row {
+    grid-template-rows: 1.75rem 1.5rem;
+    row-gap: 0.25rem;
+  }
+
+  .round-scores .board-row {
+    grid-template-columns: 2rem 1.25rem 1.75rem minmax(0, 1fr) auto;
+    grid-template-areas: 'place name name name total' '. move pick delta delta';
+  }
+
+  .round-scores .board-place {
+    grid-area: place;
+  }
+
+  .round-scores .board-row .board-name {
+    grid-area: name;
+  }
+
+  .round-scores .board-row .board-total {
+    grid-area: total;
+  }
+
+  .round-scores .board-move {
+    grid-area: move;
+  }
+
+  .round-scores .board-pick {
+    grid-area: pick;
+  }
+
+  .round-scores .board-delta {
+    grid-area: delta;
+  }
+
+  .round-scores .live-row {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas: 'name total' 'state state';
+  }
+
+  .round-scores .live-row .board-name {
+    grid-area: name;
+  }
+
+  .round-scores .live-row .board-total {
+    grid-area: total;
+  }
+
+  .round-scores .live-state {
+    grid-area: state;
+  }
+
   @media (min-width: 64rem) {
     .round-body {
-      grid-template-columns: 20rem minmax(0, 1fr);
-      grid-template-rows: auto 1fr;
-      grid-template-areas: 'scores main' 'scores answer';
+      grid-template-columns: 16rem minmax(0, 1fr) 20rem;
+      grid-template-rows: minmax(0, 1fr);
+      grid-template-areas: 'scores main answer';
       column-gap: 1.75rem;
       row-gap: 1.5rem;
       align-items: start;
     }
 
     .round-scores {
+      display: flex;
+      flex-direction: column;
+      align-self: stretch;
       padding-top: 1rem;
-    }
-
-    /* In the narrow scores column a row takes two lines: the place, the name and the total, then under the name
-       who moved, the card picked and the round's points. Who is answering sits under the name the same way. */
-    .round-scores .board-row {
-      grid-template-columns: 2rem 1.25rem 1.75rem minmax(0, 1fr) auto;
-      grid-template-areas: 'place name name name total' '. move pick delta delta';
-      row-gap: 0.25rem;
-    }
-
-    .round-scores .board-place {
-      grid-area: place;
-    }
-
-    .round-scores .board-row .board-name {
-      grid-area: name;
-    }
-
-    .round-scores .board-row .board-total {
-      grid-area: total;
-    }
-
-    .round-scores .board-move {
-      grid-area: move;
-    }
-
-    .round-scores .board-pick {
-      grid-area: pick;
-    }
-
-    .round-scores .board-delta {
-      grid-area: delta;
-    }
-
-    .round-scores .live-row {
-      grid-template-columns: minmax(0, 1fr) auto;
-      grid-template-areas: 'name total' 'state state';
-      row-gap: 0.125rem;
-    }
-
-    .round-scores .live-row .board-name {
-      grid-area: name;
-    }
-
-    .round-scores .live-row .board-total {
-      grid-area: total;
-    }
-
-    .round-scores .live-state {
-      grid-area: state;
     }
 
     .round-answer:empty {
       display: block;
     }
-  }
 
-  @media (min-width: 72rem) {
-    .round-body {
-      grid-template-columns: 20rem minmax(0, 1fr) 20rem;
-      grid-template-rows: auto;
-      grid-template-areas: 'scores main answer';
+    /* The scores column runs the round's full height: the scores at its top, and the reactions and the report
+       pinned to its foot. */
+    .scores-foot {
+      margin-top: auto;
+      padding-top: 1.25rem;
     }
 
+    /* The answer runs the column's full height, its band growing to the foot of the round. */
     .round-answer {
+      display: flex;
+      flex-direction: column;
+      align-self: stretch;
       padding-top: 1rem;
+    }
+
+    .round-answer .reveal-answer {
+      flex: 1;
+    }
+
+    /* The band fills the column: the titles at its foot, and the cover above them growing into all the height
+       they leave, never wider than the column. Its basis is zero, so a tall cover never stretches the round. */
+    .round-answer .reveal-band {
+      display: flex;
+      flex: 1;
+      flex-direction: column;
+      align-items: flex-end;
+      justify-content: flex-end;
+    }
+
+    .round-answer .reveal-cover {
+      flex: 1 1 0;
+      width: auto;
+      min-height: 8rem;
+      max-width: 100%;
+      aspect-ratio: 2 / 3;
+    }
+
+    .round-answer .reveal-titles {
+      flex: none;
     }
 
     /* In the answer column the box is narrower: a title sized for it that breaks only between words. */
     .round-answer .reveal-band {
       padding: 1.25rem;
-    }
-
-    .round-answer .reveal-cover {
-      width: 6.5rem;
     }
 
     .round-answer .reveal-title {
@@ -1721,6 +1832,12 @@
 
     .round-answer .reveal-title[data-length='long'] {
       font-size: 1.1875rem;
+    }
+  }
+
+  @media (min-width: 72rem) {
+    .round-body {
+      grid-template-columns: 20rem minmax(0, 1fr) 24rem;
     }
   }
 
@@ -1739,8 +1856,8 @@
     grid-template-columns: minmax(0, 1fr) auto 4.5rem;
     align-items: center;
     column-gap: 0.5rem;
-    padding: 0.5rem;
-    border-radius: var(--radius-lg);
+    padding: 0.5rem 0.75rem;
+    border-radius: min(var(--radius-lg), 0.75rem);
   }
 
   .live-row + .live-row {
@@ -3766,11 +3883,6 @@
     letter-spacing: var(--title-tracking);
   }
 
-  /* The stamps on each plate stand clear of the bracket's spine and the final's emblem. */
-  :root[data-theme='tournament-arc'] .pickers {
-    padding-inline: 0.875rem;
-  }
-
   :root[data-theme='tournament-arc'] .button-quiet:hover:not(:disabled) {
     border-color: var(--accent);
   }
@@ -4588,24 +4700,18 @@
     text-transform: uppercase;
   }
 
-  /* Who picked each card, stamped on its bottom right corner, over the card rather than under it and clear of
-     the title at its foot, so the cards keep their place when the reveal adds them. */
+  /* Who picked each card, stamped down its right side and wholly inside it, over the card rather than under
+     it, so the cards keep their place when the reveal adds them (Reveal.tsx places each stamp). */
   .options-picked > li {
     position: relative;
   }
 
+  /* Below the top corner, where a world prints its plate on a wrong card. */
   .pickers {
     position: absolute;
-    right: 0.75rem;
-    bottom: 0;
-    left: 0.75rem;
+    inset: 2.25rem 0.375rem 0.375rem auto;
     z-index: 3;
-    display: flex;
-    flex-direction: row-reverse;
-    flex-wrap: wrap;
-    gap: 0.25rem;
-    align-content: flex-start;
-    transform: translateY(45%);
+    width: 3rem;
     pointer-events: none;
   }
 
@@ -5668,22 +5774,46 @@
     margin-top: 0.75rem;
   }
 
-  /* Picks at the reveal: each picker's stamp pressed onto the card's bottom edge, a little tilted, the
-     stamps of one card overlapping like a handful pressed in turn. */
+  /* Picks at the reveal: each picker's stamp pressed onto the card in the world's stamp ink, one color with at
+     least 3:1 on the card's front, its dimmed front and its back. The ink is the card mark unless a world sets
+     its own. */
   .picker-stamp {
-    margin-left: -0.375rem;
-    transform: rotate(var(--tilt, 0deg));
-    filter: drop-shadow(0 0.125rem 0.25rem rgb(0 0 0 / 0.35));
+    position: absolute;
+    top: var(--stamp-y, 0%);
+    right: var(--stamp-x, 0rem);
+    width: 2.5rem;
+    height: 2.5rem;
+    color: var(--stamp, var(--card-mark));
+    translate: 0 calc(var(--stamp-y, 0%) * -1);
+    rotate: var(--tilt, 0deg);
   }
 
-  .picker-stamp .player-badge {
-    width: 2.25rem;
-    height: 2.25rem;
+  .player-stamp {
+    display: block;
+    width: 100%;
+    height: 100%;
   }
 
-  .picker-stamp .player-badge .player-icon {
-    width: 1.7rem;
-    height: 1.7rem;
+  /* The animal as a mask: its ink shows, its paper parts are cut out. */
+  .pi-cut {
+    fill: white;
+  }
+
+  .pi-cut .pi-paper {
+    fill: black;
+  }
+
+  .pi-cut .pi-line {
+    fill: none;
+    stroke-linecap: round;
+  }
+
+  .pi-cut .pi-ink-line {
+    stroke: white;
+  }
+
+  .pi-cut .pi-paper-line {
+    stroke: black;
   }
 
   .board-name,
@@ -5700,7 +5830,7 @@
     gap: 0.125rem;
     padding: 0.375rem 0.25rem;
     border: 1px solid var(--line);
-    border-radius: var(--radius-lg);
+    border-radius: min(var(--radius-lg), 0.75rem);
     background: var(--panel);
     color: var(--ink);
     font-size: 0.6875rem;
@@ -5732,30 +5862,35 @@
     outline-offset: 2px;
   }
 
-  /* Reactions (Reactions.tsx): the bar of six icon buttons in the theme's accent, and the bubbles that rise
-     from a name, over everything and never in the way of a tap. */
+  /* Reactions (Reactions.tsx): the bar of seven, six emoji and the game's "?!" in the theme's accent, and the
+     bubbles that rise from a name, over everything and never in the way of a tap. */
   .reaction-bar {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.375rem;
+    gap: 0.125rem;
     margin-top: 0.75rem;
   }
 
+  /* The emoji alone, no frame: it grows a little under the pointer. */
   .reaction-button {
     display: grid;
     place-items: center;
-    width: 2.5rem;
-    height: 2.5rem;
-    border: 1px solid var(--line);
+    width: 2.125rem;
+    height: 2.125rem;
+    border: 0;
     border-radius: var(--radius-lg);
-    background: var(--panel);
+    background: none;
     color: var(--accent);
     cursor: pointer;
+    transition: transform 150ms cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .reaction-button:hover {
-    background: var(--accent);
-    color: var(--accent-ink);
+    transform: scale(1.2);
+  }
+
+  .reaction-button:active {
+    transform: scale(0.9);
   }
 
   .reaction-button:focus-visible {
@@ -5763,9 +5898,22 @@
     outline-offset: 2px;
   }
 
+  /* A glyph sized by its font, one em square, centered by the button or bubble that holds it. */
   .reaction-icon {
-    width: 1.375rem;
-    height: 1.375rem;
+    display: block;
+    height: 1em;
+    font-size: 1.25rem;
+    line-height: 1;
+    text-align: center;
+  }
+
+  .reaction-emoji {
+    font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif;
+  }
+
+  .reaction-bang {
+    font-size: 1.375rem;
+    letter-spacing: -0.02em;
   }
 
   .reaction-layer {
@@ -5775,23 +5923,19 @@
     pointer-events: none;
   }
 
+  /* A rising reaction is the emoji alone, a soft shadow lifting it off whatever it crosses. */
   .reaction-float {
     position: absolute;
     display: inline-flex;
     align-items: center;
     gap: 0.375rem;
-    padding: 0.375rem;
-    border: 1px solid var(--line);
-    border-radius: 999px;
-    background: var(--panel);
     color: var(--accent);
-    box-shadow: 0 0.25rem 0.75rem rgb(0 0 0 / 0.25);
+    filter: drop-shadow(0 0.125rem 0.25rem rgb(0 0 0 / 0.35));
     transform: translate(-50%, -50%);
   }
 
   .reaction-float .reaction-icon {
-    width: 1.75rem;
-    height: 1.75rem;
+    font-size: 1.5rem;
   }
 
   .reaction-corner {
@@ -5804,9 +5948,15 @@
     gap: 0.5rem;
   }
 
+  /* In the corner it carries the sender's name, so it keeps a bubble to read on. */
   .reaction-corner .reaction-float {
     position: static;
-    padding-right: 0.875rem;
+    padding: 0.375rem 0.875rem 0.375rem 0.375rem;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: var(--panel);
+    filter: none;
+    box-shadow: 0 0.25rem 0.75rem rgb(0 0 0 / 0.25);
     color: var(--ink);
     font-size: 0.875rem;
     font-weight: 600;
@@ -6151,7 +6301,11 @@
 
 /* A reaction pops up over the name, rises and fades; one in the corner slides in and fades. */
 :root[data-motion='full'] .reaction-layer > .reaction-float {
-  animation: reaction-rise 2400ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: reaction-rise 2400ms cubic-bezier(0.33, 0.6, 0.5, 1) both;
+}
+
+:root[data-motion='full'] .reaction-layer > .reaction-float > .reaction-icon {
+  animation: reaction-sway var(--sway-ms, 600ms) ease-in-out infinite alternate;
 }
 
 :root[data-motion='full'] .reaction-corner .reaction-float {
@@ -6160,6 +6314,9 @@
     nudge-out 400ms ease-in 2000ms both;
 }
 
+/* Up its own random path (Reactions.tsx sets each one's drift, rise and sway): the bubble rises and drifts
+   steadily while the glyph inside it sways side to side, eased at each turn, so together they trace smooth
+   curves rather than a zigzag. */
 @keyframes reaction-rise {
   from {
     opacity: 0;
@@ -6169,12 +6326,21 @@
     opacity: 1;
     transform: translate(-50%, -50%) scale(1);
   }
-  80% {
-    opacity: 1;
+  70% {
+    opacity: 0.85;
   }
   to {
     opacity: 0;
-    transform: translate(-50%, calc(-50% - 2.5rem));
+    transform: translate(calc(-50% + var(--drift-x)), calc(-50% - var(--rise)));
+  }
+}
+
+@keyframes reaction-sway {
+  from {
+    translate: calc(var(--sway) * -1) 0;
+  }
+  to {
+    translate: var(--sway) 0;
   }
 }
 

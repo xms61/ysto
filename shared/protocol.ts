@@ -106,7 +106,7 @@ export type PlayerIcon = (typeof PLAYER_ICONS)[number];
 
 // What a player can react with, outside a round's answering (docs/product-specs/lobby.md): a fixed set,
 // drawn as icons, with no free text.
-export const REACTION_KINDS = ['hype', 'laugh', 'shock', 'facepalm', 'heart', 'clap'] as const;
+export const REACTION_KINDS = ['hype', 'laugh', 'shock', 'facepalm', 'heart', 'clap', 'what'] as const;
 export type ReactionKind = (typeof REACTION_KINDS)[number];
 
 // Why a player reports a round's clip: fixed reasons, no free text, so nothing needs moderating.

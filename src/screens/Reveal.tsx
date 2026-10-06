@@ -6,7 +6,7 @@
 import type { CSSProperties, ReactNode } from 'react';
 import type { LobbyState, PlayerIcon, RoundReveal, StandingView } from '../../shared/protocol.ts';
 import { AnswerBack, AnswerSizer, OptionCard } from '../components/OptionCard.tsx';
-import { PlayerBadge } from '../components/PlayerIcon.tsx';
+import { PlayerBadge, PlayerStamp } from '../components/PlayerIcon.tsx';
 import { RoundBody, ScoresPanel, Stage } from '../components/Stage.tsx';
 import type { CardState } from '../components/OptionCard.tsx';
 import { CheckIcon, CrossIcon } from '../components/ui.tsx';
@@ -20,7 +20,7 @@ interface RevealProps {
   reveal: RoundReveal;
   lobby: LobbyState;
   titles: TitleLanguages;
-  actions: ReactNode; // reactions, and the way to report this round's clip
+  foot: ReactNode; // the scores column's foot: the reactions, and the way to report this round's clip
   ghost: ReactNode; // the round's timer, for the stage to keep its height
 }
 
@@ -133,9 +133,29 @@ function MoveMark({ from, to }: { from: number; to: number }) {
   );
 }
 
-// Who picked this option, as their animal stamps on its card's edge, so everyone sees who fell for which. Picks reach the client only
-// with the reveal, after the round has closed for everyone, so this can never show while anyone can still
-// answer.
+// A number from 0 to 1 for a text, the same every time, so a stamp keeps its spot through re-renders.
+function seeded(text: string): number {
+  let hash = 2166136261;
+  for (const char of text) hash = Math.imul(hash ^ char.charCodeAt(0), 16777619);
+  return ((hash >>> 0) % 10_000) / 10_000;
+}
+
+// Where a stamp lands: down the card's right side, each picker in their own band so a handful don't pile up,
+// at a random height within it, a little in from the edge and tilted. Heights are a share of the card, and the
+// stamp is shifted up by the same share of its own height, so it always lies wholly inside the card.
+function stampSpot(roundId: string, playerId: string, at: number, count: number): CSSProperties {
+  const random = (salt: string) => seeded(`${roundId}:${playerId}:${salt}`);
+  const share = Math.min(1, Math.max(0, (at + 0.2 + random('y') * 0.6) / count));
+  return {
+    '--stamp-y': `${Math.round(share * 100)}%`,
+    '--stamp-x': `${(random('x') * 0.375).toFixed(2)}rem`,
+    '--tilt': `${Math.round(random('tilt') * 24 - 12)}deg`,
+  } as CSSProperties;
+}
+
+// Who picked this option, as their animal stamps on its card's right side, so everyone sees who fell for which.
+// Picks reach the client only with the reveal, after the round has closed for everyone, so this can never show
+// while anyone can still answer.
 function Pickers({ reveal, lobby, option }: { reveal: RoundReveal; lobby: LobbyState; option: number }) {
   const pickers = reveal.picks.filter((pick) => pick.option === option);
   if (pickers.length === 0) return <span />;
@@ -148,9 +168,9 @@ function Pickers({ reveal, lobby, option }: { reveal: RoundReveal; lobby: LobbyS
           className="picker-stamp"
           data-player={pick.playerId}
           title={nameOf(lobby, pick.playerId)}
-          style={{ '--tilt': `${((at * 7) % 3) * 6 - 6}deg` } as CSSProperties}
+          style={stampSpot(reveal.roundId, pick.playerId, at, pickers.length)}
         >
-          <PlayerBadge icon={iconOf(lobby, pick.playerId)} you={pick.playerId === lobby.you} />
+          <PlayerStamp icon={iconOf(lobby, pick.playerId)} you={pick.playerId === lobby.you} />
           <span className="sr-only">
             {nameOf(lobby, pick.playerId)}
             {at < pickers.length - 1 && ', '}
@@ -256,7 +276,7 @@ export function VerdictGhost() {
   return <VerdictLine verdict={verdict} standing="1st of 8 · 10,000 points" streak={5} ghost />;
 }
 
-export function Reveal({ round, reveal, lobby, titles, actions, ghost }: RevealProps) {
+export function Reveal({ round, reveal, lobby, titles, foot, ghost }: RevealProps) {
   const title = animeTitle(reveal.anime, titles.first);
   const when = aired(reveal.season, reveal.year);
   const options = round.start?.options;
@@ -279,7 +299,6 @@ export function Reveal({ round, reveal, lobby, titles, actions, ghost }: RevealP
     <AnswerBack
       label={mine === reveal.correct ? 'Right answer, your pick' : 'Right answer'}
       title={right ?? { ...title, second: null }}
-      meta={[`${reveal.theme.kind} ${reveal.theme.sequence}`, reveal.year].filter(Boolean).join(' · ')}
     />
   );
   const cards = (
@@ -290,13 +309,6 @@ export function Reveal({ round, reveal, lobby, titles, actions, ghost }: RevealP
             index={index}
             title={option}
             state={cardStateOf(index, reveal, mine)}
-            tag={
-              index === mine && index !== reveal.correct ? (
-                <>
-                  <CrossIcon /> Your pick
-                </>
-              ) : undefined
-            }
             mark={index === reveal.correct ? undefined : (wrongMark ?? undefined)}
             back={index === reveal.correct ? back : undefined}
             sizer={<AnswerSizer title={option} />}
@@ -316,11 +328,21 @@ export function Reveal({ round, reveal, lobby, titles, actions, ghost }: RevealP
         {reveal.cover && <img src={reveal.cover} alt="" className="reveal-wash" />}
         {reveal.cover && <img src={reveal.cover} alt="" className="reveal-cover" />}
         <div className="reveal-titles">
-          <p lang={title.lang} className="display reveal-title" data-length={titleLength(title)}>
+          <p
+            lang={title.lang}
+            className="display reveal-title"
+            data-length={titleLength(title)}
+            data-language={title.language}
+          >
             {title.text}
           </p>
           {otherTitles(reveal.anime, title, titles.second).map((other) => (
-            <p key={other.text} lang={other.lang} className="text-muted [overflow-wrap:anywhere]">
+            <p
+              key={other.text}
+              lang={other.lang}
+              className="text-muted [overflow-wrap:anywhere]"
+              data-language={other.language}
+            >
               {other.text}
             </p>
           ))}
@@ -334,19 +356,18 @@ export function Reveal({ round, reveal, lobby, titles, actions, ghost }: RevealP
           </p>
         </div>
       </div>
-      {actions}
-      <p className="text-sm text-muted">
-        {round.number === round.rounds ? 'The results come next.' : 'The next round starts in a few seconds.'}
-      </p>
     </section>
   );
   return (
     <RoundBody
       main={<Stage slot={slot} ghost={ghost} cards={cards} />}
       scores={
-        <ScoresPanel>
-          <Lineup reveal={reveal} lobby={lobby} />
-        </ScoresPanel>
+        <>
+          <ScoresPanel>
+            <Lineup reveal={reveal} lobby={lobby} />
+          </ScoresPanel>
+          {foot}
+        </>
       }
       answer={below}
     />
