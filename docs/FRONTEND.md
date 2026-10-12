@@ -1,6 +1,6 @@
 ---
 status: verified
-last-verified: 2026-10-06
+last-verified: 2026-10-12
 ---
 
 # Frontend
@@ -18,12 +18,12 @@ How the UI code is built. How it should look is in [DESIGN.md](DESIGN.md), and w
 `index.html` loads `src/main.tsx`, which mounts `App` with the browser's audio engine and storage.
 - `App.tsx`: the home screen until the tab holds a seat, then `LobbySession`. It keeps the seat, the device settings, and the address bar (`/j/<code>` while in a lobby).
 - `screens/`: `Home` (create or join), `LobbySession` (one store and socket per seat; picks the screen), `Lobby` (invite, players, teams, settings, start; a daily's lobby starts itself), `Round` (countdown, options or the typed answer's field, timer, hint), `Reveal` and `Results`, and `GameLog`.
-- `components/`: the option cards and the face-down deal (`OptionCard.tsx`), the burst of a theme's material at the reveal and the results (`Burst.tsx`), the round's layout that keeps the cards in one place (`Stage.tsx`), the line under the cards that says whether the clip loaded (`ClipLine.tsx`), the settings form and its summary, the player list, the QR code, the device settings with the theme picker and the Preferences menu (`PrefsPanel.tsx`), the theme's backdrop (`Backdrop.tsx`), the sound banner, the notice toast, the lobby's teams and the teams' boards (`Teams.tsx`), the typed answer's field and its reveal (`TypedAnswer.tsx`), the daily challenge's home panel and result (`Daily.tsx`), and the shared buttons and panels in `ui.tsx`.
+- `components/`: the option cards and the face-down deal (`OptionCard.tsx`), the burst of a theme's material at the reveal and the results (`Burst.tsx`), the round's layout that keeps the cards in one place (`Stage.tsx`), the line under the cards that says whether the clip loaded (`ClipLine.tsx`), the settings form and its summary, the player list, the QR code, the device settings with the theme picker and the Preferences menu (`PrefsPanel.tsx`), the theme's backdrop (`Backdrop.tsx`), the sound banner, the notice toast, the lobby's teams and the teams' boards (`Teams.tsx`), the typed answer's field and its reveal (`TypedAnswer.tsx`), the daily challenges' home panel and result (`Daily.tsx`), and the shared buttons and panels in `ui.tsx`.
 - `realtime/`: the lobby routes (`api.ts`), the socket with hello, pings and reconnects (`connection.ts`), the server clock (`clock.ts`), the pure reducer of server messages (`game-state.ts`), and `store.ts`, which ties them to the audio engine and gives the screens one snapshot.
 - `audio/engine.ts`: fetches, decodes and plays each clip through Web Audio ([audio clips](design-docs/audio-clips.md)), and plays the sound effects' tones under the same volume.
 - `audio/sounds.ts` and `audio/cues.ts`: each world's sound effects as a table of tones, and which ones a change in the game calls for (`cuesBetween`, played by `useSoundCues` in `LobbySession`).
 - `history/history.ts`: the device's game log in `localStorage` (`ysto_history`): each finished game with its songs, and `animeLog`, which counts every anime heard ([game log](product-specs/game-log.md)).
-- `daily/streak.ts`: the daily challenge's streak on the device (`ysto_daily`), its badge, grid and share line ([daily](product-specs/daily.md)).
+- `daily/streak.ts`: the daily challenges' streaks on the device (`ysto_daily`, one record per daily; a single record from before 1.30.0 reads as Both), their badges, the grid and the share line ([daily](product-specs/daily.md)).
 - `settings/saved.ts`: the host's saved setups in `localStorage` (`ysto_saved_settings`), and `fitSetup`, which fits one to a lobby's bounds.
 - `prefs/prefs.ts`: volume, sound effects, theme, title languages (a first and an optional second) and motion, in `localStorage`. `usePrefs` puts `data-theme`, `data-motion` and the browser's theme color on `<html>` before the first paint.
 - `styles.css`: Tailwind, the eight themes as blocks of variables, the component classes (`.display`, `.panel`, `.card` and its faces, `.page-texture`), each theme's card stock and frames, and the animations ([DESIGN.md](DESIGN.md)). `realtime/session.ts` keeps the seat in `sessionStorage`, `whats-new.ts` holds the players' notes per version and the last version this device saw (`ysto_seen_version`, in `localStorage`), and `version.ts` notes in `sessionStorage` which server version it reloaded for (`ysto_reloaded_for`): the page's version comes from `package.json` through Vite's `define`. Both go through `storage.ts`, which survives blocked storage.

@@ -2,6 +2,7 @@
 // (docs/product-specs/lobby.md).
 import { useState } from 'react';
 import type { FormEvent } from 'react';
+import type { DailyMode } from '../../shared/daily.ts';
 import { cleanName, NAME_MAX_LENGTH } from '../../shared/names.ts';
 import { CODE_LENGTH, normalizeCode } from '../../shared/protocol.ts';
 import { PreferencesMenu } from '../components/PrefsPanel.tsx';
@@ -65,7 +66,7 @@ export function Home({ joinCode, notice, prefs, onPrefs, unlockAudio, onSeated, 
     event.preventDefault();
     void seat((cleaned) => createLobby(cleaned));
   };
-  const playDaily = () => void seat((cleaned) => createDaily(cleaned));
+  const playDaily = (mode: DailyMode) => void seat((cleaned) => createDaily(cleaned, mode));
   // A TV or laptop joins as the lobby's screen for party mode: it needs no name.
   const seatScreen = async () => {
     unlockAudio();

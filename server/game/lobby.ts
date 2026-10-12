@@ -1,5 +1,6 @@
 // A lobby's seats, host, lock and settings (docs/product-specs/lobby.md), as pure functions over plain data.
 // The registry keeps the lobbies and applies these; games join them in M5.
+import type { DailyLobby } from '../../shared/daily.ts';
 import { nameKey } from '../../shared/names.ts';
 import { PLAYER_ICONS } from '../../shared/protocol.ts';
 import type { PlayerIcon } from '../../shared/protocol.ts';
@@ -27,7 +28,7 @@ export interface Lobby {
   locked: boolean;
   settings: LobbySettings;
   idleSince: number | null; // since when nobody has been connected; null while somebody is
-  daily: { number: number } | null; // a daily challenge's private lobby: locked, its settings fixed
+  daily: DailyLobby | null; // a daily challenge's private lobby: locked, its settings fixed
 }
 
 export type JoinError = 'lobby-full' | 'lobby-locked' | 'name-taken';

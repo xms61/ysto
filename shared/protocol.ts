@@ -1,5 +1,7 @@
 // The protocol (docs/design-docs/system-design.md#decision): the HTTP bodies, the messages each side sends
 // over the socket, the error and close codes, and one validator per message the server receives.
+import { DAILY_MODES } from './daily.ts';
+import type { DailyLobby, DailyMode } from './daily.ts';
 import { LIMITS, validateSettings } from './settings.ts';
 import type { LobbySettings, SettingsBounds, ThemeKind, TitleLanguage } from './settings.ts';
 import { hasKeys, isIntegerIn, isOneOf, isRecord } from './validate.ts';
@@ -70,6 +72,14 @@ export interface NameBody {
 export function parseNameBody(value: unknown): NameBody | null {
   if (!isRecord(value) || !hasKeys(value, ['name']) || typeof value.name !== 'string') return null;
   return value.name.length <= RAW_NAME_MAX ? { name: value.name } : null;
+}
+
+// A daily's body: the name and which daily. Without a mode it is Both, as a page loaded before the modes asks.
+export function parseDailyBody(value: unknown): (NameBody & { mode: DailyMode }) | null {
+  if (!isRecord(value)) return null;
+  const { mode = 'both', ...rest } = value;
+  const named = parseNameBody(rest);
+  return named && isOneOf(mode, DAILY_MODES) ? { ...named, mode } : null;
 }
 
 export type ClientMessage =
@@ -287,7 +297,7 @@ export interface LobbyState {
   bounds: SettingsBounds;
   game: GameView | null;
   tally: TallyView | null; // null until the lobby finishes a game
-  daily?: { number: number }; // a daily challenge's private lobby: its day
+  daily?: DailyLobby; // a daily challenge's private lobby: its day and which daily
 }
 
 export interface Pick {

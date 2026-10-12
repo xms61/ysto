@@ -1,6 +1,8 @@
-// The daily challenge on this device (docs/product-specs/daily.md): how many days in a row it has been played,
-// the best run, and the line to share a result. Without accounts the streak lives here (`ysto_daily`), so clearing
-// the browser's data resets it. Only the first play of a day counts; a replay is practice.
+// The daily challenges on this device (docs/product-specs/daily.md): for each daily, how many days in a row it has
+// been played and the best run, and the line to share a result. Without accounts the streaks live here
+// (`ysto_daily`), so clearing the browser's data resets them. Only a daily's first play of a day counts; a replay is
+// practice.
+import type { DailyMode } from '../../shared/daily.ts';
 import { isIntegerIn, isRecord } from '../../shared/validate.ts';
 import type { PlayedSong } from '../../shared/protocol.ts';
 import { readJson, writeItem } from '../storage.ts';
@@ -22,11 +24,19 @@ export interface DailyOutcome {
   practice: boolean; // the day was already played on this device
 }
 
+type DailyRecords = Record<DailyMode, DailyRecord>;
+
+export const DAILY_LABELS: Record<DailyMode, string> = { openings: 'Openings', endings: 'Endings', both: 'Both' };
+export const DAILY_SONGS: Record<DailyMode, string> = {
+  openings: 'Ten openings',
+  endings: 'Ten endings',
+  both: 'Ten openings or endings',
+};
+
 const NONE: DailyRecord = { last: 0, streak: 0, best: 0, game: '', practice: false };
 
-export function readDaily(storage: Storage | null): DailyRecord {
-  const value = readJson(storage, DAILY_KEY);
-  if (!isRecord(value)) return NONE;
+function recordFrom(value: unknown): DailyRecord | null {
+  if (!isRecord(value)) return null;
   const { last, streak, best, game, practice } = value;
   const valid =
     isIntegerIn(last, 0, MAX_DAY) &&
@@ -34,7 +44,24 @@ export function readDaily(storage: Storage | null): DailyRecord {
     isIntegerIn(best, 0, MAX_DAY) &&
     typeof game === 'string' &&
     typeof practice === 'boolean';
-  return valid ? { last, streak, best, game, practice } : NONE;
+  return valid ? { last, streak, best, game, practice } : null;
+}
+
+// One record per daily. Before there were three, the key held a single record: the daily now called Both.
+function readAll(storage: Storage | null): DailyRecords {
+  const value = readJson(storage, DAILY_KEY);
+  const single = recordFrom(value);
+  if (single) return { openings: NONE, endings: NONE, both: single };
+  const stored = isRecord(value) ? value : {};
+  return {
+    openings: recordFrom(stored.openings) ?? NONE,
+    endings: recordFrom(stored.endings) ?? NONE,
+    both: recordFrom(stored.both) ?? NONE,
+  };
+}
+
+export function readDaily(storage: Storage | null, mode: DailyMode): DailyRecord {
+  return readAll(storage)[mode];
 }
 
 // The run as it stands today: still alive if the last play was today or yesterday.
@@ -42,15 +69,17 @@ export function currentStreak(record: DailyRecord, today: number): number {
   return record.last >= today - 1 ? record.streak : 0;
 }
 
-// Counts a finished daily game: the next day in a row extends the streak, a gap starts it again at 1, and the same
-// day again is practice. The same game shown again (a reload at its results) changes nothing.
-export function recordDaily(storage: Storage | null, day: number, game: string): DailyOutcome {
-  const before = readDaily(storage);
+// Counts a finished game of one daily and leaves the other dailies' streaks alone: the next day in a row extends
+// its streak, a gap starts it again at 1, and the same day again is practice. The same game shown again (a reload
+// at its results) changes nothing.
+export function recordDaily(storage: Storage | null, mode: DailyMode, day: number, game: string): DailyOutcome {
+  const all = readAll(storage);
+  const before = all[mode];
   if (before.game === game) return { record: before, practice: before.practice };
   const practice = before.last === day;
   const streak = practice ? before.streak : before.last === day - 1 ? before.streak + 1 : 1;
   const record = { last: day, streak, best: Math.max(before.best, streak), game, practice };
-  writeItem(storage, DAILY_KEY, JSON.stringify(record));
+  writeItem(storage, DAILY_KEY, JSON.stringify({ ...all, [mode]: record }));
   return { record, practice };
 }
 
@@ -77,9 +106,20 @@ export function dailyGrid(songs: PlayedSong[], playerId: string): string {
   return songs.map((song) => squareOf(song, playerId)).join('');
 }
 
-// The text to paste into a chat such as Discord: the game and the day, the grid, then the right answers, the score
-// and the streak, with a blank line between them.
-export function shareText(day: number, right: number, rounds: number, score: string, streak: number, grid: string) {
+export interface DailyShare {
+  day: number;
+  mode: DailyMode;
+  right: number;
+  rounds: number;
+  score: string;
+  streak: number; // this daily's
+  grid: string;
+}
+
+// The text to paste into a chat such as Discord: the game, the day and the daily, the grid, then the right answers,
+// the score and the streak, with a blank line between them.
+export function shareText({ day, mode, right, rounds, score, streak, grid }: DailyShare): string {
   const days = streak > 1 ? ` · ${FIRE} ${streak}` : '';
-  return `You Skipped The OP?!\nDaily #${day}\n\n${grid}\n\n${right}/${rounds} · ${score} pts${days}`;
+  const heading = `Daily #${day} · ${DAILY_LABELS[mode]}`;
+  return `You Skipped The OP?!\n${heading}\n\n${grid}\n\n${right}/${rounds} · ${score} pts${days}`;
 }
