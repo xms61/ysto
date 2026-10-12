@@ -2,6 +2,11 @@
 
 Releases moved out of `CHANGELOG.md` (which keeps about the latest 5). Newest first.
 
+## [1.27.1] - 2026-10-06
+
+### Changed
+- The docs catch up with 1.17 to 1.27 before the release: the code map, the client's file map and storage keys, the security notes on typed answers, title searches and the per-address limits, and the README's summary of what the game offers.
+
 ## [1.27.0] - 2026-10-06
 
 ### Added

@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.30.1] - 2026-10-12
+
+### Changed
+- The docs' gardening pass before the 1.30 release: the browser tests' list and fixture catalog (24 anime, openings only) in TESTING.md and the release process, the four checks the `main` ruleset requires (`docker` isn't one yet), and the components and `realtime/messages.ts` missing from the client's file map.
+
 ## [1.30.0] - 2026-10-12
 
 ### Added
@@ -34,8 +39,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - The daily's result shares like Wordle's: a line of colored squares (green right, red missed, grey skipped) under the game and the day, then the score and the streak, with blank lines between, ready to paste into Discord.
-
-## [1.27.1] - 2026-10-06
-
-### Changed
-- The docs catch up with 1.17 to 1.27 before the release: the code map, the client's file map and storage keys, the security notes on typed answers, title searches and the per-address limits, and the README's summary of what the game offers.
