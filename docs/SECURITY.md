@@ -1,6 +1,6 @@
 ---
 status: draft
-last-verified: 2026-10-06
+last-verified: 2026-10-12
 ---
 
 # Security
@@ -30,7 +30,7 @@ Every external input is validated once, at the boundary ([CODE_STYLE.md](CODE_ST
 - A kicked player's token can't rejoin that lobby.
 
 ## Transport
-- HTTPS and `wss://` go through Caddy with HSTS, on a domain, never the bare IP. Caddy is the only service with a public port; the game's container publishes none and runs read-only, without capabilities, as a non-root user ([hosting and deploy](design-docs/hosting-and-deploy.md)). The compose file sets `YSTO_TRUST_PROXY=1` for Caddy's hop, so rate limits see player IPs.
+- HTTPS and `wss://` go through Caddy with HSTS, on a domain, never the bare IP. Caddy is the only service with a public port, and also serves the owner's other apps on the VPS from their site files, over a Docker network the game isn't on. The game's container publishes none and runs read-only, without capabilities, as a non-root user ([hosting and deploy](design-docs/hosting-and-deploy.md)). The compose file sets `YSTO_TRUST_PROXY=1` for Caddy's hop, so rate limits see player IPs.
 - The VPS accepts SSH keys only, with root login off, and a cloud firewall and ufw allow only 22, 80 and 443 ([DEPLOY.md](DEPLOY.md)).
 - Every response gets a CSP of `default-src 'self'; img-src 'self' data:; media-src 'self' blob:; connect-src 'self'; font-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'`. It also gets `X-Content-Type-Options: nosniff`, `Referrer-Policy: no-referrer`, a `Permissions-Policy` and `X-Robots-Tag: noindex`. The server already turns `X-Powered-By` off.
 - WebSocket upgrades must come from the page's own origin (the Origin's host is the request's Host) or from `YSTO_ALLOWED_ORIGINS`. An upgrade without an Origin is refused.

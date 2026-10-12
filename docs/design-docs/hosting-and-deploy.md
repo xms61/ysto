@@ -1,6 +1,6 @@
 ---
 status: draft
-last-verified: 2026-09-30
+last-verified: 2026-10-12
 ---
 
 # Hosting and deploy
@@ -16,6 +16,7 @@ The game runs on a rented VPS for friends, and anyone who has the URL can create
 - `deploy/compose.yml` runs two services, and the VPS gets it with the `Caddyfile` and a `.env` made from `deploy/.env.example`:
   - `ysto`, the game: the image from GHCR (`latest`, or `YSTO_VERSION` to roll back), with the exported library and the catalog mounted read-only. It publishes no port. The file sets the in-container folders and `YSTO_TRUST_PROXY=1` itself, so a copied `.env` can't point them elsewhere. It runs with a read-only root, a tmpfs `/tmp`, no capabilities, `no-new-privileges`, 1 GB of memory, 256 processes, and logs rotated at 3 files of 10 MB.
   - `caddy`: the only service on the public ports (80, 443 and 443/udp). It gets and renews the Let's Encrypt certificate for `YSTO_DOMAIN`, redirects HTTP to HTTPS, sets HSTS, and proxies HTTP and WebSockets to the game. Its certificates live in the `caddy_data` volume.
+  - Caddy also serves the owner's other apps on the VPS, such as BeanQuery. It imports their site files from `/opt/caddy-sites/` (mounted read-only) and reaches them over the external Docker network `edge`; the game stays on the compose file's own network. Each app keeps its own compose file and publishes no port. The network is external, so no app's `down` removes it from under the others.
 - Dependabot keeps both image digests current.
 
 **VPS.**
@@ -42,6 +43,7 @@ The game runs on a rented VPS for friends, and anyone who has the URL can create
 - **Deploying from Actions over SSH, or a self-hosted runner:** rejected. A public repo's CI must not hold credentials for the server, and pull requests from forks must never reach it.
 - **Uploading the original library:** rejected. It's about twice the size, for quality the 128 kbps clips don't use.
 - **Building the catalog on the VPS (an `ingest` compose profile, the first plan):** rejected in M8. The build reads the original library and the ingest caches, which stay on the owner machine, and it would need the catalog scripts and network access in the image.
+- **A separate Caddy compose in front of every app on the VPS:** rejected when BeanQuery joined (1.31.0). It is the cleanest split, but moves a running part of the game for a second site; importing site files keeps the game's setup as it was.
 - **Caddy as a system package beside the container:** rejected in M8. In compose it is pinned and updated like the game, and the game needs no published port at all.
 - **Trivy's GitHub Action:** rejected. The binary is pinned by version and checksum, like gitleaks, so a moved tag can't change what runs.
 
