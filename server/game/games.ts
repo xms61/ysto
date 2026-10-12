@@ -135,7 +135,7 @@ export class Games {
     if (poolSize(catalog, firstBatch).anime < firstBatch.songsPerGame) return 'pool-too-small';
     const played = this.#played.get(lobby.code) ?? new Set<number>();
     const questions = lobby.daily
-      ? dailyQuestions(catalog, firstBatch, this.#options.dailySecret ?? '', lobby.daily.number)
+      ? dailyQuestions(catalog, firstBatch, this.#options.dailySecret ?? '', lobby.daily)
       : buildGame(catalog, firstBatch, random, played);
     const known = connectionsOf(lobby);
     const screens = lobby.players.filter((player) => player.screen).map((player) => player.id);

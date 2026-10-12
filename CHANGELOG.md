@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.30.0] - 2026-10-12
+
+### Added
+- Three dailies a day instead of one: Openings (ten openings), Endings (ten endings) and Both (ten of either). Each is the same for everyone, has its own streak on the device, and shares as "Daily #42 · Endings". `POST /api/daily` takes an optional `mode` (`openings`, `endings` or `both`, the default).
+
+### Changed
+- The daily before 1.30.0 is now Both: its seed is unchanged, so its songs stay the same, and a device's streak from before carries on as the Both streak.
+
 ## [1.29.1] - 2026-10-06
 
 ### Changed
@@ -31,8 +39,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - The docs catch up with 1.17 to 1.27 before the release: the code map, the client's file map and storage keys, the security notes on typed answers, title searches and the per-address limits, and the README's summary of what the game offers.
-
-## [1.27.0] - 2026-10-06
-
-### Added
-- Party mode: with it on in the lobby settings, a TV or laptop joins by the link with "Use as the screen" and plays the sound for everyone, showing the round large with the join QR in its corner, while the phones only answer. A lobby takes up to two screens, which don't count as players; a party game needs one connected to start.

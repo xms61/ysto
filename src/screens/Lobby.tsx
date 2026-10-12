@@ -13,6 +13,7 @@ import { QrCode } from '../components/QrCode.tsx';
 import { SettingsForm } from '../components/SettingsForm.tsx';
 import { SettingsSummary } from '../components/SettingsSummary.tsx';
 import { Button, INPUT, Panel } from '../components/ui.tsx';
+import { DAILY_LABELS, DAILY_SONGS } from '../daily/streak.ts';
 import { usePagePhase } from '../hooks.ts';
 import type { GameStore } from '../realtime/store.ts';
 
@@ -105,9 +106,12 @@ function DailyLobby({ store, lobby }: { store: GameStore; lobby: LobbyState }) {
     started.current = true;
     store.startGame();
   }, [store, lobby.game]);
+  const mode = lobby.daily?.mode ?? 'both';
   return (
-    <Panel title={`Daily No. ${lobby.daily?.number ?? ''}`}>
-      <p className="text-muted">Ten songs of 15 s each, the same for everyone today. Your first play counts.</p>
+    <Panel title={`Daily No. ${lobby.daily?.number ?? ''} · ${DAILY_LABELS[mode]}`}>
+      <p className="text-muted">
+        {DAILY_SONGS[mode]} of 15 s each, the same for everyone today. Your first play counts.
+      </p>
       {lobby.game !== null && (
         <Button className="mt-4" onClick={() => store.startGame()}>
           Play again for practice

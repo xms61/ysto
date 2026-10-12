@@ -5,7 +5,7 @@ import express, { Router } from 'express';
 import type { NextFunction, Request, Response } from 'express';
 import { dailyNumber } from '../../shared/daily.ts';
 import { cleanName } from '../../shared/names.ts';
-import { normalizeCode, parseNameBody } from '../../shared/protocol.ts';
+import { normalizeCode, parseDailyBody, parseNameBody } from '../../shared/protocol.ts';
 import type { ErrorCode } from '../../shared/protocol.ts';
 import { clientIp } from '../client-ip.ts';
 import type { LobbyRegistry } from '../game/registry.ts';
@@ -86,20 +86,22 @@ export function apiRouter({ registry, trustedHops, dailyOn = false, now = Date.n
     res.status(201).json(created);
   });
 
-  // Today's daily challenge: whether it is on, and its number, for the home screen.
+  // Today's daily challenges: whether they are on, and the day's number, for the home screen.
   router.get('/api/daily', (_req, res) => {
     res.json({ on: dailyOn && registry !== null, number: dailyNumber(now()) });
   });
 
-  // A private one-player lobby for today's daily. It counts as a lobby created, against the same limit.
+  // A private one-player lobby for one of today's dailies. It counts as a lobby created, against the same limit.
   router.post('/api/daily', (req, res) => {
     if (!registry) return fail(res, 'not-ready');
     if (!dailyOn) return fail(res, 'daily-off');
     const ip = ipOf(req);
     if (!creations.take(ip)) return fail(res, 'rate-limited', creations.retryAfterSec(ip));
-    const named = nameFrom(req.body);
+    const body = parseDailyBody(req.body);
+    if (!body) return fail(res, 'invalid-request');
+    const named = nameFrom({ name: body.name });
     if ('error' in named) return fail(res, named.error);
-    const created = registry.createDaily(named.name, ip, dailyNumber(now()));
+    const created = registry.createDaily(named.name, ip, { number: dailyNumber(now()), mode: body.mode });
     if ('error' in created) return fail(res, created.error);
     res.status(201).json(created);
   });

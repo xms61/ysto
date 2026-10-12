@@ -1242,8 +1242,8 @@
     box-shadow: var(--panel-shadow);
   }
 
-  /* The daily challenge (Daily.tsx): its panel on the home screen, the streak's badge on the accent, and at the
-     results the rounds as a grid of plain blocks in the display face. */
+  /* The daily challenges (Daily.tsx): their panel on the home screen with a row per daily, the streak's badge on
+     the accent, and at the results the rounds as a grid of plain blocks in the display face. */
   .daily-panel,
   .daily-result {
     display: flex;
@@ -1253,6 +1253,15 @@
     border: 1px solid var(--line);
     border-radius: min(var(--radius-2xl), 1rem);
     background: var(--panel);
+  }
+
+  .daily-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-block: 0.75rem;
+    border-top: 1px solid var(--line);
   }
 
   .daily-result {

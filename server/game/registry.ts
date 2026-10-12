@@ -4,6 +4,7 @@
 import { randomBytes, randomInt } from 'node:crypto';
 import { CODE_ALPHABET, CODE_LENGTH } from '../../shared/protocol.ts';
 import { dailySettings } from '../../shared/daily.ts';
+import type { DailyLobby } from '../../shared/daily.ts';
 import { defaultSettings } from '../../shared/settings.ts';
 import type { LobbySettings, SettingsBounds } from '../../shared/settings.ts';
 import type { PlayerIcon } from '../../shared/protocol.ts';
@@ -108,16 +109,16 @@ export class LobbyRegistry {
     return { code, ...joined };
   }
 
-  // A daily challenge's lobby: one seat, locked once its player is in, with the day's fixed settings.
+  // A daily challenge's lobby: one seat, locked once its player is in, with that daily's fixed settings.
   createDaily(
     name: string,
     ip: string,
-    number: number,
+    daily: DailyLobby,
   ): (Joined & { code: string }) | { error: 'server-full' | 'too-many-lobbies' } {
     const created = this.create(name, ip);
     if ('error' in created) return created;
     const lobby = this.#lobbies.get(created.code);
-    if (lobby) this.#store({ ...lobby, settings: dailySettings(this.bounds), locked: true, daily: { number } });
+    if (lobby) this.#store({ ...lobby, settings: dailySettings(this.bounds, daily.mode), locked: true, daily });
     return created;
   }
 
