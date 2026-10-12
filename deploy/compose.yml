@@ -37,8 +37,11 @@ services:
     ports: ['80:80', '443:443', '443:443/udp']
     environment:
       YSTO_DOMAIN: ${YSTO_DOMAIN:?set YSTO_DOMAIN in .env}
+    # `edge` is shared with the other apps on the VPS, whose site files Caddy imports from CADDY_SITES_DIR.
+    networks: [default, edge]
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - ${CADDY_SITES_DIR:-/opt/caddy-sites}:/etc/caddy/sites:ro
       - caddy_data:/data
       - caddy_config:/config
     read_only: true
@@ -50,6 +53,12 @@ services:
     logging:
       driver: json-file
       options: { max-size: 10m, max-file: '3' }
+
+# Shared with the other apps on the VPS that Caddy serves. Created once with `docker network create edge`
+# (docs/DEPLOY.md), so no app's `down` removes it from under the others.
+networks:
+  edge:
+    external: true
 
 # The game's state (clip reports), and Caddy's certificates and keys. Never rename these once released: a new
 # name starts empty.

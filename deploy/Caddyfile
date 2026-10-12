@@ -9,3 +9,7 @@
 	}
 	reverse_proxy ysto:3000
 }
+
+# Other apps' sites on the same VPS, one file each, reached over the shared `edge` network (docs/DEPLOY.md). An empty
+# folder is fine.
+import /etc/caddy/sites/*.caddy

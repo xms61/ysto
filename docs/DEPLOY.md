@@ -1,6 +1,6 @@
 ---
 status: draft
-last-verified: 2026-10-06
+last-verified: 2026-10-12
 ---
 
 # Deploy
@@ -12,6 +12,7 @@ Deployed. The owner's Hetzner VPS has served the game on its domain since 0.13.0
 
 ## What runs where
 - **The VPS** runs `deploy/compose.yml`: Caddy on ports 80 and 443 with the Let's Encrypt certificate for `YSTO_DOMAIN`, and the game's image from GHCR, which publishes no port. The exported library and the catalog are mounted read-only. The one writable mount is the `ysto_state` volume at `/data/state`, where the game keeps the players' clip reports.
+- **Other apps on the VPS**, such as the owner's BeanQuery, run from their own compose files with no published port. Caddy serves them too: it imports their site files from `/opt/caddy-sites/` and reaches them over the Docker network `edge`, which they share. The game stays on its own network, apart from them.
 - **GitHub** builds and publishes the image when the owner starts the release workflow. It holds no credentials for the VPS.
 - **The owner machine** builds the catalog and exports the library, then sends both with `rsync`.
 
@@ -48,8 +49,9 @@ From here on, log in as `deploy`. Check that `ssh root@<server>` is refused befo
 
 ### 3. Folders and settings
 ```bash
-sudo mkdir -p /opt/ysto /srv/ysto/audio /srv/ysto/catalog
-sudo chown -R deploy:deploy /opt/ysto /srv/ysto
+sudo mkdir -p /opt/ysto /srv/ysto/audio /srv/ysto/catalog /opt/caddy-sites
+sudo chown -R deploy:deploy /opt/ysto /srv/ysto /opt/caddy-sites
+docker network create edge
 ```
 *Owner machine*: copy the deploy files over, with a `.env` made from `deploy/.env.example`:
 ```bash
@@ -113,6 +115,8 @@ Rebuild on the owner machine ([CATALOG.md](../scripts/catalog/CATALOG.md)), reru
 
 ### Deploy files
 When `deploy/compose.yml` or `deploy/Caddyfile` changes in a release, copy it over again (step 3) before `docker compose up -d`. 1.6.0 changes `compose.yml`: it adds the `ysto_state` volume for clip reports. Docker creates the volume on the first `up`. A server started without it (the old compose file) runs as before, logs `reports.unavailable`, and keeps reports only in its log.
+
+1.31.0 changes both: Caddy joins the shared `edge` network and imports other apps' site files from `/opt/caddy-sites/`. Before the first `up` with it, create the network and the folder once: `docker network create edge` and `sudo mkdir -p /opt/caddy-sites && sudo chown deploy:deploy /opt/caddy-sites`. Without the network, `docker compose up` stops with `network edge declared as external, but could not be found`. After adding or changing a site file, reload Caddy: `docker compose exec caddy caddy reload --config /etc/caddy/Caddyfile`.
 
 ### Clip reports
 Players can report a round's clip from the reveal or the results' song list, with a fixed reason. The reports go into `reports.sqlite` in the `ysto_state` volume: the theme, where its clip started, the reason and the time, and nothing about the player. To list them, most reported first, with each clip's anime and file:

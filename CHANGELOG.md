@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.31.0] - 2026-10-12
+
+### Changed
+- Caddy can serve the owner's other apps on the same VPS: it imports their site files from `/opt/caddy-sites/` (`CADDY_SITES_DIR`) and joins the external Docker network `edge` to reach them. The game stays on its own network. Before updating, create the network and the folder once, as [DEPLOY.md](docs/DEPLOY.md#deploy-files) says, or `docker compose up` stops.
+
 ## [1.30.1] - 2026-10-12
 
 ### Changed
@@ -34,8 +39,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Players who last played before 1.5.0 now see what's new: a device with saved preferences but no version noted counts as coming from 1.0.0, instead of as a first visit that shows nothing.
-
-## [1.28.0] - 2026-10-06
-
-### Changed
-- The daily's result shares like Wordle's: a line of colored squares (green right, red missed, grey skipped) under the game and the day, then the score and the streak, with blank lines between, ready to paste into Discord.

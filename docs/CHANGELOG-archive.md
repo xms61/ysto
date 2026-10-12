@@ -2,6 +2,11 @@
 
 Releases moved out of `CHANGELOG.md` (which keeps about the latest 5). Newest first.
 
+## [1.28.0] - 2026-10-06
+
+### Changed
+- The daily's result shares like Wordle's: a line of colored squares (green right, red missed, grey skipped) under the game and the day, then the score and the streak, with blank lines between, ready to paste into Discord.
+
 ## [1.27.1] - 2026-10-06
 
 ### Changed
