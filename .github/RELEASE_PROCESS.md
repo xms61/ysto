@@ -32,11 +32,11 @@ gh pr create --base main --head <branch> --title "<type>(<scope>): <summary> (v<
 - If a PR is already open for the branch, push more commits to it.
 - Merge with a merge commit once the pre-commit checklist passes on the branch.
 
-CI ([.github/workflows/ci.yml](workflows/ci.yml)) runs on every pull request and every push to `main`, and can also be started by hand. The `main` ruleset requires all five jobs to pass before a PR can merge:
+CI ([.github/workflows/ci.yml](workflows/ci.yml)) runs on every pull request and every push to `main`, and can also be started by hand. The `main` ruleset requires `guard`, `docs`, `app` and `e2e` to pass before a PR can merge; `docker` runs on every PR too but isn't required yet ([tech-debt tracker](../docs/exec-plans/tech-debt-tracker.md)):
 - `guard` runs the tracked-files check with its tests, then gitleaks.
 - `docs` runs the doc checks and their tests.
 - `app` runs `npm run test:ci` and the build.
-- `e2e` runs the browser tests against the build (the smoke test, the clip decode test and a whole game), in Chromium, Firefox and WebKit.
+- `e2e` runs the browser tests against the build (the smoke test, the clip decode test, a whole game, a party game, a daily, the phone layout and axe), one job per browser: Chromium, Firefox and WebKit.
 - `docker` builds the image, runs it hardened on the fixture catalog until `/readyz` answers, cuts clips in it, checks that it holds no audio, database or `.env` file, and scans it with Trivy.
 
 The ruleset also blocks a merge while CodeQL reports a new alert of high or critical severity, or a new error.
